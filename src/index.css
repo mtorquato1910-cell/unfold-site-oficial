@@ -151,5 +151,4 @@ All colors MUST be HSL.
     50% { transform: translateY(-12px) rotate(2deg); }
   }
   .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
-  }
 }
