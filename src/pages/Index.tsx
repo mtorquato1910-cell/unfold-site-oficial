@@ -1,16 +1,15 @@
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { Hero } from "@/components/home/Hero";
-import { LogosMarquee } from "@/components/home/LogosMarquee";
-import { Manifesto } from "@/components/home/Manifesto";
-import { Metrics } from "@/components/home/Metrics";
+import { ClientLogos } from "@/components/home/ClientLogos";
+import { Methodology } from "@/components/home/Methodology";
 import { Solutions } from "@/components/home/Solutions";
+import { Partners } from "@/components/home/Partners";
 import { Services } from "@/components/home/Services";
-import { Cases } from "@/components/home/Cases";
+import { FeaturedCase } from "@/components/home/FeaturedCase";
 import { Tools } from "@/components/home/Tools";
+import { Insights } from "@/components/home/Insights";
 import { Testimonials } from "@/components/home/Testimonials";
-import { BlogPreview } from "@/components/home/BlogPreview";
-import { PodcastPreview } from "@/components/home/PodcastPreview";
 import { FinalCTA } from "@/components/home/FinalCTA";
 
 const Index = () => {
@@ -19,16 +18,15 @@ const Index = () => {
       <Navbar />
       <main>
         <Hero />
-        <LogosMarquee />
-        <Manifesto />
-        <Metrics />
+        <ClientLogos />
+        <Methodology />
         <Solutions />
+        <Partners />
         <Services />
-        <Cases />
+        <FeaturedCase />
         <Tools />
+        <Insights />
         <Testimonials />
-        <BlogPreview />
-        <PodcastPreview />
         <FinalCTA />
       </main>
       <Footer />
