@@ -1,105 +1,79 @@
-import { useState } from "react";
-import { Plus, Minus, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const SERVICES = [
   {
-    name: "Demand Generation",
-    desc: "Geração de demanda qualificada com mídia paga, ABM e operação de outbound integrada ao CRM.",
-    deliverables: ["Estratégia de canais", "Operação de mídia", "ABM playbooks", "Sales enablement"],
+    n: "01",
+    title: "Demand Generation",
+    desc: "Geração de leads qualificados via tráfego pago e automação.",
+    bullets: ["Estratégia de mídia paga (Meta, Google, LinkedIn)", "Automação de nutrição e qualificação", "Lead scoring e SLA com vendas", "Otimização contínua de CPL e CAC"],
   },
   {
-    name: "Social Performance",
-    desc: "Conteúdo orgânico e paid social que constrói autoridade e gera conversa comercial real.",
-    deliverables: ["Content strategy", "Produção de conteúdo", "Comunidade", "Paid social"],
+    n: "02",
+    title: "Social Performance",
+    desc: "Conteúdo e mídia social que gera awareness e conversão.",
+    bullets: ["Planejamento editorial orientado a funil", "Produção de conteúdo (vídeo, carrossel, copy)", "Mídia paga social com criativos testáveis", "Relatórios de impacto e attribution"],
   },
   {
-    name: "Inbound Marketing",
-    desc: "Funil de inbound completo: SEO técnico, conteúdo, automação e nutrição até o handoff de vendas.",
-    deliverables: ["SEO técnico + on-page", "Editorial calendar", "Automação RD/HubSpot", "Lead scoring"],
+    n: "03",
+    title: "Inbound Marketing",
+    desc: "Funil completo de aquisição, nutrição e conversão.",
+    bullets: ["SEO técnico e de conteúdo", "Blog e topic clusters", "Materiais ricos e landing pages", "Automação RD Station / HubSpot"],
   },
   {
-    name: "Consultoria",
-    desc: "Diagnóstico, planejamento e implementação. Quando o problema é estratégia, não execução.",
-    deliverables: ["Diagnóstico de maturidade", "Planejamento anual", "Stack & processos", "Mentoria de time"],
+    n: "04",
+    title: "Consultoria de Marketing e Branding",
+    desc: "Projetos estratégicos sob medida.",
+    bullets: ["Diagnóstico e plano estratégico", "Posicionamento e arquitetura de marca", "Implementação de stack mar-tech", "Treinamento e mentoria de times"],
   },
 ];
 
 export function Services() {
-  const [open, setOpen] = useState(0);
-
   return (
-    <section className="container py-24 md:py-32">
-      <div className="grid lg:grid-cols-12 gap-12 mb-14">
-        <div className="lg:col-span-5">
-          <p className="font-mono-label text-primary mb-5">[ Serviços ]</p>
-          <h2 className="text-4xl md:text-5xl font-display font-bold tracking-tight">
-            Quatro frentes, um sistema.
-          </h2>
-        </div>
-        <p className="lg:col-span-6 lg:col-start-7 text-foreground/65 text-lg leading-relaxed">
-          Cada serviço pode rodar isolado, mas o crescimento acontece quando eles operam juntos.
+    <section className="bg-[#E7E7E7] text-[#001E29] py-20 md:py-28">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-5">
+          Nossos serviços
         </p>
-      </div>
+        <h2 className="font-sans font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1] max-w-3xl mb-14">
+          Marketing-vendas que entrega.
+        </h2>
 
-      <div className="border border-border rounded-2xl overflow-hidden">
-        {SERVICES.map((s, i) => {
-          const isOpen = open === i;
-          return (
-            <div
-              key={s.name}
-              className={cn(
-                "border-b border-border last:border-b-0 transition-colors",
-                isOpen ? "bg-card" : "bg-background hover:bg-card/60"
-              )}
+        <div className="space-y-4">
+          {SERVICES.map((s) => (
+            <article
+              key={s.n}
+              className="group bg-white border border-[#001E29]/10 rounded-xl p-7 md:p-9 hover:border-[#001E29]/30 transition-colors"
             >
-              <button
-                onClick={() => setOpen(isOpen ? -1 : i)}
-                className="w-full text-left p-6 md:p-8 flex items-center gap-6 group"
-                aria-expanded={isOpen}
-              >
-                <span className="font-mono text-sm text-primary w-10 shrink-0">0{i + 1}</span>
-                <h3 className="font-display text-2xl md:text-3xl font-semibold flex-1 tracking-tight">
-                  {s.name}
-                </h3>
-                <span className="h-9 w-9 rounded-full border border-border grid place-items-center text-foreground/60 group-hover:text-primary group-hover:border-primary/40 transition-colors">
-                  {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                </span>
-              </button>
-              <div
-                className={cn(
-                  "grid transition-all duration-300 ease-out",
-                  isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                )}
-              >
-                <div className="overflow-hidden">
-                  <div className="px-6 md:px-8 pb-8 md:pl-24 grid md:grid-cols-2 gap-8">
-                    <p className="text-foreground/70 leading-relaxed">{s.desc}</p>
-                    <div>
-                      <p className="font-mono-label text-foreground/40 mb-3">Entregáveis</p>
-                      <ul className="space-y-2">
-                        {s.deliverables.map((d) => (
-                          <li key={d} className="flex items-center gap-2 text-sm text-foreground/80">
-                            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                            {d}
-                          </li>
-                        ))}
-                      </ul>
-                      <Link
-                        to="/servicos"
-                        className="inline-flex items-center gap-2 text-primary text-sm font-medium mt-6 group/link"
-                      >
-                        Ver mais
-                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover/link:translate-x-1" />
-                      </Link>
-                    </div>
-                  </div>
+              <div className="grid md:grid-cols-12 gap-6 md:gap-10">
+                <div className="md:col-span-4">
+                  <span className="font-mono text-sm text-[#0a8a5f]">{s.n}.</span>
+                  <h3 className="font-sans font-bold text-2xl mt-2">{s.title}</h3>
+                  <p className="text-sm text-[#001E29]/65 mt-2 leading-relaxed">{s.desc}</p>
+                </div>
+                <div className="md:col-span-6">
+                  <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
+                    {s.bullets.map((b) => (
+                      <li key={b} className="flex gap-2 text-[#001E29]/80">
+                        <span className="text-[#0a8a5f] mt-1">→</span>
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="md:col-span-2 flex md:justify-end md:items-end">
+                  <Link
+                    to="/servicos"
+                    className="inline-flex items-center gap-1 text-sm font-medium border-b border-[#001E29]/30 hover:border-[#001E29] pb-0.5 transition-colors"
+                  >
+                    Ver mais
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

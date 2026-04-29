@@ -1,40 +1,40 @@
 import {
-  Target, TrendingUp, GitMerge, Globe, Sparkles, Compass, ArrowUpRight,
+  Target, TrendingUp, Sparkles, BarChart3, Users, Rocket, Workflow, Zap,
 } from "lucide-react";
 
-const SOLUTIONS = [
-  { icon: Target, title: "Gerar oportunidades comerciais", desc: "Pipeline qualificado, não só MQLs." },
-  { icon: TrendingUp, title: "Aumentar conversões", desc: "Otimização contínua do funil ponta-a-ponta." },
-  { icon: GitMerge, title: "Integrar marketing e vendas", desc: "Operação unificada com SLAs claros." },
-  { icon: Globe, title: "Melhorar presença digital", desc: "SEO, conteúdo e autoridade de marca." },
-  { icon: Sparkles, title: "Diferenciar da concorrência", desc: "Posicionamento que sai do mar de igual." },
-  { icon: Compass, title: "Posicionamento digital", desc: "Mensagem certa, canal certo, momento certo." },
+const ITEMS = [
+  { icon: Target, title: "Gerar mais leads", desc: "Aumentamos o fluxo de visitas qualificadas e geramos contatos para sua empresa captar mais clientes." },
+  { icon: TrendingUp, title: "Aumentar vendas", desc: "Estruturamos operações de demanda previsível para que marketing e vendas trabalhem juntos." },
+  { icon: Sparkles, title: "Melhorar a experiência", desc: "Eliminamos a fricção no crescimento com websites, blogs e touchpoints de marca de alta performance." },
+  { icon: BarChart3, title: "Otimizar resultados", desc: "Otimizamos sua presença online para que cada real investido gere mais retorno mensurável." },
+  { icon: Users, title: "Reduzir CAC", desc: "Reduzimos o custo de aquisição, encurtamos o ciclo de vendas e aumentamos o LTV dos seus clientes." },
+  { icon: Rocket, title: "Escalar aquisição", desc: "Construímos máquinas de aquisição previsíveis, escaláveis e integradas ao seu processo comercial." },
+  { icon: Workflow, title: "Integrar marketing e vendas", desc: "Alinhamos times com cultura, metodologia e frameworks validados de vendarketing." },
+  { icon: Zap, title: "Acelerar o crescimento", desc: "Aceleramos o crescimento usando dados, processos, tecnologia e cultura de alto impacto." },
 ];
 
 export function Solutions() {
   return (
-    <section className="bg-surface/40 border-y border-border py-24 md:py-32">
-      <div className="container">
-        <div className="max-w-3xl mb-16">
-          <p className="font-mono-label text-primary mb-5">[ Para quem precisa ]</p>
-          <h2 className="text-4xl md:text-5xl font-display font-bold tracking-tight">
-            Onde a Unfold entra no seu jogo.
+    <section className="bg-background py-20 md:py-28">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="max-w-3xl mb-14">
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
+            Para empresas que precisam
+          </p>
+          <h2 className="font-sans font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
+            Resolvemos os desafios que travam seu crescimento.
           </h2>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border rounded-2xl overflow-hidden">
-          {SOLUTIONS.map((s, i) => (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+          {ITEMS.map(({ icon: Icon, title, desc }) => (
             <article
-              key={s.title}
-              className="bg-background p-8 group hover:bg-card transition-colors cursor-pointer"
+              key={title}
+              className="group p-7 rounded-xl border border-border bg-card/40 hover:bg-card hover:border-primary/40 transition-all"
             >
-              <div className="flex items-start justify-between mb-8">
-                <span className="font-mono text-xs text-foreground/40">0{i + 1} / 06</span>
-                <ArrowUpRight className="h-4 w-4 text-foreground/30 transition-all group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1" />
-              </div>
-              <s.icon className="h-7 w-7 text-primary mb-5" />
-              <h3 className="text-xl font-display font-semibold mb-2 leading-tight">{s.title}</h3>
-              <p className="text-sm text-foreground/60 leading-relaxed">{s.desc}</p>
+              <Icon className="h-7 w-7 text-primary mb-6" strokeWidth={1.6} />
+              <h3 className="font-sans font-semibold text-lg mb-2">{title}</h3>
+              <p className="text-sm text-foreground/65 leading-relaxed">{desc}</p>
             </article>
           ))}
         </div>
