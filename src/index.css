@@ -50,7 +50,7 @@ All colors MUST be HSL.
     --shadow-glow: 0 0 60px hsl(158 92% 70% / 0.25);
     --shadow-card: 0 1px 0 hsl(158 92% 70% / 0.04) inset, 0 20px 40px -20px hsl(195 100% 4% / 0.6);
 
-    --font-display: "JetBrains Mono", ui-monospace, monospace;
+    --font-display: "Inter", system-ui, -apple-system, sans-serif;
     --font-mono-label: "IBM Plex Mono", ui-monospace, monospace;
     --font-body: "Inter", system-ui, -apple-system, sans-serif;
 
@@ -106,8 +106,9 @@ All colors MUST be HSL.
 
   h1, h2, h3, .font-display {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
-    line-height: 1.05;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    font-weight: 700;
   }
 
   .font-mono-label {

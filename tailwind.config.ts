@@ -67,9 +67,9 @@ export default {
         },
       },
       fontFamily: {
-        display: ["JetBrains Mono", "ui-monospace", "monospace"],
-        mono: ["IBM Plex Mono", "ui-monospace", "monospace"],
+        display: ["Inter", "system-ui", "sans-serif"],
         sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ["IBM Plex Mono", "ui-monospace", "monospace"],
       },
       borderRadius: {
         lg: "var(--radius)",
