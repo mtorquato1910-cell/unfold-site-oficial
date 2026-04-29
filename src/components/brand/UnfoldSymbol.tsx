@@ -39,7 +39,7 @@ export function UnfoldLogo({ className }: { className?: string }) {
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <UnfoldSymbol size={26} />
-      <span className="font-display text-lg font-bold tracking-tight">UNFOLD</span>
+      <span className="font-sans text-lg font-bold tracking-tight">UNFOLD</span>
     </div>
   );
 }
