@@ -36,12 +36,12 @@ export function Navbar() {
           : "bg-transparent"
       )}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 flex h-16 md:h-[72px] items-center justify-between">
-        <Link to="/" aria-label="Unfold Growth — Início">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 flex h-16 md:h-[72px] items-center justify-between gap-6">
+        <Link to="/" aria-label="Unfold Growth — Início" className="shrink-0">
           <UnfoldLogo />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-7" aria-label="Principal">
+        <nav className="hidden lg:flex items-center gap-7 whitespace-nowrap" aria-label="Principal">
           {NAV.map((item) => (
             <Link
               key={item.href}
@@ -53,7 +53,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           <div className="hidden sm:flex items-center rounded-full border border-border p-0.5 text-xs font-mono">
             {(["PT", "EN"] as const).map((l) => (
               <button
