@@ -32,11 +32,11 @@ export function Navbar() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-background/85 backdrop-blur-xl border-b border-border"
+          ? "bg-background/80 backdrop-blur-md border-b border-border"
           : "bg-transparent"
       )}
     >
-      <div className="container flex h-16 items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 flex h-16 md:h-[72px] items-center justify-between">
         <Link to="/" aria-label="Unfold Growth — Início">
           <UnfoldLogo />
         </Link>
@@ -46,7 +46,7 @@ export function Navbar() {
             <Link
               key={item.href}
               to={item.href}
-              className="text-sm text-foreground/75 hover:text-primary transition-colors"
+              className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors"
             >
               {item.label}
             </Link>
@@ -71,7 +71,7 @@ export function Navbar() {
           </div>
           <Button asChild variant="default" size="sm" className="hidden md:inline-flex group">
             <Link to="/contato">
-              Fale conosco
+              Fale com a equipe
               <ArrowUpRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </Button>
@@ -111,7 +111,7 @@ export function Navbar() {
                 key={item.href}
                 to={item.href}
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between py-3 border-b border-border/50 text-lg font-display"
+                className="flex items-center justify-between py-3 border-b border-border/50 text-lg font-sans font-medium"
               >
                 <span><span className="font-mono text-xs text-primary mr-3">0{i + 1}</span>{item.label}</span>
                 <ArrowUpRight className="h-4 w-4 text-foreground/40" />
@@ -119,7 +119,7 @@ export function Navbar() {
             ))}
           </nav>
           <Button asChild className="mt-8 w-full">
-            <Link to="/contato" onClick={() => setOpen(false)}>Fale conosco</Link>
+            <Link to="/contato" onClick={() => setOpen(false)}>Fale com a equipe</Link>
           </Button>
         </div>
       </div>
