@@ -1,32 +1,25 @@
-import { Calculator, ClipboardCheck, Search, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Calculator, ClipboardCheck, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
+// Auditoria de LP removida do escopo v1 (Brief)
 const TOOLS = [
   {
     icon: Calculator,
-    title: "Calculadora de Investimento × Retorno",
-    desc: "Descubra quanto investir em tráfego pago para atingir sua meta de faturamento, com benchmarks reais do seu segmento.",
-    cta: "Calcular agora",
-    href: "/ferramentas/calculadora",
+    title: 'Calculadora de Tráfego × Receita',
+    desc: 'Descubra quanto investir em tráfego pago para atingir sua meta de faturamento, com benchmarks reais do seu segmento.',
+    cta: 'Calcular agora',
+    href: '/ferramentas/calculadora-trafego',
     ai: true,
   },
   {
     icon: ClipboardCheck,
-    title: "Diagnóstico de Maturidade Digital",
-    desc: "Avalie em 5 minutos onde sua operação de marketing está e receba um plano de evolução.",
-    cta: "Iniciar diagnóstico",
-    href: "/ferramentas/diagnostico",
+    title: 'Diagnóstico de Growth',
+    desc: 'Avalie em 5 minutos a maturidade da sua operação de crescimento B2B e receba um plano de evolução personalizado.',
+    cta: 'Iniciar diagnóstico',
+    href: '/diagnostico',
     ai: false,
   },
-  {
-    icon: Search,
-    title: "Auditoria de Landing Page",
-    desc: "Cole a URL da sua landing page e receba uma análise técnica com pontos fortes, fracos e ações priorizadas.",
-    cta: "Auditar minha página",
-    href: "/ferramentas/auditoria",
-    ai: true,
-  },
-];
+]
 
 export function Tools() {
   return (
@@ -36,15 +29,15 @@ export function Tools() {
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-5">
             Ferramentas
           </p>
-          <h2 className="font-sans font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
+          <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
             Diagnósticos gratuitos para destravar seu crescimento.
           </h2>
         </div>
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="grid md:grid-cols-2 gap-5 max-w-3xl">
           {TOOLS.map(({ icon: Icon, ...t }) => (
             <Link
               key={t.title}
-              to={t.href}
+              href={t.href}
               className="group relative bg-white border border-[#001E29]/10 rounded-xl p-7 hover:border-[#001E29]/30 hover:-translate-y-0.5 transition-all"
             >
               {t.ai && (
@@ -53,7 +46,7 @@ export function Tools() {
                 </span>
               )}
               <Icon className="h-7 w-7 text-[#0a8a5f] mb-6" strokeWidth={1.6} />
-              <h3 className="font-sans font-semibold text-lg mb-2 leading-snug pr-12">
+              <h3 className="font-display font-semibold text-lg mb-2 leading-snug pr-12">
                 {t.title}
               </h3>
               <p className="text-sm text-[#001E29]/65 leading-relaxed mb-6">{t.desc}</p>
@@ -66,5 +59,5 @@ export function Tools() {
         </div>
       </div>
     </section>
-  );
+  )
 }

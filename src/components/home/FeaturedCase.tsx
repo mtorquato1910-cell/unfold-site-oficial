@@ -1,5 +1,5 @@
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 export function FeaturedCase() {
   return (
@@ -20,9 +20,9 @@ export function FeaturedCase() {
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {[
-                  { l: "Pipeline", v: "R$ 6.2M" },
-                  { l: "CPL", v: "-92%" },
-                  { l: "Ciclo", v: "-3 mo" },
+                  { l: 'Pipeline', v: 'R$ 6.2M' },
+                  { l: 'CPL', v: '-92%' },
+                  { l: 'Ciclo', v: '-3 mo' },
                 ].map((m) => (
                   <div key={m.l} className="rounded-lg border border-border bg-background/40 p-3">
                     <p className="font-mono text-[10px] uppercase text-foreground/45">{m.l}</p>
@@ -47,26 +47,26 @@ export function FeaturedCase() {
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-4">
               Case de sucesso
             </p>
-            <p className="font-sans font-bold text-xl tracking-tight text-foreground/60 mb-3">
+            <p className="font-display font-bold text-xl tracking-tight text-foreground/60 mb-3">
               NORTHWIND TECH
             </p>
-            <h3 className="font-sans font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
-              Marketing e vendas B2B.
+            <h3 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
+              Pipeline de R$&nbsp;6MM em vendas complexas B2B.
             </h3>
             <p className="mt-6 text-base md:text-lg text-foreground/70 leading-relaxed">
-              Como geramos um pipeline de mais de R$ 6 milhões, reduzimos em 92% o custo por
-              oportunidade e diminuímos em 3 meses o tempo de negociação.
+              Como estruturamos o sistema de geração de demanda, reduzimos em 92% o custo por
+              oportunidade e diminuímos em 3 meses o ciclo de negociação.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-6">
               <Link
-                to="/cases/northwind"
+                href="/cases/northwind"
                 className="inline-flex items-center gap-2 text-primary font-medium group"
               >
                 Conheça o case completo
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
-                to="/cases"
+                href="/cases"
                 className="inline-flex items-center gap-2 text-foreground/70 hover:text-foreground font-medium"
               >
                 Ver todos os cases →
@@ -76,5 +76,5 @@ export function FeaturedCase() {
         </div>
       </div>
     </section>
-  );
+  )
 }

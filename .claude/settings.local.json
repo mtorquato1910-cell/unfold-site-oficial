@@ -8,7 +8,9 @@
       "Bash(mkdir -p \"/c/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/app/\\(payload\\)/admin/[[...segments]]\")",
       "Bash(mkdir -p \"/c/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/app/\\(payload\\)/api/[...slug]\")",
       "Bash(npm install *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue)"
     ]
   }
 }
