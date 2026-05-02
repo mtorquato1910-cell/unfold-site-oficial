@@ -13,6 +13,7 @@ import DiagnosticoResults from './src/collections/DiagnosticoResults'
 import Posts from './src/collections/Posts'
 import Categories from './src/collections/Categories'
 import AIPrompts from './src/collections/AIPrompts'
+import AuditLog from './src/collections/AuditLog'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -39,7 +40,8 @@ export default buildConfig({
     Posts,
     Categories,
     AIPrompts,
-    // Sprint 6: AuditLog — adicionado em S6.10
+    // Sprint 6
+    AuditLog,
   ],
   globals: [],
   editor: lexicalEditor({}),

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Space_Grotesk, Inter, IBM_Plex_Mono } from 'next/font/google'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
+import CookieBanner from '@/components/CookieBanner'
 import '../globals.css'
 
 // S1.2 — Display tech: Space Grotesk (substituto Relicus)
@@ -63,6 +64,7 @@ export default function SiteLayout({
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <CookieBanner />
       </body>
     </html>
   )
