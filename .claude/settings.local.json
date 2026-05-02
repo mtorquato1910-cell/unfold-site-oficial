@@ -29,7 +29,8 @@
       "Bash(ls src/app/\\\\\\(site\\\\\\)/cases/)",
       "Bash(python -c \"import sys,json; p=json.load\\(sys.stdin\\); [print\\(k,':',v\\) for k,v in p.get\\('dependencies',{}\\).items\\(\\)]\")",
       "Bash(cp \"src/app/\\(site\\)/sitemap.ts\" \"src/app/sitemap.ts\")",
-      "Bash(rm \"src/app/\\(site\\)/sitemap.ts\")"
+      "Bash(rm \"src/app/\\(site\\)/sitemap.ts\")",
+      "Read(//c/c/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/src/app/\\(site\\)/**)"
     ]
   }
 }
