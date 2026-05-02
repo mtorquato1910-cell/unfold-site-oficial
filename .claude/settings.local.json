@@ -15,7 +15,10 @@
       "Bash(rmdir src/pages)",
       "Bash(rm -f src/components/site/Footer.tsx src/components/site/Navbar.tsx)",
       "Bash(rmdir src/components/site)",
-      "Bash(gh auth *)"
+      "Bash(gh auth *)",
+      "Bash(ls src/pages/)",
+      "Bash(ls *.tsx *.ts *.html)",
+      "Bash(ls src/components/site/)"
     ]
   }
 }
