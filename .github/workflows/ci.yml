@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main, next-migration, sprint-*]
+  pull_request:
+    branches: [main, next-migration]
+
+jobs:
+  lint-typecheck-build:
+    name: Lint + Typecheck + Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+        env:
+          PAYLOAD_SECRET: ci-test-secret-not-production
+          DATABASE_URL: file:./ci-test.db
+          NEXT_PUBLIC_SITE_URL: https://unfoldgrowth.com.br
+
+  # Placeholder para testes E2E (Sprint 7 — Playwright)
+  # e2e:
+  #   name: E2E Tests (Playwright)
+  #   runs-on: ubuntu-latest
+  #   needs: lint-typecheck-build
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - run: npm ci --legacy-peer-deps
+  #     - run: npx playwright install --with-deps
+  #     - run: npx playwright test
