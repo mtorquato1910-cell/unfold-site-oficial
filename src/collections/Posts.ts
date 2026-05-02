@@ -35,7 +35,7 @@ export const Posts: CollectionConfig = {
       ],
       defaultValue: 'geral',
     },
-    { name: 'imagem_destaque', type: 'upload', relationTo: 'media' as 'users', admin: { description: 'Imagem OG e card (1200x630)' } },
+    { name: 'imagem_destaque', type: 'text', admin: { description: 'URL da imagem OG e card (1200x630)' } },
     { name: 'conteudo', type: 'richText', required: true },
     {
       name: 'status',
