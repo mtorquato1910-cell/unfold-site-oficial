@@ -4,7 +4,32 @@
       "Bash(pandoc \"c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/Brief_Estrategico_Site_Unfold_v1 \\(1\\).docx\" -o /tmp/brief.md)",
       "Read(//tmp/**)",
       "Bash(python -c ' *)",
-      "Bash(python -c \" import os, glob base = os.path.expanduser\\('~/OneDrive'\\) for root, dirs, files in os.walk\\(base\\): for f in files: if 'Brief' in f or 'brief' in f: print\\(os.path.join\\(root, f\\)\\) \")"
+      "Bash(python -c \" import os, glob base = os.path.expanduser\\('~/OneDrive'\\) for root, dirs, files in os.walk\\(base\\): for f in files: if 'Brief' in f or 'brief' in f: print\\(os.path.join\\(root, f\\)\\) \")",
+      "Bash(mkdir -p \"/c/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/app/\\(payload\\)/admin/[[...segments]]\")",
+      "Bash(mkdir -p \"/c/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/app/\\(payload\\)/api/[...slug]\")",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue)",
+      "Bash(rm -f src/App.tsx src/main.tsx src/pages/Index.tsx src/pages/NotFound.tsx index.html vite.config.ts vitest.config.ts)",
+      "Bash(rmdir src/pages)",
+      "Bash(rm -f src/components/site/Footer.tsx src/components/site/Navbar.tsx)",
+      "Bash(rmdir src/components/site)",
+      "Bash(gh auth *)",
+      "Bash(ls src/pages/)",
+      "Bash(ls *.tsx *.ts *.html)",
+      "Bash(ls src/components/site/)",
+      "Bash(ls -la .aiox-core/)",
+      "Bash(ls AGENTS.md)",
+      "Bash(npx aiox-core@latest install)",
+      "Bash(xargs -I{} echo \"api/seed/{}\")",
+      "Bash(ls src/app/\\\\\\(site\\\\\\)/)",
+      "Bash(ls src/collections/)",
+      "Bash(ls src/app/\\\\\\(site\\\\\\)/casos/)",
+      "Bash(ls src/app/\\\\\\(site\\\\\\)/cases/)",
+      "Bash(python -c \"import sys,json; p=json.load\\(sys.stdin\\); [print\\(k,':',v\\) for k,v in p.get\\('dependencies',{}\\).items\\(\\)]\")",
+      "Bash(cp \"src/app/\\(site\\)/sitemap.ts\" \"src/app/sitemap.ts\")",
+      "Bash(rm \"src/app/\\(site\\)/sitemap.ts\")"
     ]
   }
 }

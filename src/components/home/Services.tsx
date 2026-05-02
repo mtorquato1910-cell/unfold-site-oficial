@@ -1,42 +1,62 @@
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 const SERVICES = [
   {
-    n: "01",
-    title: "Demand Generation",
-    desc: "Geração de leads qualificados via tráfego pago e automação.",
-    bullets: ["Estratégia de mídia paga (Meta, Google, LinkedIn)", "Automação de nutrição e qualificação", "Lead scoring e SLA com vendas", "Otimização contínua de CPL e CAC"],
+    n: '01',
+    title: 'Geração de Demanda B2B',
+    desc: 'Leads qualificados com tráfego pago e automação orientada ao pipeline.',
+    bullets: [
+      'Estratégia de mídia paga (Meta, Google, LinkedIn)',
+      'Automação de nutrição e qualificação',
+      'Lead scoring e SLA com vendas',
+      'Otimização contínua de CPL e CAC',
+    ],
   },
   {
-    n: "02",
-    title: "Social Performance",
-    desc: "Conteúdo e mídia social que gera awareness e conversão.",
-    bullets: ["Planejamento editorial orientado a funil", "Produção de conteúdo (vídeo, carrossel, copy)", "Mídia paga social com criativos testáveis", "Relatórios de impacto e attribution"],
+    n: '02',
+    title: 'Conteúdo & Autoridade',
+    desc: 'Produção de conteúdo B2B que gera awareness, confiança e conversão.',
+    bullets: [
+      'Planejamento editorial orientado a funil',
+      'Produção de conteúdo (vídeo, artigos, copy)',
+      'SEO técnico e topic clusters',
+      'Relatórios de impacto e attribution',
+    ],
   },
   {
-    n: "03",
-    title: "Inbound Marketing",
-    desc: "Funil completo de aquisição, nutrição e conversão.",
-    bullets: ["SEO técnico e de conteúdo", "Blog e topic clusters", "Materiais ricos e landing pages", "Automação RD Station / HubSpot"],
+    n: '03',
+    title: 'CRM & Automação',
+    desc: 'Implementação e operação de CRM alinhada ao ciclo de vendas complexas.',
+    bullets: [
+      'Implantação e configuração de CRM',
+      'Automações de follow-up e cadências',
+      'Integração marketing-vendas',
+      'Dashboards de pipeline e forecast',
+    ],
   },
   {
-    n: "04",
-    title: "Consultoria de Marketing e Branding",
-    desc: "Projetos estratégicos sob medida.",
-    bullets: ["Diagnóstico e plano estratégico", "Posicionamento e arquitetura de marca", "Implementação de stack mar-tech", "Treinamento e mentoria de times"],
+    n: '04',
+    title: 'Consultoria de Growth',
+    desc: 'Diagnóstico estratégico e construção do sistema de crescimento.',
+    bullets: [
+      'Diagnóstico e plano de crescimento',
+      'Arquitetura do stack mar-tech',
+      'Processos de revenue operations',
+      'Treinamento e mentoria de times',
+    ],
   },
-];
+]
 
 export function Services() {
   return (
     <section className="bg-[#E7E7E7] text-[#001E29] py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-5">
-          Nossos serviços
+          Como atuamos
         </p>
-        <h2 className="font-sans font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1] max-w-3xl mb-14">
-          Marketing-vendas que entrega.
+        <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1] max-w-3xl mb-14">
+          Crescimento como sistema, não como projeto.
         </h2>
 
         <div className="space-y-4">
@@ -48,7 +68,7 @@ export function Services() {
               <div className="grid md:grid-cols-12 gap-6 md:gap-10">
                 <div className="md:col-span-4">
                   <span className="font-mono text-sm text-[#0a8a5f]">{s.n}.</span>
-                  <h3 className="font-sans font-bold text-2xl mt-2">{s.title}</h3>
+                  <h3 className="font-display font-bold text-2xl mt-2">{s.title}</h3>
                   <p className="text-sm text-[#001E29]/65 mt-2 leading-relaxed">{s.desc}</p>
                 </div>
                 <div className="md:col-span-6">
@@ -63,7 +83,7 @@ export function Services() {
                 </div>
                 <div className="md:col-span-2 flex md:justify-end md:items-end">
                   <Link
-                    to="/servicos"
+                    href="/atuacao"
                     className="inline-flex items-center gap-1 text-sm font-medium border-b border-[#001E29]/30 hover:border-[#001E29] pb-0.5 transition-colors"
                   >
                     Ver mais
@@ -76,5 +96,5 @@ export function Services() {
         </div>
       </div>
     </section>
-  );
+  )
 }

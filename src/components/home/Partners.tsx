@@ -1,4 +1,4 @@
-const PARTNERS = ["RD STATION", "META BUSINESS", "GOOGLE PARTNER", "HUBSPOT", "KOMMO", "ABRADI"];
+const PARTNERS = ['RD STATION', 'META BUSINESS', 'GOOGLE PARTNER', 'HUBSPOT', 'KOMMO', 'ABRADI']
 
 export function Partners() {
   return (
@@ -19,5 +19,5 @@ export function Partners() {
         </div>
       </div>
     </section>
-  );
+  )
 }

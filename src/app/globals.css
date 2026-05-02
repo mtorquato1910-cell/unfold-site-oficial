@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Design system tokens — Unfold Growth
+  Todas as cores em HSL. Paleta APR V2.
+*/
+
+@layer base {
+  :root {
+    /* Brand dark (default) */
+    --background: 195 100% 8%;            /* #001E29 */
+    --foreground: 0 0% 91%;               /* #E7E7E7 */
+
+    --surface: 195 75% 11%;
+    --surface-foreground: 0 0% 91%;
+
+    --card: 195 80% 10%;
+    --card-foreground: 0 0% 91%;
+
+    --popover: 195 85% 9%;
+    --popover-foreground: 0 0% 91%;
+
+    --primary: 158 92% 70%;               /* #6DF9C6 mint */
+    --primary-foreground: 195 100% 8%;
+
+    --secondary: 218 94% 78%;             /* #93BAFB blue */
+    --secondary-foreground: 195 100% 8%;
+
+    --tertiary: 250 64% 30%;              /* #2E1A7F purple */
+    --tertiary-foreground: 0 0% 91%;
+
+    --muted: 195 50% 14%;
+    --muted-foreground: 200 15% 65%;
+
+    --accent: 158 92% 70%;
+    --accent-foreground: 195 100% 8%;
+
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 197 45% 17%;
+    --input: 197 45% 17%;
+    --ring: 158 92% 70%;
+
+    --radius: 0.75rem;
+
+    --gradient-brand: linear-gradient(135deg, hsl(158 92% 70%) 0%, hsl(218 94% 78%) 50%, hsl(250 64% 45%) 100%);
+    --gradient-hero: radial-gradient(ellipse at top, hsl(158 92% 70% / 0.15), transparent 60%),
+                     radial-gradient(ellipse at bottom right, hsl(218 94% 78% / 0.12), transparent 55%);
+    --shadow-glow: 0 0 60px hsl(158 92% 70% / 0.25);
+    --shadow-card: 0 1px 0 hsl(158 92% 70% / 0.04) inset, 0 20px 40px -20px hsl(195 100% 4% / 0.6);
+
+    --sidebar-background: 195 80% 10%;
+    --sidebar-foreground: 0 0% 91%;
+    --sidebar-primary: 158 92% 70%;
+    --sidebar-primary-foreground: 195 100% 8%;
+    --sidebar-accent: 195 50% 14%;
+    --sidebar-accent-foreground: 0 0% 91%;
+    --sidebar-border: 197 45% 17%;
+    --sidebar-ring: 158 92% 70%;
+  }
+
+  .light {
+    --background: 0 0% 91%;
+    --foreground: 195 100% 8%;
+    --surface: 0 0% 96%;
+    --surface-foreground: 195 100% 8%;
+    --card: 0 0% 100%;
+    --card-foreground: 195 100% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 195 100% 8%;
+    --primary: 158 80% 40%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 0 0% 88%;
+    --muted-foreground: 195 30% 30%;
+    --border: 0 0% 83%;
+    --input: 0 0% 83%;
+    --ring: 158 80% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(1200px 600px at 80% -10%, hsl(218 94% 78% / 0.06), transparent 60%),
+      radial-gradient(900px 500px at -10% 30%, hsl(158 92% 70% / 0.05), transparent 60%);
+  }
+
+  h1, h2, h3, .font-display {
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    font-weight: 700;
+  }
+
+  .font-mono-label {
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+
+  /* prefers-reduced-motion: respeitar WCAG 2.1 AA */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* grain overlay */
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
+  }
+}
+
+@layer components {
+  .input-field {
+    @apply w-full rounded-lg border border-border bg-background/60 px-4 py-2.5 text-sm text-foreground placeholder:text-foreground/30 outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 transition-colors;
+  }
+}
+
+@layer utilities {
+  .text-gradient-brand {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bg-gradient-brand { background: var(--gradient-brand); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .shadow-card { box-shadow: var(--shadow-card); }
+  .marquee {
+    animation: marquee 40s linear infinite;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float-slow {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(2deg); }
+  }
+  .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+}

@@ -1,35 +1,38 @@
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 const POSTS = [
   {
-    cat: "Estratégia",
-    title: "Como maximizar seu orçamento de marketing B2B em 2026",
-    author: "Beatriz Andrade",
-    date: "12 Abr 2026",
-    excerpt: "Frameworks práticos para alocar verba entre canais, evitar desperdício e provar ROI para o C-level.",
+    cat: 'Estratégia',
+    title: 'Como estruturar uma operação de growth B2B do zero',
+    author: 'Matheus Torquato',
+    date: '12 Abr 2026',
+    excerpt:
+      'O passo a passo para montar uma máquina de crescimento previsível em empresas com ciclo de vendas longo.',
   },
   {
-    cat: "ABM",
-    title: "Playbook de ABM: o framework usado pela Unfold em clientes enterprise",
-    author: "Rafael Costa",
-    date: "05 Abr 2026",
-    excerpt: "O passo a passo completo de Account-Based Marketing que aplicamos em contas de R$ 500k+ ARR.",
+    cat: 'Revenue Ops',
+    title: 'Por que marketing e vendas B2B não se entendem — e como resolver',
+    author: 'Matheus Torquato',
+    date: '05 Abr 2026',
+    excerpt:
+      'A raiz do problema não é cultural: é estrutural. Veja como alinhar times com processos, CRM e SLAs claros.',
   },
   {
-    cat: "Vertical",
-    title: "Marketing para o agronegócio: 7 estratégias práticas",
-    author: "Julia Mendes",
-    date: "28 Mar 2026",
-    excerpt: "O que aprendemos rodando campanhas para agtechs e cooperativas de grande porte no Brasil.",
+    cat: 'Vertical',
+    title: 'Growth para construtoras: o que funciona em vendas de alto ticket',
+    author: 'Matheus Torquato',
+    date: '28 Mar 2026',
+    excerpt:
+      'O que aprendemos rodando operações de marketing-vendas para empresas do setor de construção civil B2B.',
   },
-];
+]
 
 const GRADIENTS = [
-  "from-primary/30 via-secondary/20 to-tertiary/30",
-  "from-secondary/30 via-primary/20 to-tertiary/30",
-  "from-tertiary/40 via-secondary/20 to-primary/30",
-];
+  'from-primary/30 via-secondary/20 to-tertiary/30',
+  'from-secondary/30 via-primary/20 to-tertiary/30',
+  'from-tertiary/40 via-secondary/20 to-primary/30',
+]
 
 export function Insights() {
   return (
@@ -40,12 +43,12 @@ export function Insights() {
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
               Insights
             </p>
-            <h2 className="font-sans font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
+            <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
               Conteúdo direto da nossa operação.
             </h2>
           </div>
           <Link
-            to="/blog"
+            href="/blog"
             className="inline-flex items-center gap-2 text-primary font-medium group"
           >
             Ver todos os posts
@@ -57,7 +60,7 @@ export function Insights() {
           {POSTS.map((p, i) => (
             <Link
               key={p.title}
-              to="/blog"
+              href="/blog"
               className="group flex flex-col rounded-xl overflow-hidden border border-border bg-card/40 hover:bg-card transition-colors"
             >
               <div className={`aspect-[16/9] bg-gradient-to-br ${GRADIENTS[i]}`} />
@@ -78,5 +81,5 @@ export function Insights() {
         </div>
       </div>
     </section>
-  );
+  )
 }

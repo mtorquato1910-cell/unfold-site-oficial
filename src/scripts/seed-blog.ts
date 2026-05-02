@@ -1,0 +1,32 @@
+export const SEED_POSTS = [
+  {
+    titulo: 'Como diagnosticar gargalos no seu funil de vendas B2B antes de escalar tráfego',
+    slug: 'diagnosticar-gargalos-funil-vendas-b2b',
+    resumo: 'Escalar tráfego sem diagnóstico é jogar dinheiro fora. Aprenda o framework para mapear onde seu funil sangra antes de aumentar o investimento.',
+    pilar: 'diagnosticar',
+    status: 'published',
+    autor: 'Equipe Unfold Growth',
+    tempo_leitura: 7,
+    publicado_em: new Date().toISOString(),
+  },
+  {
+    titulo: 'Playbook comercial: como estruturar um processo de vendas que não depende de top performers',
+    slug: 'playbook-comercial-estruturar-vendas',
+    resumo: 'A dependência de vendedores estrela é o maior risco de previsibilidade. Veja como documentar e replicar o que funciona em qualquer time.',
+    pilar: 'estruturar',
+    status: 'published',
+    autor: 'Equipe Unfold Growth',
+    tempo_leitura: 9,
+    publicado_em: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    titulo: 'Cadências de nutrição B2B: como operar o funil para reduzir o ciclo de vendas em 40%',
+    slug: 'cadencias-nutricao-b2b-reduzir-ciclo-vendas',
+    resumo: 'A maioria das empresas abandona leads qualificados cedo demais. Veja como cadências bem estruturadas encurtam ciclos e aumentam taxas de fechamento.',
+    pilar: 'operar',
+    status: 'published',
+    autor: 'Equipe Unfold Growth',
+    tempo_leitura: 8,
+    publicado_em: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+]
