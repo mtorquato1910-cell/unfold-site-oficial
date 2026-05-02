@@ -10,7 +10,11 @@
       "Bash(npm install *)",
       "Bash(npx tsc *)",
       "Bash(npm run *)",
-      "Bash(Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue)"
+      "Bash(Remove-Item -Recurse -Force .next -ErrorAction SilentlyContinue)",
+      "Bash(rm -f src/App.tsx src/main.tsx src/pages/Index.tsx src/pages/NotFound.tsx index.html vite.config.ts vitest.config.ts)",
+      "Bash(rmdir src/pages)",
+      "Bash(rm -f src/components/site/Footer.tsx src/components/site/Navbar.tsx)",
+      "Bash(rmdir src/components/site)"
     ]
   }
 }
