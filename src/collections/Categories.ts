@@ -16,6 +16,7 @@ export const Categories: CollectionConfig = {
         { label: 'Diagnosticar', value: 'diagnosticar' },
         { label: 'Estruturar', value: 'estruturar' },
         { label: 'Operar', value: 'operar' },
+        { label: 'Evoluir', value: 'evoluir' },
         { label: 'Geral', value: 'geral' },
       ],
       defaultValue: 'geral',

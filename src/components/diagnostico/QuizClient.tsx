@@ -12,12 +12,14 @@ const PILAR_LABELS: Record<string, string> = {
   diagnosticar: 'Diagnosticar',
   estruturar: 'Estruturar',
   operar: 'Operar',
+  evoluir: 'Evoluir',
 }
 
 const PILAR_COLORS: Record<string, string> = {
   diagnosticar: 'border-primary/50 bg-primary/10 text-primary',
   estruturar: 'border-secondary/50 bg-secondary/10 text-secondary',
   operar: 'border-[hsl(250_64%_70%/0.5)] bg-[hsl(250_64%_70%/0.1)] text-[hsl(250_64%_70%)]',
+  evoluir: 'border-[hsl(160_60%_55%/0.5)] bg-[hsl(160_60%_55%/0.1)] text-[hsl(160_60%_55%)]',
 }
 
 export default function QuizClient({ token, perguntas }: { token: string; perguntas: QuizPergunta[] }) {

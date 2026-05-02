@@ -29,4 +29,14 @@ export const SEED_POSTS = [
     tempo_leitura: 8,
     publicado_em: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
   },
+  {
+    titulo: 'Da consistência para a escala: como evoluir uma operação comercial sem perder previsibilidade',
+    slug: 'evoluir-operacao-comercial-escala-previsibilidade',
+    resumo: 'Empresas com operação madura enfrentam um novo desafio: crescer sem quebrar o que funciona. Veja como o pilar Evoluir do método UGS guia essa transição.',
+    pilar: 'evoluir',
+    status: 'published',
+    autor: 'Equipe Unfold Growth',
+    tempo_leitura: 7,
+    publicado_em: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
+  },
 ]

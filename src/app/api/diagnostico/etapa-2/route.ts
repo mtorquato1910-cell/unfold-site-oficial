@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
           score_diagnosticar: scoreResult.score_diagnosticar,
           score_estruturar: scoreResult.score_estruturar,
           score_operar: scoreResult.score_operar,
+          score_evoluir: scoreResult.score_evoluir,
           nivel_fit: scoreResult.nivel_fit,
           respostas_raw: respostas,
           insight_id: insightId ? String(insightId) : undefined,

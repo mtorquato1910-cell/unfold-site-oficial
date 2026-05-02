@@ -124,6 +124,52 @@ export const SEED_QUIZ_QUESTIONS = [
     ativo: true,
     nota_interna: '[PERGUNTA EXEMPLO - SUBSTITUIR]',
   },
+  // Pilar: Evoluir (3 perguntas)
+  {
+    pergunta: '[PERGUNTA EXEMPLO - SUBSTITUIR] Em qual estágio de maturidade comercial você posicionaria sua empresa hoje?',
+    pilar: 'evoluir' as const,
+    peso: 2,
+    ordem: 13,
+    opcoes: [
+      { texto: 'Ainda estruturando operação básica', valor: 0 },
+      { texto: 'Operação rodando, mas sem previsibilidade', valor: 1 },
+      { texto: 'Previsibilidade parcial, buscando consistência', valor: 2 },
+      { texto: 'Operação consistente, buscando escala', valor: 3 },
+      { texto: 'Operação estruturada e escalável', valor: 4 },
+    ],
+    ativo: true,
+    nota_interna: '[PERGUNTA EXEMPLO - SUBSTITUIR] Substituir pela pergunta real do Gabriel',
+  },
+  {
+    pergunta: '[PERGUNTA EXEMPLO - SUBSTITUIR] Qual é a principal prioridade comercial da sua empresa para os próximos 6 meses?',
+    pilar: 'evoluir' as const,
+    peso: 3,
+    ordem: 14,
+    opcoes: [
+      { texto: 'Estruturar o básico da operação comercial', valor: 0 },
+      { texto: 'Aumentar volume de leads gerados', valor: 1 },
+      { texto: 'Melhorar taxa de conversão do pipeline', valor: 2 },
+      { texto: 'Reduzir CAC e aumentar eficiência', valor: 3 },
+      { texto: 'Escalar operação mantendo qualidade', valor: 4 },
+    ],
+    ativo: true,
+    nota_interna: '[PERGUNTA EXEMPLO - SUBSTITUIR]',
+  },
+  {
+    pergunta: '[PERGUNTA EXEMPLO - SUBSTITUIR] Como você avalia a abertura da liderança para uma assessoria estruturada de growth?',
+    pilar: 'evoluir' as const,
+    peso: 2,
+    ordem: 15,
+    opcoes: [
+      { texto: 'Ainda não vemos necessidade', valor: 0 },
+      { texto: 'Há interesse, mas sem urgência', valor: 1 },
+      { texto: 'Estamos avaliando opções', valor: 2 },
+      { texto: 'Temos urgência e orçamento reservado', valor: 3 },
+      { texto: 'Já tomamos a decisão, buscamos o parceiro certo', valor: 4 },
+    ],
+    ativo: true,
+    nota_interna: '[PERGUNTA EXEMPLO - SUBSTITUIR]',
+  },
 ]
 
 export const SEED_INSIGHTS = [

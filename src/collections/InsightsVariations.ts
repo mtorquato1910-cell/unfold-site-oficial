@@ -32,6 +32,7 @@ export const InsightsVariations: CollectionConfig = {
         { label: 'Diagnosticar', value: 'diagnosticar' },
         { label: 'Estruturar', value: 'estruturar' },
         { label: 'Operar', value: 'operar' },
+        { label: 'Evoluir', value: 'evoluir' },
       ],
       defaultValue: 'geral',
       admin: { description: 'Pilar mais fraco a que este insight se aplica' },

@@ -32,6 +32,11 @@ export const DiagnosticoResults: CollectionConfig = {
       admin: { description: 'Score do pilar Operar (0–100)' },
     },
     {
+      name: 'score_evoluir',
+      type: 'number',
+      admin: { description: 'Score do pilar Evoluir (0–100)' },
+    },
+    {
       name: 'nivel_fit',
       type: 'select',
       options: [

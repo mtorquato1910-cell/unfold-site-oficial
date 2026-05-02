@@ -1,5 +1,6 @@
-export type Pilar = 'diagnosticar' | 'estruturar' | 'operar'
+export type Pilar = 'diagnosticar' | 'estruturar' | 'operar' | 'evoluir'
 export type NivelFit = 'alto' | 'medio' | 'baixo'
+export type NivelMaturidade = 'em-construcao' | 'em-operacao' | 'em-otimizacao'
 
 export interface Resposta {
   question_id: string
@@ -14,6 +15,7 @@ export interface ScoreResult {
   score_diagnosticar: number   // 0–100
   score_estruturar: number     // 0–100
   score_operar: number         // 0–100
+  score_evoluir: number        // 0–100
   nivel_fit: NivelFit
   pilar_mais_fraco: Pilar
 }
@@ -35,20 +37,40 @@ function calcNivelFit(score: number): NivelFit {
   return 'baixo'
 }
 
+export function calcNivelMaturidade(score: number): NivelMaturidade {
+  if (score >= 70) return 'em-otimizacao'
+  if (score >= 40) return 'em-operacao'
+  return 'em-construcao'
+}
+
+export const NIVEL_MATURIDADE_LABELS: Record<NivelMaturidade, string> = {
+  'em-construcao': 'Em construção',
+  'em-operacao': 'Em operação',
+  'em-otimizacao': 'Em otimização',
+}
+
 export function calcularScore(respostas: Resposta[]): ScoreResult {
   const score_diagnosticar = calcPilarScore(respostas, 'diagnosticar')
   const score_estruturar = calcPilarScore(respostas, 'estruturar')
   const score_operar = calcPilarScore(respostas, 'operar')
+  const score_evoluir = calcPilarScore(respostas, 'evoluir')
 
-  const score_total = Math.round((score_diagnosticar + score_estruturar + score_operar) / 3)
+  const pilares_com_dados = [score_diagnosticar, score_estruturar, score_operar, score_evoluir].filter(
+    (_, i) => respostas.some((r) => r.pilar === (['diagnosticar', 'estruturar', 'operar', 'evoluir'] as Pilar[])[i])
+  )
+  const score_total = pilares_com_dados.length > 0
+    ? Math.round(pilares_com_dados.reduce((a, b) => a + b, 0) / pilares_com_dados.length)
+    : 0
+
   const nivel_fit = calcNivelFit(score_total)
 
   const scores: Record<Pilar, number> = {
     diagnosticar: score_diagnosticar,
     estruturar: score_estruturar,
     operar: score_operar,
+    evoluir: score_evoluir,
   }
   const pilar_mais_fraco = (Object.entries(scores).sort(([, a], [, b]) => a - b)[0][0]) as Pilar
 
-  return { score_total, score_diagnosticar, score_estruturar, score_operar, nivel_fit, pilar_mais_fraco }
+  return { score_total, score_diagnosticar, score_estruturar, score_operar, score_evoluir, nivel_fit, pilar_mais_fraco }
 }

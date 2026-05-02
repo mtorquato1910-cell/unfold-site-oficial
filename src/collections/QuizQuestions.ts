@@ -22,6 +22,7 @@ export const QuizQuestions: CollectionConfig = {
         { label: 'Diagnosticar', value: 'diagnosticar' },
         { label: 'Estruturar', value: 'estruturar' },
         { label: 'Operar', value: 'operar' },
+        { label: 'Evoluir', value: 'evoluir' },
       ],
     },
     {

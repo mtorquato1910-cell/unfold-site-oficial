@@ -4,9 +4,10 @@ import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer, Tool
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowUpRight, CheckCircle2 } from 'lucide-react'
+import { NIVEL_MATURIDADE_LABELS, calcNivelMaturidade, type NivelMaturidade } from '@/lib/scoring/engine'
 
 type NivelFit = 'alto' | 'medio' | 'baixo'
-type Pilar = 'diagnosticar' | 'estruturar' | 'operar'
+type Pilar = 'diagnosticar' | 'estruturar' | 'operar' | 'evoluir'
 
 const NIVEL_CONFIG: Record<NivelFit, { label: string; color: string; bg: string; badge: string }> = {
   alto: {
@@ -33,6 +34,20 @@ const PILAR_LABELS: Record<Pilar, string> = {
   diagnosticar: 'Diagnosticar',
   estruturar: 'Estruturar',
   operar: 'Operar',
+  evoluir: 'Evoluir',
+}
+
+const PILAR_COLORS: Record<Pilar, string> = {
+  diagnosticar: 'hsl(var(--primary))',
+  estruturar: 'hsl(var(--secondary))',
+  operar: 'hsl(250 64% 70%)',
+  evoluir: 'hsl(160 60% 55%)',
+}
+
+const MATURIDADE_CONFIG: Record<NivelMaturidade, { color: string; bg: string }> = {
+  'em-construcao': { color: 'text-[hsl(0_84%_60%)]', bg: 'bg-[hsl(0_84%_60%/0.1)] border-[hsl(0_84%_60%/0.3)]' },
+  'em-operacao': { color: 'text-primary', bg: 'bg-primary/10 border-primary/30' },
+  'em-otimizacao': { color: 'text-secondary', bg: 'bg-secondary/10 border-secondary/30' },
 }
 
 type Props = {
@@ -41,6 +56,7 @@ type Props = {
   score_diagnosticar: number
   score_estruturar: number
   score_operar: number
+  score_evoluir: number
   nivel_fit: NivelFit
   pilar_mais_fraco: Pilar
   insight: { headline: string; corpo: string; cta_texto: string }
@@ -52,6 +68,7 @@ export default function DiagnosticoResultadoClient({
   score_diagnosticar,
   score_estruturar,
   score_operar,
+  score_evoluir,
   nivel_fit,
   pilar_mais_fraco,
   insight,
@@ -62,6 +79,14 @@ export default function DiagnosticoResultadoClient({
     { subject: 'Diagnosticar', A: score_diagnosticar, fullMark: 100 },
     { subject: 'Estruturar', A: score_estruturar, fullMark: 100 },
     { subject: 'Operar', A: score_operar, fullMark: 100 },
+    { subject: 'Evoluir', A: score_evoluir, fullMark: 100 },
+  ]
+
+  const pilarScores: { pilar: Pilar; score: number }[] = [
+    { pilar: 'diagnosticar', score: score_diagnosticar },
+    { pilar: 'estruturar', score: score_estruturar },
+    { pilar: 'operar', score: score_operar },
+    { pilar: 'evoluir', score: score_evoluir },
   ]
 
   return (
@@ -91,6 +116,25 @@ export default function DiagnosticoResultadoClient({
           {score_total}
           <span className="text-3xl text-foreground/30">/100</span>
         </p>
+      </div>
+
+      {/* Maturidade por pilar — classificação visual */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        {pilarScores.map(({ pilar, score }) => {
+          const nivel = calcNivelMaturidade(score)
+          const mCfg = MATURIDADE_CONFIG[nivel]
+          return (
+            <div key={pilar} className={`rounded-xl border p-3 text-center ${mCfg.bg}`}>
+              <p className="font-mono text-[10px] uppercase tracking-wider text-foreground/50 mb-1">
+                {PILAR_LABELS[pilar]}
+              </p>
+              <p className={`text-xs font-semibold ${mCfg.color}`}>
+                {NIVEL_MATURIDADE_LABELS[nivel]}
+              </p>
+              <p className={`font-mono font-bold text-lg mt-1 ${mCfg.color}`}>{score}</p>
+            </div>
+          )
+        })}
       </div>
 
       {/* Radar Chart + Scores */}
@@ -134,12 +178,8 @@ export default function DiagnosticoResultadoClient({
           <p className="font-mono text-xs uppercase tracking-widest text-foreground/40 mb-4">
             Breakdown por pilar
           </p>
-          {([
-            { pilar: 'diagnosticar' as Pilar, score: score_diagnosticar },
-            { pilar: 'estruturar' as Pilar, score: score_estruturar },
-            { pilar: 'operar' as Pilar, score: score_operar },
-          ]).map(({ pilar, score }) => (
-            <div key={pilar} className="mb-4 last:mb-0">
+          {pilarScores.map(({ pilar, score }) => (
+            <div key={pilar} className="mb-3 last:mb-0">
               <div className="flex justify-between items-center mb-1.5">
                 <span className="text-sm font-medium">{PILAR_LABELS[pilar]}</span>
                 <span className={`font-mono text-sm font-semibold ${pilar === pilar_mais_fraco ? 'text-[hsl(0_84%_60%)]' : 'text-foreground'}`}>
@@ -153,11 +193,7 @@ export default function DiagnosticoResultadoClient({
                     width: `${score}%`,
                     background: pilar === pilar_mais_fraco
                       ? 'hsl(0 84% 60%)'
-                      : pilar === 'diagnosticar'
-                      ? 'hsl(var(--primary))'
-                      : pilar === 'estruturar'
-                      ? 'hsl(var(--secondary))'
-                      : 'hsl(250 64% 70%)',
+                      : PILAR_COLORS[pilar],
                   }}
                 />
               </div>

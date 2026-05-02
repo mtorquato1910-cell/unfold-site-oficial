@@ -80,8 +80,9 @@ export default async function DiagnosticoResultadoPage({ params }: Props) {
         score_diagnosticar={Number(resultData.score_diagnosticar || 0)}
         score_estruturar={Number(resultData.score_estruturar || 0)}
         score_operar={Number(resultData.score_operar || 0)}
+        score_evoluir={Number(resultData.score_evoluir || 0)}
         nivel_fit={nivelFit}
-        pilar_mais_fraco={String(resultData.pilar_mais_fraco || 'operar') as 'diagnosticar' | 'estruturar' | 'operar'}
+        pilar_mais_fraco={String(resultData.pilar_mais_fraco || 'operar') as 'diagnosticar' | 'estruturar' | 'operar' | 'evoluir'}
         insight={insight}
       />
     </main>
