@@ -4,6 +4,8 @@ import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import Cases from './src/collections/Cases'
+import Users from './src/collections/Users'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -19,10 +21,11 @@ export default buildConfig({
     },
   },
   collections: [
-    // Collections adicionadas em S4.1 (Sprint 4):
-    // Users, Pages, Posts, Cases, Leads, QuizQuestions,
-    // InsightsVariations, AIPrompts, Categories, Media,
-    // DiagnosticoResults, CrmConfig, AuditLog
+    Users,
+    Cases,
+    // Sprint 4: QuizQuestions, InsightsVariations, DiagnosticoResults, Leads
+    // Sprint 5: Posts, Categories, AIPrompts
+    // Sprint 6: AuditLog, CrmConfig
   ],
   globals: [
     // SiteSettings, Navigation — adicionados em S6.1 (Sprint 6)

@@ -1,12 +1,35 @@
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { getPayload } from 'payload'
+import configPromise from '@payload-config'
 
-export function FeaturedCase() {
+async function getFeaturedCase() {
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const { docs } = await payload.find({
+      collection: 'cases',
+      where: { destacar_na_home: { equals: true }, status: { equals: 'publicado' } },
+      sort: '-published_at',
+      limit: 1,
+    })
+    return docs[0] ?? null
+  } catch {
+    return null
+  }
+}
+
+export async function FeaturedCase() {
+  const c = await getFeaturedCase()
+
+  if (!c) return null
+
+  const highlights = (c.highlights ?? []) as Array<{ label: string; value: string }>
+
   return (
     <section className="bg-background py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
-          {/* Visual */}
+          {/* Visual — métricas em grade */}
           <div className="relative rounded-2xl border border-border bg-card overflow-hidden aspect-[4/3] order-last lg:order-first">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(158_92%_70%/0.18),transparent_50%),radial-gradient(circle_at_80%_80%,hsl(218_94%_78%/0.15),transparent_55%)]" />
             <div className="relative h-full p-8 flex flex-col gap-5">
@@ -16,20 +39,22 @@ export function FeaturedCase() {
                   <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
                   <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
                 </div>
-                <span className="font-mono text-[10px] text-foreground/40">DASHBOARD · B2B</span>
+                <span className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest">
+                  DASHBOARD · RESULTADOS
+                </span>
               </div>
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { l: 'Pipeline', v: 'R$ 6.2M' },
-                  { l: 'CPL', v: '-92%' },
-                  { l: 'Ciclo', v: '-3 mo' },
-                ].map((m) => (
-                  <div key={m.l} className="rounded-lg border border-border bg-background/40 p-3">
-                    <p className="font-mono text-[10px] uppercase text-foreground/45">{m.l}</p>
-                    <p className="font-mono text-xl font-semibold text-primary mt-1">{m.v}</p>
-                  </div>
-                ))}
-              </div>
+
+              {highlights.length > 0 && (
+                <div className="grid grid-cols-3 gap-3">
+                  {highlights.slice(0, 3).map((h) => (
+                    <div key={h.label} className="rounded-lg border border-border bg-background/40 p-3">
+                      <p className="font-mono text-[10px] uppercase text-foreground/45">{h.label}</p>
+                      <p className="font-mono text-xl font-semibold text-primary mt-1">{h.value}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div className="flex-1 rounded-lg border border-border bg-background/40 p-4 flex items-end gap-1.5">
                 {[18, 28, 22, 38, 32, 48, 42, 58, 55, 70, 65, 82].map((h, i) => (
                   <div
@@ -47,19 +72,20 @@ export function FeaturedCase() {
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-4">
               Case de sucesso
             </p>
-            <p className="font-display font-bold text-xl tracking-tight text-foreground/60 mb-3">
-              NORTHWIND TECH
+            <p className="font-display font-bold text-xl tracking-tight text-foreground/60 mb-3 uppercase">
+              {c.client}
             </p>
             <h3 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
-              Pipeline de R$&nbsp;6MM em vendas complexas B2B.
+              {c.tagline || c.title}
             </h3>
-            <p className="mt-6 text-base md:text-lg text-foreground/70 leading-relaxed">
-              Como estruturamos o sistema de geração de demanda, reduzimos em 92% o custo por
-              oportunidade e diminuímos em 3 meses o ciclo de negociação.
-            </p>
+            {c.challenge && (
+              <p className="mt-6 text-base md:text-lg text-foreground/70 leading-relaxed line-clamp-3">
+                {c.challenge}
+              </p>
+            )}
             <div className="mt-8 flex flex-col sm:flex-row gap-6">
               <Link
-                href="/cases/northwind"
+                href={`/cases/${c.slug}`}
                 className="inline-flex items-center gap-2 text-primary font-medium group"
               >
                 Conheça o case completo
