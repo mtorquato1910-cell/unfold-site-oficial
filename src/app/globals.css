@@ -126,6 +126,12 @@
   }
 }
 
+@layer components {
+  .input-field {
+    @apply w-full rounded-lg border border-border bg-background/60 px-4 py-2.5 text-sm text-foreground placeholder:text-foreground/30 outline-none focus:border-primary/60 focus:ring-1 focus:ring-primary/30 transition-colors;
+  }
+}
+
 @layer utilities {
   .text-gradient-brand {
     background: var(--gradient-brand);

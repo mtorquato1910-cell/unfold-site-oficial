@@ -58,8 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CaseDetailPage({ params }: Props) {
   const { slug } = await params
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let c: any = null
+  let c: Record<string, unknown> | null = null
   try {
     const payload = await getPayload({ config: configPromise })
     const { docs } = await payload.find({
