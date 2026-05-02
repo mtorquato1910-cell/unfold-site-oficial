@@ -4,7 +4,11 @@
       "Bash(pandoc \"c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/Brief_Estrategico_Site_Unfold_v1 \\(1\\).docx\" -o /tmp/brief.md)",
       "Read(//tmp/**)",
       "Bash(python -c ' *)",
-      "Bash(python -c \" import os, glob base = os.path.expanduser\\('~/OneDrive'\\) for root, dirs, files in os.walk\\(base\\): for f in files: if 'Brief' in f or 'brief' in f: print\\(os.path.join\\(root, f\\)\\) \")"
+      "Bash(python -c \" import os, glob base = os.path.expanduser\\('~/OneDrive'\\) for root, dirs, files in os.walk\\(base\\): for f in files: if 'Brief' in f or 'brief' in f: print\\(os.path.join\\(root, f\\)\\) \")",
+      "Bash(mkdir -p \"/c/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/app/\\(payload\\)/admin/[[...segments]]\")",
+      "Bash(mkdir -p \"/c/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/app/\\(payload\\)/api/[...slug]\")",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)"
     ]
   }
 }
