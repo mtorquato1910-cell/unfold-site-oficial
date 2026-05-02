@@ -4,6 +4,23 @@ import configPromise from '@payload-config'
 import { callAI } from '@/lib/ai/adapter'
 import { z } from 'zod'
 
+// In-memory rate limit: max 5 requests per IP per hour
+const rateMap = new Map<string, { count: number; resetAt: number }>()
+const RATE_LIMIT = 5
+const RATE_WINDOW_MS = 60 * 60 * 1000
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+  const entry = rateMap.get(ip)
+  if (!entry || now > entry.resetAt) {
+    rateMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS })
+    return true
+  }
+  if (entry.count >= RATE_LIMIT) return false
+  entry.count++
+  return true
+}
+
 const schema = z.object({
   nome: z.string().min(2),
   email: z.string().email(),
@@ -25,6 +42,11 @@ Seja direto, técnico e honesto. Não prometa resultados impossíveis.`
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown'
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json({ error: 'Limite de requisições atingido. Tente novamente em 1 hora.' }, { status: 429 })
+    }
+
     const body = await req.json()
     const parsed = schema.safeParse(body)
     if (!parsed.success) {
