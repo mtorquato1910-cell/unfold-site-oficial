@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
           score_operar: scoreResult.score_operar,
           score_evoluir: scoreResult.score_evoluir,
           nivel_fit: scoreResult.nivel_fit,
-          respostas_raw: respostas,
+          respostas_raw: JSON.stringify(respostas),
           insight_id: insightId ? String(insightId) : undefined,
           email_enviado: false,
         },

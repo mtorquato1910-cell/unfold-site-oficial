@@ -32,7 +32,16 @@
       "Bash(rm \"src/app/\\(site\\)/sitemap.ts\")",
       "Read(//c/c/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/src/app/\\(site\\)/**)",
       "Bash(cat .env.example)",
-      "Bash(cat .env)"
+      "Bash(cat .env)",
+      "Bash(npx payload *)",
+      "Bash(ls docs/stories/)",
+      "Bash(ls .aios-core/development/stories/)",
+      "Bash(curl -s http://localhost:3000/admin)",
+      "Bash(curl -s http://localhost:3001/admin)",
+      "Bash(curl -sL http://localhost:3001/admin/login)",
+      "Bash(cat next.config.ts)",
+      "Bash(cat next.config.js)",
+      "Bash(cat next.config.mjs)"
     ]
   }
 }

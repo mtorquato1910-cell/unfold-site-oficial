@@ -47,8 +47,8 @@ export const DiagnosticoResults: CollectionConfig = {
     },
     {
       name: 'respostas_raw',
-      type: 'json',
-      admin: { description: 'Array de { question_id, valor, pilar, peso }' },
+      type: 'textarea',
+      admin: { description: 'Array de respostas em JSON (gerado automaticamente)', readOnly: true },
     },
     { name: 'insight_id', type: 'relationship', relationTo: 'insights-variations', hasMany: false },
     {

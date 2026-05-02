@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
           entidade: `lgpd-request:${email}`,
           actor_email: email,
           ip: req.headers.get('x-forwarded-for') || 'unknown',
-          detalhes: { tipo, detalhes, timestamp: new Date().toISOString() },
+          detalhes: JSON.stringify({ tipo, detalhes, timestamp: new Date().toISOString() }),
           status: 'ok',
         },
       })

@@ -32,7 +32,7 @@ export const AuditLog: CollectionConfig = {
     { name: 'entidade', type: 'text', admin: { description: 'ex: leads:123, diagnostico-results:456' } },
     { name: 'actor_email', type: 'email', admin: { description: 'Email do usuário que executou a ação' } },
     { name: 'ip', type: 'text' },
-    { name: 'detalhes', type: 'json', admin: { description: 'Dados adicionais da ação' } },
+    { name: 'detalhes', type: 'textarea', admin: { description: 'Dados adicionais em JSON (gerado automaticamente)', readOnly: true } },
     { name: 'status', type: 'select', options: [{ label: 'OK', value: 'ok' }, { label: 'Erro', value: 'error' }], defaultValue: 'ok' },
   ],
   timestamps: true,
