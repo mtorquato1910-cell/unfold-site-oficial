@@ -10,6 +10,9 @@ import QuizQuestions from './src/collections/QuizQuestions'
 import InsightsVariations from './src/collections/InsightsVariations'
 import Leads from './src/collections/Leads'
 import DiagnosticoResults from './src/collections/DiagnosticoResults'
+import Posts from './src/collections/Posts'
+import Categories from './src/collections/Categories'
+import AIPrompts from './src/collections/AIPrompts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -32,7 +35,10 @@ export default buildConfig({
     InsightsVariations,
     DiagnosticoResults,
     Leads,
-    // Sprint 5: Posts, Categories, AIPrompts — adicionados em S5.1
+    // Sprint 5
+    Posts,
+    Categories,
+    AIPrompts,
     // Sprint 6: AuditLog — adicionado em S6.10
   ],
   globals: [],

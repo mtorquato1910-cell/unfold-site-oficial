@@ -21,7 +21,6 @@ const VERTICAL_LABELS: Record<string, string> = {
 }
 
 export default async function CasesPage() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let cases: any[] = []
   try {
     const payload = await getPayload({ config: configPromise })

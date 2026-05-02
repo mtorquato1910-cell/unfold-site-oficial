@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CaseDetailPage({ params }: Props) {
   const { slug } = await params
-  let c: Record<string, unknown> | null = null
+  let c: any = null
   try {
     const payload = await getPayload({ config: configPromise })
     const { docs } = await payload.find({
