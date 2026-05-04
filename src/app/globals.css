@@ -133,6 +133,96 @@
 }
 
 @layer utilities {
+
+  /* ─── Scroll Reveal System ────────────────────────────────────────────────
+     Elements start hidden. JS adds .revealed when they enter the viewport.
+     prefers-reduced-motion: override removes transforms, keeps opacity fade.
+  */
+  .reveal-hidden {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 580ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 580ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal-hidden.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Fade-only variant (for items that already have positioning) */
+  .reveal-fade {
+    opacity: 0;
+    transition: opacity 580ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-fade.revealed { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-hidden,
+    .reveal-fade {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* ─── Hero initial load animation (CSS-only, no JS needed) ───────────── */
+  @keyframes reveal-in {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [style*="reveal-in"] {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  /* ─── Ambient Orb keyframe ────────────────────────────────────────────── */
+  @keyframes orb-float {
+    from { transform: translate(0px, 0px); }
+    to   { transform: translate(42px, -32px); }
+  }
+
+  @keyframes orb-float-alt {
+    from { transform: translate(0px, 0px); }
+    to   { transform: translate(-38px, 28px); }
+  }
+
+  /* ─── Dot Grid texture ────────────────────────────────────────────────── */
+  .dot-grid {
+    background-image: radial-gradient(
+      circle,
+      rgba(109, 249, 198, 0.07) 1px,
+      transparent 1px
+    );
+    background-size: 32px 32px;
+  }
+
+  /* ─── Gradient line divider ───────────────────────────────────────────── */
+  .gradient-line {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(158 92% 70% / 0.5) 30%,
+      hsl(218 94% 78% / 0.4) 60%,
+      transparent 100%
+    );
+    width: 0;
+    transition: width 800ms cubic-bezier(0.4, 0, 0.2, 1) 200ms;
+  }
+  .gradient-line.revealed { width: 100%; }
+
   .text-gradient-brand {
     background: var(--gradient-brand);
     -webkit-background-clip: text;

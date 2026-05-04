@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { Reveal } from '@/components/ui/Reveal'
 
 const POSTS = [
   {
@@ -38,7 +39,7 @@ export function Insights() {
   return (
     <section className="bg-background py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-end justify-between gap-6 mb-12 flex-wrap">
+        <Reveal className="flex items-end justify-between gap-6 mb-12 flex-wrap">
           <div className="max-w-2xl">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
               Insights
@@ -54,29 +55,30 @@ export function Insights() {
             Ver todos os posts
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
-        </div>
+        </Reveal>
 
         <div className="grid md:grid-cols-3 gap-6">
           {POSTS.map((p, i) => (
-            <Link
-              key={p.title}
-              href="/blog"
-              className="group flex flex-col rounded-xl overflow-hidden border border-border bg-card/40 hover:bg-card transition-colors"
-            >
-              <div className={`aspect-[16/9] bg-gradient-to-br ${GRADIENTS[i]}`} />
-              <div className="p-6 flex-1 flex flex-col">
-                <p className="font-mono text-[10px] uppercase tracking-wider text-primary mb-3">
-                  {p.cat}
-                </p>
-                <h3 className="font-sans font-semibold text-lg leading-snug mb-3 group-hover:text-primary transition-colors">
-                  {p.title}
-                </h3>
-                <p className="text-sm text-foreground/65 leading-relaxed flex-1">{p.excerpt}</p>
-                <p className="text-xs text-foreground/45 mt-5">
-                  Por {p.author} · {p.date}
-                </p>
-              </div>
-            </Link>
+            <Reveal key={p.title} delay={i * 80}>
+              <Link
+                href="/blog"
+                className="group flex flex-col rounded-xl overflow-hidden border border-border bg-card/40 hover:bg-card transition-colors h-full"
+              >
+                <div className={`aspect-[16/9] bg-gradient-to-br ${GRADIENTS[i]}`} />
+                <div className="p-6 flex-1 flex flex-col">
+                  <p className="font-mono text-[10px] uppercase tracking-wider text-primary mb-3">
+                    {p.cat}
+                  </p>
+                  <h3 className="font-sans font-semibold text-lg leading-snug mb-3 group-hover:text-primary transition-colors">
+                    {p.title}
+                  </h3>
+                  <p className="text-sm text-foreground/65 leading-relaxed flex-1">{p.excerpt}</p>
+                  <p className="text-xs text-foreground/45 mt-5">
+                    Por {p.author} · {p.date}
+                  </p>
+                </div>
+              </Link>
+            </Reveal>
           ))}
         </div>
       </div>

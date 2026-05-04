@@ -39,6 +39,13 @@ export default buildConfig({
       description: 'Painel de gestão de conteúdo — Unfold Growth',
       icons: [{ rel: 'icon', type: 'image/png', url: '/favicon.ico' }],
     },
+    components: {
+      graphics: {
+        Logo: '@/admin/AdminLogo#AdminLogo',
+        Icon: '@/admin/AdminLogo#AdminIcon',
+      },
+      beforeDashboard: ['@/admin/AdminDashboard#AdminDashboard'],
+    },
   },
   collections: [
     Users,

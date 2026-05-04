@@ -23,6 +23,8 @@ import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_a9e0be0e22ea0a1c68cc0e05e94ea02e } from '@payloadcms/storage-vercel-blob/client'
+import { AdminLogo as AdminLogo_unfold, AdminIcon as AdminIcon_unfold } from '@/admin/AdminLogo'
+import { AdminDashboard as AdminDashboard_unfold } from '@/admin/AdminDashboard'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -50,4 +52,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_a9e0be0e22ea0a1c68cc0e05e94ea02e,
+  "@/admin/AdminLogo#AdminLogo": AdminLogo_unfold,
+  "@/admin/AdminLogo#AdminIcon": AdminIcon_unfold,
+  "@/admin/AdminDashboard#AdminDashboard": AdminDashboard_unfold,
 }

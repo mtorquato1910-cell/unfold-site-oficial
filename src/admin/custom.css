@@ -1,168 +1,496 @@
 /*
   Unfold Growth — Payload Admin Custom Theme
-  Mapeia a paleta dark teal do site para as variáveis do Payload CMS.
-  Cores base do design system (globals.css):
-    background:  #001E29  (hsl 195 100% 8%)
-    foreground:  #E7E7E7
-    primary:     #6DF9C6  (mint)
-    secondary:   #93BAFB  (blue)
-    border:      hsl(197 45% 17%)
+  Design system: #001E29 bg | #6DF9C6 mint | #93BAFB blue | #E7E7E7 foreground
+  NOTE: CSS written WITHOUT @layer to guarantee loading order and specificity.
 */
 
-@layer payload {
+/* ─── Fontes ─────────────────────────────────────────────────────────────── */
+:root {
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
+}
 
-  /* ─── Fontes ─────────────────────────────────────── */
-  :root {
-    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
-  }
+/* ─── Paleta base: escala teal escura → clara ─────────────────────────────
+   Payload usa --color-base-* para gerar --theme-elevation-*.
+   Em dark mode a escala é INVERTIDA:
+     elevation-0 = base-900 (mais escuro) → nosso fundo #001E29
+     elevation-900 = base-0  (mais claro) → nosso foreground
+*/
+:root {
+  --color-base-0:    #e7e7e7;
+  --color-base-50:   #d8e7eb;
+  --color-base-100:  #c2d8df;
+  --color-base-150:  #a8c5cf;
+  --color-base-200:  #8eb2bc;
+  --color-base-250:  #729ea9;
+  --color-base-300:  #5a8a96;
+  --color-base-350:  #467782;
+  --color-base-400:  #346470;
+  --color-base-450:  #235260;
+  --color-base-500:  #1a4455;
+  --color-base-550:  #12384a;
+  --color-base-600:  #0d2f40;
+  --color-base-650:  #0a2636;
+  --color-base-700:  #081f2d;
+  --color-base-750:  #061929;
+  --color-base-800:  #041522;
+  --color-base-850:  #021019;
+  --color-base-900:  #001E29;
+  --color-base-950:  #000f17;
+  --color-base-1000: #000811;
+}
 
-  /* ─── Paleta base: escala teal escura → clara ───── */
-  /*
-     Substituímos --color-base-* (que alimenta --theme-elevation-*)
-     com uma escala baseada na hue 195 (teal) do Unfold.
-     Em dark mode, o Payload INVERTE a escala:
-       --theme-elevation-0  = --color-base-900  (bg mais escuro)
-       --theme-elevation-900 = --color-base-0  (texto claro)
-  */
-  :root {
-    --color-base-0:    #e7e7e7;   /* foreground claro */
-    --color-base-50:   #d8e7eb;
-    --color-base-100:  #c2d8df;
-    --color-base-150:  #a8c5cf;
-    --color-base-200:  #8eb2bc;
-    --color-base-250:  #729ea9;
-    --color-base-300:  #5a8a96;
-    --color-base-350:  #467782;
-    --color-base-400:  #346470;
-    --color-base-450:  #235260;
-    --color-base-500:  #1a4455;
-    --color-base-550:  #12384a;
-    --color-base-600:  #0d2f40;
-    --color-base-650:  #0a2636;
-    --color-base-700:  #081f2d;
-    --color-base-750:  #061929;   /* hsl(197 45% 17%) border */
-    --color-base-800:  #041522;
-    --color-base-850:  #021019;
-    --color-base-900:  #001E29;   /* #001E29 — background principal */
-    --color-base-950:  #000f17;
-    --color-base-1000: #000811;
-  }
+/* ─── Paleta success → mint #6DF9C6 ──────────────────────────────────────── */
+:root {
+  --color-success-50:  #edfff8;
+  --color-success-100: #d5fff2;
+  --color-success-150: #adfee6;
+  --color-success-200: #7ffcd8;
+  --color-success-300: #34f4bb;
+  --color-success-400: #0dd898;
+  --color-success-500: #6DF9C6;
+  --color-success-550: #55d9a8;
+  --color-success-600: #3db88a;
+  --color-success-700: #1c7a58;
+  --color-success-800: #094430;
+}
 
-  /* ─── Paleta success → mint #6DF9C6 ─────────────── */
-  :root {
-    --color-success-50:  #edfff8;
-    --color-success-100: #d5fff2;
-    --color-success-150: #adfee6;
-    --color-success-200: #7ffcd8;
-    --color-success-250: #57f9cb;
-    --color-success-300: #34f4bb;
-    --color-success-350: #1aeaaa;
-    --color-success-400: #0dd898;
-    --color-success-450: #09c489;
-    --color-success-500: #6DF9C6;   /* PRIMARY mint */
-    --color-success-550: #55d9a8;
-    --color-success-600: #3db88a;
-    --color-success-650: #2a9870;
-    --color-success-700: #1c7a58;
-    --color-success-750: #115e42;
-    --color-success-800: #094430;
-    --color-success-850: #042d1f;
-    --color-success-900: #011a11;
-    --color-success-950: #000d08;
-  }
+/* ─── Forçar dark mode (aplica mesmo antes do JS carregar) ───────────────── */
+html,
+html[data-theme],
+html[data-theme='light'],
+html[data-theme='dark'] {
+  background-color: #001E29 !important;
+  color: #e7e7e7 !important;
+}
 
-  /* ─── Tema dark: ajustes finos ───────────────────── */
-  html[data-theme='dark'] {
-    /* Limita a escuridão máxima ao background Unfold */
-    --theme-elevation-0:   #001620;
-    --theme-elevation-50:  #001E29;   /* background */
-    --theme-elevation-100: #032230;   /* card/surface */
-    --theme-elevation-150: #06293a;   /* surface elevada */
-    --theme-elevation-200: #0d3344;   /* border sutil */
+body {
+  background-color: #001E29 !important;
+  color: #e7e7e7 !important;
+  font-family: var(--font-body) !important;
+  background-image:
+    radial-gradient(900px 500px at 80% -10%, rgba(147, 186, 251, 0.04), transparent 60%),
+    radial-gradient(700px 400px at -10% 40%, rgba(109, 249, 198, 0.03), transparent 60%);
+}
 
-    /* Mint como cor de sucesso/ação primária */
-    --theme-success-500: #6DF9C6;
-    --theme-success-450: #57f9cb;
-    --theme-success-400: #34f4bb;
-    --theme-success-550: #55d9a8;
-    --theme-success-600: #3db88a;
+/* ─── Elevation overrides (dark) ────────────────────────────────────────── */
+html[data-theme='dark'] {
+  --theme-elevation-0:   #001620 !important;
+  --theme-elevation-50:  #001E29 !important;
+  --theme-elevation-100: #032230 !important;
+  --theme-elevation-150: #06293a !important;
+  --theme-elevation-200: #0d3344 !important;
+  --theme-elevation-250: #112e3d !important;
+  --theme-elevation-500: #1a4455 !important;
+  --theme-elevation-800: #5a8a96 !important;
+  --theme-elevation-850: #8eb2bc !important;
+  --theme-elevation-900: #e7e7e7 !important;
+  --theme-elevation-950: #f0f0f0 !important;
+  --theme-elevation-1000: #ffffff !important;
 
-    /* Foco e outline */
-    --accessibility-outline: 2px solid #6DF9C6;
+  --theme-success-500: #6DF9C6 !important;
+  --theme-success-450: #57f9cb !important;
+  --theme-success-400: #34f4bb !important;
+  --theme-success-550: #55d9a8 !important;
+  --theme-success-600: #3db88a !important;
 
-    /* Seleção de texto */
-    ::selection {
-      background: rgba(109, 249, 198, 0.25);
-      color: #e7e7e7;
-    }
-  }
+  --accessibility-outline: 2px solid #6DF9C6 !important;
+}
 
-  /* ─── Detalhes visuais adicionais ────────────────── */
-  html[data-theme='dark'] body {
-    /* Gradiente sutil no fundo, igual ao site */
-    background-image:
-      radial-gradient(900px 500px at 80% -10%, rgba(147, 186, 251, 0.04), transparent 60%),
-      radial-gradient(700px 400px at -10% 40%, rgba(109, 249, 198, 0.03), transparent 60%);
-  }
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+.app-header,
+[class*='app-header'] {
+  background: #001620 !important;
+  border-bottom: 1px solid rgba(109, 249, 198, 0.12) !important;
+}
 
-  /* Header / Nav com borda mint sutil na lateral */
-  html[data-theme='dark'] .app-header {
-    border-bottom: 1px solid rgba(109, 249, 198, 0.12);
-    background: #001620 !important;
-  }
+.app-header__content,
+.app-header__content * {
+  color: #e7e7e7 !important;
+}
 
-  html[data-theme='dark'] .nav {
-    border-right: 1px solid rgba(109, 249, 198, 0.08);
-    background: #001620 !important;
-  }
+/* Logo / title area */
+.app-header__logo,
+.step-nav__label {
+  color: #e7e7e7 !important;
+}
 
-  /* Logo / título do admin */
-  html[data-theme='dark'] .app-header__content {
-    color: #e7e7e7;
-  }
+/* ─── Nav sidebar ────────────────────────────────────────────────────────── */
+.nav,
+.nav__scroll,
+aside[class*='nav'] {
+  background: #001620 !important;
+  border-right: 1px solid rgba(109, 249, 198, 0.08) !important;
+}
 
-  /* Botão primário — mint */
-  html[data-theme='dark'] .btn--style-primary {
-    background: #6DF9C6 !important;
-    color: #001E29 !important;
-    border-color: #6DF9C6 !important;
-    font-weight: 600;
-  }
+.nav__link,
+.nav__group-label {
+  color: rgba(231, 231, 231, 0.7) !important;
+}
 
-  html[data-theme='dark'] .btn--style-primary:hover {
-    background: #57f9cb !important;
-    border-color: #57f9cb !important;
-  }
+.nav__link:hover {
+  color: #6DF9C6 !important;
+  background: rgba(109, 249, 198, 0.06) !important;
+}
 
-  /* Links ativos na nav com cor mint */
-  html[data-theme='dark'] .nav__link.active,
-  html[data-theme='dark'] .nav__link:hover {
-    color: #6DF9C6 !important;
-  }
+.nav__link.active,
+.nav__link--active,
+[class*='nav__link'][aria-current] {
+  color: #6DF9C6 !important;
+  background: rgba(109, 249, 198, 0.08) !important;
+}
 
-  html[data-theme='dark'] .nav__link.active::before {
-    background: #6DF9C6 !important;
-  }
+.nav__link.active::before,
+.nav__link--active::before {
+  background: #6DF9C6 !important;
+}
 
-  /* Foco em inputs */
-  html[data-theme='dark'] input:focus,
-  html[data-theme='dark'] textarea:focus,
-  html[data-theme='dark'] select:focus {
-    border-color: rgba(109, 249, 198, 0.5) !important;
-    box-shadow: 0 0 0 2px rgba(109, 249, 198, 0.15) !important;
-    outline: none !important;
-  }
+.nav__group-label {
+  font-family: var(--font-mono) !important;
+  font-size: 10px !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  color: rgba(109, 249, 198, 0.4) !important;
+}
 
-  /* Glow sutil em botões de ação primária */
-  html[data-theme='dark'] .btn--style-primary:focus {
-    box-shadow: 0 0 0 3px rgba(109, 249, 198, 0.3) !important;
-  }
+/* ─── Main content area ──────────────────────────────────────────────────── */
+.template-default,
+.template-default__wrap,
+main,
+[class*='template-default'] {
+  background: #001E29 !important;
+}
 
-  /* Tag / badge de status */
-  html[data-theme='dark'] .pill--style-success {
-    background: rgba(109, 249, 198, 0.15) !important;
-    color: #6DF9C6 !important;
-    border-color: rgba(109, 249, 198, 0.3) !important;
-  }
+/* ─── Dashboard ──────────────────────────────────────────────────────────── */
+.dashboard,
+.dashboard__wrap,
+[class*='dashboard'] {
+  background: #001E29 !important;
+}
+
+/* ─── Cards / Collection cards ───────────────────────────────────────────── */
+.card,
+.collection-card,
+[class*='card__'] {
+  background: #032230 !important;
+  border: 1px solid rgba(109, 249, 198, 0.1) !important;
+  border-radius: 8px !important;
+}
+
+.card:hover,
+.collection-card:hover {
+  border-color: rgba(109, 249, 198, 0.25) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.card__title,
+[class*='card__title'] {
+  color: #e7e7e7 !important;
+}
+
+/* ─── Tabelas / List views ───────────────────────────────────────────────── */
+.table,
+table {
+  background: transparent !important;
+}
+
+.table__header,
+thead tr,
+th {
+  background: #032230 !important;
+  color: rgba(231, 231, 231, 0.5) !important;
+  border-bottom: 1px solid rgba(109, 249, 198, 0.1) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 11px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+.table__row,
+tbody tr {
+  border-bottom: 1px solid rgba(109, 249, 198, 0.06) !important;
+  background: transparent !important;
+}
+
+.table__row:hover,
+tbody tr:hover {
+  background: rgba(109, 249, 198, 0.04) !important;
+}
+
+td, .table__cell {
+  color: #e7e7e7 !important;
+}
+
+/* Row link */
+.table__row-link {
+  color: #e7e7e7 !important;
+}
+
+/* ─── Forms / Fields ─────────────────────────────────────────────────────── */
+.field-type,
+.field-type * {
+  color: #e7e7e7 !important;
+}
+
+label,
+.field-label,
+.label {
+  color: rgba(231, 231, 231, 0.65) !important;
+  font-size: 13px !important;
+}
+
+input,
+textarea,
+select,
+.rs__control,
+[class*='text-field'] input {
+  background: #06293a !important;
+  border: 1px solid rgba(109, 249, 198, 0.15) !important;
+  border-radius: 6px !important;
+  color: #e7e7e7 !important;
+  font-family: var(--font-body) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(231, 231, 231, 0.3) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgba(109, 249, 198, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(109, 249, 198, 0.12) !important;
+  outline: none !important;
+}
+
+/* Rich text editor */
+.rich-text,
+.lexical-editor,
+[class*='editor'] {
+  background: #06293a !important;
+  border: 1px solid rgba(109, 249, 198, 0.15) !important;
+  border-radius: 6px !important;
+  color: #e7e7e7 !important;
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+.btn--style-primary,
+button[class*='primary'] {
+  background: #6DF9C6 !important;
+  color: #001E29 !important;
+  border-color: #6DF9C6 !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+}
+
+.btn--style-primary:hover {
+  background: #57f9cb !important;
+  border-color: #57f9cb !important;
+}
+
+.btn--style-primary:focus {
+  box-shadow: 0 0 0 3px rgba(109, 249, 198, 0.3) !important;
+}
+
+.btn--style-secondary,
+button[class*='secondary'] {
+  background: transparent !important;
+  border: 1px solid rgba(109, 249, 198, 0.3) !important;
+  color: #6DF9C6 !important;
+  border-radius: 6px !important;
+}
+
+.btn--style-secondary:hover {
+  background: rgba(109, 249, 198, 0.08) !important;
+}
+
+/* Pill/badge buttons */
+.btn--style-pill {
+  border-radius: 20px !important;
+}
+
+/* ─── Status pills / badges ──────────────────────────────────────────────── */
+.pill--style-success,
+.status-badge--success,
+[class*='pill'][class*='success'] {
+  background: rgba(109, 249, 198, 0.15) !important;
+  color: #6DF9C6 !important;
+  border-color: rgba(109, 249, 198, 0.3) !important;
+}
+
+.pill--style-warning,
+[class*='pill'][class*='warning'] {
+  background: rgba(255, 200, 100, 0.15) !important;
+  color: #ffc864 !important;
+  border-color: rgba(255, 200, 100, 0.3) !important;
+}
+
+.pill--style-error,
+[class*='pill'][class*='error'] {
+  background: rgba(255, 100, 100, 0.15) !important;
+  color: #ff6464 !important;
+  border-color: rgba(255, 100, 100, 0.3) !important;
+}
+
+.pill--style-default,
+[class*='pill'][class*='default'] {
+  background: rgba(147, 186, 251, 0.1) !important;
+  color: #93BAFB !important;
+  border-color: rgba(147, 186, 251, 0.25) !important;
+}
+
+/* ─── Dropdown / popup menus ────────────────────────────────────────────── */
+.popup,
+.popup__content,
+[class*='popup__content'] {
+  background: #06293a !important;
+  border: 1px solid rgba(109, 249, 198, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  border-radius: 8px !important;
+}
+
+.popup__list-item:hover,
+[class*='popup__list-item']:hover {
+  background: rgba(109, 249, 198, 0.08) !important;
+  color: #6DF9C6 !important;
+}
+
+/* ─── Modais ─────────────────────────────────────────────────────────────── */
+.modal__content,
+[class*='modal__content'],
+.drawer__content,
+[class*='drawer__content'] {
+  background: #032230 !important;
+  border: 1px solid rgba(109, 249, 198, 0.12) !important;
+}
+
+.modal__header,
+.drawer__header {
+  border-bottom: 1px solid rgba(109, 249, 198, 0.1) !important;
+}
+
+/* ─── Breadcrumbs ────────────────────────────────────────────────────────── */
+.step-nav,
+.breadcrumb,
+[class*='step-nav'] {
+  color: rgba(231, 231, 231, 0.5) !important;
+}
+
+.step-nav__label,
+.breadcrumb__label {
+  color: #6DF9C6 !important;
+}
+
+/* ─── Collection list / filters ──────────────────────────────────────────── */
+.list-controls,
+[class*='list-controls'] {
+  background: #032230 !important;
+  border-bottom: 1px solid rgba(109, 249, 198, 0.08) !important;
+}
+
+.where-builder,
+[class*='where-builder'] {
+  background: #032230 !important;
+  border: 1px solid rgba(109, 249, 198, 0.1) !important;
+}
+
+/* ─── Checkbox / Toggle ──────────────────────────────────────────────────── */
+input[type='checkbox']:checked,
+input[type='radio']:checked {
+  accent-color: #6DF9C6 !important;
+}
+
+/* ─── Upload area ────────────────────────────────────────────────────────── */
+.file-field__upload,
+[class*='upload'] .dropzone {
+  background: rgba(6, 41, 58, 0.7) !important;
+  border: 2px dashed rgba(109, 249, 198, 0.2) !important;
+  border-radius: 8px !important;
+}
+
+.file-field__upload:hover,
+[class*='upload'] .dropzone:hover {
+  border-color: rgba(109, 249, 198, 0.5) !important;
+  background: rgba(109, 249, 198, 0.04) !important;
+}
+
+/* ─── Seleção de texto ───────────────────────────────────────────────────── */
+::selection {
+  background: rgba(109, 249, 198, 0.25) !important;
+  color: #e7e7e7 !important;
+}
+
+/* ─── Scrollbar custom ───────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #001620;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(109, 249, 198, 0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(109, 249, 198, 0.4);
+}
+
+/* ─── Welcome banner no dashboard ───────────────────────────────────────── */
+.unfold-admin-banner {
+  background: linear-gradient(135deg, #032230 0%, #06293a 100%);
+  border: 1px solid rgba(109, 249, 198, 0.15);
+  border-radius: 12px;
+  padding: 32px 40px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.unfold-admin-banner__logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.unfold-admin-banner__logo-text {
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #e7e7e7;
+}
+
+.unfold-admin-banner__subtitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #6DF9C6;
+  margin-top: 4px;
+}
+
+.unfold-admin-banner__stats {
+  display: flex;
+  gap: 32px;
+}
+
+.unfold-admin-banner__stat {
+  text-align: center;
+}
+
+.unfold-admin-banner__stat-value {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 600;
+  color: #6DF9C6;
+}
+
+.unfold-admin-banner__stat-label {
+  font-size: 11px;
+  color: rgba(231, 231, 231, 0.5);
+  margin-top: 2px;
 }

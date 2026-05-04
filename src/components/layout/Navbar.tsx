@@ -7,11 +7,11 @@ import { UnfoldLogo } from '@/components/brand/UnfoldSymbol'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-// Brief 5.1: 5 links estruturantes + 1 CTA primário. Calculadora fora da nav.
 const NAV = [
   { label: 'Método', href: '/metodo' },
   { label: 'Atuação', href: '/atuacao' },
   { label: 'Cases', href: '/cases' },
+  { label: 'Ferramentas', href: '/ferramentas' },
   { label: 'Sobre', href: '/sobre' },
   { label: 'Blog', href: '/blog' },
 ]
