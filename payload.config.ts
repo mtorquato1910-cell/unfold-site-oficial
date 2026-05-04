@@ -36,7 +36,10 @@ export default buildConfig({
       titleSuffix: '— Unfold Growth',
       title: 'Admin — Unfold Growth',
       description: 'Painel de gestão de conteúdo — Unfold Growth',
-      icons: [{ rel: 'icon', type: 'image/png', url: '/favicon.ico' }],
+      icons: [
+        { rel: 'icon', type: 'image/svg+xml', url: '/favicon.svg' },
+        { rel: 'shortcut icon', url: '/favicon.svg' },
+      ],
     },
     components: {
       graphics: {
