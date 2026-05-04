@@ -50,7 +50,8 @@
       "Bash(npm list *)",
       "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); pkgs=['payload','@payloadcms/next','@payloadcms/db-postgres','@payloadcms/richtext-lexical','@payloadcms/storage-vercel-blob']; [print\\(p, d.get\\('packages',{}\\).get\\('node_modules/'+p,{}\\).get\\('version','?'\\)\\) for p in pkgs]\")",
       "Bash(node -e \"const m = require\\('@payloadcms/storage-vercel-blob/client'\\); console.log\\(Object.keys\\(m\\)\\)\")",
-      "Bash(grep -v \"^$\")"
+      "Bash(grep -v \"^$\")",
+      "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")"
     ]
   }
 }
