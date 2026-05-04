@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { syncContact } from '../lib/crm/adapter.ts'
+import { syncContact } from '../lib/crm/adapter'
 
 export const Leads: CollectionConfig = {
   slug: 'leads',
