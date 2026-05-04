@@ -133,25 +133,94 @@ export default function MetodoPage() {
               </p>
             </div>
             <div className="lg:col-span-7">
-              {/* UGS Diagram placeholder — aguardando aprovação do cliente */}
-              <div className="rounded-2xl border border-[#001E29]/10 bg-white p-8 md:p-10">
-                <div className="grid grid-cols-2 gap-4">
-                  {PILLARS.map((p) => (
-                    <div
-                      key={p.n}
-                      className="rounded-xl border border-[#001E29]/10 p-5 bg-[#E7E7E7]/50"
-                    >
-                      <span className="font-mono text-xs text-[#0a8a5f]">{p.n}.</span>
-                      <p className="font-display font-bold text-xl mt-1">{p.name}</p>
-                      <p className="text-xs text-[#001E29]/60 mt-1.5 leading-relaxed">
-                        {p.tagline}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-center text-xs text-[#001E29]/35 mt-6 font-mono uppercase tracking-wider">
-                  Diagrama UGS — versão final em aprovação
-                </p>
+              <div className="rounded-2xl border border-[#001E29]/10 bg-white p-6 md:p-8 overflow-hidden">
+                <svg
+                  viewBox="0 0 440 360"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-full h-auto"
+                  aria-label="Diagrama UGS — ciclo de crescimento"
+                >
+                  <defs>
+                    <linearGradient id="ugs-arc" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#6DF9C6" stopOpacity="0.9"/>
+                      <stop offset="50%" stopColor="#4BB8D5" stopOpacity="0.7"/>
+                      <stop offset="100%" stopColor="#0a8a5f" stopOpacity="0.5"/>
+                    </linearGradient>
+                    <linearGradient id="ugs-arrow-1" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#6DF9C6"/>
+                      <stop offset="100%" stopColor="#4BB8D5"/>
+                    </linearGradient>
+                    <linearGradient id="ugs-arrow-2" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#4BB8D5"/>
+                      <stop offset="100%" stopColor="#0a8a5f"/>
+                    </linearGradient>
+                    <linearGradient id="ugs-arrow-3" x1="100%" y1="0%" x2="0%" y2="0%">
+                      <stop offset="0%" stopColor="#0a8a5f"/>
+                      <stop offset="100%" stopColor="#4BB8D5"/>
+                    </linearGradient>
+                    <linearGradient id="ugs-arrow-4" x1="0%" y1="100%" x2="0%" y2="0%">
+                      <stop offset="0%" stopColor="#6DF9C6"/>
+                      <stop offset="100%" stopColor="#4BB8D5"/>
+                    </linearGradient>
+                    <marker id="arr1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                      <path d="M0 0 L6 3 L0 6 Z" fill="#4BB8D5" opacity="0.8"/>
+                    </marker>
+                    <marker id="arr2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                      <path d="M0 0 L6 3 L0 6 Z" fill="#0a8a5f" opacity="0.8"/>
+                    </marker>
+                    <marker id="arr3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                      <path d="M0 0 L6 3 L0 6 Z" fill="#4BB8D5" opacity="0.8"/>
+                    </marker>
+                    <marker id="arr4" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                      <path d="M0 0 L6 3 L0 6 Z" fill="#6DF9C6" opacity="0.8"/>
+                    </marker>
+                  </defs>
+
+                  {/* Center circle */}
+                  <circle cx="220" cy="180" r="44" fill="#001E29" opacity="0.06"/>
+                  <circle cx="220" cy="180" r="44" stroke="url(#ugs-arc)" strokeWidth="1.5" fill="none"/>
+                  <text x="220" y="175" textAnchor="middle" fontFamily="'IBM Plex Mono', monospace" fontSize="11" fontWeight="700" fill="#001E29" opacity="0.5" letterSpacing="2">UGS</text>
+                  <text x="220" y="191" textAnchor="middle" fontFamily="'IBM Plex Mono', monospace" fontSize="7.5" fill="#0a8a5f" opacity="0.7" letterSpacing="1">SISTEMA</text>
+
+                  {/* Connecting lines (curved arcs between nodes) */}
+                  {/* Diagnosticar → Estruturar (top → right) */}
+                  <path d="M 280 68 Q 340 80 352 138" stroke="url(#ugs-arrow-1)" strokeWidth="1.5" strokeDasharray="4 3" markerEnd="url(#arr1)" opacity="0.7"/>
+                  {/* Estruturar → Operar (right → bottom) */}
+                  <path d="M 352 222 Q 340 280 280 292" stroke="url(#ugs-arrow-2)" strokeWidth="1.5" strokeDasharray="4 3" markerEnd="url(#arr2)" opacity="0.7"/>
+                  {/* Operar → Evoluir (bottom → left) */}
+                  <path d="M 160 292 Q 100 280 88 222" stroke="url(#ugs-arrow-3)" strokeWidth="1.5" strokeDasharray="4 3" markerEnd="url(#arr3)" opacity="0.7"/>
+                  {/* Evoluir → Diagnosticar (left → top) */}
+                  <path d="M 88 138 Q 100 80 160 68" stroke="url(#ugs-arrow-4)" strokeWidth="1.5" strokeDasharray="4 3" markerEnd="url(#arr4)" opacity="0.7"/>
+
+                  {/* Node 01: Diagnosticar — top */}
+                  <rect x="130" y="20" width="180" height="72" rx="10" fill="white" stroke="#001E29" strokeOpacity="0.08" strokeWidth="1"/>
+                  <rect x="130" y="20" width="4" height="72" rx="2" fill="#6DF9C6"/>
+                  <text x="146" y="42" fontFamily="'IBM Plex Mono', monospace" fontSize="9" fill="#0a8a5f" fontWeight="600">01.</text>
+                  <text x="146" y="58" fontFamily="'Space Grotesk', sans-serif" fontSize="15" fontWeight="700" fill="#001E29">Diagnosticar</text>
+                  <text x="146" y="74" fontFamily="'Inter', sans-serif" fontSize="10" fill="#001E29" opacity="0.5">Enxergue antes de agir.</text>
+
+                  {/* Node 02: Estruturar — right */}
+                  <rect x="300" y="144" width="132" height="72" rx="10" fill="white" stroke="#001E29" strokeOpacity="0.08" strokeWidth="1"/>
+                  <rect x="300" y="144" width="4" height="72" rx="2" fill="#4BB8D5"/>
+                  <text x="316" y="166" fontFamily="'IBM Plex Mono', monospace" fontSize="9" fill="#0a8a5f" fontWeight="600">02.</text>
+                  <text x="316" y="182" fontFamily="'Space Grotesk', sans-serif" fontSize="15" fontWeight="700" fill="#001E29">Estruturar</text>
+                  <text x="316" y="198" fontFamily="'Inter', sans-serif" fontSize="10" fill="#001E29" opacity="0.5">Construa o sistema.</text>
+
+                  {/* Node 03: Operar — bottom */}
+                  <rect x="130" y="268" width="180" height="72" rx="10" fill="white" stroke="#001E29" strokeOpacity="0.08" strokeWidth="1"/>
+                  <rect x="130" y="268" width="4" height="72" rx="2" fill="#0a8a5f"/>
+                  <text x="146" y="290" fontFamily="'IBM Plex Mono', monospace" fontSize="9" fill="#0a8a5f" fontWeight="600">03.</text>
+                  <text x="146" y="306" fontFamily="'Space Grotesk', sans-serif" fontSize="15" fontWeight="700" fill="#001E29">Operar</text>
+                  <text x="146" y="322" fontFamily="'Inter', sans-serif" fontSize="10" fill="#001E29" opacity="0.5">Execute com método e dados.</text>
+
+                  {/* Node 04: Evoluir — left */}
+                  <rect x="8" y="144" width="122" height="72" rx="10" fill="white" stroke="#001E29" strokeOpacity="0.08" strokeWidth="1"/>
+                  <rect x="8" y="144" width="4" height="72" rx="2" fill="#6DF9C6"/>
+                  <text x="24" y="166" fontFamily="'IBM Plex Mono', monospace" fontSize="9" fill="#0a8a5f" fontWeight="600">04.</text>
+                  <text x="24" y="182" fontFamily="'Space Grotesk', sans-serif" fontSize="15" fontWeight="700" fill="#001E29">Evoluir</text>
+                  <text x="24" y="198" fontFamily="'Inter', sans-serif" fontSize="10" fill="#001E29" opacity="0.5">Aprenda, escale, repita.</text>
+                </svg>
               </div>
             </div>
           </div>

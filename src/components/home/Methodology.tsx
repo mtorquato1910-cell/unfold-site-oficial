@@ -1,13 +1,15 @@
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { Reveal } from '@/components/ui/Reveal'
+import { UnfoldSymbol } from '@/components/brand/UnfoldSymbol'
 
 export function Methodology() {
   return (
     <section className="bg-[#E7E7E7] text-[#001E29] py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-12 gap-10">
-        <Reveal className="lg:col-span-4">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-5">
+        <Reveal className="lg:col-span-4 flex flex-col items-start gap-4">
+          <UnfoldSymbol size={40} className="opacity-80" />
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f]">
             Método Unfold
           </p>
         </Reveal>

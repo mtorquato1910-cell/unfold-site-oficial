@@ -40,13 +40,13 @@ const SERVICES = [
 
 export function Services() {
   return (
-    <section className="bg-[#E7E7E7] text-[#001E29] py-20 md:py-28">
+    <section className="bg-[#E7E7E7] text-[#001E29] py-14 md:py-20">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <Reveal>
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-5">
             Como atuamos
           </p>
-          <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1] max-w-3xl mb-14">
+          <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1] max-w-3xl mb-8">
             Crescimento como sistema, não como projeto.
           </h2>
         </Reveal>
