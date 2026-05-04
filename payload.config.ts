@@ -17,6 +17,7 @@ import Categories from './src/collections/Categories'
 import AIPrompts from './src/collections/AIPrompts'
 import AuditLog from './src/collections/AuditLog'
 import Media from './src/collections/Media'
+import Testimonials from './src/collections/Testimonials'
 import SiteSettings from './src/globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
@@ -65,6 +66,8 @@ export default buildConfig({
     AIPrompts,
     // Sprint 6
     AuditLog,
+    // Sprint 7
+    Testimonials,
   ],
   globals: [SiteSettings],
   editor: lexicalEditor({}),

@@ -4,6 +4,7 @@ import { ArrowUpRight, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AtuacaoTabs } from '@/components/atuacao/AtuacaoTabs'
 import { AmbientOrb } from '@/components/ui/AmbientOrb'
+import { AtuacaoHeroVisual } from '@/components/ui/HeroVisual'
 
 export const metadata: Metadata = {
   title: 'Atuação',
@@ -19,6 +20,7 @@ export default function AtuacaoPage() {
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(218_94%_78%/0.10),transparent_55%),radial-gradient(ellipse_at_bottom_right,hsl(158_92%_70%/0.07),transparent_50%)]" />
         <AmbientOrb color="blue" size={600} opacity={0.04} className="-top-32 -left-40" duration={16} />
         <AmbientOrb color="mint" size={400} opacity={0.03} className="-bottom-20 right-10" duration={12} style={{ animationName: 'orb-float-alt' }} />
+        <AtuacaoHeroVisual />
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
             Atuação

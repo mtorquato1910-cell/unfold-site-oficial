@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { AmbientOrb } from '@/components/ui/AmbientOrb'
 import { UnfoldSymbol } from '@/components/brand/UnfoldSymbol'
 import { BrazilMap } from '@/components/about/BrazilMap'
+import { SobreHeroVisual } from '@/components/ui/HeroVisual'
 
 export const metadata: Metadata = {
   title: 'Sobre | Unfold Growth',
@@ -54,6 +55,7 @@ export default function SobrePage() {
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(158_92%_70%/0.09),transparent_55%),radial-gradient(ellipse_at_bottom_right,hsl(218_94%_78%/0.06),transparent_50%)]" />
         <AmbientOrb color="mint" size={600} opacity={0.045} className="-top-28 -right-36" duration={15} />
         <AmbientOrb color="blue" size={450} opacity={0.03} className="-bottom-16 left-8" duration={11} style={{ animationName: 'orb-float-alt' }} />
+        <SobreHeroVisual />
 
         {/* Logo ring — decorative backdrop */}
         <div className="absolute inset-0 -z-10 flex items-center justify-end pointer-events-none" aria-hidden="true">
@@ -180,31 +182,59 @@ export default function SobrePage() {
       {/* 6. Onde Estamos — Brazil Map */}
       <section className="py-20 md:py-28 border-b border-border overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-            <div className="lg:col-span-5">
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
-                Onde estamos
-              </p>
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
+            Presença nacional
+          </p>
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+            <div className="lg:col-span-4 lg:sticky lg:top-32">
               <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl leading-tight mb-6">
-                Maceió, AL · São Paulo, SP
+                De Maceió e São Paulo para todo o Brasil.
               </h2>
               <p className="text-foreground/65 leading-relaxed mb-8">
-                Atendemos a todo o Brasil. Presença confirmada em 10 estados, com escritórios
-                em Maceió e São Paulo.
+                Atendemos presencialmente e 100% remoto. Operações ativas em 10 estados, com
+                escritórios em Maceió (AL) e São Paulo (SP).
               </p>
-              <div className="flex flex-wrap gap-2">
-                {['Alagoas','Bahia','Minas Gerais','Santa Catarina','São Paulo','Mato Grosso','Mato Grosso do Sul','Goiás','Pernambuco','Paraná'].map((e) => (
-                  <span
-                    key={e}
-                    className="font-mono text-[10px] px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20"
-                  >
-                    {e}
-                  </span>
-                ))}
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3">
+                  <span className="h-2 w-2 rounded-full bg-primary shrink-0" />
+                  <span className="text-sm font-medium">Sede — Maceió, Alagoas</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="h-2 w-2 rounded-full bg-secondary shrink-0" />
+                  <span className="text-sm font-medium">Escritório — São Paulo, SP</span>
+                </div>
+              </div>
+              <div className="rounded-xl border border-border bg-card/40 p-5">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/40 mb-4">
+                  Estados atendidos
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {['AL','BA','MG','SC','SP','MT','MS','GO','PE','PR'].map((uf) => (
+                    <span
+                      key={uf}
+                      className="font-mono text-[10px] font-semibold px-2 py-0.5 rounded bg-primary/15 text-primary border border-primary/20"
+                    >
+                      {uf}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
-            <div className="lg:col-span-7 flex justify-center lg:justify-end">
-              <BrazilMap className="w-full max-w-sm lg:max-w-md" />
+            <div className="lg:col-span-8">
+              <div className="relative rounded-2xl border border-border bg-card/30 p-6 md:p-8">
+                <div className="absolute inset-0 rounded-2xl bg-[radial-gradient(ellipse_at_center,hsl(158_92%_70%/0.04),transparent_70%)]" />
+                <BrazilMap className="w-full max-w-lg mx-auto relative z-10" />
+                <div className="absolute bottom-5 right-5 flex items-center gap-4 text-[10px] font-mono text-foreground/40">
+                  <span className="flex items-center gap-1.5">
+                    <span className="inline-block h-2 w-2 rounded-sm bg-primary/80" />
+                    Atuação Unfold
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="inline-block h-2 w-2 rounded-sm bg-foreground/10 border border-foreground/20" />
+                    Outros estados
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

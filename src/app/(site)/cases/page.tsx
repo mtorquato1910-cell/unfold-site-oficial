@@ -5,12 +5,64 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { Button } from '@/components/ui/button'
 import { AmbientOrb } from '@/components/ui/AmbientOrb'
+import { CasesHeroVisual } from '@/components/ui/HeroVisual'
 
 export const metadata: Metadata = {
   title: 'Cases | Unfold Growth',
   description:
     'Conheça os resultados que a Unfold Growth já entregou — cases reais de crescimento estruturado em vendas complexas.',
 }
+
+const MOCK_CASES = [
+  {
+    id: 1,
+    client: 'Construtora — AL/PE',
+    vertical: 'Construção Civil',
+    tagline: 'De 12 para 4 semanas no ciclo de fechamento com pipeline estruturado.',
+    highlights: [
+      { label: 'Pipeline gerado', value: '+R$18MM' },
+      { label: 'Redução de ciclo', value: '66%' },
+      { label: 'Taxa de conv.', value: '3× maior' },
+      { label: 'Prazo UGS', value: '90 dias' },
+    ],
+  },
+  {
+    id: 2,
+    client: 'Distribuidora Agro — GO/MT',
+    vertical: 'Agronegócio',
+    tagline: 'Operação de inside sales do zero para R$ 4MM em pipeline em um ciclo.',
+    highlights: [
+      { label: 'Pipeline criado', value: 'R$4MM' },
+      { label: 'SDRs treinados', value: '4 novos' },
+      { label: 'CRM ativado', value: '100%' },
+      { label: 'Prazo UGS', value: '60 dias' },
+    ],
+  },
+  {
+    id: 3,
+    client: 'SaaS B2B — SP',
+    vertical: 'Tecnologia',
+    tagline: 'Geração de demanda outbound com 38% de taxa de resposta e CAC reduzido.',
+    highlights: [
+      { label: 'Taxa de resposta', value: '38%' },
+      { label: 'Redução CAC', value: '−42%' },
+      { label: 'MQLs/mês', value: '+85' },
+      { label: 'Prazo UGS', value: '120 dias' },
+    ],
+  },
+  {
+    id: 4,
+    client: 'Concessionária — AL/SE',
+    vertical: 'Automotivo',
+    tagline: 'RevOps implementado com dashboards em tempo real e forecast mensal preciso.',
+    highlights: [
+      { label: 'Forecast precisão', value: '92%' },
+      { label: 'Oport. abertas', value: '+210/mês' },
+      { label: 'Integração CRM', value: 'Full-stack' },
+      { label: 'Prazo UGS', value: '90 dias' },
+    ],
+  },
+]
 
 const VERTICAL_LABELS: Record<string, string> = {
   construcao: 'Construção Civil',
@@ -43,6 +95,7 @@ export default async function CasesPage() {
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,hsl(218_94%_78%/0.08),transparent_55%),radial-gradient(ellipse_at_bottom_left,hsl(158_92%_70%/0.06),transparent_50%)]" />
         <AmbientOrb color="mint" size={500} opacity={0.045} className="-top-24 -right-28" duration={15} />
         <AmbientOrb color="blue" size={400} opacity={0.03} className="top-20 -left-20" duration={11} style={{ animationName: 'orb-float-alt' }} />
+        <CasesHeroVisual />
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
             Resultados comprovados
@@ -62,8 +115,50 @@ export default async function CasesPage() {
       <section className="py-16 md:py-24 border-t border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {cases.length === 0 ? (
-            <div className="text-center py-20 text-foreground/50">
-              <p className="font-mono text-sm">Cases em breve.</p>
+            <div>
+              <div className="mb-10 flex items-center gap-3">
+                <span className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/40">
+                  Em construção
+                </span>
+                <span className="flex-1 h-px bg-border" />
+                <span className="font-mono text-[10px] text-foreground/30 px-2.5 py-1 border border-border rounded-full">
+                  Novos cases em breve
+                </span>
+              </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                {MOCK_CASES.map((c) => (
+                  <div
+                    key={c.id}
+                    className="relative rounded-2xl border border-border bg-card/60 p-8 overflow-hidden"
+                  >
+                    {/* blur overlay */}
+                    <div className="absolute inset-0 backdrop-blur-[2px] bg-background/20 z-10 rounded-2xl flex items-end justify-end p-5">
+                      <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/30 border border-border/60 rounded-full px-3 py-1">
+                        Em breve
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="font-mono text-xs uppercase tracking-[0.15em] text-primary/80 px-3 py-1 rounded-full border border-primary/20 bg-primary/5">
+                        {c.vertical}
+                      </span>
+                    </div>
+                    <p className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-2">{c.client}</p>
+                    <h2 className="font-display font-bold text-xl md:text-2xl leading-snug mb-4">{c.tagline}</h2>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+                      {c.highlights.map((h) => (
+                        <div key={h.label} className="rounded-lg border border-border bg-background/40 p-3">
+                          <p className="font-mono text-[10px] uppercase text-foreground/45 leading-tight">{h.label}</p>
+                          <p className="font-mono text-base font-semibold text-primary mt-1">{h.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-center font-mono text-xs text-foreground/30 mt-12">
+                Estes são exemplos de resultados que estruturamos em nossas operações.
+                Cases detalhados com dados reais serão publicados em breve.
+              </p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-6">

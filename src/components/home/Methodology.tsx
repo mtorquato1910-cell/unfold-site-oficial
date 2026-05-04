@@ -7,13 +7,16 @@ export function Methodology() {
   return (
     <section className="bg-[#E7E7E7] text-[#001E29] py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-12 gap-10">
-        <Reveal className="lg:col-span-4 flex flex-col items-start gap-4">
-          <UnfoldSymbol size={40} className="opacity-80" />
+        <Reveal className="lg:col-span-4 flex flex-col items-start gap-5">
+          <UnfoldSymbol size={80} className="opacity-90" />
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f]">
             Método Unfold
           </p>
         </Reveal>
         <Reveal delay={120} className="lg:col-span-8">
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-5">
+            Método Unfold
+          </p>
           <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
             Um sistema de crescimento, não mais uma série de ações isoladas.
           </h2>

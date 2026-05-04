@@ -60,9 +60,13 @@ export const Posts: CollectionConfig = {
       required: true,
       options: [
         { label: 'Rascunho', value: 'draft' },
+        { label: 'Aguardando Revisão', value: 'pending_review' },
         { label: 'Publicado', value: 'published' },
       ],
       defaultValue: 'draft',
+      admin: {
+        description: 'Rascunho → Aguardando Revisão (enviado pelo autor) → Publicado (aprovado pelo admin)',
+      },
     },
     { name: 'publicado_em', type: 'date' },
     { name: 'autor', type: 'text', defaultValue: 'Equipe Unfold Growth' },

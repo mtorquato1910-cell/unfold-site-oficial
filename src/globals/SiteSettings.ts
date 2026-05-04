@@ -14,6 +14,7 @@ const SiteSettings: GlobalConfig = {
     {
       type: 'tabs',
       tabs: [
+        // ── Identidade ────────────────────────────────────────────────
         {
           label: 'Identidade',
           fields: [
@@ -44,8 +45,10 @@ const SiteSettings: GlobalConfig = {
             },
           ],
         },
+
+        // ── Contato & Redes Sociais ───────────────────────────────────
         {
-          label: 'Contato',
+          label: 'Contato & Redes Sociais',
           fields: [
             {
               name: 'email_contato',
@@ -72,17 +75,32 @@ const SiteSettings: GlobalConfig = {
               admin: { description: 'Ex: +5511999999999' },
             },
             {
-              name: 'linkedin',
-              type: 'text',
-              label: 'URL LinkedIn',
-            },
-            {
-              name: 'instagram',
-              type: 'text',
-              label: 'URL Instagram',
+              type: 'row',
+              fields: [
+                {
+                  name: 'linkedin',
+                  type: 'text',
+                  label: 'URL LinkedIn',
+                  admin: { description: 'Ex: https://linkedin.com/company/unfold-growth', width: '33%' },
+                },
+                {
+                  name: 'instagram',
+                  type: 'text',
+                  label: 'URL Instagram',
+                  admin: { description: 'Ex: https://instagram.com/unfoldgrowth', width: '33%' },
+                },
+                {
+                  name: 'youtube',
+                  type: 'text',
+                  label: 'URL YouTube',
+                  admin: { description: 'Ex: https://youtube.com/@unfoldgrowth', width: '33%' },
+                },
+              ],
             },
           ],
         },
+
+        // ── Calendário ────────────────────────────────────────────────
         {
           label: 'Calendário',
           fields: [
@@ -100,6 +118,8 @@ const SiteSettings: GlobalConfig = {
             },
           ],
         },
+
+        // ── SEO ───────────────────────────────────────────────────────
         {
           label: 'SEO',
           fields: [
@@ -122,6 +142,8 @@ const SiteSettings: GlobalConfig = {
             },
           ],
         },
+
+        // ── Rodapé ────────────────────────────────────────────────────
         {
           label: 'Rodapé',
           fields: [
@@ -134,11 +156,81 @@ const SiteSettings: GlobalConfig = {
               name: 'cnpj',
               type: 'text',
               label: 'CNPJ',
+              admin: { description: 'Ex: 00.000.000/0001-00' },
             },
             {
               name: 'endereco',
               type: 'textarea',
-              label: 'Endereço',
+              label: 'Endereço completo',
+              admin: { description: 'Exibido no rodapé e páginas legais' },
+            },
+          ],
+        },
+
+        // ── Legal ─────────────────────────────────────────────────────
+        {
+          label: 'Legal',
+          fields: [
+            {
+              name: 'politica_privacidade',
+              type: 'richText',
+              label: 'Política de Privacidade',
+              admin: {
+                description: 'Texto completo da Política de Privacidade. Usado na página /politica-privacidade.',
+              },
+            },
+            {
+              name: 'termos_de_uso',
+              type: 'richText',
+              label: 'Termos de Uso',
+              admin: {
+                description: 'Texto completo dos Termos de Uso. Usado na página /termos-de-uso.',
+              },
+            },
+            {
+              name: 'lgpd_aviso_cookies',
+              type: 'textarea',
+              label: 'Aviso de Cookies (banner)',
+              defaultValue: 'Usamos cookies para melhorar sua experiência. Ao continuar, você concorda com nossa Política de Privacidade.',
+              admin: { description: 'Texto exibido no banner de consentimento de cookies' },
+            },
+          ],
+        },
+
+        // ── Insights (Homepage) ───────────────────────────────────────
+        {
+          label: 'Insights (Homepage)',
+          fields: [
+            {
+              name: 'insights_titulo',
+              type: 'text',
+              label: 'Título da seção Insights',
+              defaultValue: 'Insights de crescimento',
+              admin: { description: 'Título exibido acima dos artigos em destaque na home' },
+            },
+            {
+              name: 'insights_subtitulo',
+              type: 'textarea',
+              label: 'Subtítulo da seção Insights',
+              defaultValue: 'Diagnóstico, estrutura e operação — os três pilares do método UGS em forma de conhecimento aplicado.',
+              admin: { description: 'Texto de apoio abaixo do título' },
+            },
+            {
+              name: 'insights_cta_texto',
+              type: 'text',
+              label: 'Texto do CTA da seção',
+              defaultValue: 'Ver todos os artigos',
+              admin: { description: 'Texto do botão "Ver mais"' },
+            },
+            {
+              name: 'insights_posts_destaque',
+              type: 'relationship',
+              relationTo: 'posts',
+              hasMany: true,
+              label: 'Posts em destaque na Home',
+              admin: {
+                description: 'Selecione até 3 posts para exibir na seção Insights da homepage. Se vazio, exibe os mais recentes.',
+              },
             },
           ],
         },

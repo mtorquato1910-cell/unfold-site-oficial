@@ -2,6 +2,7 @@ import { ArrowRight, Calculator, ClipboardList } from 'lucide-react'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { AmbientOrb } from '@/components/ui/AmbientOrb'
+import { FerramentasHeroVisual } from '@/components/ui/HeroVisual'
 
 export const metadata: Metadata = {
   title: 'Ferramentas Gratuitas — Unfold Growth',
@@ -39,6 +40,7 @@ export default function FerramentasPage() {
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,hsl(158_92%_70%/0.08),transparent_55%)]" />
         <AmbientOrb color="mint" size={500} opacity={0.04} className="-top-24 right-0" duration={14} />
         <AmbientOrb color="blue" size={380} opacity={0.03} className="top-20 -left-20" duration={10} style={{ animationName: 'orb-float-alt' }} />
+        <FerramentasHeroVisual />
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
             Ferramentas gratuitas

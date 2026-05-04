@@ -11,9 +11,13 @@ const NAV_GROUPS = [
       {
         label: 'Dashboard',
         href: '/admin',
+        exact: true,
         icon: (
           <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-            <path d="M1 1h6v6H1V1zm7 0h6v6H8V1zM1 8h6v6H1V8zm7 0h6v6H8V8z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+            <rect x="1" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.2"/>
+            <rect x="8.5" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.2"/>
+            <rect x="1" y="8.5" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.2"/>
+            <rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.2"/>
           </svg>
         ),
       },
@@ -28,7 +32,8 @@ const NAV_GROUPS = [
         href: '/admin/collections/posts',
         icon: (
           <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-            <path d="M2 2h11v11H2V2zm2 3h7M4 8h7M4 10.5h4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+            <rect x="1.5" y="1.5" width="12" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.2"/>
+            <path d="M4 5h7M4 7.5h7M4 10h4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
           </svg>
         ),
       },
@@ -37,7 +42,17 @@ const NAV_GROUPS = [
         href: '/admin/collections/cases',
         icon: (
           <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-            <path d="M7.5 1l1.9 3.8 4.2.6-3 2.9.7 4.2L7.5 10.5 4.2 12.5l.7-4.2-3-2.9 4.2-.6L7.5 1z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+            <path d="M7.5 1.5l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4L1.7 5.7l4-.6 1.8-3.6z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+          </svg>
+        ),
+      },
+      {
+        label: 'Depoimentos',
+        href: '/admin/collections/testimonials',
+        icon: (
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M2 2.5h11a1 1 0 011 1v6a1 1 0 01-1 1H8l-3.5 2V10.5H2a1 1 0 01-1-1v-6a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+            <path d="M4.5 6h6M4.5 8h4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
           </svg>
         ),
       },
@@ -46,7 +61,10 @@ const NAV_GROUPS = [
         href: '/admin/collections/categories',
         icon: (
           <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-            <path d="M2 4h4v4H2V4zm7 0h4v4H9V4zM2 9h4v4H2V9zm7 0h4v4H9V9z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
+            <rect x="1" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.2"/>
+            <rect x="8.5" y="1" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.2"/>
+            <rect x="1" y="8.5" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.2"/>
+            <rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1" stroke="currentColor" strokeWidth="1.2"/>
           </svg>
         ),
       },
@@ -120,8 +138,8 @@ const NAV_GROUPS = [
     ],
   },
   {
-    id: 'sistema',
-    label: 'Sistema',
+    id: 'configuracoes',
+    label: 'Configurações',
     items: [
       {
         label: 'Configurações do Site',
@@ -161,17 +179,17 @@ const NAV_GROUPS = [
 export function AdminNav() {
   const pathname = usePathname()
 
-  const isActive = (href: string) => {
-    if (href === '/admin') return pathname === '/admin'
+  const isActive = (href: string, exact = false) => {
+    if (exact || href === '/admin') return pathname === '/admin'
     return pathname?.startsWith(href) ?? false
   }
 
   return (
-    <div
+    <nav
       style={{
         display: 'flex',
         flexDirection: 'column',
-        padding: '16px 0',
+        padding: '8px 0 24px',
         flex: 1,
         overflowY: 'auto',
         overflowX: 'hidden',
@@ -181,21 +199,20 @@ export function AdminNav() {
         <div
           key={group.id}
           style={{
-            marginBottom: '4px',
-            paddingTop: gi === 0 ? '0' : '8px',
-            borderTop: gi === 0 ? 'none' : '1px solid rgba(109,249,198,0.06)',
+            marginBottom: '2px',
+            paddingTop: gi === 0 ? '8px' : '4px',
           }}
         >
           {/* Group label */}
           <span
             style={{
               display: 'block',
-              padding: '8px 20px 6px',
+              padding: '10px 18px 5px',
               fontFamily: '"IBM Plex Mono", "SF Mono", monospace',
               fontSize: '9px',
-              letterSpacing: '0.2em',
+              letterSpacing: '0.22em',
               textTransform: 'uppercase',
-              color: 'rgba(109,249,198,0.35)',
+              color: 'rgba(109,249,198,0.3)',
               userSelect: 'none',
             }}
           >
@@ -204,7 +221,7 @@ export function AdminNav() {
 
           {/* Nav items */}
           {group.items.map((item) => {
-            const active = isActive(item.href)
+            const active = isActive(item.href, (item as { exact?: boolean }).exact)
             return (
               <Link
                 key={item.href}
@@ -212,58 +229,46 @@ export function AdminNav() {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px',
-                  padding: '8px 20px',
-                  margin: '1px 8px',
-                  borderRadius: '7px',
+                  gap: '9px',
+                  padding: '7px 14px 7px 18px',
+                  margin: '1px 8px 1px 8px',
+                  borderRadius: '8px',
                   textDecoration: 'none',
                   fontSize: '13px',
                   fontWeight: active ? 600 : 400,
-                  color: active ? '#6DF9C6' : 'rgba(231,231,231,0.65)',
-                  background: active ? 'rgba(109,249,198,0.1)' : 'transparent',
+                  color: active ? '#6DF9C6' : 'rgba(231,231,231,0.6)',
+                  background: active
+                    ? 'linear-gradient(90deg, rgba(109,249,198,0.12), rgba(109,249,198,0.05))'
+                    : 'transparent',
+                  borderLeft: active ? '2px solid #6DF9C6' : '2px solid transparent',
                   transition: 'all 0.12s ease',
                   position: 'relative',
                   lineHeight: '1.3',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
+                  paddingLeft: active ? '16px' : '18px',
                 }}
                 onMouseEnter={(e) => {
                   if (!active) {
                     const el = e.currentTarget as HTMLAnchorElement
                     el.style.color = '#e7e7e7'
-                    el.style.background = 'rgba(109,249,198,0.05)'
+                    el.style.background = 'rgba(109,249,198,0.04)'
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!active) {
                     const el = e.currentTarget as HTMLAnchorElement
-                    el.style.color = 'rgba(231,231,231,0.65)'
+                    el.style.color = 'rgba(231,231,231,0.6)'
                     el.style.background = 'transparent'
                   }
                 }}
               >
-                {/* Active indicator */}
-                {active && (
-                  <span
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: '3px',
-                      height: '20px',
-                      background: 'linear-gradient(180deg, #6DF9C6, #93BAFB)',
-                      borderRadius: '0 2px 2px 0',
-                    }}
-                  />
-                )}
-
                 {/* Icon */}
                 <span
                   style={{
                     flexShrink: 0,
-                    opacity: active ? 1 : 0.6,
+                    opacity: active ? 1 : 0.55,
                     color: active ? '#6DF9C6' : 'currentColor',
                     display: 'flex',
                     alignItems: 'center',
@@ -278,6 +283,6 @@ export function AdminNav() {
           })}
         </div>
       ))}
-    </div>
+    </nav>
   )
 }
