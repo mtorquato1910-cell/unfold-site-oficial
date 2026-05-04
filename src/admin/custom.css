@@ -1,7 +1,7 @@
 /*
   Unfold Growth — Payload Admin Custom Theme
   Design system: #001E29 bg | #6DF9C6 mint | #93BAFB blue | #E7E7E7 foreground
-  NOTE: CSS written WITHOUT @layer to guarantee loading order and specificity.
+  Nav is fully replaced by AdminNav component — CSS here covers shell, forms, tables.
 */
 
 /* ─── Fontes ─────────────────────────────────────────────────────────────── */
@@ -10,12 +10,7 @@
   --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
 }
 
-/* ─── Paleta base: escala teal escura → clara ─────────────────────────────
-   Payload usa --color-base-* para gerar --theme-elevation-*.
-   Em dark mode a escala é INVERTIDA:
-     elevation-0 = base-900 (mais escuro) → nosso fundo #001E29
-     elevation-900 = base-0  (mais claro) → nosso foreground
-*/
+/* ─── Payload color scale — dark teal ────────────────────────────────────── */
 :root {
   --color-base-0:    #e7e7e7;
   --color-base-50:   #d8e7eb;
@@ -38,10 +33,7 @@
   --color-base-900:  #001E29;
   --color-base-950:  #000f17;
   --color-base-1000: #000811;
-}
 
-/* ─── Paleta success → mint #6DF9C6 ──────────────────────────────────────── */
-:root {
   --color-success-50:  #edfff8;
   --color-success-100: #d5fff2;
   --color-success-150: #adfee6;
@@ -55,7 +47,7 @@
   --color-success-800: #094430;
 }
 
-/* ─── Forçar dark mode (aplica mesmo antes do JS carregar) ───────────────── */
+/* ─── Force dark background globally ────────────────────────────────────── */
 html,
 html[data-theme],
 html[data-theme='light'],
@@ -68,40 +60,32 @@ body {
   background-color: #001E29 !important;
   color: #e7e7e7 !important;
   font-family: var(--font-body) !important;
-  background-image:
-    radial-gradient(900px 500px at 80% -10%, rgba(147, 186, 251, 0.04), transparent 60%),
-    radial-gradient(700px 400px at -10% 40%, rgba(109, 249, 198, 0.03), transparent 60%);
 }
 
-/* ─── Elevation overrides (dark) ────────────────────────────────────────── */
 html[data-theme='dark'] {
-  --theme-elevation-0:   #001620 !important;
-  --theme-elevation-50:  #001E29 !important;
-  --theme-elevation-100: #032230 !important;
-  --theme-elevation-150: #06293a !important;
-  --theme-elevation-200: #0d3344 !important;
-  --theme-elevation-250: #112e3d !important;
-  --theme-elevation-500: #1a4455 !important;
-  --theme-elevation-800: #5a8a96 !important;
-  --theme-elevation-850: #8eb2bc !important;
-  --theme-elevation-900: #e7e7e7 !important;
-  --theme-elevation-950: #f0f0f0 !important;
+  --theme-elevation-0:    #001620 !important;
+  --theme-elevation-50:   #001E29 !important;
+  --theme-elevation-100:  #032230 !important;
+  --theme-elevation-150:  #06293a !important;
+  --theme-elevation-200:  #0d3344 !important;
+  --theme-elevation-250:  #112e3d !important;
+  --theme-elevation-500:  #1a4455 !important;
+  --theme-elevation-800:  #5a8a96 !important;
+  --theme-elevation-850:  #8eb2bc !important;
+  --theme-elevation-900:  #e7e7e7 !important;
+  --theme-elevation-950:  #f0f0f0 !important;
   --theme-elevation-1000: #ffffff !important;
-
   --theme-success-500: #6DF9C6 !important;
   --theme-success-450: #57f9cb !important;
   --theme-success-400: #34f4bb !important;
-  --theme-success-550: #55d9a8 !important;
-  --theme-success-600: #3db88a !important;
-
   --accessibility-outline: 2px solid #6DF9C6 !important;
 }
 
-/* ─── Header ─────────────────────────────────────────────────────────────── */
+/* ─── App shell ──────────────────────────────────────────────────────────── */
 .app-header,
 [class*='app-header'] {
   background: #001620 !important;
-  border-bottom: 1px solid rgba(109, 249, 198, 0.12) !important;
+  border-bottom: 1px solid rgba(109, 249, 198, 0.1) !important;
 }
 
 .app-header__content,
@@ -109,137 +93,61 @@ html[data-theme='dark'] {
   color: #e7e7e7 !important;
 }
 
-/* Logo / title area */
-.app-header__logo,
-.step-nav__label {
-  color: #e7e7e7 !important;
-}
-
-/* ─── Nav sidebar ────────────────────────────────────────────────────────── */
+/* ─── Sidebar / Nav shell ────────────────────────────────────────────────── */
 .nav,
-.nav__scroll,
-aside[class*='nav'],
-nav[class*='nav'] {
+nav[class*='nav'],
+aside,
+[class*='nav__wrap'],
+[class*='nav__scroll'],
+[class*='nav__content'] {
   background: #001620 !important;
-  border-right: 1px solid rgba(109, 249, 198, 0.08) !important;
+  border-right: 1px solid rgba(109, 249, 198, 0.07) !important;
 }
 
-/* Fix: items must stack vertically, not inline */
+/* Hide Payload's default nav links (replaced by AdminNav) */
 .nav__groups,
-.nav__group,
 [class*='nav__groups'],
-[class*='nav__group'] {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0 !important;
-}
-
-/* Each nav item: must be block-level */
-.nav__link,
-a[class*='nav__link'],
-[class*='nav__link'] {
-  display: flex !important;
-  align-items: center !important;
-  width: 100% !important;
-  padding: 8px 16px !important;
-  margin: 1px 0 !important;
-  border-radius: 6px !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  color: rgba(231, 231, 231, 0.7) !important;
-  text-decoration: none !important;
-  transition: background 0.15s, color 0.15s !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  box-sizing: border-box !important;
-}
-
-.nav__link:hover,
-a[class*='nav__link']:hover {
-  color: #6DF9C6 !important;
-  background: rgba(109, 249, 198, 0.06) !important;
-}
-
-.nav__link.active,
-.nav__link--active,
-[class*='nav__link'][aria-current],
-[class*='nav__link'].active {
-  color: #6DF9C6 !important;
-  background: rgba(109, 249, 198, 0.1) !important;
-  font-weight: 600 !important;
-}
-
-.nav__link.active::before,
-.nav__link--active::before {
-  content: '' !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 3px !important;
-  height: 60% !important;
-  border-radius: 0 2px 2px 0 !important;
-  background: #6DF9C6 !important;
-}
-
-/* Group labels: section headers */
-.nav__group-label,
-[class*='nav__group-label'],
-[class*='group__label'] {
-  display: block !important;
-  font-family: var(--font-mono) !important;
-  font-size: 10px !important;
-  letter-spacing: 0.18em !important;
-  text-transform: uppercase !important;
-  color: rgba(109, 249, 198, 0.35) !important;
-  padding: 20px 16px 6px !important;
-  pointer-events: none !important;
-  white-space: nowrap !important;
-}
-
-/* First group: no top padding */
-.nav__group:first-child .nav__group-label,
-[class*='nav__group']:first-child [class*='nav__group-label'] {
-  padding-top: 12px !important;
-}
-
-/* Separator between groups */
-.nav__group + .nav__group,
-[class*='nav__group'] + [class*='nav__group'] {
-  border-top: 1px solid rgba(109, 249, 198, 0.05) !important;
-  margin-top: 4px !important;
-  padding-top: 4px !important;
+[class*='nav__group'],
+[class*='nav__link']:not([class*='admin-nav-link']) {
+  /* AdminNav renders instead; keep container but hide default items */
 }
 
 /* ─── Main content area ──────────────────────────────────────────────────── */
 .template-default,
 .template-default__wrap,
-main,
-[class*='template-default'] {
-  background: #001E29 !important;
-}
-
-/* ─── Dashboard ──────────────────────────────────────────────────────────── */
 .dashboard,
-.dashboard__wrap,
+main,
+[class*='template-default'],
 [class*='dashboard'] {
   background: #001E29 !important;
 }
 
-/* ─── Cards / Collection cards ───────────────────────────────────────────── */
+/* ─── Page headers ───────────────────────────────────────────────────────── */
+.collection-list__header,
+.document-header,
+[class*='collection-list__header'],
+[class*='doc-header'] {
+  background: #001E29 !important;
+  border-bottom: 1px solid rgba(109, 249, 198, 0.07) !important;
+}
+
+h1, h2, h3, h4, h5 {
+  color: #e7e7e7 !important;
+}
+
+/* ─── Cards ──────────────────────────────────────────────────────────────── */
 .card,
 .collection-card,
 [class*='card__'] {
   background: #032230 !important;
-  border: 1px solid rgba(109, 249, 198, 0.1) !important;
-  border-radius: 8px !important;
+  border: 1px solid rgba(109, 249, 198, 0.08) !important;
+  border-radius: 10px !important;
 }
 
 .card:hover,
 .collection-card:hover {
-  border-color: rgba(109, 249, 198, 0.25) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  border-color: rgba(109, 249, 198, 0.22) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
 }
 
 .card__title,
@@ -247,309 +155,179 @@ main,
   color: #e7e7e7 !important;
 }
 
-/* ─── Tabelas / List views ───────────────────────────────────────────────── */
-.table,
-table {
+/* ─── Tables ─────────────────────────────────────────────────────────────── */
+.table, table {
   background: transparent !important;
 }
 
-.table__header,
-thead tr,
-th {
+thead tr, th,
+.table__header {
   background: #032230 !important;
-  color: rgba(231, 231, 231, 0.5) !important;
-  border-bottom: 1px solid rgba(109, 249, 198, 0.1) !important;
+  color: rgba(231, 231, 231, 0.45) !important;
+  border-bottom: 1px solid rgba(109, 249, 198, 0.08) !important;
   font-family: var(--font-mono) !important;
-  font-size: 11px !important;
-  letter-spacing: 0.1em !important;
+  font-size: 10px !important;
+  letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
 }
 
-.table__row,
-tbody tr {
-  border-bottom: 1px solid rgba(109, 249, 198, 0.06) !important;
+tbody tr, .table__row {
+  border-bottom: 1px solid rgba(109, 249, 198, 0.05) !important;
   background: transparent !important;
 }
 
-.table__row:hover,
-tbody tr:hover {
-  background: rgba(109, 249, 198, 0.04) !important;
+tbody tr:hover, .table__row:hover {
+  background: rgba(109, 249, 198, 0.03) !important;
 }
 
-td, .table__cell {
+td, .table__cell, .table__row-link {
   color: #e7e7e7 !important;
 }
 
-/* Row link */
-.table__row-link {
-  color: #e7e7e7 !important;
+/* ─── Forms ──────────────────────────────────────────────────────────────── */
+.field-type * { color: #e7e7e7 !important; }
+
+label, .field-label, .label {
+  color: rgba(231, 231, 231, 0.6) !important;
+  font-size: 12px !important;
 }
 
-/* ─── Forms / Fields ─────────────────────────────────────────────────────── */
-.field-type,
-.field-type * {
-  color: #e7e7e7 !important;
-}
-
-label,
-.field-label,
-.label {
-  color: rgba(231, 231, 231, 0.65) !important;
-  font-size: 13px !important;
-}
-
-input,
-textarea,
-select,
+input, textarea, select,
 .rs__control,
 [class*='text-field'] input {
   background: #06293a !important;
-  border: 1px solid rgba(109, 249, 198, 0.15) !important;
+  border: 1px solid rgba(109, 249, 198, 0.14) !important;
   border-radius: 6px !important;
   color: #e7e7e7 !important;
-  font-family: var(--font-body) !important;
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: rgba(231, 231, 231, 0.3) !important;
+input::placeholder, textarea::placeholder {
+  color: rgba(231, 231, 231, 0.28) !important;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
+input:focus, textarea:focus, select:focus {
   border-color: rgba(109, 249, 198, 0.5) !important;
-  box-shadow: 0 0 0 3px rgba(109, 249, 198, 0.12) !important;
+  box-shadow: 0 0 0 3px rgba(109, 249, 198, 0.1) !important;
   outline: none !important;
 }
 
-/* Rich text editor */
-.rich-text,
-.lexical-editor,
-[class*='editor'] {
+.rich-text, .lexical-editor, [class*='editor'] {
   background: #06293a !important;
-  border: 1px solid rgba(109, 249, 198, 0.15) !important;
+  border: 1px solid rgba(109, 249, 198, 0.14) !important;
   border-radius: 6px !important;
   color: #e7e7e7 !important;
 }
 
 /* ─── Buttons ────────────────────────────────────────────────────────────── */
-.btn--style-primary,
-button[class*='primary'] {
+.btn--style-primary, button[class*='primary'] {
   background: #6DF9C6 !important;
   color: #001E29 !important;
   border-color: #6DF9C6 !important;
   font-weight: 600 !important;
-  border-radius: 6px !important;
+  border-radius: 7px !important;
 }
 
 .btn--style-primary:hover {
   background: #57f9cb !important;
-  border-color: #57f9cb !important;
 }
 
-.btn--style-primary:focus {
-  box-shadow: 0 0 0 3px rgba(109, 249, 198, 0.3) !important;
-}
-
-.btn--style-secondary,
-button[class*='secondary'] {
+.btn--style-secondary, button[class*='secondary'] {
   background: transparent !important;
-  border: 1px solid rgba(109, 249, 198, 0.3) !important;
+  border: 1px solid rgba(109, 249, 198, 0.28) !important;
   color: #6DF9C6 !important;
-  border-radius: 6px !important;
+  border-radius: 7px !important;
 }
 
 .btn--style-secondary:hover {
-  background: rgba(109, 249, 198, 0.08) !important;
+  background: rgba(109, 249, 198, 0.07) !important;
 }
 
-/* Pill/badge buttons */
-.btn--style-pill {
-  border-radius: 20px !important;
-}
+.btn--style-pill { border-radius: 20px !important; }
 
-/* ─── Status pills / badges ──────────────────────────────────────────────── */
-.pill--style-success,
-.status-badge--success,
-[class*='pill'][class*='success'] {
-  background: rgba(109, 249, 198, 0.15) !important;
+/* ─── Status pills ───────────────────────────────────────────────────────── */
+.pill--style-success, [class*='pill'][class*='success'] {
+  background: rgba(109, 249, 198, 0.12) !important;
   color: #6DF9C6 !important;
-  border-color: rgba(109, 249, 198, 0.3) !important;
+  border-color: rgba(109, 249, 198, 0.25) !important;
 }
 
-.pill--style-warning,
-[class*='pill'][class*='warning'] {
-  background: rgba(255, 200, 100, 0.15) !important;
-  color: #ffc864 !important;
-  border-color: rgba(255, 200, 100, 0.3) !important;
+.pill--style-warning, [class*='pill'][class*='warning'] {
+  background: rgba(251, 191, 36, 0.12) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(251, 191, 36, 0.25) !important;
 }
 
-.pill--style-error,
-[class*='pill'][class*='error'] {
-  background: rgba(255, 100, 100, 0.15) !important;
+.pill--style-error, [class*='pill'][class*='error'] {
+  background: rgba(255, 100, 100, 0.12) !important;
   color: #ff6464 !important;
-  border-color: rgba(255, 100, 100, 0.3) !important;
+  border-color: rgba(255, 100, 100, 0.25) !important;
 }
 
-.pill--style-default,
-[class*='pill'][class*='default'] {
-  background: rgba(147, 186, 251, 0.1) !important;
-  color: #93BAFB !important;
-  border-color: rgba(147, 186, 251, 0.25) !important;
-}
-
-/* ─── Dropdown / popup menus ────────────────────────────────────────────── */
-.popup,
-.popup__content,
-[class*='popup__content'] {
+/* ─── Dropdowns ──────────────────────────────────────────────────────────── */
+.popup, .popup__content, [class*='popup__content'] {
   background: #06293a !important;
-  border: 1px solid rgba(109, 249, 198, 0.15) !important;
+  border: 1px solid rgba(109, 249, 198, 0.12) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
   border-radius: 8px !important;
 }
 
-.popup__list-item:hover,
-[class*='popup__list-item']:hover {
-  background: rgba(109, 249, 198, 0.08) !important;
+.popup__list-item:hover, [class*='popup__list-item']:hover {
+  background: rgba(109, 249, 198, 0.07) !important;
   color: #6DF9C6 !important;
 }
 
-/* ─── Modais ─────────────────────────────────────────────────────────────── */
-.modal__content,
-[class*='modal__content'],
-.drawer__content,
-[class*='drawer__content'] {
-  background: #032230 !important;
-  border: 1px solid rgba(109, 249, 198, 0.12) !important;
-}
-
-.modal__header,
-.drawer__header {
-  border-bottom: 1px solid rgba(109, 249, 198, 0.1) !important;
-}
-
-/* ─── Breadcrumbs ────────────────────────────────────────────────────────── */
-.step-nav,
-.breadcrumb,
-[class*='step-nav'] {
-  color: rgba(231, 231, 231, 0.5) !important;
-}
-
-.step-nav__label,
-.breadcrumb__label {
-  color: #6DF9C6 !important;
-}
-
-/* ─── Collection list / filters ──────────────────────────────────────────── */
-.list-controls,
-[class*='list-controls'] {
-  background: #032230 !important;
-  border-bottom: 1px solid rgba(109, 249, 198, 0.08) !important;
-}
-
-.where-builder,
-[class*='where-builder'] {
+/* ─── Modals ─────────────────────────────────────────────────────────────── */
+.modal__content, [class*='modal__content'],
+.drawer__content, [class*='drawer__content'] {
   background: #032230 !important;
   border: 1px solid rgba(109, 249, 198, 0.1) !important;
 }
 
-/* ─── Checkbox / Toggle ──────────────────────────────────────────────────── */
+/* ─── Breadcrumbs ────────────────────────────────────────────────────────── */
+.step-nav, [class*='step-nav'] { color: rgba(231, 231, 231, 0.45) !important; }
+.step-nav__label { color: #6DF9C6 !important; }
+
+/* ─── List controls ──────────────────────────────────────────────────────── */
+.list-controls, [class*='list-controls'] {
+  background: #032230 !important;
+  border-bottom: 1px solid rgba(109, 249, 198, 0.07) !important;
+}
+
+/* ─── Upload ─────────────────────────────────────────────────────────────── */
+.file-field__upload, [class*='upload'] .dropzone {
+  background: rgba(6, 41, 58, 0.7) !important;
+  border: 2px dashed rgba(109, 249, 198, 0.18) !important;
+  border-radius: 8px !important;
+}
+
+.file-field__upload:hover, [class*='upload'] .dropzone:hover {
+  border-color: rgba(109, 249, 198, 0.45) !important;
+  background: rgba(109, 249, 198, 0.04) !important;
+}
+
+/* ─── Checkbox ───────────────────────────────────────────────────────────── */
 input[type='checkbox']:checked,
 input[type='radio']:checked {
   accent-color: #6DF9C6 !important;
 }
 
-/* ─── Upload area ────────────────────────────────────────────────────────── */
-.file-field__upload,
-[class*='upload'] .dropzone {
-  background: rgba(6, 41, 58, 0.7) !important;
-  border: 2px dashed rgba(109, 249, 198, 0.2) !important;
-  border-radius: 8px !important;
-}
-
-.file-field__upload:hover,
-[class*='upload'] .dropzone:hover {
-  border-color: rgba(109, 249, 198, 0.5) !important;
-  background: rgba(109, 249, 198, 0.04) !important;
-}
-
-/* ─── Seleção de texto ───────────────────────────────────────────────────── */
+/* ─── Selection ──────────────────────────────────────────────────────────── */
 ::selection {
-  background: rgba(109, 249, 198, 0.25) !important;
+  background: rgba(109, 249, 198, 0.22) !important;
   color: #e7e7e7 !important;
 }
 
-/* ─── Scrollbar custom ───────────────────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #001620;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(109, 249, 198, 0.2);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(109, 249, 198, 0.4);
-}
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #001620; }
+::-webkit-scrollbar-thumb { background: rgba(109, 249, 198, 0.18); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(109, 249, 198, 0.35); }
 
-/* ─── Welcome banner no dashboard ───────────────────────────────────────── */
-.unfold-admin-banner {
-  background: linear-gradient(135deg, #032230 0%, #06293a 100%);
-  border: 1px solid rgba(109, 249, 198, 0.15);
-  border-radius: 12px;
-  padding: 32px 40px;
-  margin-bottom: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.unfold-admin-banner__logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.unfold-admin-banner__logo-text {
-  font-family: var(--font-body);
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #e7e7e7;
-}
-
-.unfold-admin-banner__subtitle {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #6DF9C6;
-  margin-top: 4px;
-}
-
-.unfold-admin-banner__stats {
-  display: flex;
-  gap: 32px;
-}
-
-.unfold-admin-banner__stat {
-  text-align: center;
-}
-
-.unfold-admin-banner__stat-value {
-  font-family: var(--font-mono);
-  font-size: 24px;
-  font-weight: 600;
-  color: #6DF9C6;
-}
-
-.unfold-admin-banner__stat-label {
-  font-size: 11px;
-  color: rgba(231, 231, 231, 0.5);
-  margin-top: 2px;
+/* ─── Hide default Payload dashboard collection cards ────────────────────
+   The AdminDashboard component (beforeDashboard) replaces the overview.
+   We keep collection list pages working normally.
+*/
+.dashboard .collection-card,
+[class*='dashboard'] [class*='collection-card'] {
+  display: none !important;
 }

@@ -43,6 +43,7 @@ export default buildConfig({
         Logo: '@/admin/AdminLogo#AdminLogo',
         Icon: '@/admin/AdminLogo#AdminIcon',
       },
+      Nav: '@/admin/AdminNav#AdminNav',
       beforeDashboard: ['@/admin/AdminDashboard#AdminDashboard'],
     },
   },
