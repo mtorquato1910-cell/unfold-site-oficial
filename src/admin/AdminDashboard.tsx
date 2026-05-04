@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Link from 'next/link'
 
 const KPI_CARDS = [
   {
@@ -243,7 +244,7 @@ export function AdminDashboard() {
             >
               Atividade Recente — Conteúdo
             </span>
-            <a
+            <Link
               href="/admin/collections/posts"
               style={{
                 fontSize: '11px',
@@ -252,7 +253,7 @@ export function AdminDashboard() {
               }}
             >
               Ver todos →
-            </a>
+            </Link>
           </div>
 
           <div>
@@ -348,7 +349,7 @@ export function AdminDashboard() {
             >
               Atividade Recente — Leads
             </span>
-            <a
+            <Link
               href="/admin/collections/leads"
               style={{
                 fontSize: '11px',
@@ -357,7 +358,7 @@ export function AdminDashboard() {
               }}
             >
               Ver todos →
-            </a>
+            </Link>
           </div>
 
           <div>
