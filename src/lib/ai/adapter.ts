@@ -38,7 +38,7 @@ async function callOpenRouter(req: AIRequest): Promise<AIResponse> {
   const apiKey = process.env.OPENROUTER_API_KEY
   if (!apiKey) throw new Error('OPENROUTER_API_KEY não configurada')
 
-  const model = req.model || 'anthropic/claude-sonnet-4-5'
+  const model = req.model || 'google/gemini-2.0-flash-001'
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
