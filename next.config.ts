@@ -1,6 +1,5 @@
 import { withPayload } from '@payloadcms/next/withPayload'
 import type { NextConfig } from 'next'
-import path from 'path'
 
 const nextConfig: NextConfig = {
   images: {
@@ -13,8 +12,6 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
   },
-  // Evitar warning de workspace root
-  outputFileTracingRoot: path.join(process.cwd(), '../../'),
   async redirects() {
     return [
       // Redirects 301 de URLs legados (Lighthouse / antigos)
