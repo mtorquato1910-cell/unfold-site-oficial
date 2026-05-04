@@ -75,6 +75,9 @@ export default buildConfig({
         pool: {
           connectionString: process.env.DATABASE_URL as string,
         },
+        // push: true sincroniza o schema Drizzle com o banco na primeira inicialização
+        // cria todas as tabelas automaticamente sem precisar de arquivos de migration
+        push: true,
       })
     : sqliteAdapter({
         client: {
