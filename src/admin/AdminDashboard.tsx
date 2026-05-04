@@ -158,7 +158,7 @@ export function AdminDashboard() {
             {getGreeting()}! Gerencie o crescimento da Unfold.
           </h2>
         </div>
-        <a
+        <Link
           href="/admin/globals/site-settings"
           style={{
             display: 'inline-flex',
@@ -180,7 +180,7 @@ export function AdminDashboard() {
             <path d="M6.5 1v1.2M6.5 10.8V12M1 6.5h1.2M10.8 6.5H12M2.1 2.1l.85.85M10.05 10.05l.85.85M2.1 10.9l.85-.85M10.05 2.95l.85-.85" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
           </svg>
           Configurações do Site
-        </a>
+        </Link>
       </div>
 
       {/* ── KPI Cards ─────────────────────────────────────────────────────── */}
@@ -335,12 +335,12 @@ export function AdminDashboard() {
             >
               Posts — Aguardando Aprovação
             </span>
-            <a
+            <Link
               href="/admin/collections/posts?where[status][equals]=pending_review"
               style={{ fontSize: '11px', color: 'rgba(231,231,231,0.35)', textDecoration: 'none' }}
             >
               Ver todos →
-            </a>
+            </Link>
           </div>
           <div style={{ padding: '8px 0' }}>
             <div style={{ padding: '28px 18px', textAlign: 'center' }}>
@@ -380,12 +380,12 @@ export function AdminDashboard() {
             >
               Atividade — Conteúdo
             </span>
-            <a
+            <Link
               href="/admin/collections/posts"
               style={{ fontSize: '11px', color: 'rgba(231,231,231,0.35)', textDecoration: 'none' }}
             >
               Ver todos →
-            </a>
+            </Link>
           </div>
           <div>
             {[
