@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 export const metadata: Metadata = {
   title: 'O Método UGS',
   description:
-    'O Unfold Growth System — um sistema de crescimento para operações com vendas complexas B2B, composto por 4 pilares: Diagnosticar, Estruturar, Operar e Evoluir.',
+    'O Unfold Growth System — um sistema de crescimento para operações com vendas complexas, composto por 4 pilares: Diagnosticar, Estruturar, Operar e Evoluir.',
 }
 
 const PILLARS = [
@@ -30,7 +30,7 @@ const PILLARS = [
     tagline: 'Construa o sistema certo.',
     desc: 'Desenhamos a arquitetura de crescimento: posicionamento, ICP, jornada de compra, funil, stack mar-tech e processos de revenue operations.',
     outputs: [
-      'ICP e segmentação B2B',
+      'ICP e segmentação de clientes',
       'Jornada de compra mapeada',
       'Stack mar-tech configurado',
       'Processos de Rev Ops documentados',
@@ -97,8 +97,8 @@ export default function MetodoPage() {
             O Unfold Growth System.
           </h1>
           <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-2xl leading-relaxed">
-            Um framework de crescimento estruturado para operações B2B com ciclos de vendas
-            complexos. Quatro pilares, uma lógica integrada.
+            Um framework de crescimento estruturado para operações com vendas complexas.
+            Quatro pilares, uma lógica integrada.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-3">
             <Button asChild size="lg" className="h-12 px-6 group">
@@ -123,9 +123,9 @@ export default function MetodoPage() {
                 Um sistema, não uma série de ações.
               </h2>
               <p className="mt-6 text-base text-[#001E29]/75 leading-relaxed">
-                A maioria das empresas B2B tem marketing fazendo ações, vendas fazendo abordagem e
-                os dois times falando línguas diferentes. O resultado é pipeline imprevisível, CAC
-                alto e ciclos longos.
+                A maioria das empresas com vendas complexas tem marketing fazendo ações, vendas
+                fazendo abordagem e os dois times falando línguas diferentes. O resultado é pipeline
+                imprevisível, CAC alto e ciclos longos.
               </p>
               <p className="mt-4 text-base text-[#001E29]/75 leading-relaxed">
                 O Unfold Growth System (UGS) conecta essas quatro etapas em uma operação única,
@@ -238,8 +238,8 @@ export default function MetodoPage() {
                 Feito para empresas com vendas complexas.
               </h2>
               <p className="mt-6 text-base text-foreground/70 leading-relaxed">
-                O UGS foi desenvolvido para empresas B2B com ticket médio alto, múltiplos
-                decisores e ciclos de negociação entre 60 e 180 dias.
+                O UGS foi desenvolvido para empresas com vendas complexas — ticket médio alto,
+                múltiplos decisores e ciclos de negociação entre 60 e 180 dias.
               </p>
               <ul className="mt-8 space-y-3">
                 {[
@@ -261,7 +261,7 @@ export default function MetodoPage() {
                 Verticais que atendemos
               </p>
               <div className="grid grid-cols-2 gap-3">
-                {['Construção Civil', 'Agronegócio', 'Tech B2B', 'Automotivo', 'Saúde B2B', 'Serviços'].map(
+                {['Construção Civil', 'Agronegócio', 'Tecnologia', 'Automotivo', 'Indústrias', 'Serviços'].map(
                   (v) => (
                     <div
                       key={v}

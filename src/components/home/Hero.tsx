@@ -84,7 +84,7 @@ export function Hero() {
           className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05] max-w-5xl"
           style={{ animation: 'reveal-in 0.58s cubic-bezier(0.16,1,0.3,1) 200ms forwards', opacity: 0 }}
         >
-          Organizamos crescimento em operações com{' '}
+          Organizamos crescimento digital em operações com{' '}
           <span className="text-primary">vendas complexas.</span>
         </h1>
         <p

@@ -37,7 +37,7 @@ const COLS = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className="bg-background">
       {/* Newsletter — wired in Sprint 6 */}
       <div id="newsletter" className="max-w-7xl mx-auto px-6 lg:px-8 py-14 border-b border-border">
         <div className="grid lg:grid-cols-2 gap-8 items-center">
@@ -46,7 +46,7 @@ export function Footer() {
               Newsletter
             </p>
             <h3 className="font-display font-bold tracking-tight text-2xl md:text-3xl max-w-xl">
-              Insights de growth B2B direto no seu email.
+              Insights de growth para vendas complexas, direto no seu email.
             </h3>
           </div>
           <form
@@ -72,7 +72,7 @@ export function Footer() {
         <div>
           <UnfoldLogo />
           <p className="mt-4 text-sm text-foreground/65 max-w-xs leading-relaxed">
-            Assessoria de growth para empresas com vendas complexas B2B.
+            Assessoria de growth para empresas com vendas complexas.
           </p>
           <div className="mt-6 space-y-1.5 text-sm text-foreground/60">
             <p>Maceió – AL · Brasil · Atuação nacional</p>

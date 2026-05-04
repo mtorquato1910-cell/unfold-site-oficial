@@ -5,13 +5,13 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Ferramentas Gratuitas — Unfold Growth',
   description:
-    'Calculadora de tráfego e diagnóstico de growth gratuitos. Descubra o potencial do seu marketing e identifique gargalos na sua operação comercial.',
+    'Ferramentas gratuitas para diagnosticar e escalar sua operação de crescimento. Calculadora de tráfego e diagnóstico de growth sem compromisso.',
 }
 
 const TOOLS = [
   {
     icon: Calculator,
-    tag: 'Isca Digital',
+    tag: 'Gratuito',
     title: 'Calculadora de Tráfego',
     desc: 'Descubra quantos leads, oportunidades e clientes você pode gerar com o seu investimento em mídia paga. Projeção personalizada em menos de 5 minutos.',
     cta: 'Calcular agora',
@@ -21,7 +21,7 @@ const TOOLS = [
   },
   {
     icon: ClipboardList,
-    tag: 'Isca Digital',
+    tag: 'Gratuito',
     title: 'Diagnóstico de Growth',
     desc: 'Responda 12 perguntas sobre sua operação de marketing e vendas e receba um diagnóstico personalizado dos seus principais gargalos de crescimento.',
     cta: 'Fazer diagnóstico',
@@ -40,12 +40,12 @@ export default function FerramentasPage() {
             Ferramentas gratuitas
           </p>
           <h1 className="font-display font-bold tracking-tight text-4xl md:text-5xl lg:text-6xl leading-[1.05] max-w-4xl">
-            Iscas digitais que entregam{' '}
-            <span className="text-primary">valor antes da venda.</span>
+            Ferramentas para diagnosticar e{' '}
+            <span className="text-primary">escalar sua operação.</span>
           </h1>
           <p className="mt-7 text-lg md:text-xl text-foreground/70 max-w-2xl leading-relaxed">
-            Use nossas ferramentas gratuitas para obter diagnósticos e projeções reais da sua
-            operação de crescimento — sem compromisso.
+            Projeções e diagnósticos práticos para entender onde sua operação de crescimento
+            está e o que está travando — sem compromisso.
           </p>
         </div>
       </section>
@@ -86,23 +86,6 @@ export default function FerramentasPage() {
         </div>
       </section>
 
-      <section className="border-t border-border py-20">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/40 mb-4">
-            Quer ir além das ferramentas?
-          </p>
-          <h2 className="font-display font-bold text-2xl md:text-3xl mb-6">
-            Solicite um diagnóstico completo com nosso time.
-          </h2>
-          <Link
-            href="/diagnostico"
-            className="inline-flex items-center gap-2 bg-primary text-background font-semibold px-8 py-4 rounded-lg hover:bg-primary/90 transition-colors"
-          >
-            Solicite um Diagnóstico
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </section>
     </main>
   )
 }
