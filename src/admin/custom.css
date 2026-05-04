@@ -118,39 +118,98 @@ html[data-theme='dark'] {
 /* ─── Nav sidebar ────────────────────────────────────────────────────────── */
 .nav,
 .nav__scroll,
-aside[class*='nav'] {
+aside[class*='nav'],
+nav[class*='nav'] {
   background: #001620 !important;
   border-right: 1px solid rgba(109, 249, 198, 0.08) !important;
 }
 
-.nav__link,
-.nav__group-label {
-  color: rgba(231, 231, 231, 0.7) !important;
+/* Fix: items must stack vertically, not inline */
+.nav__groups,
+.nav__group,
+[class*='nav__groups'],
+[class*='nav__group'] {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
 }
 
-.nav__link:hover {
+/* Each nav item: must be block-level */
+.nav__link,
+a[class*='nav__link'],
+[class*='nav__link'] {
+  display: flex !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 8px 16px !important;
+  margin: 1px 0 !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: rgba(231, 231, 231, 0.7) !important;
+  text-decoration: none !important;
+  transition: background 0.15s, color 0.15s !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  box-sizing: border-box !important;
+}
+
+.nav__link:hover,
+a[class*='nav__link']:hover {
   color: #6DF9C6 !important;
   background: rgba(109, 249, 198, 0.06) !important;
 }
 
 .nav__link.active,
 .nav__link--active,
-[class*='nav__link'][aria-current] {
+[class*='nav__link'][aria-current],
+[class*='nav__link'].active {
   color: #6DF9C6 !important;
-  background: rgba(109, 249, 198, 0.08) !important;
+  background: rgba(109, 249, 198, 0.1) !important;
+  font-weight: 600 !important;
 }
 
 .nav__link.active::before,
 .nav__link--active::before {
+  content: '' !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 3px !important;
+  height: 60% !important;
+  border-radius: 0 2px 2px 0 !important;
   background: #6DF9C6 !important;
 }
 
-.nav__group-label {
+/* Group labels: section headers */
+.nav__group-label,
+[class*='nav__group-label'],
+[class*='group__label'] {
+  display: block !important;
   font-family: var(--font-mono) !important;
   font-size: 10px !important;
-  letter-spacing: 0.15em !important;
+  letter-spacing: 0.18em !important;
   text-transform: uppercase !important;
-  color: rgba(109, 249, 198, 0.4) !important;
+  color: rgba(109, 249, 198, 0.35) !important;
+  padding: 20px 16px 6px !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+}
+
+/* First group: no top padding */
+.nav__group:first-child .nav__group-label,
+[class*='nav__group']:first-child [class*='nav__group-label'] {
+  padding-top: 12px !important;
+}
+
+/* Separator between groups */
+.nav__group + .nav__group,
+[class*='nav__group'] + [class*='nav__group'] {
+  border-top: 1px solid rgba(109, 249, 198, 0.05) !important;
+  margin-top: 4px !important;
+  padding-top: 4px !important;
 }
 
 /* ─── Main content area ──────────────────────────────────────────────────── */

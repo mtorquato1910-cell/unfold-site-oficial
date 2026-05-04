@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { Reveal } from '@/components/ui/Reveal'
 
 async function getFeaturedCase() {
   try {
@@ -30,7 +31,7 @@ export async function FeaturedCase() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
           {/* Visual — métricas em grade */}
-          <div className="relative rounded-2xl border border-border bg-card overflow-hidden aspect-[4/3] order-last lg:order-first">
+          <Reveal className="relative rounded-2xl border border-border bg-card overflow-hidden aspect-[4/3] order-last lg:order-first" as="div">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(158_92%_70%/0.18),transparent_50%),radial-gradient(circle_at_80%_80%,hsl(218_94%_78%/0.15),transparent_55%)]" />
             <div className="relative h-full p-8 flex flex-col gap-5">
               <div className="flex items-center justify-between">
@@ -65,10 +66,10 @@ export async function FeaturedCase() {
                 ))}
               </div>
             </div>
-          </div>
+          </Reveal>
 
           {/* Content */}
-          <div>
+          <Reveal delay={120}>
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-4">
               Case de sucesso
             </p>
@@ -98,7 +99,7 @@ export async function FeaturedCase() {
                 Ver todos os cases →
               </Link>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

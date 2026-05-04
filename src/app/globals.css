@@ -140,27 +140,44 @@
   */
   .reveal-hidden {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(36px) scale(0.96);
     transition:
-      opacity 580ms cubic-bezier(0.16, 1, 0.3, 1),
-      transform 580ms cubic-bezier(0.16, 1, 0.3, 1);
+      opacity 650ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
   }
 
   .reveal-hidden.revealed {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 
   /* Fade-only variant (for items that already have positioning) */
   .reveal-fade {
     opacity: 0;
-    transition: opacity 580ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 650ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity;
   }
   .reveal-fade.revealed { opacity: 1; }
 
+  /* Slide from left variant */
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-32px) scale(0.97);
+    transition:
+      opacity 650ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+  .reveal-left.revealed {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .reveal-hidden,
-    .reveal-fade {
+    .reveal-fade,
+    .reveal-left {
       opacity: 1 !important;
       transform: none !important;
       transition: none !important;

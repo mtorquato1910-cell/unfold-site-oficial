@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Quote } from 'lucide-react'
+import { Reveal } from '@/components/ui/Reveal'
 
 const ITEMS = [
   {
@@ -37,10 +38,15 @@ export function Testimonials() {
   return (
     <section className="bg-[#E7E7E7] text-[#001E29] py-20 md:py-28">
       <div className="max-w-5xl mx-auto px-6 lg:px-8">
-        <Quote className="h-10 w-10 text-[#0a8a5f] mb-8" strokeWidth={1.6} />
-        <blockquote className="font-sans text-2xl md:text-3xl lg:text-4xl leading-snug font-normal italic max-w-4xl">
-          &ldquo;{t.quote}&rdquo;
-        </blockquote>
+        <Reveal>
+          <Quote className="h-10 w-10 text-[#0a8a5f] mb-8" strokeWidth={1.6} />
+        </Reveal>
+        <Reveal delay={80}>
+          <blockquote className="font-sans text-2xl md:text-3xl lg:text-4xl leading-snug font-normal italic max-w-4xl">
+            &ldquo;{t.quote}&rdquo;
+          </blockquote>
+        </Reveal>
+        <Reveal delay={160}>
         <div className="mt-12 flex items-center justify-between gap-6 flex-wrap">
           <div className="flex items-center gap-4">
             <div className="h-12 w-12 rounded-full bg-[#001E29] text-[#6DF9C6] grid place-items-center font-sans font-bold text-sm">
@@ -73,6 +79,7 @@ export function Testimonials() {
             </span>
           </div>
         </div>
+        </Reveal>
       </div>
     </section>
   )
