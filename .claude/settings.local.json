@@ -46,7 +46,8 @@
       "Bash(curl *)",
       "Bash(netstat -ano)",
       "Bash(xargs grep *)",
-      "Bash(find src *)"
+      "Bash(find src *)",
+      "Bash(npm list *)"
     ]
   }
 }
