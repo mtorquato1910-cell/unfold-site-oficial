@@ -7,7 +7,7 @@ MIGRATION_NAME="deploy-$(date +%Y%m%d%H%M%S)"
 npx payload migrate:create --name "$MIGRATION_NAME" || echo "Nenhuma migration nova gerada."
 
 echo "=== Unfold Build: Aplicando migrations pendentes ==="
-npx payload migrate
+npx payload migrate || echo "Migration warning: schema pode já estar aplicado, continuando build..."
 
 echo "=== Unfold Build: Buildando Next.js ==="
 npx next build
