@@ -40,7 +40,6 @@ export function Reveal({
   }, [delay, threshold])
 
   return (
-    // @ts-expect-error — dynamic tag with ref
     <Tag ref={ref} className={`reveal-hidden ${className}`}>
       {children}
     </Tag>

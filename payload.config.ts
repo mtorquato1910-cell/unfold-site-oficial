@@ -32,7 +32,6 @@ export default buildConfig({
   admin: {
     user: 'users',
     theme: 'dark',
-    css: path.resolve(dirname, 'src/admin/custom.css'),
     meta: {
       titleSuffix: '— Unfold Growth',
       title: 'Admin — Unfold Growth',
