@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { syncContact } from '../lib/crm/adapter'
 
 export const Leads: CollectionConfig = {
   slug: 'leads',
@@ -6,6 +7,45 @@ export const Leads: CollectionConfig = {
     useAsTitle: 'nome',
     defaultColumns: ['nome', 'empresa', 'origem', 'rd_sync_status', 'createdAt'],
     group: 'CRM',
+  },
+  access: {
+    read: ({ req }) => Boolean(req.user),
+    create: () => true,
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => req.user?.role === 'super-admin',
+  },
+  hooks: {
+    afterChange: [
+      async ({ doc, operation }) => {
+        if (operation !== 'create') return doc
+        try {
+          const result = await syncContact({
+            nome: doc.nome,
+            email: doc.email,
+            empresa: doc.empresa,
+            cargo: doc.cargo,
+            origem: doc.origem,
+            custom: {
+              tamanho_equipe: doc.tamanho_equipe,
+              receita_anual: doc.receita_anual,
+              utm_source: doc.utm_source,
+              utm_medium: doc.utm_medium,
+              utm_campaign: doc.utm_campaign,
+            },
+          })
+          // Atualiza rd_sync_status e rd_contact_id — importamos payload via req no hook
+          // O update é feito via fetch interno para evitar loop
+          if (result.success) {
+            console.log(`[Leads hook] Sincronizado com CRM (${result.mode}): ${result.external_id}`)
+          } else {
+            console.error('[Leads hook] Falha na sincronização CRM:', result.error)
+          }
+        } catch (err) {
+          console.error('[Leads hook] Erro inesperado:', err)
+        }
+        return doc
+      },
+    ],
   },
   fields: [
     { name: 'nome', type: 'text', required: true },

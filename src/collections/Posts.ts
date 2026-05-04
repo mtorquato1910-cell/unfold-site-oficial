@@ -7,6 +7,12 @@ export const Posts: CollectionConfig = {
     defaultColumns: ['titulo', 'categoria', 'status', 'publicado_em'],
     group: 'Blog',
   },
+  access: {
+    read: () => true,
+    create: ({ req }) => Boolean(req.user),
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => req.user?.role === 'super-admin',
+  },
   fields: [
     { name: 'titulo', type: 'text', required: true },
     {
@@ -16,7 +22,12 @@ export const Posts: CollectionConfig = {
       unique: true,
       admin: { description: 'URL amigável — use apenas letras minúsculas, números e hífens' },
     },
-    { name: 'resumo', type: 'textarea', required: true, admin: { description: 'Resumo para cards e meta description (max 160 chars)' } },
+    {
+      name: 'resumo',
+      type: 'textarea',
+      required: true,
+      admin: { description: 'Resumo para cards e meta description (max 160 chars)' },
+    },
     {
       name: 'categoria',
       type: 'relationship',
@@ -35,7 +46,13 @@ export const Posts: CollectionConfig = {
       ],
       defaultValue: 'geral',
     },
-    { name: 'imagem_destaque', type: 'text', admin: { description: 'URL da imagem OG e card (1200x630)' } },
+    {
+      name: 'imagem_destaque',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Imagem de destaque',
+      admin: { description: 'Imagem OG e card (1200x630 recomendado)' },
+    },
     { name: 'conteudo', type: 'richText', required: true },
     {
       name: 'status',
@@ -49,7 +66,12 @@ export const Posts: CollectionConfig = {
     },
     { name: 'publicado_em', type: 'date' },
     { name: 'autor', type: 'text', defaultValue: 'Equipe Unfold Growth' },
-    { name: 'tempo_leitura', type: 'number', admin: { description: 'Tempo de leitura estimado em minutos' } },
+    {
+      name: 'tempo_leitura',
+      type: 'number',
+      min: 1,
+      admin: { description: 'Tempo de leitura estimado em minutos' },
+    },
     { name: 'tags', type: 'array', fields: [{ name: 'tag', type: 'text' }] },
   ],
   timestamps: true,

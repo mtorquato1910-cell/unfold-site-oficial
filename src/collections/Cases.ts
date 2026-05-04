@@ -9,6 +9,9 @@ const Cases: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: ({ req }) => Boolean(req.user),
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => req.user?.role === 'super-admin',
   },
   fields: [
     {
@@ -46,6 +49,15 @@ const Cases: CollectionConfig = {
         { label: 'Varejo', value: 'varejo' },
         { label: 'Serviços Profissionais', value: 'servicos' },
       ],
+    },
+    {
+      name: 'imagem_destaque',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Imagem de destaque',
+      admin: {
+        description: 'Imagem principal do case (usada no card e no topo da página)',
+      },
     },
     {
       name: 'tagline',

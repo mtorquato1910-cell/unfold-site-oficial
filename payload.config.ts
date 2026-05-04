@@ -14,11 +14,13 @@ import Posts from './src/collections/Posts'
 import Categories from './src/collections/Categories'
 import AIPrompts from './src/collections/AIPrompts'
 import AuditLog from './src/collections/AuditLog'
+import Media from './src/collections/Media'
+import SiteSettings from './src/globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
-// Local dev: SQLite (arquivo dev.db). Produção: PostgreSQL (Neon via DATABASE_URL)
+// Local dev: SQLite (arquivo dev.db). Produção: PostgreSQL (Supabase via DATABASE_URL)
 const isPostgres = process.env.DATABASE_URL?.startsWith('postgres')
 
 export default buildConfig({
@@ -30,6 +32,7 @@ export default buildConfig({
   },
   collections: [
     Users,
+    Media,
     Cases,
     // Sprint 4
     QuizQuestions,
@@ -43,7 +46,7 @@ export default buildConfig({
     // Sprint 6
     AuditLog,
   ],
-  globals: [],
+  globals: [SiteSettings],
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || 'dev-secret-CHANGE-IN-PRODUCTION',
   typescript: {

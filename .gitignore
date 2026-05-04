@@ -52,3 +52,7 @@ meu-projeto/
 *.njsproj
 *.sln
 *.sw?
+
+# Uploads de mídia do Payload CMS (não versionar arquivos de upload)
+public/media/*
+!public/media/.gitkeep
