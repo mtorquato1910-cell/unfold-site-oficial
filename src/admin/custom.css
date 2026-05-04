@@ -1,0 +1,168 @@
+/*
+  Unfold Growth — Payload Admin Custom Theme
+  Mapeia a paleta dark teal do site para as variáveis do Payload CMS.
+  Cores base do design system (globals.css):
+    background:  #001E29  (hsl 195 100% 8%)
+    foreground:  #E7E7E7
+    primary:     #6DF9C6  (mint)
+    secondary:   #93BAFB  (blue)
+    border:      hsl(197 45% 17%)
+*/
+
+@layer payload {
+
+  /* ─── Fontes ─────────────────────────────────────── */
+  :root {
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* ─── Paleta base: escala teal escura → clara ───── */
+  /*
+     Substituímos --color-base-* (que alimenta --theme-elevation-*)
+     com uma escala baseada na hue 195 (teal) do Unfold.
+     Em dark mode, o Payload INVERTE a escala:
+       --theme-elevation-0  = --color-base-900  (bg mais escuro)
+       --theme-elevation-900 = --color-base-0  (texto claro)
+  */
+  :root {
+    --color-base-0:    #e7e7e7;   /* foreground claro */
+    --color-base-50:   #d8e7eb;
+    --color-base-100:  #c2d8df;
+    --color-base-150:  #a8c5cf;
+    --color-base-200:  #8eb2bc;
+    --color-base-250:  #729ea9;
+    --color-base-300:  #5a8a96;
+    --color-base-350:  #467782;
+    --color-base-400:  #346470;
+    --color-base-450:  #235260;
+    --color-base-500:  #1a4455;
+    --color-base-550:  #12384a;
+    --color-base-600:  #0d2f40;
+    --color-base-650:  #0a2636;
+    --color-base-700:  #081f2d;
+    --color-base-750:  #061929;   /* hsl(197 45% 17%) border */
+    --color-base-800:  #041522;
+    --color-base-850:  #021019;
+    --color-base-900:  #001E29;   /* #001E29 — background principal */
+    --color-base-950:  #000f17;
+    --color-base-1000: #000811;
+  }
+
+  /* ─── Paleta success → mint #6DF9C6 ─────────────── */
+  :root {
+    --color-success-50:  #edfff8;
+    --color-success-100: #d5fff2;
+    --color-success-150: #adfee6;
+    --color-success-200: #7ffcd8;
+    --color-success-250: #57f9cb;
+    --color-success-300: #34f4bb;
+    --color-success-350: #1aeaaa;
+    --color-success-400: #0dd898;
+    --color-success-450: #09c489;
+    --color-success-500: #6DF9C6;   /* PRIMARY mint */
+    --color-success-550: #55d9a8;
+    --color-success-600: #3db88a;
+    --color-success-650: #2a9870;
+    --color-success-700: #1c7a58;
+    --color-success-750: #115e42;
+    --color-success-800: #094430;
+    --color-success-850: #042d1f;
+    --color-success-900: #011a11;
+    --color-success-950: #000d08;
+  }
+
+  /* ─── Tema dark: ajustes finos ───────────────────── */
+  html[data-theme='dark'] {
+    /* Limita a escuridão máxima ao background Unfold */
+    --theme-elevation-0:   #001620;
+    --theme-elevation-50:  #001E29;   /* background */
+    --theme-elevation-100: #032230;   /* card/surface */
+    --theme-elevation-150: #06293a;   /* surface elevada */
+    --theme-elevation-200: #0d3344;   /* border sutil */
+
+    /* Mint como cor de sucesso/ação primária */
+    --theme-success-500: #6DF9C6;
+    --theme-success-450: #57f9cb;
+    --theme-success-400: #34f4bb;
+    --theme-success-550: #55d9a8;
+    --theme-success-600: #3db88a;
+
+    /* Foco e outline */
+    --accessibility-outline: 2px solid #6DF9C6;
+
+    /* Seleção de texto */
+    ::selection {
+      background: rgba(109, 249, 198, 0.25);
+      color: #e7e7e7;
+    }
+  }
+
+  /* ─── Detalhes visuais adicionais ────────────────── */
+  html[data-theme='dark'] body {
+    /* Gradiente sutil no fundo, igual ao site */
+    background-image:
+      radial-gradient(900px 500px at 80% -10%, rgba(147, 186, 251, 0.04), transparent 60%),
+      radial-gradient(700px 400px at -10% 40%, rgba(109, 249, 198, 0.03), transparent 60%);
+  }
+
+  /* Header / Nav com borda mint sutil na lateral */
+  html[data-theme='dark'] .app-header {
+    border-bottom: 1px solid rgba(109, 249, 198, 0.12);
+    background: #001620 !important;
+  }
+
+  html[data-theme='dark'] .nav {
+    border-right: 1px solid rgba(109, 249, 198, 0.08);
+    background: #001620 !important;
+  }
+
+  /* Logo / título do admin */
+  html[data-theme='dark'] .app-header__content {
+    color: #e7e7e7;
+  }
+
+  /* Botão primário — mint */
+  html[data-theme='dark'] .btn--style-primary {
+    background: #6DF9C6 !important;
+    color: #001E29 !important;
+    border-color: #6DF9C6 !important;
+    font-weight: 600;
+  }
+
+  html[data-theme='dark'] .btn--style-primary:hover {
+    background: #57f9cb !important;
+    border-color: #57f9cb !important;
+  }
+
+  /* Links ativos na nav com cor mint */
+  html[data-theme='dark'] .nav__link.active,
+  html[data-theme='dark'] .nav__link:hover {
+    color: #6DF9C6 !important;
+  }
+
+  html[data-theme='dark'] .nav__link.active::before {
+    background: #6DF9C6 !important;
+  }
+
+  /* Foco em inputs */
+  html[data-theme='dark'] input:focus,
+  html[data-theme='dark'] textarea:focus,
+  html[data-theme='dark'] select:focus {
+    border-color: rgba(109, 249, 198, 0.5) !important;
+    box-shadow: 0 0 0 2px rgba(109, 249, 198, 0.15) !important;
+    outline: none !important;
+  }
+
+  /* Glow sutil em botões de ação primária */
+  html[data-theme='dark'] .btn--style-primary:focus {
+    box-shadow: 0 0 0 3px rgba(109, 249, 198, 0.3) !important;
+  }
+
+  /* Tag / badge de status */
+  html[data-theme='dark'] .pill--style-success {
+    background: rgba(109, 249, 198, 0.15) !important;
+    color: #6DF9C6 !important;
+    border-color: rgba(109, 249, 198, 0.3) !important;
+  }
+}

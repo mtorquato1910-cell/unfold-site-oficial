@@ -31,8 +31,13 @@ const useVercelBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN)
 export default buildConfig({
   admin: {
     user: 'users',
+    theme: 'dark',
+    css: path.resolve(dirname, 'src/admin/custom.css'),
     meta: {
-      titleSuffix: '— Unfold Growth Admin',
+      titleSuffix: '— Unfold Growth',
+      title: 'Admin — Unfold Growth',
+      description: 'Painel de gestão de conteúdo — Unfold Growth',
+      icons: [{ rel: 'icon', type: 'image/png', url: '/favicon.ico' }],
     },
   },
   collections: [
