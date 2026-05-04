@@ -16,22 +16,28 @@ export default function AtuacaoPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-44 md:pb-24">
+      <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-20">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(218_94%_78%/0.10),transparent_55%),radial-gradient(ellipse_at_bottom_right,hsl(158_92%_70%/0.07),transparent_50%)]" />
         <AmbientOrb color="blue" size={600} opacity={0.04} className="-top-32 -left-40" duration={16} />
         <AmbientOrb color="mint" size={400} opacity={0.03} className="-bottom-20 right-10" duration={12} style={{ animationName: 'orb-float-alt' }} />
-        <AtuacaoHeroVisual />
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
-            Atuação
-          </p>
-          <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05] max-w-4xl">
-            Verticais onde o UGS opera.
-          </h1>
-          <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-2xl leading-relaxed">
-            Cada setor tem suas próprias dinâmicas de compra, vocabulário e gargalos. Aplicamos
-            o Unfold Growth System com micro-ângulos específicos por vertical.
-          </p>
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-8 items-center">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
+                Atuação
+              </p>
+              <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
+                Verticais onde o UGS opera.
+              </h1>
+              <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
+                Cada setor tem suas próprias dinâmicas de compra, vocabulário e gargalos. Aplicamos
+                o Unfold Growth System com micro-ângulos específicos por vertical.
+              </p>
+            </div>
+            <div className="hidden lg:flex items-center justify-center">
+              <AtuacaoHeroVisual />
+            </div>
+          </div>
         </div>
       </section>
 

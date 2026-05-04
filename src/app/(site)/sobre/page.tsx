@@ -50,34 +50,30 @@ export default function SobrePage() {
   return (
     <main>
       {/* 1. Hero */}
-      <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-24">
-        {/* Ambient glow */}
+      <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-20">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(158_92%_70%/0.09),transparent_55%),radial-gradient(ellipse_at_bottom_right,hsl(218_94%_78%/0.06),transparent_50%)]" />
         <AmbientOrb color="mint" size={600} opacity={0.045} className="-top-28 -right-36" duration={15} />
         <AmbientOrb color="blue" size={450} opacity={0.03} className="-bottom-16 left-8" duration={11} style={{ animationName: 'orb-float-alt' }} />
-        <SobreHeroVisual />
-
-        {/* Logo ring — decorative backdrop */}
-        <div className="absolute inset-0 -z-10 flex items-center justify-end pointer-events-none" aria-hidden="true">
-          <UnfoldSymbol
-            size={480}
-            className="opacity-[0.04] translate-x-24 -translate-y-8"
-          />
-        </div>
-
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
-            Sobre a Unfold Growth
-          </p>
-          <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05] max-w-4xl">
-            Crescimento organizado,{' '}
-            <span className="text-primary">resultado previsível.</span>
-          </h1>
-          <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-2xl leading-relaxed">
-            Somos uma consultoria especializada em estruturar sistemas de crescimento para empresas
-            com vendas complexas — conectando marketing, vendas, CRM e automação em uma operação
-            integrada e orientada a resultado.
-          </p>
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-8 items-center">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
+                Sobre a Unfold Growth
+              </p>
+              <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
+                Crescimento organizado,{' '}
+                <span className="text-primary">resultado previsível.</span>
+              </h1>
+              <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
+                Somos uma consultoria especializada em estruturar sistemas de crescimento para
+                empresas com vendas complexas — conectando marketing, vendas, CRM e automação
+                em uma operação integrada e orientada a resultado.
+              </p>
+            </div>
+            <div className="hidden lg:flex items-center justify-center">
+              <SobreHeroVisual />
+            </div>
+          </div>
         </div>
       </section>
 
