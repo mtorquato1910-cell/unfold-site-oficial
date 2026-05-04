@@ -1,6 +1,7 @@
-import { RootLayout, handleServerFunctions } from '@payloadcms/next/layouts'
+import { RootLayout } from '@payloadcms/next/layouts'
 import config from '@payload-config'
 import { importMap } from './admin/importMap'
+import { handleServerFunctions } from './_actions'
 import React from 'react'
 
 export const dynamic = 'force-dynamic'
