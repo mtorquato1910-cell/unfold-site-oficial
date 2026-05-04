@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowUpRight, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { ArrowUpRight, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AtuacaoTabs } from '@/components/atuacao/AtuacaoTabs'
+import { AmbientOrb } from '@/components/ui/AmbientOrb'
 
 export const metadata: Metadata = {
   title: 'Atuação',
@@ -15,7 +16,9 @@ export default function AtuacaoPage() {
     <>
       {/* Hero */}
       <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-44 md:pb-24">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(218_94%_78%/0.08),transparent_55%)]" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(218_94%_78%/0.10),transparent_55%),radial-gradient(ellipse_at_bottom_right,hsl(158_92%_70%/0.07),transparent_50%)]" />
+        <AmbientOrb color="blue" size={600} opacity={0.04} className="-top-32 -left-40" duration={16} />
+        <AmbientOrb color="mint" size={400} opacity={0.03} className="-bottom-20 right-10" duration={12} style={{ animationName: 'orb-float-alt' }} />
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
             Atuação
@@ -32,6 +35,36 @@ export default function AtuacaoPage() {
 
       {/* Tabs */}
       <AtuacaoTabs />
+
+      {/* Banner — Não achou seu segmento */}
+      <section className="bg-background border-y border-border py-16 md:py-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="rounded-2xl border border-primary/20 bg-primary/5 px-8 py-10 md:px-14 md:py-12 grid lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-8">
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-4">
+                Seu segmento não está listado?
+              </p>
+              <h2 className="font-display font-bold tracking-tight text-2xl md:text-3xl leading-[1.1] mb-4">
+                Não achou seu segmento de mercado?{' '}
+                <span className="text-primary">Você pode ser nosso primeiro case de sucesso.</span>
+              </h2>
+              <p className="text-foreground/65 leading-relaxed max-w-2xl">
+                Possuímos cases validados em cada um dos segmentos citados, mas eles não nasceram
+                prontos. Faça como nossos clientes e se transforme no nosso próximo case de
+                crescimento em vendas complexas.
+              </p>
+            </div>
+            <div className="lg:col-span-4 lg:flex lg:justify-end">
+              <Button asChild size="lg" className="h-12 px-6 group">
+                <Link href="/diagnostico">
+                  Agende um diagnóstico
+                  <ArrowUpRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Como funciona a parceria */}
       <section className="bg-background py-20 md:py-28">

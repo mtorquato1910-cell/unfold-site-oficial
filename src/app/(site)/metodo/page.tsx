@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowUpRight, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { AmbientOrb } from '@/components/ui/AmbientOrb'
 
 export const metadata: Metadata = {
   title: 'O Método UGS',
@@ -88,7 +89,9 @@ export default function MetodoPage() {
     <>
       {/* Hero */}
       <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-44 md:pb-24">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,hsl(158_92%_70%/0.08),transparent_55%)]" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,hsl(158_92%_70%/0.08),transparent_55%),radial-gradient(ellipse_at_bottom_left,hsl(218_94%_78%/0.06),transparent_50%)]" />
+        <AmbientOrb color="mint" size={550} opacity={0.04} className="-top-20 -right-32" duration={13} />
+        <AmbientOrb color="blue" size={400} opacity={0.03} className="bottom-0 left-10" duration={11} style={{ animationName: 'orb-float-alt' }} />
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
             Método Unfold

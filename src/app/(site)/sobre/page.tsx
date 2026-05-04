@@ -1,12 +1,15 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowUpRight, MapPin, Award, Target, Eye, Zap } from 'lucide-react'
+import { ArrowUpRight, Award, Target, Eye, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { AmbientOrb } from '@/components/ui/AmbientOrb'
+import { UnfoldSymbol } from '@/components/brand/UnfoldSymbol'
+import { BrazilMap } from '@/components/about/BrazilMap'
 
 export const metadata: Metadata = {
   title: 'Sobre | Unfold Growth',
   description:
-    'Conheça a Unfold Growth — a empresa que organiza crescimento em operações com vendas complexas por meio do método UGS.',
+    'Conheça a Unfold Growth — organizamos crescimento digital em operações com vendas complexas por meio do método UGS.',
 }
 
 const VALUES = [
@@ -27,11 +30,11 @@ const VALUES = [
   },
 ]
 
-const TEAM = [
-  { name: 'Ana Costa', role: 'Estratégia de Growth', initials: 'AC' },
-  { name: 'Bruno Lima', role: 'Revenue Operations', initials: 'BL' },
-  { name: 'Carla Mendes', role: 'CRM & Automação', initials: 'CM' },
-  { name: 'Diego Rocha', role: 'Inteligência Comercial', initials: 'DR' },
+const STATS = [
+  { value: '+R$ 75MM', label: 'gerados em pipeline' },
+  { value: '+R$ 850k', label: 'gerenciados em mídia online' },
+  { value: 'RD Station, Meta, Kommo', label: 'Parceiros' },
+  { value: 'ABRADI & ASSESPRO', label: 'Associados' },
 ]
 
 const CERTIFICATIONS = [
@@ -47,7 +50,19 @@ export default function SobrePage() {
     <main>
       {/* 1. Hero */}
       <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-24">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(158_92%_70%/0.08),transparent_55%)]" />
+        {/* Ambient glow */}
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(158_92%_70%/0.09),transparent_55%),radial-gradient(ellipse_at_bottom_right,hsl(218_94%_78%/0.06),transparent_50%)]" />
+        <AmbientOrb color="mint" size={600} opacity={0.045} className="-top-28 -right-36" duration={15} />
+        <AmbientOrb color="blue" size={450} opacity={0.03} className="-bottom-16 left-8" duration={11} style={{ animationName: 'orb-float-alt' }} />
+
+        {/* Logo ring — decorative backdrop */}
+        <div className="absolute inset-0 -z-10 flex items-center justify-end pointer-events-none" aria-hidden="true">
+          <UnfoldSymbol
+            size={480}
+            className="opacity-[0.04] translate-x-24 -translate-y-8"
+          />
+        </div>
+
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
             Sobre a Unfold Growth
@@ -64,7 +79,21 @@ export default function SobrePage() {
         </div>
       </section>
 
-      {/* 2. Por que existe */}
+      {/* 2. Stats */}
+      <section className="border-t border-border py-14">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {STATS.map((s) => (
+              <div key={s.label} className="rounded-xl border border-border bg-card/40 p-6">
+                <p className="font-display font-bold text-xl md:text-2xl text-primary mb-1">{s.value}</p>
+                <p className="text-sm text-foreground/55">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Por que existe */}
       <section className="py-20 md:py-28 border-t border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
@@ -97,7 +126,7 @@ export default function SobrePage() {
         </div>
       </section>
 
-      {/* 3. No que acreditamos */}
+      {/* 4. No que acreditamos */}
       <section className="py-20 md:py-28 bg-card/40 border-y border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="mb-12">
@@ -120,89 +149,8 @@ export default function SobrePage() {
         </div>
       </section>
 
-      {/* 4. Liderança (placeholder) */}
-      <section className="py-20 md:py-28 border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="mb-12">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-4">
-              Liderança
-            </p>
-            <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl leading-tight">
-              Quem lidera o método
-            </h2>
-          </div>
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-4xl">
-            {/* Silhueta placeholder */}
-            <div className="rounded-2xl border border-border bg-card overflow-hidden aspect-square max-w-xs flex items-center justify-center">
-              <svg
-                viewBox="0 0 200 200"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-3/4 h-3/4 opacity-20"
-              >
-                <circle cx="100" cy="70" r="38" fill="currentColor" />
-                <path
-                  d="M20 180 C20 140 60 120 100 120 C140 120 180 140 180 180"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-2">
-                Fundador & Estrategista
-              </p>
-              <h3 className="font-display font-bold text-2xl md:text-3xl mb-4">Gabriel [Sobrenome]</h3>
-              <p className="text-foreground/65 leading-relaxed mb-6">
-                Liderança técnica do método UGS. [Foto e bio profissional a ser inserida pelo
-                cliente.]
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {['Revenue Operations', 'Vendas B2B', 'CRM Strategy', 'Growth Systems'].map(
-                  (tag) => (
-                    <span
-                      key={tag}
-                      className="font-mono text-xs px-3 py-1 rounded-full border border-border text-foreground/60"
-                    >
-                      {tag}
-                    </span>
-                  )
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Time */}
-      <section className="py-20 md:py-28 border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="mb-12">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-4">
-              Equipe
-            </p>
-            <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl leading-tight">
-              O time por trás do sistema
-            </h2>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {TEAM.map((member) => (
-              <div
-                key={member.name}
-                className="rounded-2xl border border-border bg-card p-6 flex flex-col items-center text-center"
-              >
-                <div className="h-16 w-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-4">
-                  <span className="font-mono font-bold text-primary text-sm">{member.initials}</span>
-                </div>
-                <p className="font-display font-semibold text-base">{member.name}</p>
-                <p className="text-foreground/55 text-sm mt-1">{member.role}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Certificações */}
-      <section className="py-20 md:py-24 border-b border-border bg-card/30">
+      {/* 5. Certificações */}
+      <section className="py-20 md:py-24 border-b border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-center gap-8 md:gap-16">
             <div className="shrink-0">
@@ -229,24 +177,40 @@ export default function SobrePage() {
         </div>
       </section>
 
-      {/* 7. Localização */}
-      <section className="py-16 border-b border-border">
+      {/* 6. Onde Estamos — Brazil Map */}
+      <section className="py-20 md:py-28 border-b border-border overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <MapPin className="h-5 w-5 text-primary shrink-0" />
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/50 mb-1">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+            <div className="lg:col-span-5">
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
                 Onde estamos
               </p>
-              <p className="font-display font-semibold text-lg">
-                São Paulo, SP — Atendimento remoto e presencial em todo o Brasil
+              <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl leading-tight mb-6">
+                Maceió, AL · São Paulo, SP
+              </h2>
+              <p className="text-foreground/65 leading-relaxed mb-8">
+                Atendemos a todo o Brasil. Presença confirmada em 10 estados, com escritórios
+                em Maceió e São Paulo.
               </p>
+              <div className="flex flex-wrap gap-2">
+                {['Alagoas','Bahia','Minas Gerais','Santa Catarina','São Paulo','Mato Grosso','Mato Grosso do Sul','Goiás','Pernambuco','Paraná'].map((e) => (
+                  <span
+                    key={e}
+                    className="font-mono text-[10px] px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20"
+                  >
+                    {e}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="lg:col-span-7 flex justify-center lg:justify-end">
+              <BrazilMap className="w-full max-w-sm lg:max-w-md" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 8. CTA Diagnóstico */}
+      {/* 7. CTA Diagnóstico */}
       <section className="py-24 md:py-32">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
