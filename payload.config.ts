@@ -2,8 +2,10 @@ import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import sharp from 'sharp'
 import Cases from './src/collections/Cases'
 import Users from './src/collections/Users'
 import QuizQuestions from './src/collections/QuizQuestions'
@@ -22,6 +24,9 @@ const dirname = path.dirname(filename)
 
 // Local dev: SQLite (arquivo dev.db). Produção: PostgreSQL (Supabase via DATABASE_URL)
 const isPostgres = process.env.DATABASE_URL?.startsWith('postgres')
+
+// Vercel Blob só ativo em produção (quando BLOB_READ_WRITE_TOKEN estiver configurado)
+const useVercelBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN)
 
 export default buildConfig({
   admin: {
@@ -49,9 +54,22 @@ export default buildConfig({
   globals: [SiteSettings],
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || 'dev-secret-CHANGE-IN-PRODUCTION',
+  sharp,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+  plugins: [
+    ...(useVercelBlob
+      ? [
+          vercelBlobStorage({
+            collections: {
+              media: true,
+            },
+            token: process.env.BLOB_READ_WRITE_TOKEN as string,
+          }),
+        ]
+      : []),
+  ],
   db: isPostgres
     ? postgresAdapter({
         pool: {
