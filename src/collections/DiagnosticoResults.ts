@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { sendEmail, templateResultadoDiagnostico } from '../lib/email/adapter'
+import { sendEmail, templateResultadoDiagnostico } from '../lib/email/adapter.ts'
 
 const headlinesPorNivel: Record<string, string> = {
   alto: 'Você tem um alto potencial de crescimento com tráfego pago estruturado.',
