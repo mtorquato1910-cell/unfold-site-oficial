@@ -47,7 +47,8 @@
       "Bash(netstat -ano)",
       "Bash(xargs grep *)",
       "Bash(find src *)",
-      "Bash(npm list *)"
+      "Bash(npm list *)",
+      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); pkgs=['payload','@payloadcms/next','@payloadcms/db-postgres','@payloadcms/richtext-lexical','@payloadcms/storage-vercel-blob']; [print\\(p, d.get\\('packages',{}\\).get\\('node_modules/'+p,{}\\).get\\('version','?'\\)\\) for p in pkgs]\")"
     ]
   }
 }
