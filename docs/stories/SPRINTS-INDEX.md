@@ -10,17 +10,42 @@
 
 ## Roadmap
 
-| Sprint | Nome | Estimativa | Status | Agentes |
-|--------|------|-----------|--------|---------|
-| [S1](sprint-1-logo-identidade-visual.md) | Logo & Identidade Visual | 1–2 dias | ⬜ Pendente | @dev |
-| [S2](sprint-2-design-system.md) | Design System & Tokens | 1 dia | ⬜ Pendente | @dev |
-| [S3](sprint-3-auth-login.md) | Auth & Login Page | 1–2 dias | ⬜ Pendente | @dev |
-| [S4](sprint-4-layout-dashboard.md) | Layout Base & Dashboard | 2 dias | ⬜ Pendente | @dev, @ux |
-| [S5](sprint-5-gestao-conteudo.md) | Gestão de Conteúdo | 3 dias | ⬜ Pendente | @dev |
-| [S6](sprint-6-crm-ia.md) | CRM & IA | 3 dias | ⬜ Pendente | @dev |
-| [S7](sprint-7-admin-configuracoes.md) | Admin & Configurações | 2 dias | ⬜ Pendente | @dev |
+### Fase 1 — MIGRAÇÃO (Lovable → Next.js + Payload) ✅
 
-**Total estimado:** ~13–15 dias de desenvolvimento
+| Sprint | Nome | Estimativa | Status |
+|--------|------|-----------|--------|
+| [S1](sprint-1-logo-identidade-visual.md) | Logo & Identidade Visual | 1–2 dias | ✅ Done |
+| [S2](sprint-2-design-system.md) | Design System & Tokens | 1 dia | ✅ Done |
+| [S3](sprint-3-auth-login.md) | Auth & Login (Supabase) | 1–2 dias | ✅ Done |
+| [S4](sprint-4-layout-dashboard.md) | Layout Base & Dashboard | 2 dias | ✅ Done |
+| [S5](sprint-5-gestao-conteudo.md) | Gestão de Conteúdo (CRUD) | 3 dias | ✅ Done |
+| [S6](sprint-6-crm-ia.md) | CRM & IA | 3 dias | ✅ Done |
+| [S7](sprint-7-admin-configuracoes.md) | Admin & Configurações | 2 dias | ✅ Done |
+
+### Fase 2 — FUNCIONALIDADES OPERACIONAIS
+
+| Sprint | Nome | Estimativa | Status | Prioridade |
+|--------|------|-----------|--------|-----------|
+| [S8](sprint-8-workflow-editorial.md) | Workflow Editorial (aprovação posts) | 3 dias | ⬜ | 🔥 ALTA |
+| [S9](sprint-9-site-editor.md) | Site Editor (conteúdo das páginas) | 4 dias | ⬜ | 🔥 ALTA |
+| [S10](sprint-10-seo-manager.md) | SEO Manager (meta, sitemap, redirects) | 2 dias | ⬜ | 🟡 MÉDIA |
+| [S11](sprint-11-analytics-dashboard.md) | Analytics Dashboard (KPIs reais) | 2-3 dias | ⬜ | 🟡 MÉDIA |
+| [S12](sprint-12-leads-crm-integration.md) | Leads CRM Integration (RD/HubSpot) | 2 dias | ⬜ | 🔥 ALTA |
+| [S13](sprint-13-notifications-email.md) | Notifications & Email (Resend) | 2 dias | ⬜ | 🟡 MÉDIA |
+| [S14](sprint-14-versioning-backup.md) | Versioning, Backup & Activity Log | 2 dias | ⬜ | 🟢 BAIXA |
+
+**Total Fase 1:** ~13–15 dias (concluída)
+**Total Fase 2:** ~17–18 dias
+
+### Sequência recomendada Fase 2
+
+1. **S12 (Leads CRM)** — bloqueio comercial
+2. **S8 (Workflow Editorial)** — controle editorial do blog
+3. **S9 (Site Editor)** — autonomia para editar site
+4. **S13 (Notifications)** — base para muitos features
+5. **S10 (SEO)** — pré-go-live
+6. **S11 (Analytics)** — pós-tráfego real
+7. **S14 (Versioning/Backup)** — operacional contínuo
 
 ---
 

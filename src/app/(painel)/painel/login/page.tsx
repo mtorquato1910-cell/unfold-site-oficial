@@ -1,8 +1,9 @@
 'use client'
 
 import { useActionState } from 'react'
+import Image from 'next/image'
 import { loginAction } from './actions'
-import { Loader2, Sparkles } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 export default function PainelLoginPage() {
   const [state, formAction, isPending] = useActionState(loginAction, { error: null })
@@ -23,14 +24,8 @@ export default function PainelLoginPage() {
         <div className="w-full max-w-md animate-fade-in">
           {/* Logo */}
           <div className="mb-10 flex flex-col items-center gap-3">
-            <div
-              className="flex h-12 w-12 items-center justify-center rounded-xl"
-              style={{
-                background: 'hsl(158 92% 70% / 0.10)',
-                border: '1px solid hsl(158 92% 70% / 0.20)',
-              }}
-            >
-              <Sparkles className="h-6 w-6 text-mint" />
+            <div className="relative h-14 w-14 rounded-xl overflow-hidden ring-1" style={{ borderColor: 'hsl(158 92% 70% / 0.25)' }}>
+              <Image src="/logo-unfold.jpeg" alt="Unfold Growth" fill className="object-cover" priority />
             </div>
             <div className="text-center">
               <h1 className="text-2xl font-semibold text-fg">Unfold Growth</h1>

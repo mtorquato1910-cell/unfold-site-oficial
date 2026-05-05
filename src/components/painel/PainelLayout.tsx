@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { logoutAction } from '@/app/(painel)/painel/login/actions'
 import {
@@ -83,20 +84,8 @@ export default function PainelLayout({
           className="flex items-center gap-3 px-5 py-5"
           style={{ borderBottom: '1px solid hsl(158 92% 70% / 0.1)' }}
         >
-          <div className="relative shrink-0">
-            <div
-              className="absolute inset-0 rounded-xl"
-              style={{ background: 'hsl(158 92% 70% / 0.3)', filter: 'blur(8px)' }}
-            />
-            <div
-              className="relative flex h-9 w-9 items-center justify-center rounded-xl"
-              style={{
-                background: 'linear-gradient(135deg, hsl(158 92% 70%) 0%, hsl(158 92% 60%) 100%)',
-                border: '1px solid hsl(158 92% 70% / 0.4)',
-              }}
-            >
-              <SparklesIcon className="h-4 w-4" style={{ color: 'hsl(194 100% 8%)' }} strokeWidth={2.5} />
-            </div>
+          <div className="relative h-9 w-9 rounded-xl overflow-hidden ring-1 shrink-0" style={{ borderColor: 'hsl(158 92% 70% / 0.3)' }}>
+            <Image src="/logo-unfold.jpeg" alt="Unfold" fill className="object-cover" />
           </div>
           <div className="min-w-0">
             <div className="text-[13px] font-semibold leading-tight text-fg">Unfold Growth</div>
