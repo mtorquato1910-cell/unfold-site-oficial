@@ -63,7 +63,11 @@
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\mathe\\\\OneDrive\\\\Área de Trabalho\\\\Site unfold\\\\unfold-site-oficial\\\\videos\\\\\" | Select-Object Name, @{Name='Size\\(MB\\)';Expression={[math]::Round\\($_.Length/1MB,2\\)}})",
       "Bash(mkdir -p 'C:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/public/videos')",
       "Bash(mv 'C:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/videos/*.mp4' 'C:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/public/videos/')",
-      "Bash(ffmpeg -i metodo.mp4 -vcodec libx264 -crf 28 -preset medium -vf \"scale='min\\(1920,iw\\)':-2\" -an -y metodo-temp.mp4)"
+      "Bash(ffmpeg -i metodo.mp4 -vcodec libx264 -crf 28 -preset medium -vf \"scale='min\\(1920,iw\\)':-2\" -an -y metodo-temp.mp4)",
+      "Bash(npm info *)",
+      "Bash(node -e \"const b = require\\('@svg-maps/brazil'\\); console.log\\('viewBox:', b.default?.viewBox || b.viewBox\\); console.log\\('locations count:', \\(b.default?.locations || b.locations\\)?.length\\); console.log\\('first:', JSON.stringify\\(\\(b.default?.locations || b.locations\\)?.[0]\\).slice\\(0,120\\)\\)\")",
+      "Bash(node -e \"const b = require\\('@svg-maps/brazil'\\); const locs = b.default?.locations || b.locations; console.log\\(locs.map\\(l => l.id\\).join\\(', '\\)\\)\")",
+      "Bash(node -e \"const b = require\\('@svg-maps/brazil'\\); const data = b.default || b; console.log\\('keys:', Object.keys\\(data\\)\\); console.log\\('viewBox:', data.viewBox\\); console.log\\('locations[0] keys:', Object.keys\\(data.locations[0]\\)\\)\")"
     ]
   }
 }

@@ -55,6 +55,7 @@ export default function SobrePage() {
           playsInline
           poster="/videos/sobre-poster.jpg"
           className="absolute inset-0 h-full w-full object-cover -z-20"
+          style={{ filter: 'hue-rotate(-30deg) saturate(0.7) brightness(0.85)' }}
         >
           <source src="/videos/sobre.mp4" type="video/mp4" />
         </video>
