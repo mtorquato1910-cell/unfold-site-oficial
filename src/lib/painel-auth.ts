@@ -30,8 +30,10 @@ export async function loginUser(email: string, password: string): Promise<{ toke
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    const msg = err.error_description || err.message || 'Credenciais inválidas'
-    throw new Error(msg === 'Invalid login credentials' ? 'E-mail ou senha incorretos' : msg)
+    const msg = err.error_description || err.error || err.message || `Erro ${res.status}`
+    if (msg === 'Invalid login credentials') throw new Error('E-mail ou senha incorretos')
+    if (!supabaseUrl()) throw new Error('Configuração do servidor incompleta (SUPABASE_URL ausente)')
+    throw new Error(msg)
   }
 
   const data = await res.json()
