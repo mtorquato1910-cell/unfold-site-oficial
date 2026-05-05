@@ -160,6 +160,32 @@
   box-shadow: inset 0 0 0 0.5px hsl(158 92% 70% / 0.2);
 }
 
+/* Sidebar nav idle */
+.painel-root .painel-nav-item {
+  color: hsl(0 0% 91% / 0.62);
+}
+.painel-root .painel-nav-item:hover {
+  background: hsl(0 0% 100% / 0.03);
+  color: hsl(0 0% 91%);
+}
+
+/* Icon buttons */
+.painel-root .painel-icon-btn {
+  color: hsl(0 0% 91% / 0.62);
+}
+.painel-root .painel-icon-btn:hover {
+  background: hsl(0 0% 100% / 0.05);
+  color: hsl(158 92% 70%);
+}
+
+/* Search input focus */
+.painel-root header input:focus {
+  background: hsl(0 0% 100% / 0.05);
+  border-color: hsl(158 92% 70% / 0.5);
+  box-shadow: 0 0 0 3px hsl(158 92% 70% / 0.1);
+  outline: none;
+}
+
 /* Animate fade-in for page transitions */
 .painel-root .animate-fade-in {
   animation: painel-fade-in 0.4s ease-out both;

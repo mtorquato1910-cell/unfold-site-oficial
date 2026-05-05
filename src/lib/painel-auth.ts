@@ -30,10 +30,15 @@ export async function loginUser(email: string, password: string): Promise<{ toke
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    const msg = err.error_description || err.error || err.message || `Erro ${res.status}`
-    if (msg === 'Invalid login credentials') throw new Error('E-mail ou senha incorretos')
+    const msg = err.error_description || err.error || err.msg || err.message || `Erro ${res.status}`
     if (!supabaseUrl()) throw new Error('Configuração do servidor incompleta (SUPABASE_URL ausente)')
-    throw new Error(msg)
+    if (msg === 'Invalid login credentials') {
+      throw new Error('E-mail ou senha incorretos. Verifique no Supabase Dashboard > Authentication > Users se este e-mail existe e a senha está correta.')
+    }
+    if (msg.includes('Email not confirmed')) {
+      throw new Error('E-mail não confirmado. Vá no Supabase Dashboard > Authentication > Users e confirme o e-mail desse usuário.')
+    }
+    throw new Error(`[Supabase ${res.status}] ${msg}`)
   }
 
   const data = await res.json()
