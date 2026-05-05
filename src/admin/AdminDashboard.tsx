@@ -115,8 +115,8 @@ export function AdminDashboard() {
   return (
     <div
       style={{
-        padding: '0 0 56px 0',
-        maxWidth: '1200px',
+        padding: '0 0 48px 0',
+        maxWidth: '1400px',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       }}
     >
@@ -189,7 +189,7 @@ export function AdminDashboard() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+          gridTemplateColumns: 'repeat(4, 1fr)',
           gap: '12px',
           marginBottom: '20px',
         }}
