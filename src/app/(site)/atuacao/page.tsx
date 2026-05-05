@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { ArrowUpRight, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AtuacaoTabs } from '@/components/atuacao/AtuacaoTabs'
-import { HeroVideoBackground } from '@/components/ui/HeroVideoBackground'
 
 export const metadata: Metadata = {
   title: 'Atuação',
@@ -15,12 +14,19 @@ export default function AtuacaoPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative isolate overflow-hidden min-h-screen pt-32 pb-20 md:pt-40 md:pb-20">
-        <HeroVideoBackground
-          videoSrc="/videos/atuacao.mp4"
-          posterSrc="/videos/atuacao-poster.jpg"
-          videoFilter="saturate(0.8) brightness(0.82)"
-        />
+      <section className="relative isolate overflow-hidden pt-32 pb-24 md:pt-40 md:pb-28">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/videos/atuacao-poster.jpg"
+          className="absolute inset-0 h-full w-full object-cover -z-20"
+        >
+          <source src="/videos/atuacao.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-background/95 via-background/85 to-background/55" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(158_92%_70%/0.10),transparent_55%)]" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
