@@ -259,7 +259,7 @@ export function AdminDashboard() {
                 margin: '0 0 3px 0',
                 fontFamily: '"IBM Plex Mono", monospace',
                 letterSpacing: '-0.02em',
-                lineHeight: 1,
+                lineHeight: 1.4,
               }}
             >
               {card.value}
@@ -284,8 +284,8 @@ export function AdminDashboard() {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-          gap: '12px',
-          marginBottom: '16px',
+          gap: '24px',
+          marginBottom: '24px',
         }}
       >
         {/* Panel: Posts aguardando revisão */}
