@@ -72,7 +72,9 @@
       "Bash(vercel deploy *)",
       "Bash(echo \"servidor iniciado em background, PID: $!\")",
       "Bash(taskkill /F /IM node.exe)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Read(//c/Users/mathe/.claude/rules/**)",
+      "Read(//c/Users/mathe/.claude/**)"
     ]
   }
 }
