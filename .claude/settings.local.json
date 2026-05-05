@@ -69,7 +69,10 @@
       "Bash(node -e \"const b = require\\('@svg-maps/brazil'\\); const locs = b.default?.locations || b.locations; console.log\\(locs.map\\(l => l.id\\).join\\(', '\\)\\)\")",
       "Bash(node -e \"const b = require\\('@svg-maps/brazil'\\); const data = b.default || b; console.log\\('keys:', Object.keys\\(data\\)\\); console.log\\('viewBox:', data.viewBox\\); console.log\\('locations[0] keys:', Object.keys\\(data.locations[0]\\)\\)\")",
       "Bash(vercel --version)",
-      "Bash(vercel deploy *)"
+      "Bash(vercel deploy *)",
+      "Bash(echo \"servidor iniciado em background, PID: $!\")",
+      "Bash(taskkill /F /IM node.exe)",
+      "Bash(node -e ' *)"
     ]
   }
 }
