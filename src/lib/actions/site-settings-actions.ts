@@ -6,6 +6,8 @@ import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
 
 export type SiteContactInput = {
+  tagline?: string
+  cidade?: string
   email_contato?: string
   email_notificacoes?: string
   email_dpo?: string
@@ -32,9 +34,10 @@ export async function updateSiteContact(data: SiteContactInput) {
     slug: 'site-settings',
     data: data as any,
   })
+  // Revalidate cache do site público (usado em Footer/Navbar via getPublicSiteSettings)
+  const { revalidateTag } = await import('next/cache')
+  revalidateTag('site-settings')
   revalidatePath('/admin/site-config')
-  revalidatePath('/')
-  revalidatePath('/contato')
-  revalidatePath('/sobre')
+  revalidatePath('/', 'layout')
   return { ok: true }
 }

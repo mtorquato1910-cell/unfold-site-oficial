@@ -19,6 +19,20 @@ const SiteSettings: GlobalConfig = {
           label: 'Identidade',
           fields: [
             {
+              name: 'tagline',
+              type: 'textarea',
+              label: 'Tagline (descrição curta)',
+              defaultValue: 'Assessoria de growth para empresas com vendas complexas.',
+              admin: { description: 'Frase curta exibida no rodapé abaixo do logo' },
+            },
+            {
+              name: 'cidade',
+              type: 'text',
+              label: 'Cidade & atuação',
+              defaultValue: 'Maceió – AL · Brasil · Atuação nacional',
+              admin: { description: 'Linha exibida no rodapé acima do email' },
+            },
+            {
               name: 'logo',
               type: 'upload',
               relationTo: 'media',

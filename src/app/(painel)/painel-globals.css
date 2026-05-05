@@ -17,6 +17,9 @@
   --p-blue:      217 93% 78%;
   --p-danger:    0 70% 60%;
 
+  /* Força tema dark em controles nativos (selects, date pickers, etc.) */
+  color-scheme: dark;
+
   background-color: hsl(var(--p-bg));
   color: hsl(var(--p-fg));
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', system-ui, 'Segoe UI', sans-serif;
@@ -159,6 +162,54 @@
   border-color: hsl(var(--p-mint) / 0.5);
   box-shadow: 0 0 0 3px hsl(var(--p-mint) / 0.1);
   outline: none;
+}
+
+/* Garante texto legível em dropdowns nativos (option) — quando o SO abre em light mode */
+.painel-root option,
+.painel-root optgroup {
+  background-color: hsl(197 100% 10%);
+  color: hsl(var(--p-fg));
+}
+
+/* Fix universal: qualquer input/select/textarea com fundo claro tem texto preto */
+.painel-root input[style*="background: white"],
+.painel-root input[style*="background-color: white"],
+.painel-root input[style*="background:#fff"],
+.painel-root input[style*="background-color:#fff"],
+.painel-root select[style*="background: white"],
+.painel-root textarea[style*="background: white"] {
+  color: #111 !important;
+}
+
+/* Autofill: remove o fundo branco do navegador */
+.painel-root input:-webkit-autofill,
+.painel-root input:-webkit-autofill:hover,
+.painel-root input:-webkit-autofill:focus,
+.painel-root textarea:-webkit-autofill {
+  -webkit-text-fill-color: hsl(var(--p-fg)) !important;
+  -webkit-box-shadow: 0 0 0 1000px hsl(var(--p-input)) inset !important;
+  caret-color: hsl(var(--p-fg));
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Placeholder visível */
+.painel-root input::placeholder,
+.painel-root textarea::placeholder {
+  color: hsl(var(--p-fg) / 0.45);
+}
+
+/* Datepickers / time / etc. */
+.painel-root input[type="date"],
+.painel-root input[type="datetime-local"],
+.painel-root input[type="time"],
+.painel-root input[type="month"] {
+  color-scheme: dark;
+}
+.painel-root input[type="date"]::-webkit-calendar-picker-indicator,
+.painel-root input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+.painel-root input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(0.8);
+  cursor: pointer;
 }
 
 /* ============ Sidebar nav ============ */

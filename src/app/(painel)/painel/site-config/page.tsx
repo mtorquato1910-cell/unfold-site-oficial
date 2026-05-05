@@ -15,6 +15,8 @@ export default async function SiteConfigPage() {
     <PainelLayout user={user}>
       <SiteConfigClient
         initial={{
+          tagline: settings?.tagline ?? '',
+          cidade: settings?.cidade ?? '',
           email_contato: settings?.email_contato ?? '',
           email_notificacoes: settings?.email_notificacoes ?? '',
           email_dpo: settings?.email_dpo ?? '',

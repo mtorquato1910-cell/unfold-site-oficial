@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Save, Mail, Phone, MapPin, Share2, Building2 } from 'lucide-react'
+import { Save, Mail, Phone, MapPin, Share2, Building2, Sparkles } from 'lucide-react'
 import { PageHeader, GlassCard, Field, MintButton } from '@/components/painel/ui'
 import { updateSiteContact, type SiteContactInput } from '@/lib/actions/site-settings-actions'
 
@@ -67,6 +67,32 @@ export default function SiteConfigClient({ initial }: { initial: SiteContactInpu
       )}
 
       <div className="grid gap-6 lg:grid-cols-2">
+        {/* Identidade do Footer */}
+        <GlassCard className="lg:col-span-2">
+          <div className="flex items-center gap-2 mb-5">
+            <Sparkles className="h-4 w-4 text-mint" />
+            <h3 className="font-display text-[17px] font-medium text-fg">Identidade no rodapé</h3>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Field label="Tagline (descrição)" hint="Frase curta sob o logo do rodapé">
+              <input
+                className="input-mint"
+                value={form.tagline || ''}
+                onChange={(e) => update('tagline', e.target.value)}
+                placeholder="Assessoria de growth para empresas com vendas complexas."
+              />
+            </Field>
+            <Field label="Cidade & atuação" hint="Linha acima do email no rodapé">
+              <input
+                className="input-mint"
+                value={form.cidade || ''}
+                onChange={(e) => update('cidade', e.target.value)}
+                placeholder="Maceió – AL · Brasil · Atuação nacional"
+              />
+            </Field>
+          </div>
+        </GlassCard>
+
         {/* Contato */}
         <GlassCard>
           <div className="flex items-center gap-2 mb-5">
