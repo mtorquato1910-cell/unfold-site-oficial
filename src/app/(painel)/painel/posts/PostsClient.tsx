@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, X, FileText, CheckCircle2, XCircle, ExternalLink } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field } from '@/components/painel/ui'
-import { createPost, updatePost, deletePost } from '@/lib/actions/content-actions'
+import { createPost, updatePost, deletePost } from '@/lib/actions/posts-actions'
 import { approvePost, rejectPost } from '@/lib/actions/blog-submit-actions'
 
 const slugify = (s: string) =>

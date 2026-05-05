@@ -3,7 +3,7 @@
 import { useState, useTransition, useRef } from 'react'
 import { Plus, Pencil, Trash2, Check, X, FolderTree } from 'lucide-react'
 import { PageHeader, GlassCard, EmptyState } from '@/components/painel/ui'
-import { createCategory, updateCategory, deleteCategory } from '@/lib/actions/content-actions'
+import { createCategory, updateCategory, deleteCategory } from '@/lib/actions/categories-actions'
 
 type Category = Record<string, any>
 

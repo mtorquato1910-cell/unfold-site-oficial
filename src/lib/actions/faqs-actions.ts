@@ -1,6 +1,6 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
@@ -66,7 +66,7 @@ export async function createFAQ(data: FAQInput) {
     },
   })
   revalidatePath('/admin/faqs')
-  if (data.published) revalidatePath('/contato')
+  if (data.published) revalidatePath('/sobre')
   return { ok: true, id: created.id }
 }
 
@@ -86,7 +86,8 @@ export async function updateFAQ(id: string, data: FAQInput) {
     },
   })
   revalidatePath('/admin/faqs')
-  revalidatePath('/contato')
+  revalidatePath('/sobre')
+  revalidateTag('faqs')
   return { ok: true }
 }
 
@@ -95,7 +96,8 @@ export async function deleteFAQ(id: string) {
   const payload = await getPayload({ config })
   await payload.delete({ collection: 'faqs', id })
   revalidatePath('/admin/faqs')
-  revalidatePath('/contato')
+  revalidatePath('/sobre')
+  revalidateTag('faqs')
   return { ok: true }
 }
 
@@ -104,6 +106,7 @@ export async function toggleFAQPublished(id: string, published: boolean) {
   const payload = await getPayload({ config })
   await payload.update({ collection: 'faqs', id, data: { published } })
   revalidatePath('/admin/faqs')
-  revalidatePath('/contato')
+  revalidatePath('/sobre')
+  revalidateTag('faqs')
   return { ok: true }
 }

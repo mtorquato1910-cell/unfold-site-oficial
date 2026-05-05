@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, X, Star } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field, MintButton } from '@/components/painel/ui'
-import { createCase, updateCase, deleteCase } from '@/lib/actions/content-actions'
+import { createCase, updateCase, deleteCase } from '@/lib/actions/cases-actions'
 
 type Case = Record<string, any>
 

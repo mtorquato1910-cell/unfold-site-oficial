@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowUpRight, Award, Target, Eye, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BrazilMap } from '@/components/about/BrazilMap'
+import FAQList from '@/components/FAQList'
 
 export const metadata: Metadata = {
   title: 'Sobre | Unfold Growth',
@@ -270,6 +271,8 @@ export default function SobrePage() {
           </div>
         </div>
       </section>
+
+      <FAQList />
     </main>
   )
 }

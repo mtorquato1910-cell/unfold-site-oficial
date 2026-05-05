@@ -1,17 +1,35 @@
 import type { Metadata } from 'next'
+import { getLegalContent } from '@/lib/legal-pages'
+import RichTextRenderer from '@/components/RichTextRenderer'
 
 export const metadata: Metadata = {
   title: 'Termos de Uso | Unfold Growth',
   description: 'Termos e condições de uso dos serviços e plataformas da Unfold Growth.',
 }
 
-export default function TermosPage() {
+export const revalidate = 60
+
+export default async function TermosPage() {
+  const legal = await getLegalContent()
+
   return (
     <main className="max-w-3xl mx-auto px-6 lg:px-8 pt-32 pb-24 md:pt-40">
       <h1 className="font-display font-bold text-3xl md:text-4xl mb-8">Termos de Uso</h1>
       <div className="prose prose-invert prose-sm max-w-none space-y-6 text-foreground/70">
         <p className="text-sm text-foreground/40">Última atualização: {new Date().toLocaleDateString('pt-BR')}</p>
+        {legal.termos_de_uso ? (
+          <RichTextRenderer data={legal.termos_de_uso} />
+        ) : (
+          <FallbackTermos />
+        )}
+      </div>
+    </main>
+  )
+}
 
+function FallbackTermos() {
+  return (
+    <>
         <section>
           <h2 className="font-display font-bold text-xl text-foreground mb-3">1. Aceitação dos termos</h2>
           <p>Ao utilizar os serviços da Unfold Growth, você concorda com estes termos de uso. Se não concordar, não utilize os serviços.</p>
@@ -41,7 +59,9 @@ export default function TermosPage() {
           <h2 className="font-display font-bold text-xl text-foreground mb-3">6. Foro</h2>
           <p>Fica eleito o foro da Comarca de São Paulo/SP para dirimir controvérsias oriundas destes termos.</p>
         </section>
-      </div>
-    </main>
+        <p className="text-xs text-foreground/40 italic">
+          Você pode editar este texto pelo painel admin (Configurações avançadas Payload &gt; Site Settings &gt; aba Legal).
+        </p>
+    </>
   )
 }
