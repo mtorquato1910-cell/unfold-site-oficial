@@ -59,7 +59,7 @@ export async function getRecentDiagnosticos(limit = 4) {
   }
 }
 
-export async function getCollection(collection: string, options?: { limit?: number; sort?: string; where?: any; page?: number }) {
+export async function getCollection(collection: string, options?: { limit?: number; sort?: string; where?: any; page?: number }): Promise<{ docs: any[]; totalDocs: number; totalPages: number; page: number }> {
   try {
     const payload = await getPayloadInstance()
     const result = await payload.find({
@@ -69,7 +69,8 @@ export async function getCollection(collection: string, options?: { limit?: numb
       where: options?.where,
       page: options?.page ?? 1,
     })
-    return result
+    const docs = (result.docs ?? []).map((d: any) => ({ ...d, id: String(d.id) }))
+    return { docs, totalDocs: result.totalDocs ?? 0, totalPages: result.totalPages ?? 1, page: result.page ?? 1 }
   } catch {
     return { docs: [], totalDocs: 0, totalPages: 1, page: 1 }
   }

@@ -12,7 +12,7 @@ export default async function DiagnosticoPage() {
 
   return (
     <PainelLayout user={user}>
-      <DiagnosticoClient initialResults={result.docs ?? []} />
+      <DiagnosticoClient initialResults={result.docs} />
     </PainelLayout>
   )
 }
