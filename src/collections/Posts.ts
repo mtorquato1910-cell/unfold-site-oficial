@@ -77,6 +77,45 @@ export const Posts: CollectionConfig = {
       admin: { description: 'Tempo de leitura estimado em minutos' },
     },
     { name: 'tags', type: 'array', fields: [{ name: 'tag', type: 'text' }] },
+
+    // ── Submissão externa (S8 Workflow Editorial) ─────────────────
+    {
+      name: 'isExternalSubmission',
+      type: 'checkbox',
+      defaultValue: false,
+      index: true,
+      admin: { description: 'Marcado quando o post veio do formulário público /blog/submit' },
+    },
+    {
+      name: 'submittedByName',
+      type: 'text',
+      admin: { description: 'Nome do autor externo (apenas se isExternalSubmission=true)' },
+    },
+    {
+      name: 'submittedByEmail',
+      type: 'email',
+      admin: { description: 'Email do autor externo' },
+    },
+    {
+      name: 'submittedByCompany',
+      type: 'text',
+      admin: { description: 'Empresa do autor externo' },
+    },
+    {
+      name: 'rejectionReason',
+      type: 'textarea',
+      admin: { description: 'Motivo da rejeição (se aplicável)' },
+    },
+    {
+      name: 'reviewedBy',
+      type: 'text',
+      admin: { description: 'ID do admin que aprovou/rejeitou (Supabase user id)' },
+    },
+    {
+      name: 'reviewedAt',
+      type: 'date',
+      admin: { description: 'Quando foi aprovado/rejeitado' },
+    },
   ],
   timestamps: true,
 }

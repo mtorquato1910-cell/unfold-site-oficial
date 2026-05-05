@@ -61,6 +61,17 @@ export default async function BlogPage() {
               Diagnóstico, estrutura e operação — os três pilares do método UGS em forma de
               conhecimento aplicado.
             </p>
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <a
+                href="/blog/contribuir"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-primary/30 bg-primary/5 text-primary font-medium hover:bg-primary/10 transition text-sm"
+              >
+                Contribuir com um artigo →
+              </a>
+              <span className="text-xs text-foreground/50 font-mono">
+                Revisado pela liderança Unfold antes de publicar
+              </span>
+            </div>
           </div>
         </div>
       </section>

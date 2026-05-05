@@ -8,11 +8,14 @@ export default async function PostsPage() {
   const user = await getSession()
   if (!user) redirect('/admin/login')
 
-  const result = await getCollection('posts', { limit: 50, sort: '-createdAt' })
+  const result = await getCollection('posts', { limit: 100, sort: '-createdAt' })
 
   return (
     <PainelLayout user={user}>
-      <PostsClient initialPosts={result.docs ?? []} />
+      <PostsClient
+        initialPosts={result.docs ?? []}
+        canApprove={user.role === 'admin'}
+      />
     </PainelLayout>
   )
 }
