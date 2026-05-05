@@ -74,7 +74,8 @@
       "Bash(taskkill /F /IM node.exe)",
       "Bash(node -e ' *)",
       "Read(//c/Users/mathe/.claude/rules/**)",
-      "Read(//c/Users/mathe/.claude/**)"
+      "Read(//c/Users/mathe/.claude/**)",
+      "Bash(npx next *)"
     ]
   }
 }

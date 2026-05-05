@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import Link from 'next/link'
 import { CheckCircle2, Send, AlertCircle } from 'lucide-react'
 import { submitGuestPost, type GuestPostInput } from '@/lib/actions/blog-submit-actions'
 
@@ -56,12 +57,12 @@ export default function ContribuirClient() {
             Obrigado pela contribuição. A liderança editorial da Unfold vai revisar seu post nos próximos dias e
             você receberá um email com o resultado.
           </p>
-          <a
+          <Link
             href="/blog"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-background font-medium hover:opacity-90"
           >
             Voltar para o blog
-          </a>
+          </Link>
         </div>
       </div>
     )
@@ -202,9 +203,9 @@ export default function ContribuirClient() {
           <span className="text-foreground/70 leading-relaxed">
             Concordo que o conteúdo é de minha autoria e cedo direitos de publicação à Unfold Growth caso
             seja aprovado. Concordo com a{' '}
-            <a href="/politica-de-privacidade" className="text-primary hover:underline">
+            <Link href="/politica-de-privacidade" className="text-primary hover:underline">
               Política de Privacidade
-            </a>
+            </Link>
             .
           </span>
         </label>

@@ -226,7 +226,7 @@ export default function HomeConfigClient({ initial }: { initial: FormState }) {
             </button>
           </div>
           {form.stats.length === 0 ? (
-            <p className="text-[13px] text-dim text-center py-4">Nenhuma stat. Clique em "Adicionar stat".</p>
+            <p className="text-[13px] text-dim text-center py-4">Nenhuma stat. Clique em &quot;Adicionar stat&quot;.</p>
           ) : (
             <div className="space-y-3">
               {form.stats.map((stat, i) => (
@@ -322,7 +322,7 @@ export default function HomeConfigClient({ initial }: { initial: FormState }) {
 
           {form.client_logos.length === 0 ? (
             <p className="text-[13px] text-dim text-center py-4">
-              Nenhum cliente. Clique em "Adicionar cliente".
+              Nenhum cliente. Clique em &quot;Adicionar cliente&quot;.
             </p>
           ) : (
             <div className="space-y-2">
