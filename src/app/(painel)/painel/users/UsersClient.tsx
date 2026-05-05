@@ -108,12 +108,11 @@ export default function UsersClient({ initialUsers }: { initialUsers: User[] }) 
   return (
     <>
       <PageHeader
-        eyebrow="Admin"
         title="Usuários"
-        description={`${users.length} usuário${users.length !== 1 ? 's' : ''} cadastrados`}
+        description="Administradores e editores do painel"
         actions={
           <MintButton onClick={openCreate}>
-            <Plus className="h-4 w-4" /> Novo Usuário
+            <Plus className="h-4 w-4" /> Novo usuário
           </MintButton>
         }
       />

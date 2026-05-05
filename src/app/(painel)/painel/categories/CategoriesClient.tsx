@@ -61,9 +61,8 @@ export default function CategoriesClient({ initialCategories }: { initialCategor
   return (
     <>
       <PageHeader
-        eyebrow="Conteúdo"
         title="Categorias"
-        description="Categorias usadas para organizar posts e conteúdos."
+        description="Organize posts e cases por categoria"
       />
 
       {/* Criação inline */}

@@ -42,6 +42,8 @@
   "exclude": [
     "node_modules",
     "painel admin e login lovable",
+    "referencias",
+    "meu-projeto",
     "vite.config.ts",
     "vitest.config.ts",
     "src/main.tsx",

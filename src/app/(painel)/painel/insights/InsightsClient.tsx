@@ -132,12 +132,11 @@ export default function InsightsClient({ initialInsights }: { initialInsights: I
   return (
     <>
       <PageHeader
-        eyebrow="IA & Quiz"
         title="Variações de Insights"
-        description={`${insights.length} insight${insights.length !== 1 ? 's' : ''} cadastrados`}
+        description="Banco de variações para o resultado do quiz"
         actions={
           <MintButton onClick={openCreate}>
-            <Plus className="h-4 w-4" /> Novo Insight
+            <Plus className="h-4 w-4" /> Novo insight
           </MintButton>
         }
       />

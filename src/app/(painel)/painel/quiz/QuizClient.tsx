@@ -111,12 +111,11 @@ export default function QuizClient({ initialQuestions }: { initialQuestions: Qui
   return (
     <>
       <PageHeader
-        eyebrow="IA & Quiz"
         title="Questões do Quiz"
-        description={`${questions.length} questão${questions.length !== 1 ? 'ões' : ''} cadastradas`}
+        description="Perguntas do diagnóstico de maturidade"
         actions={
           <MintButton onClick={openCreate}>
-            <Plus className="h-4 w-4" /> Nova Questão
+            <Plus className="h-4 w-4" /> Nova questão
           </MintButton>
         }
       />

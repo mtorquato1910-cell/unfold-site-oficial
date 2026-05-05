@@ -61,9 +61,8 @@ export default function DiagnosticoClient({ initialResults }: { initialResults: 
   return (
     <>
       <PageHeader
-        eyebrow="CRM"
         title="Diagnósticos"
-        description={`${initialResults.length} diagnóstico${initialResults.length !== 1 ? 's' : ''} realizados`}
+        description="Resultados de maturidade do quiz"
       />
 
       {initialResults.length === 0 ? (

@@ -122,9 +122,8 @@ export default function SettingsClient({ initialData }: { initialData: Record<st
   return (
     <>
       <PageHeader
-        eyebrow="Admin"
         title="Configurações do Site"
-        description="Gerencie as configurações globais, SEO e redes sociais."
+        description="Configurações globais, SEO e redes"
         actions={
           <MintButton onClick={handleSave} disabled={isPending}>
             <Settings className="h-4 w-4" />

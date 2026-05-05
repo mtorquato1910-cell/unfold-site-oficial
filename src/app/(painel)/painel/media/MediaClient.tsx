@@ -131,9 +131,8 @@ export default function MediaClient({ initialMedia }: { initialMedia: MediaItem[
   return (
     <>
       <PageHeader
-        eyebrow="Conteúdo"
-        title="Biblioteca de Mídia"
-        description="Visualize e gerencie arquivos de mídia do projeto."
+        title="Mídia"
+        description="Imagens e arquivos do site"
         actions={
           <a
             href="/admin/collections/media"

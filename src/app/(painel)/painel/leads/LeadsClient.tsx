@@ -98,9 +98,8 @@ export default function LeadsClient({ initialLeads }: { initialLeads: Lead[] }) 
   return (
     <>
       <PageHeader
-        eyebrow="CRM"
         title="Leads"
-        description={`${leads.length} lead${leads.length !== 1 ? 's' : ''} captados`}
+        description="Contatos capturados pelo site"
         actions={
           <select
             value={filterStatus}

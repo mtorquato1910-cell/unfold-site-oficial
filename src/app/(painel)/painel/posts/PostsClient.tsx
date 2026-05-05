@@ -84,9 +84,8 @@ export default function PostsClient({ initialPosts }: { initialPosts: Post[] }) 
   return (
     <>
       <PageHeader
-        eyebrow="Conteúdo"
         title="Posts / Blog"
-        description="Gerencie os artigos e publicações do blog da Unfold."
+        description="Crie, edite e publique artigos"
         actions={
           <button
             onClick={openCreate}

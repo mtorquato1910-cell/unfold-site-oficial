@@ -106,9 +106,8 @@ export default function TestimonialsClient({ initialTestimonials }: { initialTes
   return (
     <>
       <PageHeader
-        eyebrow="Conteúdo"
         title="Depoimentos"
-        description="Gerencie os depoimentos e avaliações de clientes."
+        description="Avaliações e depoimentos de clientes"
         actions={
           <button
             onClick={openCreate}

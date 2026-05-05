@@ -58,9 +58,8 @@ export default function AuditClient({ initialLogs }: { initialLogs: AuditLog[] }
   return (
     <>
       <PageHeader
-        eyebrow="Admin"
         title="Log de Auditoria"
-        description={`${initialLogs.length} registro${initialLogs.length !== 1 ? 's' : ''} de atividade`}
+        description="Histórico de alterações no sistema"
       />
 
       {initialLogs.length === 0 ? (

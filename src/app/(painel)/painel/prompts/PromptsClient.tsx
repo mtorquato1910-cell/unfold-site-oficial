@@ -90,12 +90,11 @@ export default function PromptsClient({ initialPrompts }: { initialPrompts: Prom
   return (
     <>
       <PageHeader
-        eyebrow="IA & Quiz"
         title="Prompts de IA"
-        description={`${prompts.length} prompt${prompts.length !== 1 ? 's' : ''} cadastrados`}
+        description="Templates usados nas chamadas de IA"
         actions={
           <MintButton onClick={openCreate}>
-            <Plus className="h-4 w-4" /> Novo Prompt
+            <Plus className="h-4 w-4" /> Novo prompt
           </MintButton>
         }
       />
