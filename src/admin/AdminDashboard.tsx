@@ -3,70 +3,72 @@
 import React from 'react'
 import Link from 'next/link'
 
+const ACCENT = '#5EEAD4'
+
 const KPI_CARDS = [
   {
     label: 'Posts Publicados',
     value: '—',
     sub: 'artigos no blog',
     href: '/admin/collections/posts',
+    primary: true,
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <rect x="1.5" y="1.5" width="15" height="15" rx="2" stroke="currentColor" strokeWidth="1.4"/>
         <path d="M4.5 6h9M4.5 9h9M4.5 12h5.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
       </svg>
     ),
-    color: '#6DF9C6',
   },
   {
     label: 'Leads Ativos',
     value: '—',
     sub: 'na plataforma',
     href: '/admin/collections/leads',
+    primary: false,
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <circle cx="9" cy="6" r="3" stroke="currentColor" strokeWidth="1.4"/>
         <path d="M2.5 16c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
       </svg>
     ),
-    color: '#93BAFB',
   },
   {
     label: 'Diagnósticos',
     value: '—',
     sub: 'resultados recebidos',
     href: '/admin/collections/diagnostico-results',
+    primary: false,
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <path d="M2.5 12l4-6 3.5 4 2.5-5L16.5 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
         <rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.4"/>
       </svg>
     ),
-    color: '#a78bfa',
   },
   {
     label: 'Cases Publicados',
     value: '—',
     sub: 'no portfólio',
     href: '/admin/collections/cases',
+    primary: false,
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <path d="M9 2l2.2 4.5 5 .7-3.6 3.5 0.85 4.95L9 13.3l-4.45 2.35.85-4.95-3.6-3.5 5-.7L9 2z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
       </svg>
     ),
-    color: '#fbbf24',
   },
   {
     label: 'Depoimentos',
     value: '—',
     sub: 'cadastrados',
     href: '/admin/collections/testimonials',
+    primary: false,
     icon: (
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <path d="M2 3h14a1 1 0 011 1v8a1 1 0 01-1 1H9.5l-4 2.5V13H2a1 1 0 01-1-1V4a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
         <path d="M5 7.5h8M5 10h5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
       </svg>
     ),
-    color: '#fb923c',
   },
 ]
 
@@ -199,54 +201,34 @@ export function AdminDashboard() {
             style={{
               display: 'flex',
               flexDirection: 'column',
-              background: '#032230',
-              border: `1px solid ${card.color}18`,
+              background: card.primary ? 'rgba(94,234,212,0.05)' : 'rgba(94,234,212,0.02)',
+              border: '1px solid rgba(94,234,212,0.12)',
               borderRadius: '12px',
               padding: '18px 20px',
               textDecoration: 'none',
               transition: 'all 0.15s ease',
               cursor: 'pointer',
-              position: 'relative',
-              overflow: 'hidden',
             }}
             onMouseEnter={(e) => {
               const el = e.currentTarget as HTMLAnchorElement
-              el.style.borderColor = `${card.color}35`
+              el.style.borderColor = 'rgba(94,234,212,0.28)'
               el.style.transform = 'translateY(-2px)'
-              el.style.boxShadow = `0 8px 24px rgba(0,0,0,0.2), 0 0 0 1px ${card.color}20`
+              el.style.boxShadow = '0 8px 24px rgba(0,0,0,0.2)'
             }}
             onMouseLeave={(e) => {
               const el = e.currentTarget as HTMLAnchorElement
-              el.style.borderColor = `${card.color}18`
+              el.style.borderColor = 'rgba(94,234,212,0.12)'
               el.style.transform = 'translateY(0)'
               el.style.boxShadow = 'none'
             }}
           >
-            {/* Background glow */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '-24px',
-                right: '-24px',
-                width: '96px',
-                height: '96px',
-                background: `radial-gradient(circle, ${card.color}10 0%, transparent 70%)`,
-                borderRadius: '50%',
-                pointerEvents: 'none',
-              }}
-            />
-
             {/* Icon */}
             <div
               style={{
-                width: '34px',
-                height: '34px',
-                borderRadius: '9px',
-                background: `${card.color}14`,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                color: card.color,
+                color: ACCENT,
+                opacity: 0.6,
                 marginBottom: '14px',
                 flexShrink: 0,
               }}
@@ -273,7 +255,7 @@ export function AdminDashboard() {
               style={{
                 fontSize: '26px',
                 fontWeight: 700,
-                color: card.color,
+                color: ACCENT,
                 margin: '0 0 3px 0',
                 fontFamily: '"IBM Plex Mono", monospace',
                 letterSpacing: '-0.02em',
