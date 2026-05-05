@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { logoutAction } from '@/app/(painel)/admin/login/actions'
+import { logoutAction } from '@/app/(painel)/painel/login/actions'
 import {
   LayoutDashboard, FileText, Briefcase, MessageSquareQuote,
   FolderTree, ImageIcon, Users, ClipboardList,
