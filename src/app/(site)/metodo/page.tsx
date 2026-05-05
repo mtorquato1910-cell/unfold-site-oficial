@@ -101,6 +101,7 @@ export default function MetodoPage() {
         </video>
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-background/95 via-background/85 to-background/55" />
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(158_92%_70%/0.10),transparent_55%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-32 -z-10 bg-gradient-to-b from-transparent to-background pointer-events-none" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
@@ -126,22 +127,22 @@ export default function MetodoPage() {
       </section>
 
       {/* UGS Overview */}
-      <section className="bg-[#E7E7E7] text-[#001E29] py-20 md:py-28">
+      <section className="bg-background py-20 md:py-28 border-t border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-12 gap-10 items-start">
             <div className="lg:col-span-5">
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-5">
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
                 O que é o UGS
               </p>
               <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl leading-[1.1]">
                 Um sistema, não uma série de ações.
               </h2>
-              <p className="mt-6 text-base text-[#001E29]/75 leading-relaxed">
+              <p className="mt-6 text-base text-foreground/70 leading-relaxed">
                 A maioria das empresas com vendas complexas tem marketing fazendo ações, vendas
                 fazendo abordagem e os dois times falando línguas diferentes. O resultado é pipeline
                 imprevisível, CAC alto e ciclos longos.
               </p>
-              <p className="mt-4 text-base text-[#001E29]/75 leading-relaxed">
+              <p className="mt-4 text-base text-foreground/70 leading-relaxed">
                 O Unfold Growth System (UGS) conecta essas quatro etapas em uma operação única,
                 com dados, processos e cadência alinhados para gerar crescimento previsível.
               </p>
@@ -154,7 +155,7 @@ export default function MetodoPage() {
       </section>
 
       {/* 4 Pillars — detailed */}
-      <section className="bg-background py-20 md:py-28">
+      <section className="bg-background py-20 md:py-28 border-t border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
             Os 4 pilares
@@ -198,9 +199,9 @@ export default function MetodoPage() {
       </section>
 
       {/* Differentials */}
-      <section className="bg-[#E7E7E7] text-[#001E29] py-20 md:py-28">
+      <section className="bg-background py-20 md:py-28 border-t border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-5">
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
             Por que funciona
           </p>
           <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1] max-w-2xl mb-14">
@@ -210,11 +211,11 @@ export default function MetodoPage() {
             {DIFFERENTIALS.map((d, i) => (
               <div
                 key={i}
-                className="rounded-xl border border-[#001E29]/10 bg-white p-7 hover:border-[#001E29]/25 transition-colors"
+                className="rounded-xl border border-border bg-card/40 p-7 hover:border-primary/30 transition-colors"
               >
-                <span className="font-mono text-xs text-[#0a8a5f]">0{i + 1}.</span>
+                <span className="font-mono text-xs text-primary">0{i + 1}.</span>
                 <h3 className="font-display font-bold text-xl mt-2 mb-3">{d.title}</h3>
-                <p className="text-sm text-[#001E29]/70 leading-relaxed">{d.desc}</p>
+                <p className="text-sm text-foreground/70 leading-relaxed">{d.desc}</p>
               </div>
             ))}
           </div>
@@ -222,7 +223,7 @@ export default function MetodoPage() {
       </section>
 
       {/* Para quem */}
-      <section className="bg-background py-20 md:py-28">
+      <section className="bg-background py-20 md:py-28 border-t border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -280,9 +281,9 @@ export default function MetodoPage() {
       </section>
 
       {/* Processo de engajamento */}
-      <section className="bg-[#E7E7E7] text-[#001E29] py-20 md:py-28">
+      <section className="bg-background py-20 md:py-28 border-t border-border">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-5">
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
             Como começar
           </p>
           <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl leading-[1.1] max-w-xl mb-14">
@@ -295,10 +296,10 @@ export default function MetodoPage() {
               { step: '03', label: 'Kick-off', desc: 'Mapeamento completo e construção do plano de 90 dias.' },
               { step: '04', label: 'Operação', desc: 'Execução com cadência semanal e dashboards em tempo real.' },
             ].map((s) => (
-              <div key={s.step} className="rounded-xl bg-white border border-[#001E29]/10 p-6">
-                <span className="font-mono text-3xl font-bold text-[#0a8a5f]/30">{s.step}</span>
+              <div key={s.step} className="rounded-xl border border-border bg-card/40 p-6 hover:border-primary/30 transition-colors">
+                <span className="font-mono text-3xl font-bold text-primary/30">{s.step}</span>
                 <h3 className="font-display font-bold text-xl mt-3 mb-2">{s.label}</h3>
-                <p className="text-sm text-[#001E29]/65 leading-relaxed">{s.desc}</p>
+                <p className="text-sm text-foreground/65 leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -306,7 +307,7 @@ export default function MetodoPage() {
       </section>
 
       {/* CTA */}
-      <section className="relative bg-background py-20 md:py-28 overflow-hidden">
+      <section className="relative bg-background py-20 md:py-28 overflow-hidden border-t border-border">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_50%,hsl(158_92%_70%/0.15),transparent_45%)]" />
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-12 gap-10 items-center">
@@ -316,7 +317,7 @@ export default function MetodoPage() {
               </h2>
               <p className="mt-6 text-base md:text-lg text-foreground/70 max-w-2xl leading-relaxed">
                 Comece pelo diagnóstico gratuito. Em 5 minutos você sabe onde sua operação está
-                e o que travar está travando.
+                e o que está travando.
               </p>
             </div>
             <div className="lg:col-span-4 lg:flex lg:justify-end">
