@@ -60,6 +60,15 @@ export const CalculadoraResults: CollectionConfig = {
       admin: { description: 'Score de qualidade do lead (0-100)' },
     },
 
+    // Notificação Slack (alto score)
+    {
+      name: 'notified_slack',
+      type: 'checkbox',
+      defaultValue: false,
+      index: true,
+      admin: { description: 'Marcado quando lead high-score já foi notificado no Slack' },
+    },
+
     // Status do envio do email
     {
       name: 'emailStatus',

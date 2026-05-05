@@ -4,6 +4,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import CookieBanner from '@/components/CookieBanner'
 import { OrganizationSchema, WebSiteSchema } from '@/components/SchemaOrg'
+import PostHogScript from '@/components/analytics/PostHogScript'
 import '../globals.css'
 
 // S1.2 — Display tech: Space Grotesk (substituto Relicus)
@@ -66,6 +67,7 @@ export default function SiteLayout({
       suppressHydrationWarning
     >
       <body className="font-sans">
+        <PostHogScript />
         <OrganizationSchema />
         <WebSiteSchema />
         <Navbar />

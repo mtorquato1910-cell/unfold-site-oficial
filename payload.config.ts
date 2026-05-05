@@ -22,6 +22,7 @@ import Notifications from './src/collections/Notifications'
 import EmailLogs from './src/collections/EmailLogs'
 import FAQs from './src/collections/FAQs'
 import CalculadoraResults from './src/collections/CalculadoraResults'
+import Redirects from './src/collections/Redirects'
 import SiteSettings from './src/globals/SiteSettings'
 import HomeSettings from './src/globals/HomeSettings'
 
@@ -80,6 +81,8 @@ export default buildConfig({
     FAQs,
     // Sprint 15 (Curadoria + Tool Usage)
     CalculadoraResults,
+    // Sprint 10 (SEO Manager)
+    Redirects,
   ],
   globals: [SiteSettings, HomeSettings],
   editor: lexicalEditor({}),

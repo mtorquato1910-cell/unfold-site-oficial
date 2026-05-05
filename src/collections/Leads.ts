@@ -104,6 +104,13 @@ export const Leads: CollectionConfig = {
       defaultValue: 'pending',
     },
     { name: 'rd_contact_id', type: 'text', admin: { readOnly: true } },
+    {
+      name: 'rd_sync_attempts',
+      type: 'number',
+      defaultValue: 0,
+      admin: { readOnly: true, description: 'Número de tentativas de sync (cron incrementa)' },
+    },
+    { name: 'telefone', type: 'text' },
     { name: 'consentimento_lgpd', type: 'checkbox', defaultValue: false },
     { name: 'ip_address', type: 'text', admin: { readOnly: true } },
     { name: 'utm_source', type: 'text' },
