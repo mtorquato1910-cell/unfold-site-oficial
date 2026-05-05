@@ -108,19 +108,41 @@ html[data-theme='dark'] {
 
 .template-default__wrap {
   flex: 1 !important;
+  min-width: 0 !important;
   overflow-y: auto !important;
-  padding: 24px !important;
+  padding: 40px 32px 48px !important;
   background: #001E29 !important;
 }
 
-/* ─── Sidebar — cores, borda e tipografia sem sobreposição ──────────────── */
+/* Reset de posição — evita elementos flutuando sobre o conteúdo */
+[class*='render-fields'],
+[class*='document-fields'] > *,
+[class*='gutter'],
+[class*='dashboard__header'] {
+  position: static !important;
+}
+
+/* Listas dentro do dashboard — sem recuo extra */
+.template-default__wrap ul,
+.template-default__wrap li {
+  padding-left: 0 !important;
+  list-style: none !important;
+}
+
+.template-default__wrap li {
+  margin-bottom: 12px !important;
+}
+
+/* ─── Sidebar — largura fixa 220px, borda de separação nítida ───────────── */
 .nav {
-  width: 240px !important;
-  max-width: 240px !important;
+  width: 220px !important;
+  min-width: 220px !important;
+  max-width: 220px !important;
   flex-shrink: 0 !important;
+  flex-basis: 220px !important;
   background: #001620 !important;
-  border-right: 1px solid rgba(109, 249, 198, 0.07) !important;
-  padding: 16px !important;
+  border-right: 1px solid rgba(109, 249, 198, 0.12) !important;
+  padding: 20px 14px !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
 }

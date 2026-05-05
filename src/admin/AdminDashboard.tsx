@@ -115,9 +115,10 @@ export function AdminDashboard() {
   return (
     <div
       style={{
-        padding: '0 0 48px 0',
-        maxWidth: '1400px',
+        padding: '0',
+        maxWidth: '1200px',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        position: 'static',
       }}
     >
       {/* ── Welcome banner ──────────────────────────────────────────────── */}
@@ -201,13 +202,16 @@ export function AdminDashboard() {
             style={{
               display: 'flex',
               flexDirection: 'column',
-              background: card.primary ? 'rgba(94,234,212,0.05)' : 'rgba(94,234,212,0.02)',
-              border: '1px solid rgba(94,234,212,0.12)',
+              background: card.primary ? 'rgba(109,249,198,0.06)' : 'rgba(255,255,255,0.03)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              border: `1px solid ${card.primary ? 'rgba(109,249,198,0.18)' : 'rgba(255,255,255,0.07)'}`,
               borderRadius: '12px',
               padding: '18px 20px',
               textDecoration: 'none',
               transition: 'all 0.15s ease',
               cursor: 'pointer',
+              position: 'relative',
             }}
             onMouseEnter={(e) => {
               const el = e.currentTarget as HTMLAnchorElement
