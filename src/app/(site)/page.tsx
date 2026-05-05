@@ -10,7 +10,9 @@ import { Insights } from '@/components/home/Insights'
 import { Testimonials } from '@/components/home/Testimonials'
 import { FinalCTA } from '@/components/home/FinalCTA'
 
-export default function HomePage() {
+export const revalidate = 60
+
+export default async function HomePage() {
   return (
     <>
       <Hero />

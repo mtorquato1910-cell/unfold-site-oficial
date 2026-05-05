@@ -23,6 +23,7 @@ import EmailLogs from './src/collections/EmailLogs'
 import FAQs from './src/collections/FAQs'
 import CalculadoraResults from './src/collections/CalculadoraResults'
 import SiteSettings from './src/globals/SiteSettings'
+import HomeSettings from './src/globals/HomeSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -80,7 +81,7 @@ export default buildConfig({
     // Sprint 15 (Curadoria + Tool Usage)
     CalculadoraResults,
   ],
-  globals: [SiteSettings],
+  globals: [SiteSettings, HomeSettings],
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || 'dev-secret-CHANGE-IN-PRODUCTION',
   sharp,
