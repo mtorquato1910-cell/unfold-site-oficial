@@ -81,7 +81,7 @@ export default function SobrePage() {
       </section>
 
       {/* 2. Stats */}
-      <section className="border-t border-border py-14">
+      <section className="py-14">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {STATS.map((s) => (

@@ -121,7 +121,7 @@ export default async function CasesPage() {
       </section>
 
       {/* Grid de cases */}
-      <section className="py-16 md:py-24 border-t border-border">
+      <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {cases.length === 0 ? (
             <div>

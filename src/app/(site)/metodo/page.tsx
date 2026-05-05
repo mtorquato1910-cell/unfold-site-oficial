@@ -127,7 +127,7 @@ export default function MetodoPage() {
       </section>
 
       {/* UGS Overview */}
-      <section className="bg-background py-20 md:py-28 border-t border-border">
+      <section className="bg-background py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-12 gap-10 items-start">
             <div className="lg:col-span-5">
@@ -155,7 +155,7 @@ export default function MetodoPage() {
       </section>
 
       {/* 4 Pillars — detailed */}
-      <section className="bg-background py-20 md:py-28 border-t border-border">
+      <section className="bg-background py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
             Os 4 pilares
@@ -199,7 +199,7 @@ export default function MetodoPage() {
       </section>
 
       {/* Differentials */}
-      <section className="bg-background py-20 md:py-28 border-t border-border">
+      <section className="bg-background py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
             Por que funciona
@@ -223,7 +223,7 @@ export default function MetodoPage() {
       </section>
 
       {/* Para quem */}
-      <section className="bg-background py-20 md:py-28 border-t border-border">
+      <section className="bg-background py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -281,7 +281,7 @@ export default function MetodoPage() {
       </section>
 
       {/* Processo de engajamento */}
-      <section className="bg-background py-20 md:py-28 border-t border-border">
+      <section className="bg-background py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-5">
             Como começar
@@ -307,7 +307,7 @@ export default function MetodoPage() {
       </section>
 
       {/* CTA */}
-      <section className="relative bg-background py-20 md:py-28 overflow-hidden border-t border-border">
+      <section className="relative bg-background py-20 md:py-28 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_50%,hsl(158_92%_70%/0.15),transparent_45%)]" />
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-12 gap-10 items-center">

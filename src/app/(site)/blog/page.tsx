@@ -65,7 +65,7 @@ export default async function BlogPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-20 border-t border-border">
+      <section className="py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {posts.length === 0 ? (
             <div className="text-center py-20">
