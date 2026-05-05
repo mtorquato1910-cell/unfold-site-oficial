@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next dev",
     "build": "bash scripts/vercel-build.sh",
     "start": "next start",
     "lint": "next lint",
@@ -86,6 +86,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.21",
+    "cross-env": "^10.1.0",
     "eslint": "^9.32.0",
     "eslint-config-next": "^15.0.0",
     "globals": "^15.15.0",
