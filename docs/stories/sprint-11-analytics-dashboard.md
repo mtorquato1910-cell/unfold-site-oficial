@@ -55,3 +55,14 @@ Hoje o Dashboard mostra apenas contagens estáticas (Posts: 0, Cases: 0). Precis
 - Admin abre /admin e vê tráfego real dos últimos 7 dias
 - Filtro 30d → 7d atualiza todos os cards e gráficos
 - Cards mostram trend (+12% vs período anterior) com seta verde/vermelha
+
+---
+
+## Ajustes da QA + Architect Review
+
+- **DECISÃO**: Provider = **PostHog** (free tier 1M events/mês, unifica pageviews+eventos custom)
+- **AC9** Endpoint `/api/events` tem rate limit (60 req/min/IP) + origin allowlist + payload schema validation (zod)
+- **AC10** Falha do PostHog API: dashboard usa **último cache válido** + banner "dados desatualizados desde X"
+- **AC11** Collection `Events` no Payload **NÃO armazena pageviews** (só eventos de negócio: diagnostico_iniciado/concluido)
+- **AC12** Cookie `unfold_anon_id` (UUID) compartilhado site↔painel. Funil cruza GA/PostHog ↔ Payload via esse ID
+- **AC13** "Visitante" = sessão única por dia (não pageview). Métrica canônica documentada

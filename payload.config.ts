@@ -18,6 +18,8 @@ import AIPrompts from './src/collections/AIPrompts'
 import AuditLog from './src/collections/AuditLog'
 import Media from './src/collections/Media'
 import Testimonials from './src/collections/Testimonials'
+import Notifications from './src/collections/Notifications'
+import EmailLogs from './src/collections/EmailLogs'
 import SiteSettings from './src/globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
@@ -68,6 +70,9 @@ export default buildConfig({
     AuditLog,
     // Sprint 7
     Testimonials,
+    // Sprint 13 (Notifications & Email)
+    Notifications,
+    EmailLogs,
   ],
   globals: [SiteSettings],
   editor: lexicalEditor({}),

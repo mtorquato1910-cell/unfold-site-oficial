@@ -54,3 +54,13 @@ Hoje os leads ficam apenas dentro do Payload. Para uma operação comercial, pre
 - Lead novo aparece no RD Station em <30s
 - Slack recebe ping com nome+empresa+score em canal #leads
 - Score >70 fica destacado em verde no painel
+
+---
+
+## Ajustes da QA + Architect Review
+
+- **AC11** LGPD: Lead armazena `consentGiven`, `consentSource`, `consentTimestamp`, `consentText`. Sync CRM só ocorre se `consentGiven=true`
+- **AC12** Idempotência: sync usa hash(email+createdAt) como idempotency key. Verifica `crmId` antes de POST
+- **AC13** Sync **assíncrono**: `afterChange` enfileira em coluna `sync_status='pending'`. Cron processa via dispatcher
+- **AC14** Após N=5 retries com backoff, lead vai para `sync_status='failed'` + alerta Slack/email
+- **DEP** Depende de **S13** (sender de email) e **S7.5** (RBAC). Reusa `webhookDispatcher` introduzido em S13

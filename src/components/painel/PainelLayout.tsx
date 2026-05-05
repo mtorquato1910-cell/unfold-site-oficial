@@ -8,8 +8,9 @@ import {
   LayoutDashboard, FileText, Briefcase, MessageSquareQuote,
   FolderTree, Image as ImageIcon, Users, ClipboardList,
   HelpCircle, Sparkles as SparklesIcon, Bot,
-  Settings, UserCog, Activity, LogOut, Search, Bell, Command, ChevronRight,
+  Settings, UserCog, Activity, LogOut, Search, Command, ChevronRight,
 } from 'lucide-react'
+import BellDropdown from './BellDropdown'
 
 type Item = { to: string; label: string; icon: any; end?: boolean; admin?: boolean }
 type Section = { label: string; items: Item[] }
@@ -230,14 +231,8 @@ export default function PainelLayout({
                 <Command className="h-2.5 w-2.5" />K
               </kbd>
             </div>
-            {/* Bell */}
-            <button className="icon-btn relative rounded-lg p-2">
-              <Bell className="h-4 w-4" />
-              <span
-                className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full"
-                style={{ background: 'hsl(158 92% 70%)', boxShadow: '0 0 6px hsl(158 92% 70%)' }}
-              />
-            </button>
+            {/* Bell + dropdown */}
+            <BellDropdown />
           </div>
         </header>
 

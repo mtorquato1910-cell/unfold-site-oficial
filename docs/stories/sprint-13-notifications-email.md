@@ -54,3 +54,15 @@ O painel precisa de um sistema centralizado de notificações:
 - Novo lead → email chega em ecnologia@unfoldgrowth.com.br em <30s
 - Sino do header mostra badge vermelho quando há notificação não lida
 - Editor de template tem preview ao vivo
+
+---
+
+## Ajustes da QA + Architect Review
+
+- **PRIORIDADE ELEVADA**: S13 vira **dependência de S8/S12**. Implementar PRIMEIRO
+- **AC11** Templates HTML sanitizados via **DOMPurify** no preview e renderer. Variáveis SEMPRE escapadas
+- **AC12** Endpoint `/api/webhooks/resend` recebe eventos bounce/complaint e atualiza EmailLogs (marca emails inválidos)
+- **AC13** Emails marketing incluem `List-Unsubscribe` header + link de unsubscribe (CAN-SPAM/LGPD)
+- **AC14** Variáveis de template usam **allowlist por template** (não free-form): previne SSRF/leak de campos sensíveis
+- **AC15** `webhookDispatcher` introduzido AQUI como helper compartilhado (retry+backoff+log) — reusado por S12
+- **AC16** Settings `/admin/settings/notifications`: usuário escolhe in-app vs email vs ambos por tipo

@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getSession } from '@/lib/painel-auth'
-import { getCollection } from '@/lib/painel-api'
+import { getSession, adminListUsers } from '@/lib/painel-auth'
 import PainelLayout from '@/components/painel/PainelLayout'
 import UsersClient from './UsersClient'
 
@@ -9,11 +8,17 @@ export default async function UsersPage() {
   if (!user) redirect('/admin/login')
   if (user.role !== 'admin') redirect('/admin')
 
-  const result = await getCollection('users', { limit: 50, sort: '-createdAt' })
+  let users: Awaited<ReturnType<typeof adminListUsers>> = []
+  let listError: string | null = null
+  try {
+    users = await adminListUsers()
+  } catch (err: any) {
+    listError = err?.message || 'Falha ao carregar usuários do Supabase'
+  }
 
   return (
     <PainelLayout user={user}>
-      <UsersClient initialUsers={result.docs ?? []} />
+      <UsersClient initialUsers={users} currentUserId={user.id} listError={listError} />
     </PainelLayout>
   )
 }

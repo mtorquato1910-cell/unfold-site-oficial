@@ -58,3 +58,13 @@ A regra: tudo que é texto editável vira config no painel.
 - Cliente edita o título do Hero pelo painel e ele atualiza no site em <30s
 - Adicionar logo de cliente novo no painel reflete em /sobre sem redeploy
 - Mudar email de contato em SiteSettings altera footer em todas as páginas
+
+---
+
+## Ajustes da QA + Architect Review
+
+- **AC12** Preview tokens: JWT HMAC, TTL=10min, escopados por slug. Vazamento não expõe drafts indefinidamente
+- **AC13** Optimistic locking em Pages/Globals via `version` ou `updatedAt`. Se mudou desde load, retorna 409
+- **AC14** `revalidatePath()` chamado em **Server Action** (não em hook Payload background) após save com sucesso
+- **AC15** Blocks "CasesBlock"/"TestimonialsBlock" usam **relationship array** (não duplicam dados das collections)
+- **AC16** Pages collection já com `versions: { drafts: true }` (S14 só estende UI)

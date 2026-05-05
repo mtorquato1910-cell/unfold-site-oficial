@@ -77,3 +77,13 @@ Hoje a tela de Posts permite criar/editar/deletar, mas **não há fluxo de aprov
 - Admin recebe notificação ao chegar post em revisão
 - Post agendado para amanhã não aparece no /blog hoje
 - AuditLog mostra todas as transições
+
+---
+
+## Ajustes da QA + Architect Review (consolidados)
+
+- **AC11** Concurrent edit lock: editor não pode salvar se `updatedAt` mudou após carregar (compare e bloqueie com erro 409)
+- **AC12** Cron de publish-scheduled é **idempotente**: usa UPDATE atômico `WHERE status='approved' AND publishedAt IS NULL`
+- **AC13** Ownership check: editor só edita posts onde `author = req.user.id`. Hook beforeChange valida
+- **AC14** Resend é fire-and-forget: falha de email **não bloqueia** transição de status (envio em queue separada)
+- **Dep mudou:** S8 agora depende de **S13 (Resend base)** e **S7.5 (RBAC)**. Não duplicar sender

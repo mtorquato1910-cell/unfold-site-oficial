@@ -22,30 +22,41 @@
 | [S6](sprint-6-crm-ia.md) | CRM & IA | 3 dias | ✅ Done |
 | [S7](sprint-7-admin-configuracoes.md) | Admin & Configurações | 2 dias | ✅ Done |
 
-### Fase 2 — FUNCIONALIDADES OPERACIONAIS
+### Fase 2 — FUNCIONALIDADES OPERACIONAIS (pós QA+Architect review)
 
-| Sprint | Nome | Estimativa | Status | Prioridade |
-|--------|------|-----------|--------|-----------|
-| [S8](sprint-8-workflow-editorial.md) | Workflow Editorial (aprovação posts) | 3 dias | ⬜ | 🔥 ALTA |
-| [S9](sprint-9-site-editor.md) | Site Editor (conteúdo das páginas) | 4 dias | ⬜ | 🔥 ALTA |
-| [S10](sprint-10-seo-manager.md) | SEO Manager (meta, sitemap, redirects) | 2 dias | ⬜ | 🟡 MÉDIA |
-| [S11](sprint-11-analytics-dashboard.md) | Analytics Dashboard (KPIs reais) | 2-3 dias | ⬜ | 🟡 MÉDIA |
-| [S12](sprint-12-leads-crm-integration.md) | Leads CRM Integration (RD/HubSpot) | 2 dias | ⬜ | 🔥 ALTA |
-| [S13](sprint-13-notifications-email.md) | Notifications & Email (Resend) | 2 dias | ⬜ | 🟡 MÉDIA |
-| [S14](sprint-14-versioning-backup.md) | Versioning, Backup & Activity Log | 2 dias | ⬜ | 🟢 BAIXA |
+**Ordem reordenada após review (dependências reais):**
 
-**Total Fase 1:** ~13–15 dias (concluída)
-**Total Fase 2:** ~17–18 dias
+| # | Sprint | Estimativa | Prioridade | Status |
+|---|--------|-----------|-----------|--------|
+| 1 | [S7.5 RBAC Real](sprint-7-5-rbac.md) | 1 dia | 🔥 BLOQUEADOR | ⬜ |
+| 2 | [S13 Notifications & Email](sprint-13-notifications-email.md) | 2 dias | 🔥 ALTA | ⬜ |
+| 3 | [S9 Site Editor](sprint-9-site-editor.md) | 4 dias | 🔥 ALTA | ⬜ |
+| 4 | [S10 SEO Manager](sprint-10-seo-manager.md) | 2 dias | 🟡 MÉDIA | ⬜ |
+| 5 | [S8 Workflow Editorial](sprint-8-workflow-editorial.md) | 3 dias | 🔥 ALTA | ⬜ |
+| 6 | [S12 Leads CRM Integration](sprint-12-leads-crm-integration.md) | 2 dias | 🔥 ALTA | ⬜ |
+| 7 | [S11 Analytics Dashboard](sprint-11-analytics-dashboard.md) | 2-3 dias | 🟡 MÉDIA | ⬜ |
+| 8 | [S14 Versioning & Backup](sprint-14-versioning-backup.md) | 2 dias | 🟢 BAIXA | ⬜ |
 
-### Sequência recomendada Fase 2
+**Total Fase 2:** ~18–19 dias
 
-1. **S12 (Leads CRM)** — bloqueio comercial
-2. **S8 (Workflow Editorial)** — controle editorial do blog
-3. **S9 (Site Editor)** — autonomia para editar site
-4. **S13 (Notifications)** — base para muitos features
-5. **S10 (SEO)** — pré-go-live
-6. **S11 (Analytics)** — pós-tráfego real
-7. **S14 (Versioning/Backup)** — operacional contínuo
+### Decisões técnicas (consolidadas após review)
+
+- **Analytics:** PostHog (free 1M events/mês, unifica pageviews+eventos)
+- **Email:** Resend
+- **RBAC:** Supabase `app_metadata.role` (admin | editor)
+- **Jobs:** `/api/cron/tick` multiplexador (1 cron Vercel)
+- **Backup:** Supabase PITR nativo + GitHub Action `pg_dump`
+- **Queue:** coluna `sync_status` em collections + cron retry (sem Inngest p/ MVP)
+- **Cookie p/ funil:** `unfold_anon_id` (UUID) compartilhado site↔painel
+
+### Padrões transversais (introduzir 1x, reusar)
+
+- `requireRole(role)` — guard server-side (S7.5)
+- `auditLog({ action, before, after, userId })` — logger central (S7.5)
+- `sendEmail(slug, to, vars)` — sanitizado, renderer + send (S13)
+- `webhookDispatcher({ event, payload, retries })` — retry+backoff+DLQ (S13)
+- `seoFields()` factory — spread em collections (S10)
+- `scheduledJobsRegistry` — `/api/cron/tick` itera jobs (S8/S12/S14)
 
 ---
 

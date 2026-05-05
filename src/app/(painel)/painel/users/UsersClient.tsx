@@ -1,26 +1,17 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Plus, Trash2, UserCog } from 'lucide-react'
-import { PageHeader, GlassCard, EmptyState, Field, MintButton } from '@/components/painel/ui'
-import { createUser, updateUserRole, deleteUser } from '@/lib/actions/content-actions'
+import { UserCog, AlertTriangle } from 'lucide-react'
+import { PageHeader, GlassCard, EmptyState } from '@/components/painel/ui'
+import { updateUserRole } from '@/lib/actions/user-actions'
 
 type User = {
   id: string
   name?: string
-  email?: string
-  role?: string
-  createdAt?: string
-}
-
-type FormData = {
-  name: string
   email: string
-  password: string
-  role: string
+  role: 'admin' | 'editor'
+  createdAt: string
 }
-
-const EMPTY_FORM: FormData = { name: '', email: '', password: '', role: 'editor' }
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return '—'
@@ -32,76 +23,47 @@ function Avatar({ name, email }: { name?: string; email?: string }) {
   return (
     <div
       className="flex h-8 w-8 items-center justify-center rounded-full text-[12px] font-semibold shrink-0"
-      style={{ background: 'hsl(158 92% 70% / 0.15)', border: '1px solid hsl(158 92% 70% / 0.25)', color: 'hsl(158 92% 70%)' }}
+      style={{
+        background: 'hsl(158 92% 70% / 0.15)',
+        border: '1px solid hsl(158 92% 70% / 0.25)',
+        color: 'hsl(158 92% 70%)',
+      }}
     >
       {initial}
     </div>
   )
 }
 
-function RoleBadge({ role }: { role?: string }) {
-  const isAdmin = role === 'admin'
-  return (
-    <span
-      className="inline-flex items-center rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider"
-      style={isAdmin
-        ? { background: 'hsl(158 92% 70% / 0.12)', color: 'hsl(158 92% 70%)', border: '1px solid hsl(158 92% 70% / 0.25)' }
-        : { background: 'hsl(217 93% 78% / 0.12)', color: 'hsl(217 93% 78%)', border: '1px solid hsl(217 93% 78% / 0.25)' }
-      }
-    >
-      {role || 'editor'}
-    </span>
-  )
-}
-
-export default function UsersClient({ initialUsers }: { initialUsers: User[] }) {
+export default function UsersClient({
+  initialUsers,
+  currentUserId,
+  listError,
+}: {
+  initialUsers: User[]
+  currentUserId: string
+  listError: string | null
+}) {
   const [users, setUsers] = useState<User[]>(initialUsers)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [form, setForm] = useState<FormData>(EMPTY_FORM)
-  const [successMsg, setSuccessMsg] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  function showSuccess(msg: string) {
-    setSuccessMsg(msg)
-    setTimeout(() => setSuccessMsg(''), 3000)
-  }
-
-  function openCreate() {
-    setForm(EMPTY_FORM)
-    setModalOpen(true)
-  }
-
-  function closeModal() {
-    setModalOpen(false)
-  }
-
-  function handleSubmit() {
+  function handleRoleChange(userId: string, newRole: 'admin' | 'editor') {
+    if (userId === currentUserId) {
+      setError('Você não pode alterar seu próprio role.')
+      setTimeout(() => setError(null), 4000)
+      return
+    }
     startTransition(async () => {
-      await createUser({ name: form.name, email: form.email, password: form.password, role: form.role })
-      setUsers((prev) => [...prev, {
-        id: Date.now().toString(),
-        name: form.name,
-        email: form.email,
-        role: form.role,
-        createdAt: new Date().toISOString(),
-      }])
-      showSuccess('Usuário criado!')
-      closeModal()
-    })
-  }
-
-  function handleRoleChange(id: string, newRole: string) {
-    startTransition(async () => {
-      await updateUserRole(id, newRole)
-      setUsers((prev) => prev.map((u) => u.id === id ? { ...u, role: newRole } : u))
-    })
-  }
-
-  function handleDelete(id: string) {
-    if (!window.confirm('Remover este usuário permanentemente?')) return
-    startTransition(async () => {
-      await deleteUser(id)
-      setUsers((prev) => prev.filter((u) => u.id !== id))
+      try {
+        await updateUserRole(userId, newRole)
+        setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)))
+        setSuccess('Role atualizado.')
+        setTimeout(() => setSuccess(null), 2500)
+      } catch (err: any) {
+        setError(err?.message || 'Falha ao atualizar role')
+        setTimeout(() => setError(null), 4000)
+      }
     })
   }
 
@@ -110,28 +72,64 @@ export default function UsersClient({ initialUsers }: { initialUsers: User[] }) 
       <PageHeader
         title="Usuários"
         description="Administradores e editores do painel"
-        actions={
-          <MintButton onClick={openCreate}>
-            <Plus className="h-4 w-4" /> Novo usuário
-          </MintButton>
-        }
       />
 
-      {successMsg && (
+      {listError && (
         <div
-          className="mb-4 rounded-lg px-4 py-2.5 text-[13px] font-medium"
-          style={{ background: 'hsl(158 92% 70% / 0.1)', color: 'hsl(158 92% 70%)', border: '1px solid hsl(158 92% 70% / 0.2)' }}
+          className="mb-4 rounded-lg px-4 py-3 text-[13px] flex items-center gap-2"
+          style={{
+            background: 'hsl(0 70% 60% / 0.1)',
+            color: 'hsl(0 70% 80%)',
+            border: '1px solid hsl(0 70% 60% / 0.25)',
+          }}
         >
-          {successMsg}
+          <AlertTriangle className="h-4 w-4 shrink-0" />
+          {listError}{' '}
+          <span className="text-dim-2">
+            (configure <code>SUPABASE_SERVICE_ROLE_KEY</code> nas variáveis de ambiente)
+          </span>
         </div>
       )}
+
+      {error && (
+        <div
+          className="mb-4 rounded-lg px-4 py-2.5 text-[13px] font-medium"
+          style={{
+            background: 'hsl(0 70% 60% / 0.1)',
+            color: 'hsl(0 70% 80%)',
+            border: '1px solid hsl(0 70% 60% / 0.25)',
+          }}
+        >
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div
+          className="mb-4 rounded-lg px-4 py-2.5 text-[13px] font-medium"
+          style={{
+            background: 'hsl(158 92% 70% / 0.1)',
+            color: 'hsl(158 92% 70%)',
+            border: '1px solid hsl(158 92% 70% / 0.25)',
+          }}
+        >
+          {success}
+        </div>
+      )}
+
+      <div
+        className="mb-6 rounded-lg px-4 py-3 text-[12px] text-dim-2"
+        style={{ background: 'hsl(0 0% 100% / 0.02)', border: '1px solid hsl(158 92% 70% / 0.1)' }}
+      >
+        Para <strong>criar</strong> ou <strong>excluir</strong> usuários, use o Supabase Dashboard → Authentication → Users.
+        Aqui você gerencia apenas o <strong>role</strong> (admin/editor).
+      </div>
 
       {users.length === 0 ? (
         <EmptyState
           title="Nenhum usuário encontrado"
-          description="Adicione membros da equipe com acesso ao painel."
+          description="Adicione membros pelo Supabase Dashboard."
           icon={UserCog}
-          action={<MintButton onClick={openCreate}><Plus className="h-4 w-4" /> Novo Usuário</MintButton>}
         />
       ) : (
         <GlassCard className="p-0 overflow-hidden">
@@ -139,7 +137,7 @@ export default function UsersClient({ initialUsers }: { initialUsers: User[] }) 
             <table className="w-full text-[13px]">
               <thead>
                 <tr style={{ borderBottom: '1px solid hsl(158 92% 70% / 0.1)' }}>
-                  {['Usuário', 'Role', 'Membro desde', 'Ações'].map((h) => (
+                  {['Usuário', 'Role', 'Membro desde'].map((h) => (
                     <th
                       key={h}
                       className="px-4 py-3 text-left font-mono text-[10px] uppercase tracking-[0.18em]"
@@ -151,145 +149,67 @@ export default function UsersClient({ initialUsers }: { initialUsers: User[] }) 
                 </tr>
               </thead>
               <tbody>
-                {users.map((u, i) => (
-                  <tr
-                    key={u.id}
-                    className="transition-colors"
-                    style={{ borderBottom: i < users.length - 1 ? '1px solid hsl(158 92% 70% / 0.06)' : undefined }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = 'hsl(158 92% 70% / 0.03)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = '')}
-                  >
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <Avatar name={u.name} email={u.email} />
-                        <div>
-                          <div className="font-medium" style={{ color: 'hsl(0 0% 91%)' }}>
-                            {u.name || u.email?.split('@')[0] || '—'}
-                          </div>
-                          <div className="text-[11px]" style={{ color: 'hsl(0 0% 91% / 0.5)' }}>
-                            {u.email || '—'}
+                {users.map((u, i) => {
+                  const isMe = u.id === currentUserId
+                  return (
+                    <tr
+                      key={u.id}
+                      style={{
+                        borderBottom:
+                          i < users.length - 1 ? '1px solid hsl(158 92% 70% / 0.06)' : undefined,
+                      }}
+                    >
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <Avatar name={u.name} email={u.email} />
+                          <div>
+                            <div className="font-medium flex items-center gap-2 text-fg">
+                              {u.name || u.email.split('@')[0]}
+                              {isMe && (
+                                <span
+                                  className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded"
+                                  style={{
+                                    background: 'hsl(158 92% 70% / 0.15)',
+                                    color: 'hsl(158 92% 70%)',
+                                  }}
+                                >
+                                  você
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-[11px] text-dim">{u.email}</div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <select
-                        value={u.role || 'editor'}
-                        onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                        className="rounded-md px-2 py-1 text-[11px] font-mono uppercase tracking-wider outline-none cursor-pointer"
-                        style={{
-                          background: 'hsl(197 100% 10%)',
-                          border: '1px solid hsl(158 92% 70% / 0.15)',
-                          color: 'hsl(0 0% 91%)',
-                        }}
-                      >
-                        <option value="admin">admin</option>
-                        <option value="editor">editor</option>
-                      </select>
-                    </td>
-                    <td className="px-4 py-3" style={{ color: 'hsl(0 0% 91% / 0.5)' }}>
-                      {formatDate(u.createdAt)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <button
-                        onClick={() => handleDelete(u.id)}
-                        className="rounded-lg p-1.5 transition-colors"
-                        style={{ color: 'hsl(0 0% 91% / 0.35)' }}
-                        title="Remover usuário"
-                        onMouseEnter={(e) => (e.currentTarget.style.color = '#f87171')}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = 'hsl(0 0% 91% / 0.35)')}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="px-4 py-3">
+                        <select
+                          value={u.role}
+                          disabled={isMe || isPending}
+                          onChange={(e) =>
+                            handleRoleChange(u.id, e.target.value as 'admin' | 'editor')
+                          }
+                          className="rounded-md px-2 py-1 text-[11px] font-mono uppercase tracking-wider outline-none"
+                          style={{
+                            background: 'hsl(197 100% 10%)',
+                            border: '1px solid hsl(158 92% 70% / 0.15)',
+                            color: 'hsl(0 0% 91%)',
+                            cursor: isMe ? 'not-allowed' : 'pointer',
+                            opacity: isMe ? 0.5 : 1,
+                          }}
+                          title={isMe ? 'Você não pode alterar seu próprio role' : ''}
+                        >
+                          <option value="admin">admin</option>
+                          <option value="editor">editor</option>
+                        </select>
+                      </td>
+                      <td className="px-4 py-3 text-dim-2">{formatDate(u.createdAt)}</td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
         </GlassCard>
-      )}
-
-      {/* Create Modal */}
-      {modalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'hsl(194 100% 8% / 0.85)', backdropFilter: 'blur(8px)' }}
-          onClick={(e) => e.target === e.currentTarget && closeModal()}
-        >
-          <div
-            className="w-full max-w-md rounded-2xl p-6"
-            style={{
-              background: 'hsl(197 100% 10%)',
-              border: '1px solid hsl(158 92% 70% / 0.15)',
-              boxShadow: '0 24px 64px hsl(0 0% 0% / 0.5)',
-            }}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-display text-[18px] font-semibold" style={{ color: 'hsl(0 0% 91%)' }}>
-                Novo Usuário
-              </h3>
-              <button onClick={closeModal} style={{ color: 'hsl(0 0% 91% / 0.5)' }}>✕</button>
-            </div>
-
-            <div className="space-y-4">
-              <Field label="Nome">
-                <input
-                  type="text"
-                  value={form.name}
-                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                  placeholder="Nome completo..."
-                  className="w-full rounded-lg px-3 py-2.5 text-[13px] outline-none"
-                  style={{ background: 'hsl(194 100% 8%)', border: '1px solid hsl(158 92% 70% / 0.15)', color: 'hsl(0 0% 91%)' }}
-                />
-              </Field>
-              <Field label="Email">
-                <input
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                  placeholder="email@empresa.com"
-                  className="w-full rounded-lg px-3 py-2.5 text-[13px] outline-none"
-                  style={{ background: 'hsl(194 100% 8%)', border: '1px solid hsl(158 92% 70% / 0.15)', color: 'hsl(0 0% 91%)' }}
-                />
-              </Field>
-              <Field label="Senha">
-                <input
-                  type="password"
-                  value={form.password}
-                  onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-                  placeholder="Senha segura..."
-                  className="w-full rounded-lg px-3 py-2.5 text-[13px] outline-none"
-                  style={{ background: 'hsl(194 100% 8%)', border: '1px solid hsl(158 92% 70% / 0.15)', color: 'hsl(0 0% 91%)' }}
-                />
-              </Field>
-              <Field label="Role">
-                <select
-                  value={form.role}
-                  onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
-                  className="w-full rounded-lg px-3 py-2.5 text-[13px] outline-none"
-                  style={{ background: 'hsl(194 100% 8%)', border: '1px solid hsl(158 92% 70% / 0.15)', color: 'hsl(0 0% 91%)' }}
-                >
-                  <option value="editor">Editor</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </Field>
-            </div>
-
-            <div className="mt-6 flex justify-end gap-2">
-              <button
-                onClick={closeModal}
-                className="px-4 py-2 rounded-lg text-[13px] font-medium"
-                style={{ color: 'hsl(0 0% 91% / 0.6)', background: 'hsl(0 0% 100% / 0.05)' }}
-              >
-                Cancelar
-              </button>
-              <MintButton onClick={handleSubmit} disabled={isPending || !form.email.trim() || !form.password.trim()}>
-                {isPending ? 'Criando...' : 'Criar usuário'}
-              </MintButton>
-            </div>
-          </div>
-        </div>
       )}
     </>
   )

@@ -52,3 +52,12 @@ O painel precisa permitir que o cliente edite metadados SEO sem tocar em código
 - Adicionar redirect /old-url → /new-url no painel funciona em 301 sem redeploy
 - Sitemap.xml inclui post recém-publicado em <1min
 - Editar OG image no painel reflete no compartilhamento Facebook
+
+---
+
+## Ajustes da QA + Architect Review
+
+- **AC11** Redirects detectam loops (A→B→A) e self-redirects no save; retorna erro
+- **AC12** Redirects servidos via **`middleware.ts`** lendo cache (revalidate 60s) — NÃO via `next.config.ts` async (que exigiria rebuild)
+- **AC13** SEO fields via `seoFields()` factory em `src/fields/seo.ts` reutilizada via spread (DRY)
+- **AC14** JSON-LD validado contra schema.org via `schema-dts` types em build time

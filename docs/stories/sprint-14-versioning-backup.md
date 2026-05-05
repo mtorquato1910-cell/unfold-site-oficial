@@ -55,3 +55,14 @@ Para uma operação séria, precisamos:
 - Editar título de post → audit log mostra "title: 'A' → 'B'"
 - Deletar post → vai pra lixeira, posso restaurar
 - Reverter para versão anterior funciona em 1 clique
+
+---
+
+## Ajustes da QA + Architect Review
+
+- **DECISÃO**: Backup = **Supabase PITR (Point-in-Time Recovery) nativo** + **GitHub Action agendada** (`pg_dump`). NÃO Vercel Function (timeout 60-300s, sem `pg_dump` binary)
+- **AC10** Restore mensal automatizado: GitHub Action restaura snapshot em DB efêmero e valida integridade. Alerta se falhar
+- **AC11** Lixeira purga itens com `deletedAt > 30 dias`. Endpoint `/admin/lgpd/erase` para apagamento real sob demanda (LGPD direito ao esquecimento)
+- **AC12** Migration script (T0) ANTES de habilitar `versions: true` em coleções com dados existentes
+- **AC13** Soft delete e Versioning têm contratos distintos: soft delete = "estado removido reversível"; versioning = "histórico de edits"
+- **AC14** Drafts já habilitados em S9 (Pages). S14 só estende UI de versões para outras collections
