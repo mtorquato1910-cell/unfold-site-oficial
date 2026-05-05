@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, Bot } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field, MintButton } from '@/components/painel/ui'
-import { createPrompt, updatePrompt, deletePrompt } from '@/lib/actions/content-actions'
+import { createPrompt, updatePrompt, deletePrompt } from '@/lib/actions/prompts-actions'
 
 type Prompt = {
   id: string

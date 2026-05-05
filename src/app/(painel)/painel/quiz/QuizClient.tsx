@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, HelpCircle } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field, MintButton } from '@/components/painel/ui'
-import { createQuizQuestion, updateQuizQuestion, deleteQuizQuestion } from '@/lib/actions/content-actions'
+import { createQuizQuestion, updateQuizQuestion, deleteQuizQuestion } from '@/lib/actions/quiz-actions'
 
 type QuizQuestion = {
   id: string

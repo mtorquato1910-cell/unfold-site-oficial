@@ -31,6 +31,17 @@ export type HomeSettingsData = {
   client_logos: HomeClientLogo[]
   partners_title: string
   partner_logos: HomeClientLogo[]
+  // Método
+  method_eyebrow: string
+  method_title: string
+  method_description: string
+  method_cta_label: string
+  method_cta_href: string
+  // CTA Final
+  final_cta_title: string
+  final_cta_description: string
+  final_cta_button_label: string
+  final_cta_button_href: string
 }
 
 const DEFAULTS: HomeSettingsData = {
@@ -67,6 +78,17 @@ const DEFAULTS: HomeSettingsData = {
   ],
   partners_title: 'Parceiros oficiais',
   partner_logos: [],
+  method_eyebrow: 'Método Unfold',
+  method_title: 'Um sistema de crescimento, não mais uma série de ações isoladas.',
+  method_description:
+    'O Unfold Growth System (UGS) conecta as quatro alavancas do crescimento — Diagnosticar, Estruturar, Operar e Evoluir — em uma operação integrada, previsível e orientada a resultado comercial.',
+  method_cta_label: 'Conheça o método UGS',
+  method_cta_href: '/metodo',
+  final_cta_title: 'Você já tem marketing e vendas. Falta o sistema que conecta tudo.',
+  final_cta_description:
+    'Solicite um diagnóstico gratuito. Em até 24h alguém da equipe entra em contato com uma análise inicial da sua operação de crescimento.',
+  final_cta_button_label: 'Solicite um Diagnóstico',
+  final_cta_button_href: '/diagnostico',
 }
 
 function mediaUrl(field: any): string | null {
@@ -117,6 +139,15 @@ async function fetchHomeSettings(): Promise<HomeSettingsData> {
       client_logos: clientLogos.length > 0 ? clientLogos : DEFAULTS.client_logos,
       partners_title: settings?.partners_title || DEFAULTS.partners_title,
       partner_logos: partnerLogos,
+      method_eyebrow: settings?.method_eyebrow || DEFAULTS.method_eyebrow,
+      method_title: settings?.method_title || DEFAULTS.method_title,
+      method_description: settings?.method_description || DEFAULTS.method_description,
+      method_cta_label: settings?.method_cta_label || DEFAULTS.method_cta_label,
+      method_cta_href: settings?.method_cta_href || DEFAULTS.method_cta_href,
+      final_cta_title: settings?.final_cta_title || DEFAULTS.final_cta_title,
+      final_cta_description: settings?.final_cta_description || DEFAULTS.final_cta_description,
+      final_cta_button_label: settings?.final_cta_button_label || DEFAULTS.final_cta_button_label,
+      final_cta_button_href: settings?.final_cta_button_href || DEFAULTS.final_cta_button_href,
     }
   } catch {
     return DEFAULTS

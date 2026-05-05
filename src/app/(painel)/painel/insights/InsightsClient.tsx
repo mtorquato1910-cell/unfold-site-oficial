@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, Sparkles, Eye, EyeOff } from 'lucide-react'
 import { PageHeader, GlassCard, EmptyState, Field, MintButton } from '@/components/painel/ui'
-import { createInsight, updateInsight, deleteInsight } from '@/lib/actions/content-actions'
+import { createInsight, updateInsight, deleteInsight } from '@/lib/actions/insights-content-actions'
 import { toggleInsightFeatured } from '@/lib/actions/insights-actions'
 
 type Insight = {

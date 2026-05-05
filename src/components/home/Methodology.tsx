@@ -2,34 +2,34 @@ import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { Reveal } from '@/components/ui/Reveal'
 import { UnfoldSymbol } from '@/components/brand/UnfoldSymbol'
+import { getHomeSettings } from '@/lib/home-settings'
 
-export function Methodology() {
+export async function Methodology() {
+  const s = await getHomeSettings()
   return (
     <section className="bg-[#E7E7E7] text-[#001E29] py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-12 gap-10">
         <Reveal className="lg:col-span-4 flex flex-col items-start gap-5">
           <UnfoldSymbol size={80} className="opacity-90" />
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f]">
-            Método Unfold
+            {s.method_eyebrow}
           </p>
         </Reveal>
         <Reveal delay={120} className="lg:col-span-8">
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-5">
-            Método Unfold
+            {s.method_eyebrow}
           </p>
           <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
-            Um sistema de crescimento, não mais uma série de ações isoladas.
+            {s.method_title}
           </h2>
           <p className="mt-8 text-base md:text-lg leading-relaxed text-[#001E29]/75 max-w-3xl">
-            O Unfold Growth System (UGS) conecta as quatro alavancas do crescimento —
-            Diagnosticar, Estruturar, Operar e Evoluir — em uma operação integrada, previsível
-            e orientada a resultado comercial.
+            {s.method_description}
           </p>
           <Link
-            href="/metodo"
+            href={s.method_cta_href}
             className="mt-8 inline-flex items-center gap-2 text-[#001E29] font-medium border-b border-[#001E29]/30 hover:border-[#001E29] pb-1 transition-colors group"
           >
-            Conheça o método UGS
+            {s.method_cta_label}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </Reveal>

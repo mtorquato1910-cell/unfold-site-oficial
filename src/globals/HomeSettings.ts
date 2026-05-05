@@ -206,6 +206,91 @@ const HomeSettings: GlobalConfig = {
           ],
         },
 
+        // ── Seção Método (apresentação na home) ────────────────────
+        {
+          label: 'Seção Método',
+          fields: [
+            {
+              name: 'method_eyebrow',
+              type: 'text',
+              label: 'Tagline pequena',
+              defaultValue: 'Método Unfold',
+            },
+            {
+              name: 'method_title',
+              type: 'textarea',
+              label: 'Título da seção',
+              defaultValue: 'Um sistema de crescimento, não mais uma série de ações isoladas.',
+            },
+            {
+              name: 'method_description',
+              type: 'textarea',
+              label: 'Descrição',
+              defaultValue:
+                'O Unfold Growth System (UGS) conecta as quatro alavancas do crescimento — Diagnosticar, Estruturar, Operar e Evoluir — em uma operação integrada, previsível e orientada a resultado comercial.',
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'method_cta_label',
+                  type: 'text',
+                  label: 'CTA — texto',
+                  defaultValue: 'Conheça o método UGS',
+                  admin: { width: '50%' },
+                },
+                {
+                  name: 'method_cta_href',
+                  type: 'text',
+                  label: 'CTA — link',
+                  defaultValue: '/metodo',
+                  admin: { width: '50%' },
+                },
+              ],
+            },
+          ],
+        },
+
+        // ── CTA Final ──────────────────────────────────────────────
+        {
+          label: 'CTA Final',
+          fields: [
+            {
+              name: 'final_cta_title',
+              type: 'textarea',
+              label: 'Título principal',
+              defaultValue:
+                'Você já tem marketing e vendas. Falta o sistema que conecta tudo.',
+            },
+            {
+              name: 'final_cta_description',
+              type: 'textarea',
+              label: 'Descrição',
+              defaultValue:
+                'Solicite um diagnóstico gratuito. Em até 24h alguém da equipe entra em contato com uma análise inicial da sua operação de crescimento.',
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'final_cta_button_label',
+                  type: 'text',
+                  label: 'Botão — texto',
+                  defaultValue: 'Solicite um Diagnóstico',
+                  admin: { width: '50%' },
+                },
+                {
+                  name: 'final_cta_button_href',
+                  type: 'text',
+                  label: 'Botão — link',
+                  defaultValue: '/diagnostico',
+                  admin: { width: '50%' },
+                },
+              ],
+            },
+          ],
+        },
+
         // ── Logos de parceiros ─────────────────────────────────────
         {
           label: 'Parceiros',
