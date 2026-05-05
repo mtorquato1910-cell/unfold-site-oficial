@@ -4,6 +4,9 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import RichTextRenderer from '@/components/RichTextRenderer'
+
+export const revalidate = 60
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -91,11 +94,11 @@ export default async function BlogPostPage({ params }: Props) {
 
         {/* Conteúdo — RichText do Payload renderizado como HTML */}
         <div className="prose prose-invert prose-lg max-w-none">
-          <p className="text-foreground/70 leading-relaxed">
-            {/* O Payload Lexical renderiza via @payloadcms/richtext-lexical/react em versões futuras.
-                Por ora, exibimos o resumo como placeholder se o rich text não estiver configurado. */}
-            {post.resumo as string}
-          </p>
+          {(post as any).conteudo ? (
+            <RichTextRenderer data={(post as any).conteudo} />
+          ) : (
+            <p className="text-foreground/70 leading-relaxed">{post.resumo as string}</p>
+          )}
         </div>
 
         {/* CTA */}

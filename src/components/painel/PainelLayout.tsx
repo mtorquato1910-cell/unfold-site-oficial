@@ -47,7 +47,6 @@ const sections: Section[] = [
     items: [
       { to: '/admin/home-config', label: 'Home (Hero + Stats + Logos)', icon: Settings, admin: true },
       { to: '/admin/site-config', label: 'Site (contato + redes)', icon: Settings, admin: true },
-      { to: '/admin/settings', label: 'Configurações avançadas', icon: Settings, admin: true },
       { to: '/admin/users', label: 'Usuários', icon: UserCog, admin: true },
       { to: '/admin/audit', label: 'Log de Auditoria', icon: Activity, admin: true },
     ],

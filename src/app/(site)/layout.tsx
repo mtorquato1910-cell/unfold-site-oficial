@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Space_Grotesk, Inter, IBM_Plex_Mono } from 'next/font/google'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import CookieBanner from '@/components/CookieBanner'
+import CookieBannerWrapper from '@/components/CookieBannerWrapper'
 import { OrganizationSchema, WebSiteSchema } from '@/components/SchemaOrg'
 import PostHogScript from '@/components/analytics/PostHogScript'
 import '../globals.css'
@@ -73,7 +73,7 @@ export default function SiteLayout({
         <Navbar />
         <main>{children}</main>
         <Footer />
-        <CookieBanner />
+        <CookieBannerWrapper />
       </body>
     </html>
   )

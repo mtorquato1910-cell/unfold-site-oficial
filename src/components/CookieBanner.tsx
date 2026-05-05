@@ -7,7 +7,7 @@ import { X } from 'lucide-react'
 
 const CONSENT_KEY = 'unfold_cookie_consent'
 
-export default function CookieBanner() {
+export default function CookieBanner({ message }: { message?: string }) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -57,8 +57,12 @@ export default function CookieBanner() {
       </button>
       <p className="font-mono text-xs uppercase tracking-widest text-primary mb-2">Cookies</p>
       <p className="text-sm text-foreground/70 leading-relaxed mb-5">
-        Usamos cookies analíticos para melhorar a experiência. Nenhum dado é vendido.{' '}
-        <Link href="/politica-de-privacidade" className="text-primary hover:underline underline-offset-2">
+        {message ||
+          'Usamos cookies analíticos para melhorar a experiência. Nenhum dado é vendido.'}{' '}
+        <Link
+          href="/politica-de-privacidade"
+          className="text-primary hover:underline underline-offset-2"
+        >
           Saiba mais
         </Link>
       </p>

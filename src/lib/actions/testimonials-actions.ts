@@ -1,6 +1,6 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
@@ -45,6 +45,7 @@ export async function createTestimonial(data: TestimonialInput) {
   })
   revalidatePath('/admin/testimonials')
   revalidatePath('/')
+  revalidateTag('testimonials')
   return { ok: true, id: created.id }
 }
 
@@ -69,6 +70,7 @@ export async function updateTestimonial(id: string, data: TestimonialInput) {
   })
   revalidatePath('/admin/testimonials')
   revalidatePath('/')
+  revalidateTag('testimonials')
   return { ok: true }
 }
 
@@ -78,6 +80,7 @@ export async function deleteTestimonial(id: string) {
   await payload.delete({ collection: 'testimonials', id })
   revalidatePath('/admin/testimonials')
   revalidatePath('/')
+  revalidateTag('testimonials')
   return { ok: true }
 }
 
@@ -91,6 +94,7 @@ export async function toggleTestimonialDestaque(id: string, destaque: boolean) {
   })
   revalidatePath('/admin/testimonials')
   revalidatePath('/')
+  revalidateTag('testimonials')
   return { ok: true }
 }
 
@@ -104,5 +108,6 @@ export async function toggleTestimonialAtivo(id: string, ativo: boolean) {
   })
   revalidatePath('/admin/testimonials')
   revalidatePath('/')
+  revalidateTag('testimonials')
   return { ok: true }
 }
