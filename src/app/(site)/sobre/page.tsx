@@ -2,10 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowUpRight, Award, Target, Eye, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { AmbientOrb } from '@/components/ui/AmbientOrb'
-import { UnfoldSymbol } from '@/components/brand/UnfoldSymbol'
 import { BrazilMap } from '@/components/about/BrazilMap'
-import { SobreHeroVisual } from '@/components/ui/HeroVisual'
+import { HeroVideoBackground } from '@/components/ui/HeroVideoBackground'
 
 export const metadata: Metadata = {
   title: 'Sobre | Unfold Growth',
@@ -51,28 +49,25 @@ export default function SobrePage() {
     <main>
       {/* 1. Hero */}
       <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-20">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(158_92%_70%/0.09),transparent_55%),radial-gradient(ellipse_at_bottom_right,hsl(218_94%_78%/0.06),transparent_50%)]" />
-        <AmbientOrb color="mint" size={600} opacity={0.045} className="-top-28 -right-36" duration={15} />
-        <AmbientOrb color="blue" size={450} opacity={0.03} className="-bottom-16 left-8" duration={11} style={{ animationName: 'orb-float-alt' }} />
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-8 items-center">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
-                Sobre a Unfold Growth
-              </p>
-              <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
-                Crescimento organizado,{' '}
-                <span className="text-primary">resultado previsível.</span>
-              </h1>
-              <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
-                Somos uma consultoria especializada em estruturar sistemas de crescimento para
-                empresas com vendas complexas — conectando marketing, vendas, CRM e automação
-                em uma operação integrada e orientada a resultado.
-              </p>
-            </div>
-            <div className="hidden lg:flex items-center justify-center">
-              <SobreHeroVisual />
-            </div>
+        <HeroVideoBackground
+          videoSrc="/videos/sobre.mp4"
+          posterSrc="/videos/sobre-poster.jpg"
+          videoFilter="hue-rotate(-57deg) saturate(0.65) brightness(0.78)"
+        />
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
+              Sobre a Unfold Growth
+            </p>
+            <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
+              Crescimento organizado,{' '}
+              <span className="text-primary">resultado previsível.</span>
+            </h1>
+            <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
+              Somos uma consultoria especializada em estruturar sistemas de crescimento para
+              empresas com vendas complexas — conectando marketing, vendas, CRM e automação
+              em uma operação integrada e orientada a resultado.
+            </p>
           </div>
         </div>
       </section>

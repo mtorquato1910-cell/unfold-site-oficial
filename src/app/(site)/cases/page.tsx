@@ -4,8 +4,7 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { Button } from '@/components/ui/button'
-import { AmbientOrb } from '@/components/ui/AmbientOrb'
-import { CasesHeroVisual } from '@/components/ui/HeroVisual'
+import { HeroVideoBackground } from '@/components/ui/HeroVideoBackground'
 
 export const metadata: Metadata = {
   title: 'Cases | Unfold Growth',
@@ -92,27 +91,24 @@ export default async function CasesPage() {
     <main>
       {/* Hero */}
       <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-20">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,hsl(218_94%_78%/0.08),transparent_55%),radial-gradient(ellipse_at_bottom_left,hsl(158_92%_70%/0.06),transparent_50%)]" />
-        <AmbientOrb color="mint" size={500} opacity={0.045} className="-top-24 -right-28" duration={15} />
-        <AmbientOrb color="blue" size={400} opacity={0.03} className="top-20 -left-20" duration={11} style={{ animationName: 'orb-float-alt' }} />
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-8 items-center">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
-                Resultados comprovados
-              </p>
-              <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
-                Cases de crescimento{' '}
-                <span className="text-secondary">estruturado.</span>
-              </h1>
-              <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
-                Cada case é a prova do método UGS aplicado a uma operação real — com diagnóstico,
-                estrutura e resultado mensurável.
-              </p>
-            </div>
-            <div className="hidden lg:flex items-center justify-center">
-              <CasesHeroVisual />
-            </div>
+        <HeroVideoBackground
+          videoSrc="/videos/cases.mp4"
+          posterSrc="/videos/cases-poster.jpg"
+          videoFilter="hue-rotate(-57deg) saturate(0.65) brightness(0.78)"
+        />
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
+              Resultados comprovados
+            </p>
+            <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
+              Cases de crescimento{' '}
+              <span className="text-secondary">estruturado.</span>
+            </h1>
+            <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
+              Cada case é a prova do método UGS aplicado a uma operação real — com diagnóstico,
+              estrutura e resultado mensurável.
+            </p>
           </div>
         </div>
       </section>

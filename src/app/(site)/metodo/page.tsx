@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowUpRight, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { AmbientOrb } from '@/components/ui/AmbientOrb'
-import { MetodoHeroVisual } from '@/components/ui/HeroVisual'
+import { HeroVideoBackground } from '@/components/ui/HeroVideoBackground'
 
 export const metadata: Metadata = {
   title: 'O Método UGS',
@@ -90,33 +89,30 @@ export default function MetodoPage() {
     <>
       {/* Hero */}
       <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-20">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,hsl(158_92%_70%/0.08),transparent_55%),radial-gradient(ellipse_at_bottom_left,hsl(218_94%_78%/0.06),transparent_50%)]" />
-        <AmbientOrb color="mint" size={550} opacity={0.04} className="-top-20 -right-32" duration={13} />
-        <AmbientOrb color="blue" size={400} opacity={0.03} className="bottom-0 left-10" duration={11} style={{ animationName: 'orb-float-alt' }} />
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-8 items-center">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
-                Método Unfold
-              </p>
-              <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
-                O Unfold Growth System.
-              </h1>
-              <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
-                Um framework de crescimento estruturado para operações com vendas complexas.
-                Quatro pilares, uma lógica integrada.
-              </p>
-              <div className="mt-10 flex flex-col sm:flex-row gap-3">
-                <Button asChild size="lg" className="h-12 px-6 group">
-                  <Link href="/diagnostico">
-                    Iniciar diagnóstico gratuito
-                    <ArrowUpRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
-            <div className="hidden lg:flex items-center justify-center">
-              <MetodoHeroVisual />
+        <HeroVideoBackground
+          videoSrc="/videos/metodo.mp4"
+          posterSrc="/videos/metodo-poster.jpg"
+          videoFilter="saturate(0.8) brightness(0.82)"
+        />
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
+              Método Unfold
+            </p>
+            <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
+              O Unfold Growth System.
+            </h1>
+            <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
+              Um framework de crescimento estruturado para operações com vendas complexas.
+              Quatro pilares, uma lógica integrada.
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row gap-3">
+              <Button asChild size="lg" className="h-12 px-6 group">
+                <Link href="/diagnostico">
+                  Iniciar diagnóstico gratuito
+                  <ArrowUpRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

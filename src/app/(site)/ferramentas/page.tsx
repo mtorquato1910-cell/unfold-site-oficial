@@ -1,8 +1,7 @@
 import { ArrowRight, Calculator, ClipboardList } from 'lucide-react'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { AmbientOrb } from '@/components/ui/AmbientOrb'
-import { FerramentasHeroVisual } from '@/components/ui/HeroVisual'
+import { HeroVideoBackground } from '@/components/ui/HeroVideoBackground'
 
 export const metadata: Metadata = {
   title: 'Ferramentas Gratuitas — Unfold Growth',
@@ -37,27 +36,24 @@ export default function FerramentasPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-20">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,hsl(158_92%_70%/0.08),transparent_55%)]" />
-        <AmbientOrb color="mint" size={500} opacity={0.04} className="-top-24 right-0" duration={14} />
-        <AmbientOrb color="blue" size={380} opacity={0.03} className="top-20 -left-20" duration={10} style={{ animationName: 'orb-float-alt' }} />
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-8 items-center">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
-                Ferramentas gratuitas
-              </p>
-              <h1 className="font-display font-bold tracking-tight text-4xl md:text-5xl lg:text-6xl leading-[1.05]">
-                Ferramentas para diagnosticar e{' '}
-                <span className="text-primary">escalar sua operação.</span>
-              </h1>
-              <p className="mt-7 text-lg md:text-xl text-foreground/70 max-w-xl leading-relaxed">
-                Projeções e diagnósticos práticos para entender onde sua operação de crescimento
-                está e o que está travando — sem compromisso.
-              </p>
-            </div>
-            <div className="hidden lg:flex items-center justify-center">
-              <FerramentasHeroVisual />
-            </div>
+        <HeroVideoBackground
+          videoSrc="/videos/ferramentas.mp4"
+          posterSrc="/videos/ferramentas-poster.jpg"
+          videoFilter="hue-rotate(-22deg) saturate(0.5) brightness(0.75)"
+        />
+        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
+              Ferramentas gratuitas
+            </p>
+            <h1 className="font-display font-bold tracking-tight text-4xl md:text-5xl lg:text-6xl leading-[1.05]">
+              Ferramentas para diagnosticar e{' '}
+              <span className="text-primary">escalar sua operação.</span>
+            </h1>
+            <p className="mt-7 text-lg md:text-xl text-foreground/70 max-w-xl leading-relaxed">
+              Projeções e diagnósticos práticos para entender onde sua operação de crescimento
+              está e o que está travando — sem compromisso.
+            </p>
           </div>
         </div>
       </section>

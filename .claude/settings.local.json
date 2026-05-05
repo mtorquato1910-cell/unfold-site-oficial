@@ -54,7 +54,16 @@
       "Bash(grep -E \"\\\\.\\(tsx|ts\\)$\")",
       "Bash(python -c \"import sys; print\\(sys.version\\)\")",
       "Bash(python -c \"import pdfplumber; print\\('pdfplumber ok'\\)\")",
-      "Bash(python *)"
+      "Bash(python *)",
+      "WebFetch(domain:www.pexels.com)",
+      "WebSearch",
+      "Bash(ffmpeg -version)",
+      "PowerShell(ffmpeg *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\mathe\\\\OneDrive\\\\Área de Trabalho\\\\Site unfold\\\\unfold-site-oficial\\\\public\\\\videos\\\\\" | Select-Object Name, @{N='Size_MB';E={[math]::Round\\($_.Length/1MB,2\\)}})",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\mathe\\\\OneDrive\\\\Área de Trabalho\\\\Site unfold\\\\unfold-site-oficial\\\\videos\\\\\" | Select-Object Name, @{Name='Size\\(MB\\)';Expression={[math]::Round\\($_.Length/1MB,2\\)}})",
+      "Bash(mkdir -p 'C:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/public/videos')",
+      "Bash(mv 'C:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/videos/*.mp4' 'C:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial/public/videos/')",
+      "Bash(ffmpeg -i metodo.mp4 -vcodec libx264 -crf 28 -preset medium -vf \"scale='min\\(1920,iw\\)':-2\" -an -y metodo-temp.mp4)"
     ]
   }
 }
