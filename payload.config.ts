@@ -21,6 +21,7 @@ import Testimonials from './src/collections/Testimonials'
 import Notifications from './src/collections/Notifications'
 import EmailLogs from './src/collections/EmailLogs'
 import FAQs from './src/collections/FAQs'
+import CalculadoraResults from './src/collections/CalculadoraResults'
 import SiteSettings from './src/globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
@@ -76,6 +77,8 @@ export default buildConfig({
     EmailLogs,
     // Sprint 9 (Site Editor)
     FAQs,
+    // Sprint 15 (Curadoria + Tool Usage)
+    CalculadoraResults,
   ],
   globals: [SiteSettings],
   editor: lexicalEditor({}),

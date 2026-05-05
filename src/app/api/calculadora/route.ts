@@ -25,6 +25,8 @@ const schema = z.object({
   nome: z.string().min(2),
   email: z.string().email(),
   empresa: z.string().min(2),
+  cargo: z.string().optional(),
+  telefone: z.string().optional(),
   investimento_atual: z.string(),
   ticket_medio: z.string(),
   ciclo_vendas: z.string(),
@@ -33,7 +35,29 @@ const schema = z.object({
   canais: z.array(z.string()),
   objetivo_receita: z.string().optional(),
   vertical: z.string().optional(),
+  // LGPD (S15 AC15)
+  consent: z.boolean().refine((v) => v === true, {
+    message: 'Consentimento obrigatório.',
+  }),
 })
+
+function calcLeadScore(d: { investimento_atual: string; ticket_medio: string; cargo?: string }): number {
+  let score = 30
+  const inv = parseFloat(d.investimento_atual.replace(/\D/g, '')) || 0
+  if (inv >= 50000) score += 30
+  else if (inv >= 10000) score += 20
+  else if (inv >= 3000) score += 10
+  const ticket = parseFloat(d.ticket_medio.replace(/\D/g, '')) || 0
+  if (ticket >= 50000) score += 25
+  else if (ticket >= 10000) score += 15
+  else if (ticket >= 3000) score += 8
+  if (d.cargo) {
+    const c = d.cargo.toLowerCase()
+    if (c.includes('ceo') || c.includes('founder') || c.includes('socio') || c.includes('sócio')) score += 15
+    else if (c.includes('diretor') || c.includes('cmo') || c.includes('cgo') || c.includes('head')) score += 10
+  }
+  return Math.min(100, score)
+}
 
 const SYSTEM_PROMPT = `Você é um especialista em geração de demanda B2B e tráfego pago para empresas com vendas complexas.
 Sua função é analisar os dados fornecidos e gerar uma projeção técnica e realista de retorno do investimento.
@@ -102,25 +126,93 @@ Gere uma projeção mensal realista e recomendações estratégicas.
       resultado = { raw: aiResponse.content }
     }
 
-    // Salvar lead com origem=calculadora
+    // ── Persistência: dedup com Leads + CalculadoraResults ────────
+    const ipAddr = req.headers.get('x-forwarded-for') || ip
+    const userAgent = req.headers.get('user-agent') || 'unknown'
+    const score = calcLeadScore(d)
+    let leadId: string | null = null
+
     try {
       const payloadCMS = await getPayload({ config: configPromise })
-      await payloadCMS.create({
+
+      // Upsert em Leads por email (S15 AC17)
+      const existingLead = await payloadCMS.find({
         collection: 'leads',
+        where: { email: { equals: d.email } },
+        limit: 1,
+      })
+
+      if (existingLead.docs[0]) {
+        const lead = existingLead.docs[0]
+        leadId = String(lead.id)
+        await payloadCMS.update({
+          collection: 'leads',
+          id: lead.id,
+          data: {
+            nome: d.nome,
+            empresa: d.empresa,
+            cargo: d.cargo,
+            telefone: d.telefone,
+          } as any,
+        })
+      } else {
+        const newLead = await payloadCMS.create({
+          collection: 'leads',
+          data: {
+            nome: d.nome,
+            email: d.email,
+            empresa: d.empresa,
+            cargo: d.cargo,
+            telefone: d.telefone,
+            origem: 'calculadora',
+            rd_sync_status: 'pending',
+            ip_address: ipAddr,
+          } as any,
+        })
+        leadId = String(newLead.id)
+      }
+
+      // Cria CalculadoraResults vinculado
+      const retentionDate = new Date()
+      retentionDate.setMonth(retentionDate.getMonth() + 24)
+
+      await payloadCMS.create({
+        collection: 'calculadora-results',
         data: {
           nome: d.nome,
           email: d.email,
           empresa: d.empresa,
-          origem: 'calculadora',
-          rd_sync_status: 'pending',
-          ip_address: req.headers.get('x-forwarded-for') || 'unknown',
-        },
+          cargo: d.cargo,
+          telefone: d.telefone,
+          lead: leadId,
+          inputs: {
+            investimento_atual: d.investimento_atual,
+            ticket_medio: d.ticket_medio,
+            ciclo_vendas: d.ciclo_vendas,
+            taxa_conversao_lead: d.taxa_conversao_lead,
+            taxa_conversao_opo: d.taxa_conversao_opo,
+            canais: d.canais,
+            objetivo_receita: d.objetivo_receita,
+            vertical: d.vertical,
+          },
+          output: resultado,
+          score,
+          emailStatus: 'pending',
+          consent: {
+            given: true,
+            timestamp: new Date().toISOString(),
+            ip: ipAddr,
+            userAgent,
+            policyVersion: 'v1.0',
+          },
+          retentionUntil: retentionDate.toISOString(),
+        } as any,
       })
-    } catch {
-      // DB indisponível
+    } catch (err) {
+      console.error('[calculadora] persistência falhou:', err)
     }
 
-    return NextResponse.json({ ok: true, resultado, mode: aiResponse.mode })
+    return NextResponse.json({ ok: true, resultado, mode: aiResponse.mode, leadId, score })
   } catch (err) {
     console.error('[calculadora]', err)
     return NextResponse.json({ error: 'Erro interno ao calcular projeção' }, { status: 500 })

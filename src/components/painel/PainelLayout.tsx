@@ -36,6 +36,7 @@ const sections: Section[] = [
     items: [
       { to: '/admin/leads', label: 'Leads', icon: Users },
       { to: '/admin/diagnostico', label: 'Diagnósticos', icon: ClipboardList },
+      { to: '/admin/calculadora', label: 'Calculadora', icon: ClipboardList },
       { to: '/admin/quiz', label: 'Questões do Quiz', icon: HelpCircle },
       { to: '/admin/insights', label: 'Variações de Insights', icon: SparklesIcon },
       { to: '/admin/prompts', label: 'Prompts de IA', icon: Bot },
