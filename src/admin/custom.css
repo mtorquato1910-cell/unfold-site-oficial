@@ -84,45 +84,12 @@ html[data-theme='dark'] {
 [class*='app-header'] {
   background: #001620 !important;
   border-bottom: 1px solid rgba(109, 249, 198, 0.1) !important;
-  height: 56px !important;
   padding: 0 20px !important;
 }
 
 .app-header__content,
 .app-header__content * {
   color: #e7e7e7 !important;
-}
-
-/* ─── Layout principal: sidebar + conteúdo lado a lado ───────────────────── */
-.template-default,
-[class*='template-default'] {
-  display: flex !important;
-  min-height: 100vh;
-}
-
-/* Sidebar com largura fixa */
-.nav,
-aside.nav,
-aside[class*='nav'],
-nav[class*='nav'] {
-  width: var(--nav-width, 268px) !important;
-  flex-shrink: 0 !important;
-  position: sticky !important;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
-  background: #001620 !important;
-  border-right: 1px solid rgba(109, 249, 198, 0.07) !important;
-}
-
-/* Conteúdo ocupa o restante da tela */
-.template-default__wrap,
-[class*='template-default__wrap'] {
-  flex: 1 1 0% !important;
-  min-width: 0 !important;
-  max-width: none !important;
-  background: #001E29 !important;
-  padding: 0 !important;
 }
 
 /* ─── Main content area ──────────────────────────────────────────────────── */
