@@ -115,18 +115,20 @@ html[data-theme='dark'] {
 
 /* ─── Sidebar — cores, borda e tipografia sem sobreposição ──────────────── */
 .nav {
+  width: 240px !important;
+  max-width: 240px !important;
   flex-shrink: 0 !important;
   background: #001620 !important;
   border-right: 1px solid rgba(109, 249, 198, 0.07) !important;
   padding: 16px !important;
-  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
 }
 
 .nav a,
 .nav button,
 [class*='nav__link'],
-[class*='nav__label'],
-[class*='nav__item'] {
+[class*='nav__label'] {
   display: block !important;
   margin-bottom: 8px !important;
   white-space: nowrap !important;
@@ -202,6 +204,37 @@ main,
 [class*='collection-list'],
 [class*='document-fields'] {
   padding: 24px 32px !important;
+}
+
+/* ─── Account / document forms — largura controlada, texto sem sobreposição ── */
+[class*='account'],
+[class*='account__content'],
+[class*='user__content'],
+[class*='account-fields'] {
+  max-width: 800px !important;
+}
+
+[class*='account'] p,
+[class*='account'] span,
+[class*='account'] label,
+[class*='account'] small,
+[class*='account'] .field-label {
+  display: block !important;
+  line-height: 1.5 !important;
+  position: static !important;
+}
+
+/* Selects fora da sidebar — não truncar texto */
+.document-fields select,
+[class*='document-fields'] select,
+[class*='account'] select,
+[class*='field-type'] select {
+  overflow: visible !important;
+  white-space: normal !important;
+  text-overflow: unset !important;
+  min-width: 180px !important;
+  padding-left: 12px !important;
+  padding-right: 32px !important;
 }
 
 /* ─── Page headers ───────────────────────────────────────────────────────── */
