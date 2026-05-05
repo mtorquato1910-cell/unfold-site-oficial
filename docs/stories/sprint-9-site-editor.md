@@ -68,3 +68,49 @@ A regra: tudo que é texto editável vira config no painel.
 - **AC14** `revalidatePath()` chamado em **Server Action** (não em hook Payload background) após save com sucesso
 - **AC15** Blocks "CasesBlock"/"TestimonialsBlock" usam **relationship array** (não duplicam dados das collections)
 - **AC16** Pages collection já com `versions: { drafts: true }` (S14 só estende UI)
+
+## Ajustes pós feedback de cliente (2026-05-05)
+
+Tornar EXPLÍCITOS estes campos editáveis no painel (necessidades 1-4 do cliente):
+
+### SiteSettings global expandido — campos obrigatórios:
+
+```
+contact:
+  - email (text)
+  - phone (text)
+  - whatsapp (text, opcional)
+  - address (group: street, number, complement, district, city, state, cep)
+social:
+  - linkedin (url)
+  - instagram (url)
+  - youtube (url)
+  - facebook (url, opcional)
+  - twitter (url, opcional)
+tracking:
+  - gaId, metaPixelId, gtmId, hotjarId
+seo:
+  - defaultTitle, defaultDescription, ogImage
+```
+
+### Global FAQs (NOVO):
+
+Collection `FAQs` (slug, question, answer, order, published, category).
+Tela `/admin/faqs` com CRUD + reorder + toggle published.
+Site público lê `/api/faqs?published=true&category=X` ordenado por `order`.
+
+### Global Logos & Mídia do Site:
+
+`HomeSettings` (já planejado) ganha:
+- `clientLogos` (array de relations para Media com nome do cliente + ordem)
+- `heroVideo` / `heroImage` (relação Media)
+- `partnerLogos` (array de relations Media com link)
+
+**Página `/admin/media`** ganha **categorização**: tag "uso" (logo-cliente, parceiro, hero, blog-cover, case-cover, post-thumb) — facilita encontrar/trocar.
+
+## Ajustes finais QA Review
+
+- **AC17** Toggle `published` em FAQs dispara `revalidatePath` nas rotas que consomem (`/contato`, `/`)
+- **AC18** Validação CEP regex `\d{5}-?\d{3}` + UF enum (27 estados) no address group; ViaCEP autopreenche opcional
+- **AC19** Validação regex em `gaId` (`G-[A-Z0-9]+`), `gtmId` (`GTM-[A-Z0-9]+`), `metaPixelId` (numérico), `hotjarId` (numérico) + botão "Testar pixel"
+- **AC20** Categorização da Media (`usage` enum) obrigatória em uploads novos; migration marca existentes como `legacy`

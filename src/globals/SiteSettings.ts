@@ -69,10 +69,21 @@ const SiteSettings: GlobalConfig = {
               admin: { description: 'Responsável pelo tratamento de dados pessoais' },
             },
             {
-              name: 'whatsapp',
-              type: 'text',
-              label: 'WhatsApp (com DDI)',
-              admin: { description: 'Ex: +5511999999999' },
+              type: 'row',
+              fields: [
+                {
+                  name: 'telefone',
+                  type: 'text',
+                  label: 'Telefone',
+                  admin: { description: 'Ex: +55 (11) 99999-9999', width: '50%' },
+                },
+                {
+                  name: 'whatsapp',
+                  type: 'text',
+                  label: 'WhatsApp (com DDI)',
+                  admin: { description: 'Ex: +5511999999999', width: '50%' },
+                },
+              ],
             },
             {
               type: 'row',
@@ -81,19 +92,36 @@ const SiteSettings: GlobalConfig = {
                   name: 'linkedin',
                   type: 'text',
                   label: 'URL LinkedIn',
-                  admin: { description: 'Ex: https://linkedin.com/company/unfold-growth', width: '33%' },
+                  admin: { description: 'https://linkedin.com/company/unfold-growth', width: '50%' },
                 },
                 {
                   name: 'instagram',
                   type: 'text',
                   label: 'URL Instagram',
-                  admin: { description: 'Ex: https://instagram.com/unfoldgrowth', width: '33%' },
+                  admin: { description: 'https://instagram.com/unfoldgrowth', width: '50%' },
                 },
+              ],
+            },
+            {
+              type: 'row',
+              fields: [
                 {
                   name: 'youtube',
                   type: 'text',
                   label: 'URL YouTube',
-                  admin: { description: 'Ex: https://youtube.com/@unfoldgrowth', width: '33%' },
+                  admin: { description: 'https://youtube.com/@unfoldgrowth', width: '33%' },
+                },
+                {
+                  name: 'facebook',
+                  type: 'text',
+                  label: 'URL Facebook',
+                  admin: { description: 'https://facebook.com/unfoldgrowth', width: '33%' },
+                },
+                {
+                  name: 'twitter',
+                  type: 'text',
+                  label: 'URL Twitter / X',
+                  admin: { description: 'https://x.com/unfoldgrowth', width: '34%' },
                 },
               ],
             },

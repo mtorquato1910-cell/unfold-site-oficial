@@ -20,6 +20,7 @@ import Media from './src/collections/Media'
 import Testimonials from './src/collections/Testimonials'
 import Notifications from './src/collections/Notifications'
 import EmailLogs from './src/collections/EmailLogs'
+import FAQs from './src/collections/FAQs'
 import SiteSettings from './src/globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
@@ -73,6 +74,8 @@ export default buildConfig({
     // Sprint 13 (Notifications & Email)
     Notifications,
     EmailLogs,
+    // Sprint 9 (Site Editor)
+    FAQs,
   ],
   globals: [SiteSettings],
   editor: lexicalEditor({}),

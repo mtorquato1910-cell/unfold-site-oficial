@@ -28,14 +28,15 @@
 
 | # | Sprint | Estimativa | Prioridade | Status |
 |---|--------|-----------|-----------|--------|
-| 1 | [S7.5 RBAC Real](sprint-7-5-rbac.md) | 1 dia | 🔥 BLOQUEADOR | ⬜ |
-| 2 | [S13 Notifications & Email](sprint-13-notifications-email.md) | 2 dias | 🔥 ALTA | ⬜ |
-| 3 | [S9 Site Editor](sprint-9-site-editor.md) | 4 dias | 🔥 ALTA | ⬜ |
-| 4 | [S10 SEO Manager](sprint-10-seo-manager.md) | 2 dias | 🟡 MÉDIA | ⬜ |
-| 5 | [S8 Workflow Editorial](sprint-8-workflow-editorial.md) | 3 dias | 🔥 ALTA | ⬜ |
-| 6 | [S12 Leads CRM Integration](sprint-12-leads-crm-integration.md) | 2 dias | 🔥 ALTA | ⬜ |
-| 7 | [S11 Analytics Dashboard](sprint-11-analytics-dashboard.md) | 2-3 dias | 🟡 MÉDIA | ⬜ |
-| 8 | [S14 Versioning & Backup](sprint-14-versioning-backup.md) | 2 dias | 🟢 BAIXA | ⬜ |
+| 1 | [S7.5 RBAC Real](sprint-7-5-rbac.md) | 1 dia | 🔥 BLOQUEADOR | ✅ Done |
+| 2 | [S13 Notifications & Email base](sprint-13-notifications-email.md) | 2 dias | 🔥 ALTA | ✅ Done (helpers) |
+| 3 | [S9 Site Editor](sprint-9-site-editor.md) | 4 dias | 🔥 ALTA | ⬜ Em curso |
+| 4 | [S15 Curadoria + Tool Usage](sprint-15-curation-tool-usage.md) | 2 dias | 🔥 ALTA | ⬜ |
+| 5 | [S10 SEO Manager](sprint-10-seo-manager.md) | 2 dias | 🟡 MÉDIA | ⬜ |
+| 6 | [S8 Workflow Editorial](sprint-8-workflow-editorial.md) | 3 dias | 🔥 ALTA | ⬜ |
+| 7 | [S12 Leads CRM Integration](sprint-12-leads-crm-integration.md) | 2 dias | 🔥 ALTA | ⬜ |
+| 8 | [S11 Analytics Dashboard](sprint-11-analytics-dashboard.md) | 2-3 dias | 🟡 MÉDIA | ⬜ |
+| 9 | [S14 Versioning & Backup](sprint-14-versioning-backup.md) | 2 dias | 🟢 BAIXA | ⬜ |
 
 **Total Fase 2:** ~18–19 dias
 

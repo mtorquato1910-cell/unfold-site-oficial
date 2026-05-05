@@ -58,6 +58,22 @@ export const InsightsVariations: CollectionConfig = {
       name: 'ativo',
       type: 'checkbox',
       defaultValue: true,
+      admin: { description: 'Disponível para sorteio no resultado do diagnóstico' },
+    },
+    {
+      name: 'featured',
+      type: 'checkbox',
+      defaultValue: false,
+      index: true,
+      label: 'Publicar no site',
+      admin: { description: 'Aparece na seção pública de Insights da homepage' },
+    },
+    {
+      name: 'publishOrder',
+      type: 'number',
+      defaultValue: 0,
+      label: 'Ordem de publicação',
+      admin: { description: 'Menor número aparece primeiro. Aplica somente quando "Publicar no site" está ativo.' },
     },
     {
       name: 'nota_interna',

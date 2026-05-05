@@ -26,6 +26,7 @@ const sections: Section[] = [
       { to: '/admin/posts', label: 'Posts / Blog', icon: FileText },
       { to: '/admin/cases', label: 'Cases', icon: Briefcase },
       { to: '/admin/testimonials', label: 'Depoimentos', icon: MessageSquareQuote },
+      { to: '/admin/faqs', label: 'FAQs', icon: HelpCircle },
       { to: '/admin/categories', label: 'Categorias', icon: FolderTree },
       { to: '/admin/media', label: 'Mídia', icon: ImageIcon },
     ],
@@ -43,7 +44,8 @@ const sections: Section[] = [
   {
     label: 'Configurações',
     items: [
-      { to: '/admin/settings', label: 'Configurações do Site', icon: Settings, admin: true },
+      { to: '/admin/site-config', label: 'Site (contato + redes)', icon: Settings, admin: true },
+      { to: '/admin/settings', label: 'Configurações avançadas', icon: Settings, admin: true },
       { to: '/admin/users', label: 'Usuários', icon: UserCog, admin: true },
       { to: '/admin/audit', label: 'Log de Auditoria', icon: Activity, admin: true },
     ],

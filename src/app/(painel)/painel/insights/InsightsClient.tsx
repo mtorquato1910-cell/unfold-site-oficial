@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Plus, Pencil, Trash2, Sparkles } from 'lucide-react'
+import { Plus, Pencil, Trash2, Sparkles, Eye, EyeOff } from 'lucide-react'
 import { PageHeader, GlassCard, EmptyState, Field, MintButton } from '@/components/painel/ui'
 import { createInsight, updateInsight, deleteInsight } from '@/lib/actions/content-actions'
+import { toggleInsightFeatured } from '@/lib/actions/insights-actions'
 
 type Insight = {
   id: string
@@ -11,6 +12,8 @@ type Insight = {
   maturityLevel?: string
   dimension?: string
   content?: string
+  featured?: boolean
+  publishOrder?: number
   createdAt?: string
 }
 
@@ -129,11 +132,28 @@ export default function InsightsClient({ initialInsights }: { initialInsights: I
     })
   }
 
+  function handleToggleFeatured(insight: Insight) {
+    startTransition(async () => {
+      try {
+        await toggleInsightFeatured(insight.id, !insight.featured)
+        setInsights((prev) =>
+          prev.map((i) => (i.id === insight.id ? { ...i, featured: !i.featured } : i)),
+        )
+        showSuccess(insight.featured ? 'Despublicado' : 'Publicado no site')
+      } catch (err: any) {
+        alert(err?.message || 'Falha ao alterar publicação')
+      }
+    })
+  }
+
+  const featuredCount = insights.filter((i) => i.featured).length
+  const FEATURED_LIMIT = 6
+
   return (
     <>
       <PageHeader
         title="Variações de Insights"
-        description="Banco de variações para o resultado do quiz"
+        description={`Banco de variações + curadoria pública · ${featuredCount}/${FEATURED_LIMIT} publicados`}
         actions={
           <MintButton onClick={openCreate}>
             <Plus className="h-4 w-4" /> Novo insight
@@ -163,7 +183,7 @@ export default function InsightsClient({ initialInsights }: { initialInsights: I
             <table className="w-full text-[13px]">
               <thead>
                 <tr style={{ borderBottom: '1px solid hsl(158 92% 70% / 0.1)' }}>
-                  {['Título', 'Maturidade', 'Dimensão', 'Preview', 'Ações'].map((h) => (
+                  {['Título', 'Maturidade', 'Dimensão', 'Preview', 'Publicado', 'Ações'].map((h) => (
                     <th
                       key={h}
                       className="px-4 py-3 text-left font-mono text-[10px] uppercase tracking-[0.18em]"
@@ -194,6 +214,32 @@ export default function InsightsClient({ initialInsights }: { initialInsights: I
                     </td>
                     <td className="px-4 py-3 max-w-[280px]" style={{ color: 'hsl(0 0% 91% / 0.55)' }}>
                       {truncate(insight.content)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => handleToggleFeatured(insight)}
+                        disabled={isPending}
+                        className="flex items-center gap-1.5 rounded-md px-2 py-1 text-[11px] font-mono uppercase tracking-wider transition"
+                        style={
+                          insight.featured
+                            ? {
+                                background: 'hsl(158 92% 70% / 0.12)',
+                                color: 'hsl(158 92% 70%)',
+                                border: '1px solid hsl(158 92% 70% / 0.25)',
+                              }
+                            : {
+                                background: 'hsl(0 0% 100% / 0.04)',
+                                color: 'hsl(0 0% 91% / 0.42)',
+                                border: '1px solid hsl(0 0% 100% / 0.10)',
+                              }
+                        }
+                        title={
+                          insight.featured ? 'Despublicar do site' : 'Publicar no site'
+                        }
+                      >
+                        {insight.featured ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                        {insight.featured ? 'público' : 'oculto'}
+                      </button>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
