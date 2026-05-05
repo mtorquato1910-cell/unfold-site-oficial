@@ -67,7 +67,9 @@
       "Bash(npm info *)",
       "Bash(node -e \"const b = require\\('@svg-maps/brazil'\\); console.log\\('viewBox:', b.default?.viewBox || b.viewBox\\); console.log\\('locations count:', \\(b.default?.locations || b.locations\\)?.length\\); console.log\\('first:', JSON.stringify\\(\\(b.default?.locations || b.locations\\)?.[0]\\).slice\\(0,120\\)\\)\")",
       "Bash(node -e \"const b = require\\('@svg-maps/brazil'\\); const locs = b.default?.locations || b.locations; console.log\\(locs.map\\(l => l.id\\).join\\(', '\\)\\)\")",
-      "Bash(node -e \"const b = require\\('@svg-maps/brazil'\\); const data = b.default || b; console.log\\('keys:', Object.keys\\(data\\)\\); console.log\\('viewBox:', data.viewBox\\); console.log\\('locations[0] keys:', Object.keys\\(data.locations[0]\\)\\)\")"
+      "Bash(node -e \"const b = require\\('@svg-maps/brazil'\\); const data = b.default || b; console.log\\('keys:', Object.keys\\(data\\)\\); console.log\\('viewBox:', data.viewBox\\); console.log\\('locations[0] keys:', Object.keys\\(data.locations[0]\\)\\)\")",
+      "Bash(vercel --version)",
+      "Bash(vercel deploy *)"
     ]
   }
 }
