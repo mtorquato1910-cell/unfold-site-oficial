@@ -68,47 +68,52 @@ export default function PainelLayout({
 
   return (
     <div className="painel-root flex min-h-screen bg-aurora noise relative">
-      {/* Sidebar */}
+      {/* ============ Sidebar ============ */}
       <aside
-        className="hidden md:flex sticky top-0 h-screen w-[260px] flex-col border-r border-mint-soft backdrop-blur-xl z-20"
-        style={{ background: 'hsl(197 100% 6% / 0.8)' }}
+        className="hidden md:flex sticky top-0 h-screen w-[260px] flex-col z-20"
+        style={{
+          background: 'hsl(197 100% 6% / 0.8)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderRight: '1px solid hsl(158 92% 70% / 0.1)',
+        }}
       >
         {/* Brand */}
-        <div className="flex items-center gap-3 px-5 py-5 border-b border-mint-soft">
-          <div className="relative">
+        <div
+          className="flex items-center gap-3 px-5 py-5"
+          style={{ borderBottom: '1px solid hsl(158 92% 70% / 0.1)' }}
+        >
+          <div className="relative shrink-0">
             <div
               className="absolute inset-0 rounded-xl"
               style={{ background: 'hsl(158 92% 70% / 0.3)', filter: 'blur(8px)' }}
             />
             <div
-              className="relative flex h-9 w-9 items-center justify-center rounded-xl ring-1"
+              className="relative flex h-9 w-9 items-center justify-center rounded-xl"
               style={{
-                background: 'linear-gradient(135deg, hsl(158 92% 70%) 0%, hsl(158 92% 70% / 0.7) 100%)',
-                borderColor: 'hsl(158 92% 70% / 0.4)',
+                background: 'linear-gradient(135deg, hsl(158 92% 70%) 0%, hsl(158 92% 60%) 100%)',
+                border: '1px solid hsl(158 92% 70% / 0.4)',
               }}
             >
               <SparklesIcon className="h-4 w-4" style={{ color: 'hsl(194 100% 8%)' }} strokeWidth={2.5} />
             </div>
           </div>
           <div className="min-w-0">
-            <div className="text-[13px] font-semibold leading-tight" style={{ letterSpacing: '-0.022em', color: 'hsl(0 0% 91%)' }}>
-              Unfold Growth
-            </div>
+            <div className="text-[13px] font-semibold leading-tight text-fg">Unfold Growth</div>
             <div className="font-mono text-[9px] uppercase tracking-[0.22em] text-dim mt-0.5">
               Admin Console
             </div>
           </div>
         </div>
 
-        {/* Nav */}
+        {/* Nav sections */}
         <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
           {sections.map((section) => {
             const visible = section.items.filter((i) => !i.admin || role === 'admin')
             if (visible.length === 0) return null
             return (
               <div key={section.label}>
-                <div className="px-3 pb-2 font-mono text-[9px] uppercase tracking-[0.22em]"
-                     style={{ color: 'hsl(0 0% 91% / 0.42)' }}>
+                <div className="px-3 pb-2 font-mono text-[9px] uppercase tracking-[0.22em] text-dim">
                   {section.label}
                 </div>
                 <nav className="flex flex-col gap-0.5">
@@ -121,12 +126,12 @@ export default function PainelLayout({
                         href={item.to}
                         className={cx(
                           'group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] transition-all duration-200',
-                          isActive ? 'nav-active' : 'painel-nav-item'
+                          isActive ? 'nav-active' : 'nav-idle'
                         )}
                       >
                         <Icon
-                          className="h-[15px] w-[15px] shrink-0 transition-transform"
-                          style={{ color: isActive ? 'hsl(158 92% 70%)' : 'inherit' }}
+                          className="h-[15px] w-[15px] shrink-0"
+                          style={{ color: isActive ? 'hsl(158 92% 70%)' : 'currentColor' }}
                           strokeWidth={1.75}
                         />
                         <span className="font-medium">{item.label}</span>
@@ -149,7 +154,7 @@ export default function PainelLayout({
         </div>
 
         {/* User card */}
-        <div className="p-3 border-t border-mint-soft">
+        <div className="p-3" style={{ borderTop: '1px solid hsl(158 92% 70% / 0.1)' }}>
           <div className="glass flex items-center gap-3 rounded-xl p-2.5">
             <div className="relative shrink-0">
               <div
@@ -157,31 +162,29 @@ export default function PainelLayout({
                 style={{ background: 'hsl(158 92% 70% / 0.3)', filter: 'blur(4px)' }}
               />
               <div
-                className="relative flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold ring-1"
+                className="relative flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold"
                 style={{
                   background: 'linear-gradient(135deg, hsl(158 92% 70%) 0%, hsl(158 92% 60%) 100%)',
                   color: 'hsl(194 100% 8%)',
-                  borderColor: 'hsl(158 92% 70% / 0.3)',
+                  border: '1px solid hsl(158 92% 70% / 0.3)',
                 }}
               >
                 {(user?.email?.[0] ?? 'U').toUpperCase()}
               </div>
             </div>
             <div className="min-w-0 flex-1">
-              <div className="truncate text-[12px] font-medium" style={{ color: 'hsl(0 0% 91%)' }}>
+              <div className="truncate text-[12px] font-medium text-fg">
                 {user?.name || user?.email?.split('@')[0]}
               </div>
-              <div className="font-mono text-[9px] uppercase tracking-[0.18em]"
-                   style={{ color: 'hsl(158 92% 70% / 0.8)' }}>
+              <div
+                className="font-mono text-[9px] uppercase tracking-[0.18em]"
+                style={{ color: 'hsl(158 92% 70% / 0.8)' }}
+              >
                 {role ?? '—'}
               </div>
             </div>
             <form action={logoutAction}>
-              <button
-                type="submit"
-                className="painel-icon-btn rounded-md p-1.5 transition"
-                title="Sair"
-              >
+              <button type="submit" className="icon-btn rounded-md p-1.5" title="Sair">
                 <LogOut className="h-3.5 w-3.5" />
               </button>
             </form>
@@ -189,7 +192,7 @@ export default function PainelLayout({
         </div>
       </aside>
 
-      {/* Main */}
+      {/* ============ Main ============ */}
       <div className="flex min-w-0 flex-1 flex-col relative">
         {/* Ambient glow */}
         <div
@@ -199,16 +202,19 @@ export default function PainelLayout({
 
         {/* Header */}
         <header
-          className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b border-mint-soft px-6 backdrop-blur-2xl"
-          style={{ background: 'hsl(194 100% 8% / 0.7)' }}
+          className="sticky top-0 z-10 flex h-14 items-center gap-4 px-6"
+          style={{
+            background: 'hsl(194 100% 8% / 0.7)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderBottom: '1px solid hsl(158 92% 70% / 0.1)',
+          }}
         >
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-[12px] min-w-0">
             <span className="font-mono uppercase tracking-[0.18em] text-[10px] text-dim">Unfold</span>
             <ChevronRight className="h-3 w-3 text-dim shrink-0" />
-            <span className="font-medium truncate" style={{ color: 'hsl(0 0% 91%)' }}>
-              {currentItem?.label ?? 'Dashboard'}
-            </span>
+            <span className="font-medium truncate text-fg">{currentItem?.label ?? 'Dashboard'}</span>
           </div>
 
           <div className="ml-auto flex items-center gap-2">
@@ -236,9 +242,7 @@ export default function PainelLayout({
               </kbd>
             </div>
             {/* Bell */}
-            <button
-              className="painel-icon-btn relative rounded-lg p-2 transition"
-            >
+            <button className="icon-btn relative rounded-lg p-2">
               <Bell className="h-4 w-4" />
               <span
                 className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full"
