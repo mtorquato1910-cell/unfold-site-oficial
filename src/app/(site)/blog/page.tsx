@@ -37,7 +37,7 @@ export default async function BlogPage() {
 
   return (
     <main>
-      <section className="relative isolate overflow-hidden pt-32 pb-16 md:pt-40 md:pb-20">
+      <section className="relative isolate overflow-hidden min-h-screen pt-32 pb-16 md:pt-40 md:pb-20">
         <HeroVideoBackground
           videoSrc="/videos/blog.mp4"
           posterSrc="/videos/blog-poster.jpg"

@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
           score_evoluir: scoreResult.score_evoluir,
           nivel_fit: scoreResult.nivel_fit,
           respostas_raw: JSON.stringify(respostas),
-          insight_id: insightId ? String(insightId) : undefined,
+          insight_id: insightId ? (insightId as unknown as number) : undefined,
           email_enviado: false,
         },
       })
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
           await payloadCMS.update({
             collection: 'leads',
             id: leadPayload.leadId,
-            data: { diagnostico_result_id: resultId },
+            data: { diagnostico_result_id: resultId as unknown as number },
           })
         } catch {
           // silencioso se o lead foi mock

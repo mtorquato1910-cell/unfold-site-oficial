@@ -90,7 +90,7 @@ export default async function CasesPage() {
   return (
     <main>
       {/* Hero */}
-      <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-20">
+      <section className="relative isolate overflow-hidden min-h-screen pt-32 pb-20 md:pt-40 md:pb-20">
         <HeroVideoBackground
           videoSrc="/videos/cases.mp4"
           posterSrc="/videos/cases-poster.jpg"

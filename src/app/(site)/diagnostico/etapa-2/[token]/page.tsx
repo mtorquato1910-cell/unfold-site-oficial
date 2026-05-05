@@ -31,7 +31,7 @@ export default async function DiagnosticoEtapa2Page({ params }: Props) {
 
   return (
     <main className="min-h-screen pt-20">
-      <QuizClient token={token} perguntas={perguntas as QuizPergunta[]} />
+      <QuizClient token={token} perguntas={perguntas as unknown as QuizPergunta[]} />
     </main>
   )
 }

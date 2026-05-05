@@ -13,7 +13,8 @@ export async function POST() {
     try {
       const existing = await payload.find({ collection: 'posts', where: { slug: { equals: post.slug } } })
       if (existing.docs.length > 0) { results.push({ slug: post.slug, action: 'skipped' }); continue }
-      await payload.create({ collection: 'posts', data: post as Record<string, unknown> })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (payload.create as any)({ collection: 'posts', data: post })
       results.push({ slug: post.slug, action: 'created' })
     } catch (err) {
       results.push({ slug: post.slug, action: 'error', error: String(err) })

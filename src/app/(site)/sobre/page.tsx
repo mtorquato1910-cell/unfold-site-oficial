@@ -48,7 +48,7 @@ export default function SobrePage() {
   return (
     <main>
       {/* 1. Hero */}
-      <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-20">
+      <section className="relative isolate overflow-hidden min-h-screen pt-32 pb-20 md:pt-40 md:pb-20">
         <HeroVideoBackground
           videoSrc="/videos/sobre.mp4"
           posterSrc="/videos/sobre-poster.jpg"

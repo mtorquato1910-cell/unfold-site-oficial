@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 
 interface HeroVideoBackgroundProps {
@@ -45,11 +46,13 @@ export function HeroVideoBackground({ videoSrc, posterSrc, videoFilter }: HeroVi
   return (
     <>
       {showStaticPoster ? (
-        <img
+        <Image
           src={posterSrc}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover -z-20"
+          fill
+          className="object-cover -z-20"
+          priority
         />
       ) : (
         <video

@@ -35,7 +35,7 @@ const TOOLS = [
 export default function FerramentasPage() {
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <section className="relative isolate overflow-hidden pt-32 pb-20 md:pt-40 md:pb-20">
+      <section className="relative isolate overflow-hidden min-h-screen pt-32 pb-20 md:pt-40 md:pb-20">
         <HeroVideoBackground
           videoSrc="/videos/ferramentas.mp4"
           posterSrc="/videos/ferramentas-poster.jpg"
