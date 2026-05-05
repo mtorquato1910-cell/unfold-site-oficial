@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
   },
+  async rewrites() {
+    return [
+      { source: '/admin', destination: '/painel' },
+      { source: '/admin/:path*', destination: '/painel/:path*' },
+    ]
+  },
   async redirects() {
     return [
       // Redirects 301 de URLs legados (Lighthouse / antigos)

@@ -1,38 +1,48 @@
 import { cookies } from 'next/headers'
-import { SignJWT, jwtVerify } from 'jose'
 
-const COOKIE_NAME = 'payload-token'
-const PAYLOAD_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+const COOKIE_NAME = 'sb-access-token'
 
-export interface PainelUser {
+function supabaseUrl() {
+  return (process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '').replace(/\/$/, '')
+}
+
+function supabaseKey() {
+  return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || ''
+}
+
+export type PainelUser = {
   id: string
   email: string
   role: 'admin' | 'editor'
   name?: string
 }
 
-export async function loginUser(email: string, password: string): Promise<{ user: PainelUser; token: string }> {
-  const res = await fetch(`${PAYLOAD_URL}/api/users/login`, {
+export async function loginUser(email: string, password: string): Promise<{ token: string; user: PainelUser }> {
+  const url = `${supabaseUrl()}/auth/v1/token?grant_type=password`
+  const res = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      apikey: supabaseKey(),
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ email, password }),
   })
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}))
-    throw new Error(err?.message || 'Credenciais inválidas')
+    const msg = err.error_description || err.message || 'Credenciais inválidas'
+    throw new Error(msg === 'Invalid login credentials' ? 'E-mail ou senha incorretos' : msg)
   }
 
   const data = await res.json()
-  return {
-    user: {
-      id: data.user?.id,
-      email: data.user?.email,
-      role: data.user?.role ?? 'editor',
-      name: data.user?.name,
-    },
-    token: data.token,
+  const user: PainelUser = {
+    id: data.user?.id || '',
+    email: data.user?.email || email,
+    role: 'admin',
+    name: data.user?.user_metadata?.name || data.user?.user_metadata?.full_name,
   }
+
+  return { token: data.access_token, user }
 }
 
 export async function getSession(): Promise<PainelUser | null> {
@@ -41,31 +51,34 @@ export async function getSession(): Promise<PainelUser | null> {
     const token = cookieStore.get(COOKIE_NAME)?.value
     if (!token) return null
 
-    const res = await fetch(`${PAYLOAD_URL}/api/users/me`, {
-      headers: { Authorization: `JWT ${token}` },
+    const res = await fetch(`${supabaseUrl()}/auth/v1/user`, {
+      headers: {
+        apikey: supabaseKey(),
+        Authorization: `Bearer ${token}`,
+      },
       cache: 'no-store',
     })
 
     if (!res.ok) return null
-    const data = await res.json()
 
+    const user = await res.json()
     return {
-      id: data.user?.id,
-      email: data.user?.email,
-      role: data.user?.role ?? 'editor',
-      name: data.user?.name,
+      id: user.id,
+      email: user.email,
+      role: 'admin',
+      name: user.user_metadata?.name || user.user_metadata?.full_name,
     }
   } catch {
     return null
   }
 }
 
-export function setAuthCookie(token: string, cookieStore: Awaited<ReturnType<typeof cookies>>) {
+export async function setAuthCookie(token: string, cookieStore: Awaited<ReturnType<typeof cookies>>) {
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 60 * 60 * 24, // 24h
+    maxAge: 60 * 60 * 24 * 7,
     path: '/',
   })
 }

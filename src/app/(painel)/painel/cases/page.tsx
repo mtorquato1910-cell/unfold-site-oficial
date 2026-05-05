@@ -6,7 +6,7 @@ import CasesClient from './CasesClient'
 
 export default async function CasesPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
+  if (!user) redirect('/admin/login')
 
   const result = await getCollection('cases', { limit: 50, sort: '-createdAt' })
 

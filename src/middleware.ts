@@ -1,22 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const COOKIE_NAME = 'payload-token'
-const PUBLIC_PAINEL_PATHS = ['/painel/login']
+const COOKIE_NAME = 'sb-access-token'
+const PUBLIC_ADMIN_PATHS = ['/admin/login', '/painel/login']
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (!pathname.startsWith('/painel')) {
+  if (!pathname.startsWith('/admin') && !pathname.startsWith('/painel')) {
     return NextResponse.next()
   }
 
-  if (PUBLIC_PAINEL_PATHS.some((p) => pathname.startsWith(p))) {
+  if (PUBLIC_ADMIN_PATHS.some((p) => pathname.startsWith(p))) {
     return NextResponse.next()
   }
 
   const token = request.cookies.get(COOKIE_NAME)?.value
   if (!token) {
-    const loginUrl = new URL('/painel/login', request.url)
+    const loginUrl = new URL('/admin/login', request.url)
     loginUrl.searchParams.set('from', pathname)
     return NextResponse.redirect(loginUrl)
   }
@@ -25,5 +25,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/painel/:path*'],
+  matcher: ['/admin/:path*', '/painel/:path*'],
 }

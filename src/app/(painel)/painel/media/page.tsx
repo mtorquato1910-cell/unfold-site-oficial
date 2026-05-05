@@ -6,7 +6,7 @@ import MediaClient from './MediaClient'
 
 export default async function MediaPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
+  if (!user) redirect('/admin/login')
 
   const result = await getCollection('media', { limit: 100, sort: '-createdAt' })
 

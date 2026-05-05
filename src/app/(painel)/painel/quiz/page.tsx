@@ -6,7 +6,7 @@ import QuizClient from './QuizClient'
 
 export default async function QuizPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
+  if (!user) redirect('/admin/login')
 
   const result = await getCollection('quiz-questions', { sort: 'order', limit: 200 })
 

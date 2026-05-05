@@ -6,7 +6,7 @@ import CategoriesClient from './CategoriesClient'
 
 export default async function CategoriesPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
+  if (!user) redirect('/admin/login')
 
   const result = await getCollection('categories', { limit: 100, sort: 'name' })
 

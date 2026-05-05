@@ -6,8 +6,8 @@ import AuditClient from './AuditClient'
 
 export default async function AuditPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
-  if (user.role !== 'admin') redirect('/painel')
+  if (!user) redirect('/admin/login')
+  if (user.role !== 'admin') redirect('/admin')
 
   let logs: any[] = []
   try {

@@ -6,7 +6,7 @@ import PostsClient from './PostsClient'
 
 export default async function PostsPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
+  if (!user) redirect('/admin/login')
 
   const result = await getCollection('posts', { limit: 50, sort: '-createdAt' })
 

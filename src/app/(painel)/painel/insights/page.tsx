@@ -6,7 +6,7 @@ import InsightsClient from './InsightsClient'
 
 export default async function InsightsPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
+  if (!user) redirect('/admin/login')
 
   const result = await getCollection('insights-variations', { limit: 100, sort: '-createdAt' })
 

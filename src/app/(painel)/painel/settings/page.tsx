@@ -5,8 +5,8 @@ import SettingsClient from './SettingsClient'
 
 export default async function SettingsPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
-  if (user.role !== 'admin') redirect('/painel')
+  if (!user) redirect('/admin/login')
+  if (user.role !== 'admin') redirect('/admin')
 
   let initialData: Record<string, any> = {}
   try {

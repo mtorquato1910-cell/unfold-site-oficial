@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { logoutAction } from '@/app/(painel)/painel/login/actions'
+import { logoutAction } from '@/app/(painel)/admin/login/actions'
 import {
   LayoutDashboard, FileText, Briefcase, MessageSquareQuote,
   FolderTree, ImageIcon, Users, ClipboardList,
@@ -17,34 +17,34 @@ type Section = { label: string; items: NavItem[] }
 const sections: Section[] = [
   {
     label: 'Geral',
-    items: [{ href: '/painel', label: 'Dashboard', icon: LayoutDashboard, exact: true }],
+    items: [{ href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true }],
   },
   {
     label: 'Conteúdo',
     items: [
-      { href: '/painel/posts', label: 'Posts / Blog', icon: FileText },
-      { href: '/painel/cases', label: 'Cases', icon: Briefcase },
-      { href: '/painel/testimonials', label: 'Depoimentos', icon: MessageSquareQuote },
-      { href: '/painel/categories', label: 'Categorias', icon: FolderTree },
-      { href: '/painel/media', label: 'Mídia', icon: ImageIcon },
+      { href: '/admin/posts', label: 'Posts / Blog', icon: FileText },
+      { href: '/admin/cases', label: 'Cases', icon: Briefcase },
+      { href: '/admin/testimonials', label: 'Depoimentos', icon: MessageSquareQuote },
+      { href: '/admin/categories', label: 'Categorias', icon: FolderTree },
+      { href: '/admin/media', label: 'Mídia', icon: ImageIcon },
     ],
   },
   {
     label: 'Leads & CRM',
     items: [
-      { href: '/painel/leads', label: 'Leads', icon: Users },
-      { href: '/painel/diagnostico', label: 'Diagnósticos', icon: ClipboardList },
-      { href: '/painel/quiz', label: 'Questões do Quiz', icon: HelpCircle },
-      { href: '/painel/insights', label: 'Variações de Insights', icon: Sparkles },
-      { href: '/painel/prompts', label: 'Prompts de IA', icon: Bot },
+      { href: '/admin/leads', label: 'Leads', icon: Users },
+      { href: '/admin/diagnostico', label: 'Diagnósticos', icon: ClipboardList },
+      { href: '/admin/quiz', label: 'Questões do Quiz', icon: HelpCircle },
+      { href: '/admin/insights', label: 'Variações de Insights', icon: Sparkles },
+      { href: '/admin/prompts', label: 'Prompts de IA', icon: Bot },
     ],
   },
   {
     label: 'Configurações',
     items: [
-      { href: '/painel/settings', label: 'Configurações do Site', icon: Settings, adminOnly: true },
-      { href: '/painel/users', label: 'Usuários', icon: UserCog, adminOnly: true },
-      { href: '/painel/audit', label: 'Log de Auditoria', icon: Activity, adminOnly: true },
+      { href: '/admin/settings', label: 'Configurações do Site', icon: Settings, adminOnly: true },
+      { href: '/admin/users', label: 'Usuários', icon: UserCog, adminOnly: true },
+      { href: '/admin/audit', label: 'Log de Auditoria', icon: Activity, adminOnly: true },
     ],
   },
 ]

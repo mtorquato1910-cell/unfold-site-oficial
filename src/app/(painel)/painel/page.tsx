@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation'
 
 export default async function PainelDashboardPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
+  if (!user) redirect('/admin/login')
 
   const [stats, recentLeads, recentDiag] = await Promise.all([
     getDashboardStats(),

@@ -6,7 +6,7 @@ import DiagnosticoClient from './DiagnosticoClient'
 
 export default async function DiagnosticoPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
+  if (!user) redirect('/admin/login')
 
   const result = await getCollection('diagnostico-results', { limit: 20, sort: '-createdAt' })
 

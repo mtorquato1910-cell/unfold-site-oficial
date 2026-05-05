@@ -6,8 +6,8 @@ import UsersClient from './UsersClient'
 
 export default async function UsersPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
-  if (user.role !== 'admin') redirect('/painel')
+  if (!user) redirect('/admin/login')
+  if (user.role !== 'admin') redirect('/admin')
 
   const result = await getCollection('users', { limit: 50, sort: '-createdAt' })
 

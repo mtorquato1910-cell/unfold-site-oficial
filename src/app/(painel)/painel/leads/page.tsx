@@ -6,7 +6,7 @@ import LeadsClient from './LeadsClient'
 
 export default async function LeadsPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
+  if (!user) redirect('/admin/login')
 
   const result = await getCollection('leads', { limit: 50, sort: '-createdAt' })
 

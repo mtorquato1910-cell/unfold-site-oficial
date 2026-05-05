@@ -6,7 +6,7 @@ import PromptsClient from './PromptsClient'
 
 export default async function PromptsPage() {
   const user = await getSession()
-  if (!user) redirect('/painel/login')
+  if (!user) redirect('/admin/login')
 
   const result = await getCollection('ai-prompts', { limit: 100, sort: '-createdAt' })
 
