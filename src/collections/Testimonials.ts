@@ -52,6 +52,16 @@ export const Testimonials: CollectionConfig = {
       admin: { description: 'Foto quadrada, 200x200px mínimo. Será exibida como avatar circular.' },
     },
     {
+      name: 'logo_empresa',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Logo da empresa',
+      admin: {
+        description:
+          'Logo da empresa do cliente. Aparece como segundo círculo ao lado da foto. Recomendado: 200x200px com fundo transparente.',
+      },
+    },
+    {
       name: 'avaliacao',
       type: 'number',
       label: 'Avaliação (1–5 estrelas)',

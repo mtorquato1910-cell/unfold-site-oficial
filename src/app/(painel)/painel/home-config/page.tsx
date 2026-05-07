@@ -30,12 +30,6 @@ export default async function HomeConfigPage() {
       : [],
     stats_extra_text: settings?.stats_extra_text ?? '',
     client_logos_title: settings?.client_logos_title ?? '',
-    client_logos: Array.isArray(settings?.client_logos)
-      ? settings.client_logos.map((l: any) => ({
-          name: l.name || '',
-          website: l.website || '',
-        }))
-      : [],
   }
 
   return (

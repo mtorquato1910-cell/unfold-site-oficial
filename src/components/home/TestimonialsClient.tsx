@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Quote } from 'lucide-react'
 import { Reveal } from '@/components/ui/Reveal'
 import type { PublicTestimonial } from '@/lib/testimonials'
@@ -24,8 +25,33 @@ export default function TestimonialsClient({ items }: { items: PublicTestimonial
         <Reveal delay={160}>
           <div className="mt-12 flex items-center justify-between gap-6 flex-wrap">
             <div className="flex items-center gap-4">
-              <div className="h-12 w-12 rounded-full bg-[#001E29] text-[#6DF9C6] grid place-items-center font-sans font-bold text-sm">
-                {t.initials}
+              <div className="flex items-center -space-x-2">
+                {t.fotoUrl ? (
+                  <div className="relative h-12 w-12 rounded-full overflow-hidden ring-2 ring-[#E7E7E7] bg-[#001E29]">
+                    <Image
+                      src={t.fotoUrl}
+                      alt={t.nome}
+                      fill
+                      className="object-cover"
+                      sizes="48px"
+                    />
+                  </div>
+                ) : (
+                  <div className="h-12 w-12 rounded-full ring-2 ring-[#E7E7E7] bg-[#001E29] text-[#6DF9C6] grid place-items-center font-sans font-bold text-sm">
+                    {t.initials}
+                  </div>
+                )}
+                {t.logoEmpresaUrl && (
+                  <div className="relative h-12 w-12 rounded-full overflow-hidden ring-2 ring-[#E7E7E7] bg-white grid place-items-center">
+                    <Image
+                      src={t.logoEmpresaUrl}
+                      alt={t.empresa}
+                      fill
+                      className="object-contain p-1.5"
+                      sizes="48px"
+                    />
+                  </div>
+                )}
               </div>
               <div>
                 <p className="font-sans font-bold">{t.nome}</p>

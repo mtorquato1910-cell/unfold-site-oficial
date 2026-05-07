@@ -1,4 +1,7 @@
 import type { GlobalConfig } from 'payload'
+import { ICON_OPTIONS } from '../lib/icons-map'
+
+const ICON_SELECT_OPTIONS = ICON_OPTIONS.map((name) => ({ label: name, value: name }))
 
 const HomeSettings: GlobalConfig = {
   slug: 'home-settings',
@@ -156,7 +159,7 @@ const HomeSettings: GlobalConfig = {
           ],
         },
 
-        // ── Logos de clientes ──────────────────────────────────────
+        // ── Logos de clientes (apenas título; lista vive na collection Clients) ──
         {
           label: 'Logos de clientes',
           fields: [
@@ -165,43 +168,10 @@ const HomeSettings: GlobalConfig = {
               type: 'text',
               label: 'Título da seção',
               defaultValue: 'Empresas que confiam na Unfold',
-            },
-            {
-              name: 'client_logos',
-              type: 'array',
-              label: 'Logos / nomes',
-              maxRows: 24,
-              labels: { singular: 'Cliente', plural: 'Clientes' },
               admin: {
-                description: 'Pode usar nome (texto) ou imagem. Imagem tem prioridade.',
+                description:
+                  'Para gerenciar a lista de empresas, use a collection "Empresas que confiam na Unfold" no menu lateral.',
               },
-              fields: [
-                {
-                  type: 'row',
-                  fields: [
-                    {
-                      name: 'name',
-                      type: 'text',
-                      label: 'Nome do cliente',
-                      required: true,
-                      admin: { width: '40%' },
-                    },
-                    {
-                      name: 'logo',
-                      type: 'upload',
-                      relationTo: 'media',
-                      label: 'Logo (opcional)',
-                      admin: { width: '40%' },
-                    },
-                    {
-                      name: 'website',
-                      type: 'text',
-                      label: 'Site (opcional)',
-                      admin: { width: '20%', description: 'URL completa' },
-                    },
-                  ],
-                },
-              ],
             },
           ],
         },
@@ -291,15 +261,203 @@ const HomeSettings: GlobalConfig = {
           ],
         },
 
+        // ── Soluções (home — "Para empresas que precisam") ─────────
+        {
+          label: 'Soluções',
+          fields: [
+            {
+              name: 'solutions_eyebrow',
+              type: 'text',
+              label: 'Tagline pequena',
+              defaultValue: 'Para empresas que precisam',
+            },
+            {
+              name: 'solutions_title',
+              type: 'textarea',
+              label: 'Título da seção',
+              defaultValue: 'Resolvemos os desafios que travam seu crescimento.',
+            },
+            {
+              name: 'solutions',
+              type: 'array',
+              label: 'Cards de solução',
+              maxRows: 12,
+              labels: { singular: 'Solução', plural: 'Soluções' },
+              admin: { description: 'Recomendado: 8 cards para grid 4×2' },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'icon',
+                      type: 'select',
+                      label: 'Ícone',
+                      options: ICON_SELECT_OPTIONS,
+                      defaultValue: 'Target',
+                      admin: { width: '30%' },
+                    },
+                    { name: 'title', type: 'text', label: 'Título', required: true, admin: { width: '70%' } },
+                  ],
+                },
+                { name: 'desc', type: 'textarea', label: 'Descrição', required: true },
+              ],
+            },
+          ],
+        },
+
+        // ── Serviços (home — "Como atuamos") ───────────────────────
+        {
+          label: 'Serviços',
+          fields: [
+            {
+              name: 'services_eyebrow',
+              type: 'text',
+              label: 'Tagline pequena',
+              defaultValue: 'Como atuamos',
+            },
+            {
+              name: 'services_title',
+              type: 'textarea',
+              label: 'Título da seção',
+              defaultValue: 'Crescimento como sistema, não como projeto.',
+            },
+            {
+              name: 'services',
+              type: 'array',
+              label: 'Serviços',
+              maxRows: 6,
+              labels: { singular: 'Serviço', plural: 'Serviços' },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'numero', type: 'text', label: 'Número', defaultValue: '01', admin: { width: '15%' } },
+                    { name: 'title', type: 'text', label: 'Título', required: true, admin: { width: '85%' } },
+                  ],
+                },
+                { name: 'desc', type: 'textarea', label: 'Descrição curta', required: true },
+                {
+                  name: 'bullets',
+                  type: 'array',
+                  label: 'Bullets / itens entregues',
+                  maxRows: 8,
+                  fields: [{ name: 'text', type: 'text', required: true }],
+                },
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'cta_label',
+                      type: 'text',
+                      label: 'CTA — texto',
+                      defaultValue: 'Ver mais',
+                      admin: { width: '50%' },
+                    },
+                    {
+                      name: 'cta_href',
+                      type: 'text',
+                      label: 'CTA — link',
+                      defaultValue: '/atuacao',
+                      admin: { width: '50%' },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+
+        // ── Ferramentas (home — "Diagnósticos gratuitos") ──────────
+        {
+          label: 'Ferramentas',
+          fields: [
+            {
+              name: 'tools_eyebrow',
+              type: 'text',
+              label: 'Tagline pequena',
+              defaultValue: 'Ferramentas',
+            },
+            {
+              name: 'tools_title',
+              type: 'textarea',
+              label: 'Título da seção',
+              defaultValue: 'Diagnósticos gratuitos para destravar seu crescimento.',
+            },
+            {
+              name: 'tools',
+              type: 'array',
+              label: 'Cards de ferramentas',
+              maxRows: 6,
+              labels: { singular: 'Ferramenta', plural: 'Ferramentas' },
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'icon',
+                      type: 'select',
+                      label: 'Ícone',
+                      options: ICON_SELECT_OPTIONS,
+                      defaultValue: 'Calculator',
+                      admin: { width: '30%' },
+                    },
+                    { name: 'title', type: 'text', label: 'Título', required: true, admin: { width: '70%' } },
+                  ],
+                },
+                { name: 'desc', type: 'textarea', label: 'Descrição', required: true },
+                {
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'cta',
+                      type: 'text',
+                      label: 'CTA — texto',
+                      defaultValue: 'Saiba mais',
+                      admin: { width: '40%' },
+                    },
+                    {
+                      name: 'href',
+                      type: 'text',
+                      label: 'CTA — link',
+                      required: true,
+                      admin: { width: '40%' },
+                    },
+                    {
+                      name: 'ai',
+                      type: 'checkbox',
+                      label: 'AI Powered',
+                      defaultValue: false,
+                      admin: { width: '20%', description: 'Mostra badge "AI Powered"' },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+
         // ── Logos de parceiros ─────────────────────────────────────
         {
           label: 'Parceiros',
           fields: [
             {
+              name: 'partners_eyebrow',
+              type: 'text',
+              label: 'Pílula pequena (acima dos logos)',
+              defaultValue: 'Parceiros e certificações',
+            },
+            {
               name: 'partners_title',
               type: 'text',
-              label: 'Título da seção de parceiros',
+              label: 'Título da seção (não usado na home, fica para outras páginas)',
               defaultValue: 'Parceiros oficiais',
+            },
+            {
+              name: 'partners_footer_text',
+              type: 'textarea',
+              label: 'Texto em itálico abaixo dos logos',
+              defaultValue:
+                'Não achou sua ferramenta ou tecnologia? Possuímos um setor interno de tecnologia pronto para se adaptar à realidade do seu negócio.',
             },
             {
               name: 'partner_logos',

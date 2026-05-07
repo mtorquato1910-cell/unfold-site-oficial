@@ -1,13 +1,13 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useTransition } from 'react'
-import { Save, Sparkles, BarChart3, Building2, Plus, Trash2 } from 'lucide-react'
+import { Save, Sparkles, BarChart3, Building2, Plus, Trash2, ExternalLink } from 'lucide-react'
 import { PageHeader, GlassCard, Field, MintButton } from '@/components/painel/ui'
 import {
   updateHomeSettings,
   type HomeSettingsInput,
   type HomeStatInput,
-  type HomeLogoInput,
 } from '@/lib/actions/home-settings-actions'
 
 type FormState = {
@@ -22,7 +22,6 @@ type FormState = {
   stats: HomeStatInput[]
   stats_extra_text: string
   client_logos_title: string
-  client_logos: HomeLogoInput[]
 }
 
 export default function HomeConfigClient({ initial }: { initial: FormState }) {
@@ -51,25 +50,6 @@ export default function HomeConfigClient({ initial }: { initial: FormState }) {
     update(
       'stats',
       form.stats.filter((_, idx) => idx !== i),
-    )
-  }
-
-  function addLogo() {
-    if (form.client_logos.length >= 24) return
-    update('client_logos', [...form.client_logos, { name: '', website: '' }])
-  }
-
-  function updateLogo(i: number, field: keyof HomeLogoInput, value: any) {
-    update(
-      'client_logos',
-      form.client_logos.map((l, idx) => (idx === i ? { ...l, [field]: value } : l)),
-    )
-  }
-
-  function removeLogo(i: number) {
-    update(
-      'client_logos',
-      form.client_logos.filter((_, idx) => idx !== i),
     )
   }
 
@@ -282,27 +262,13 @@ export default function HomeConfigClient({ initial }: { initial: FormState }) {
           </div>
         </GlassCard>
 
-        {/* Client Logos */}
+        {/* Client Logos — apenas título; lista vive na collection */}
         <GlassCard>
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-mint" />
-              <h3 className="font-display text-[17px] font-medium text-fg">
-                Logos de clientes ({form.client_logos.length}/24)
-              </h3>
-            </div>
-            <button
-              onClick={addLogo}
-              disabled={form.client_logos.length >= 24}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium disabled:opacity-50"
-              style={{
-                background: 'hsl(158 92% 70% / 0.10)',
-                color: 'hsl(158 92% 70%)',
-                border: '1px solid hsl(158 92% 70% / 0.25)',
-              }}
-            >
-              <Plus className="h-3 w-3" /> Adicionar cliente
-            </button>
+          <div className="flex items-center gap-2 mb-5">
+            <Building2 className="h-4 w-4 text-mint" />
+            <h3 className="font-display text-[17px] font-medium text-fg">
+              Empresas que confiam na Unfold
+            </h3>
           </div>
 
           <div className="mb-4">
@@ -316,45 +282,21 @@ export default function HomeConfigClient({ initial }: { initial: FormState }) {
             </Field>
           </div>
 
-          <p className="text-[12px] text-dim-2 mb-3">
-            Para fazer upload de imagem do logo, vá em <strong className="text-fg">Mídia</strong> no menu, faça upload, e cole o ID aqui depois (próxima versão terá seletor visual).
+          <Link
+            href="/admin/collections/clients"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-[13px] font-medium"
+            style={{
+              background: 'hsl(158 92% 70% / 0.10)',
+              color: 'hsl(158 92% 70%)',
+              border: '1px solid hsl(158 92% 70% / 0.25)',
+            }}
+          >
+            Gerenciar empresas <ExternalLink className="h-3.5 w-3.5" />
+          </Link>
+          <p className="text-[12px] text-dim-2 mt-3">
+            A lista de empresas (com logo, nome e site) é gerenciada na collection dedicada.
+            Aqui você edita apenas o título da seção.
           </p>
-
-          {form.client_logos.length === 0 ? (
-            <p className="text-[13px] text-dim text-center py-4">
-              Nenhum cliente. Clique em &quot;Adicionar cliente&quot;.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {form.client_logos.map((logo, i) => (
-                <div
-                  key={i}
-                  className="grid grid-cols-12 gap-2 items-center p-3 rounded-lg"
-                  style={{ background: 'hsl(0 0% 100% / 0.02)', border: '1px solid hsl(158 92% 70% / 0.10)' }}
-                >
-                  <input
-                    className="input-mint col-span-5"
-                    value={logo.name}
-                    onChange={(e) => updateLogo(i, 'name', e.target.value)}
-                    placeholder="Nome do cliente"
-                  />
-                  <input
-                    className="input-mint col-span-6"
-                    value={logo.website || ''}
-                    onChange={(e) => updateLogo(i, 'website', e.target.value)}
-                    placeholder="https://site-do-cliente.com (opcional)"
-                  />
-                  <button
-                    onClick={() => removeLogo(i)}
-                    className="icon-btn p-1.5 rounded-md justify-self-end"
-                    title="Remover"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
         </GlassCard>
       </div>
     </>

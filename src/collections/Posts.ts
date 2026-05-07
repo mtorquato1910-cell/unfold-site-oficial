@@ -78,6 +78,28 @@ export const Posts: CollectionConfig = {
     },
     { name: 'tags', type: 'array', fields: [{ name: 'tag', type: 'text' }] },
 
+    // ── Destaque na Home ──────────────────────────────────────────
+    {
+      name: 'destaque_home',
+      type: 'checkbox',
+      label: 'Exibir nos Insights da Home',
+      defaultValue: false,
+      index: true,
+      admin: {
+        description:
+          'Marque para que este post apareça na seção "Insights" da página inicial. A home exibe até 6 posts marcados (ordenados pelo campo abaixo).',
+      },
+    },
+    {
+      name: 'ordem_home',
+      type: 'number',
+      label: 'Ordem na Home',
+      defaultValue: 0,
+      admin: {
+        description: 'Número menor aparece primeiro. Usado apenas quando "Exibir nos Insights da Home" está marcado.',
+      },
+    },
+
     // ── Submissão externa (S8 Workflow Editorial) ─────────────────
     {
       name: 'isExternalSubmission',

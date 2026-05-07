@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useRef, useState, useTransition } from 'react'
 import Link from 'next/link'
-import { CheckCircle2, Send, AlertCircle } from 'lucide-react'
+import Image from 'next/image'
+import { CheckCircle2, Send, AlertCircle, ImagePlus, X } from 'lucide-react'
 import { submitGuestPost, type GuestPostInput } from '@/lib/actions/blog-submit-actions'
 
 const PILLARS = [
@@ -24,14 +25,48 @@ const EMPTY: GuestPostInput = {
   consent: false,
 }
 
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024
+const ALLOWED_IMAGE_MIMES = ['image/jpeg', 'image/png']
+
 export default function ContribuirClient() {
   const [form, setForm] = useState<GuestPostInput>(EMPTY)
+  const [coverImage, setCoverImage] = useState<File | null>(null)
+  const [coverPreview, setCoverPreview] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   function update<K extends keyof GuestPostInput>(key: K, value: GuestPostInput[K]) {
     setForm((f) => ({ ...f, [key]: value }))
+  }
+
+  function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    setError(null)
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!ALLOWED_IMAGE_MIMES.includes(file.type)) {
+      setError('Apenas imagens JPG ou PNG são aceitas.')
+      e.target.value = ''
+      return
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      setError('Imagem maior que 5MB. Reduza o tamanho antes de enviar.')
+      e.target.value = ''
+      return
+    }
+
+    setCoverImage(file)
+    if (coverPreview) URL.revokeObjectURL(coverPreview)
+    setCoverPreview(URL.createObjectURL(file))
+  }
+
+  function clearImage() {
+    setCoverImage(null)
+    if (coverPreview) URL.revokeObjectURL(coverPreview)
+    setCoverPreview(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -39,7 +74,18 @@ export default function ContribuirClient() {
     setError(null)
     startTransition(async () => {
       try {
-        await submitGuestPost(form)
+        const fd = new FormData()
+        fd.append('authorName', form.authorName)
+        fd.append('authorEmail', form.authorEmail)
+        fd.append('authorCompany', form.authorCompany || '')
+        fd.append('title', form.title)
+        fd.append('summary', form.summary)
+        fd.append('content', form.content)
+        fd.append('pillar', form.pillar || 'geral')
+        fd.append('consent', form.consent ? 'true' : 'false')
+        if (coverImage) fd.append('coverImage', coverImage)
+
+        await submitGuestPost(fd)
         setSuccess(true)
       } catch (err: any) {
         setError(err?.message || 'Falha ao enviar. Tente novamente.')
@@ -171,6 +217,50 @@ export default function ContribuirClient() {
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Imagem de capa — opcional */}
+          <div>
+            <label className="block text-sm font-medium mb-1.5">
+              Imagem de capa (opcional)
+            </label>
+            {coverPreview ? (
+              <div className="relative rounded-lg overflow-hidden border border-border">
+                <div className="relative w-full aspect-[16/9] bg-background">
+                  <Image
+                    src={coverPreview}
+                    alt="Pré-visualização da capa"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 700px"
+                    unoptimized
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={clearImage}
+                  className="absolute top-2 right-2 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs bg-background/90 hover:bg-background border border-border"
+                >
+                  <X className="h-3.5 w-3.5" /> Remover
+                </button>
+                <p className="px-3 py-2 text-xs text-foreground/60 bg-surface/50 truncate">
+                  {coverImage?.name} · {((coverImage?.size || 0) / 1024).toFixed(0)} KB
+                </p>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center gap-2 w-full py-8 px-4 rounded-lg border-2 border-dashed border-border hover:border-primary/50 bg-background/50 cursor-pointer transition-colors">
+                <ImagePlus className="h-6 w-6 text-foreground/50" />
+                <span className="text-sm text-foreground/70">Clique para anexar uma imagem</span>
+                <span className="text-xs text-foreground/45">JPG ou PNG · até 5MB</span>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png"
+                  onChange={handleImageSelect}
+                  className="hidden"
+                />
+              </label>
+            )}
           </div>
 
           <div>

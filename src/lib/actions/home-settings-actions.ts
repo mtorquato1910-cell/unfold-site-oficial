@@ -12,13 +12,6 @@ export type HomeStatInput = {
   label: string
 }
 
-export type HomeLogoInput = {
-  name: string
-  website?: string
-  // logoId vem do upload via /admin/media — opcional
-  logo?: string | null
-}
-
 export type HomeSettingsInput = {
   hero_eyebrow?: string
   hero_title?: string
@@ -31,7 +24,6 @@ export type HomeSettingsInput = {
   stats?: HomeStatInput[]
   stats_extra_text?: string
   client_logos_title?: string
-  client_logos?: HomeLogoInput[]
 }
 
 export async function getHomeSettingsRaw() {
@@ -51,9 +43,6 @@ export async function updateHomeSettings(data: HomeSettingsInput) {
   }
   if (data.stats && data.stats.length > 6) {
     throw new Error('Máximo de 6 stats')
-  }
-  if (data.client_logos && data.client_logos.length > 24) {
-    throw new Error('Máximo de 24 logos de clientes')
   }
 
   const payload = await getPayload({ config })

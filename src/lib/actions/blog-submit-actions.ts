@@ -72,7 +72,23 @@ export type GuestPostInput = {
   consent: boolean
 }
 
-export async function submitGuestPost(input: GuestPostInput) {
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024 // 5MB
+const ALLOWED_IMAGE_MIMES = ['image/jpeg', 'image/png']
+
+export async function submitGuestPost(formData: FormData) {
+  const input: GuestPostInput = {
+    authorName: String(formData.get('authorName') || ''),
+    authorEmail: String(formData.get('authorEmail') || ''),
+    authorCompany: String(formData.get('authorCompany') || '') || undefined,
+    title: String(formData.get('title') || ''),
+    summary: String(formData.get('summary') || ''),
+    content: String(formData.get('content') || ''),
+    pillar: (String(formData.get('pillar') || 'geral') as GuestPostInput['pillar']),
+    consent: formData.get('consent') === 'true',
+  }
+  const coverImage = formData.get('coverImage')
+  const hasImage = coverImage instanceof File && coverImage.size > 0
+
   // ── Validações ────────────────────────────────────────────────
   if (!input.consent) throw new Error('Você precisa aceitar os termos para enviar.')
   if (!input.authorName?.trim()) throw new Error('Nome obrigatório')
@@ -95,6 +111,16 @@ export async function submitGuestPost(input: GuestPostInput) {
   // Honeypot/anti-spam: muitos URLs em poucos caracteres
   const urlCount = (input.content.match(/https?:\/\//g) || []).length
   if (urlCount > 5) throw new Error('Muitos links no conteúdo. Reduza para no máximo 5.')
+
+  if (hasImage) {
+    const file = coverImage as File
+    if (!ALLOWED_IMAGE_MIMES.includes(file.type)) {
+      throw new Error('Imagem deve ser JPG ou PNG.')
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      throw new Error('Imagem maior que 5MB. Reduza o tamanho.')
+    }
+  }
 
   // ── Rate limit por IP ─────────────────────────────────────────
   const h = await headers()
@@ -126,6 +152,29 @@ export async function submitGuestPost(input: GuestPostInput) {
     }
   }
 
+  // ── Upload da imagem (opcional) ───────────────────────────────
+  let imagemDestaqueId: string | number | undefined
+  if (hasImage) {
+    try {
+      const file = coverImage as File
+      const buffer = Buffer.from(await file.arrayBuffer())
+      const media = await payload.create({
+        collection: 'media',
+        data: { alt: input.title.slice(0, 120) } as any,
+        file: {
+          data: buffer,
+          mimetype: file.type,
+          name: file.name || `submission-${Date.now()}.${file.type === 'image/png' ? 'png' : 'jpg'}`,
+          size: file.size,
+        },
+      })
+      imagemDestaqueId = media.id
+    } catch (err) {
+      console.error('[submitGuestPost] upload imagem falhou:', err)
+      // Não bloqueia: prossegue sem imagem
+    }
+  }
+
   const post = await payload.create({
     collection: 'posts',
     data: {
@@ -140,6 +189,7 @@ export async function submitGuestPost(input: GuestPostInput) {
       submittedByName: input.authorName,
       submittedByEmail: input.authorEmail,
       submittedByCompany: input.authorCompany || undefined,
+      ...(imagemDestaqueId ? { imagem_destaque: imagemDestaqueId } : {}),
     } as any,
   })
 

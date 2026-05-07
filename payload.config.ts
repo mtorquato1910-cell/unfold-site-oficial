@@ -3,6 +3,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
@@ -18,6 +19,7 @@ import AIPrompts from './src/collections/AIPrompts'
 import AuditLog from './src/collections/AuditLog'
 import Media from './src/collections/Media'
 import Testimonials from './src/collections/Testimonials'
+import Clients from './src/collections/Clients'
 import Notifications from './src/collections/Notifications'
 import EmailLogs from './src/collections/EmailLogs'
 import FAQs from './src/collections/FAQs'
@@ -32,8 +34,17 @@ const dirname = path.dirname(filename)
 // Local dev: SQLite (arquivo dev.db). Produção: PostgreSQL (Supabase via DATABASE_URL)
 const isPostgres = process.env.DATABASE_URL?.startsWith('postgres')
 
-// Vercel Blob só ativo em produção (quando BLOB_READ_WRITE_TOKEN estiver configurado)
-const useVercelBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN)
+// Storage de mídia — prioridade:
+//   1. Supabase Storage (S3-compatible)  — se SUPABASE_S3_* preenchidos
+//   2. Vercel Blob                        — se BLOB_READ_WRITE_TOKEN preenchido
+//   3. Filesystem local (public/media)    — fallback dev
+const useSupabaseS3 = Boolean(
+  process.env.SUPABASE_S3_ACCESS_KEY_ID &&
+    process.env.SUPABASE_S3_SECRET_ACCESS_KEY &&
+    process.env.SUPABASE_S3_ENDPOINT &&
+    process.env.SUPABASE_S3_BUCKET,
+)
+const useVercelBlob = !useSupabaseS3 && Boolean(process.env.BLOB_READ_WRITE_TOKEN)
 
 export default buildConfig({
   admin: {
@@ -74,6 +85,7 @@ export default buildConfig({
     AuditLog,
     // Sprint 7
     Testimonials,
+    Clients,
     // Sprint 13 (Notifications & Email)
     Notifications,
     EmailLogs,
@@ -92,16 +104,43 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   plugins: [
-    ...(useVercelBlob
+    ...(useSupabaseS3
       ? [
-          vercelBlobStorage({
+          s3Storage({
             collections: {
-              media: true,
+              media: {
+                disablePayloadAccessControl: true,
+                generateFileURL: ({ filename }) => {
+                  // Supabase serve uploads públicos em /storage/v1/object/public/{bucket}/{key}
+                  // (o endpoint S3 .../s3 é só pra upload autenticado)
+                  const base = (process.env.SUPABASE_S3_ENDPOINT as string).replace(/\/storage\/v1\/s3\/?$/, '')
+                  const bucket = process.env.SUPABASE_S3_BUCKET as string
+                  return `${base}/storage/v1/object/public/${bucket}/${filename}`
+                },
+              },
             },
-            token: process.env.BLOB_READ_WRITE_TOKEN as string,
+            bucket: process.env.SUPABASE_S3_BUCKET as string,
+            config: {
+              endpoint: process.env.SUPABASE_S3_ENDPOINT as string,
+              region: process.env.SUPABASE_S3_REGION || 'us-east-1',
+              credentials: {
+                accessKeyId: process.env.SUPABASE_S3_ACCESS_KEY_ID as string,
+                secretAccessKey: process.env.SUPABASE_S3_SECRET_ACCESS_KEY as string,
+              },
+              forcePathStyle: true,
+            },
           }),
         ]
-      : []),
+      : useVercelBlob
+        ? [
+            vercelBlobStorage({
+              collections: {
+                media: true,
+              },
+              token: process.env.BLOB_READ_WRITE_TOKEN as string,
+            }),
+          ]
+        : []),
   ],
   db: isPostgres
     ? postgresAdapter({

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type Location = { id: string; name: string; path: string }
 type BrazilMapData = { label: string; viewBox: string; locations: Location[] }
@@ -22,10 +22,39 @@ const ANIMATION_DELAYS: Record<string, number> = {
   sp: 3.0, pr: 3.6, sc: 4.2, go: 4.8, mt: 5.4, ms: 6.0,
 }
 
+// Ajuste fino vertical/horizontal por estado (em unidades do viewBox).
+// Útil quando o centro geométrico do bounding box cai em uma "ponta" do estado.
+const LABEL_OFFSETS: Record<string, { dx?: number; dy?: number }> = {
+  al: { dx: 6, dy: 0 },     // estado pequeno, leve deslocamento à direita
+  sp: { dx: 0, dy: -2 },
+  pr: { dx: 0, dy: 0 },
+  sc: { dx: 0, dy: 2 },
+  ms: { dx: -4, dy: 0 },
+}
+
 export function BrazilMap({ className = '' }: { className?: string }) {
   const [hovered, setHovered] = useState<string | null>(null)
+  const [centroids, setCentroids] = useState<Record<string, { x: number; y: number }>>({})
+  const svgRef = useRef<SVGSVGElement | null>(null)
 
   const { viewBox, locations } = mapData
+
+  // Calcula o centro do bounding box de cada estado destacado após o render
+  useEffect(() => {
+    if (!svgRef.current) return
+    const next: Record<string, { x: number; y: number }> = {}
+    HIGHLIGHTED.forEach((id) => {
+      const el = svgRef.current?.querySelector<SVGPathElement>(`path[data-uf="${id}"]`)
+      if (!el) return
+      const bbox = el.getBBox()
+      const offset = LABEL_OFFSETS[id] ?? {}
+      next[id] = {
+        x: bbox.x + bbox.width / 2 + (offset.dx ?? 0),
+        y: bbox.y + bbox.height / 2 + (offset.dy ?? 0),
+      }
+    })
+    setCentroids(next)
+  }, [])
 
   return (
     <div className={`relative ${className}`}>
@@ -60,6 +89,7 @@ export function BrazilMap({ className = '' }: { className?: string }) {
       )}
 
       <svg
+        ref={svgRef}
         viewBox={viewBox}
         xmlns="http://www.w3.org/2000/svg"
         style={{ width: '100%', height: 'auto', display: 'block' }}
@@ -73,20 +103,21 @@ export function BrazilMap({ className = '' }: { className?: string }) {
           return (
             <path
               key={loc.id}
+              data-uf={loc.id}
               id={loc.id}
               d={loc.path}
               fill={isActive ? '#5EEAD4' : 'transparent'}
               fillOpacity={isActive ? (isHovered ? 1 : 0.82) : 0}
-              stroke={isActive ? '#5EEAD4' : 'rgba(94,234,212,0.22)'}
-              strokeWidth={isActive ? 0.6 : 0.8}
+              stroke="#0a0a0a"
+              strokeWidth={1}
               strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
               style={{
-                cursor: isActive ? 'default' : 'default',
+                cursor: 'default',
                 animation: isActive
                   ? `ugs-state-glow ${4 + (delay % 2)}s ease-in-out ${delay}s infinite`
                   : 'none',
-                transition: 'fill-opacity 0.2s ease, stroke-opacity 0.2s ease',
-                strokeOpacity: isHovered && !isActive ? 0.45 : 1,
+                transition: 'fill-opacity 0.2s ease',
               }}
               onMouseEnter={() => setHovered(loc.id)}
               onMouseLeave={() => setHovered(null)}
@@ -94,33 +125,22 @@ export function BrazilMap({ className = '' }: { className?: string }) {
           )
         })}
 
-        {/* State labels for active states */}
-        {[
-          { id: 'al', x: 528, y: 248 },
-          { id: 'pe', x: 490, y: 230 },
-          { id: 'ba', x: 440, y: 310 },
-          { id: 'mg', x: 400, y: 400 },
-          { id: 'sp', x: 330, y: 460 },
-          { id: 'pr', x: 295, y: 510 },
-          { id: 'sc', x: 285, y: 548 },
-          { id: 'go', x: 330, y: 360 },
-          { id: 'mt', x: 230, y: 320 },
-          { id: 'ms', x: 260, y: 440 },
-        ].map((lbl) => (
+        {/* Labels UF — posicionadas no centróide calculado em runtime */}
+        {Object.entries(centroids).map(([id, { x, y }]) => (
           <text
-            key={lbl.id}
-            x={lbl.x}
-            y={lbl.y}
+            key={id}
+            x={x}
+            y={y}
             textAnchor="middle"
             dominantBaseline="middle"
-            fontSize="9"
+            fontSize="11"
             fontFamily="'IBM Plex Mono',monospace"
             fontWeight="700"
             fill="#051512"
-            fillOpacity="0.85"
+            fillOpacity="0.95"
             style={{ pointerEvents: 'none', userSelect: 'none' }}
           >
-            {lbl.id.toUpperCase()}
+            {id.toUpperCase()}
           </text>
         ))}
       </svg>

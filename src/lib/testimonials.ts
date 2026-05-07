@@ -10,6 +10,8 @@ export type PublicTestimonial = {
   depoimento: string
   vertical: string
   initials: string
+  fotoUrl: string | null
+  logoEmpresaUrl: string | null
 }
 
 const FALLBACK: PublicTestimonial[] = [
@@ -22,6 +24,8 @@ const FALLBACK: PublicTestimonial[] = [
       'A Unfold trouxe a camada estratégica que faltava no nosso marketing. Em 8 meses, dobramos o pipeline qualificado e finalmente alinhamos marketing e vendas.',
     vertical: 'tech',
     initials: 'ML',
+    fotoUrl: null,
+    logoEmpresaUrl: null,
   },
   {
     id: 'fallback-2',
@@ -32,6 +36,8 @@ const FALLBACK: PublicTestimonial[] = [
       'Pararam de me entregar relatório bonito e começaram a entregar receita. Esse é o tipo de parceria que escala um negócio B2B de verdade.',
     vertical: 'industrias',
     initials: 'RA',
+    fotoUrl: null,
+    logoEmpresaUrl: null,
   },
   {
     id: 'fallback-3',
@@ -42,6 +48,8 @@ const FALLBACK: PublicTestimonial[] = [
       'Sentimos a diferença logo no primeiro trimestre. Operação madura, dados na mesa e decisões muito mais rápidas. Recomendo sem hesitar.',
     vertical: 'agro',
     initials: 'CR',
+    fotoUrl: null,
+    logoEmpresaUrl: null,
   },
 ]
 
@@ -49,6 +57,12 @@ function getInitials(nome: string): string {
   const parts = nome.trim().split(/\s+/)
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+}
+
+function mediaUrl(field: any): string | null {
+  if (!field) return null
+  if (typeof field === 'string') return null
+  return field.url || null
 }
 
 async function fetchPublicTestimonials(): Promise<PublicTestimonial[]> {
@@ -61,7 +75,7 @@ async function fetchPublicTestimonials(): Promise<PublicTestimonial[]> {
       },
       sort: 'ordem',
       limit: 12,
-      depth: 0,
+      depth: 1,
     })
     if (result.docs.length === 0) return FALLBACK
     return result.docs.map((t: any) => ({
@@ -72,6 +86,8 @@ async function fetchPublicTestimonials(): Promise<PublicTestimonial[]> {
       depoimento: t.depoimento || '',
       vertical: t.vertical || '',
       initials: getInitials(t.nome || '?'),
+      fotoUrl: mediaUrl(t.foto),
+      logoEmpresaUrl: mediaUrl(t.logo_empresa),
     }))
   } catch {
     return FALLBACK

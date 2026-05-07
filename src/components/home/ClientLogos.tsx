@@ -1,12 +1,12 @@
 import Image from 'next/image'
 import { Reveal } from '@/components/ui/Reveal'
 import { getHomeSettings } from '@/lib/home-settings'
+import { getPublicClients } from '@/lib/clients'
 
 export async function ClientLogos() {
-  const settings = await getHomeSettings()
-  const logos = settings.client_logos
+  const [settings, clients] = await Promise.all([getHomeSettings(), getPublicClients()])
 
-  if (logos.length === 0) return null
+  if (clients.length === 0) return null
 
   return (
     <section className="bg-background border-y border-border py-16">
@@ -17,12 +17,12 @@ export async function ClientLogos() {
           </p>
         </Reveal>
         <div className="grid grid-cols-3 md:grid-cols-6 gap-x-8 gap-y-10 items-center justify-items-center">
-          {logos.map((logo, i) => {
-            const inner = logo.logoUrl ? (
+          {clients.map((client, i) => {
+            const inner = client.logoUrl ? (
               <div className="relative h-10 w-32 md:h-12 md:w-40 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition">
                 <Image
-                  src={logo.logoUrl}
-                  alt={logo.name}
+                  src={client.logoUrl}
+                  alt={client.nome}
                   fill
                   className="object-contain"
                   sizes="(max-width: 768px) 128px, 160px"
@@ -30,23 +30,23 @@ export async function ClientLogos() {
               </div>
             ) : (
               <span className="font-display font-bold text-sm md:text-base tracking-tight text-center text-foreground/30 hover:text-foreground/60 transition-colors">
-                {logo.name}
+                {client.nome}
               </span>
             )
             return (
-              <Reveal key={`${logo.name}-${i}`} delay={Math.min(i, 5) * 55}>
-                {logo.website ? (
+              <Reveal key={client.id} delay={Math.min(i, 5) * 55}>
+                {client.website ? (
                   <a
-                    href={logo.website}
+                    href={client.website}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center"
-                    title={logo.name}
+                    title={client.nome}
                   >
                     {inner}
                   </a>
                 ) : (
-                  <div className="flex items-center justify-center" title={logo.name}>
+                  <div className="flex items-center justify-center" title={client.nome}>
                     {inner}
                   </div>
                 )}
