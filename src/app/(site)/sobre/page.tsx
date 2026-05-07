@@ -204,21 +204,6 @@ export default function SobrePage() {
                   <span className="text-sm font-medium">Escritório — São Paulo, SP</span>
                 </div>
               </div>
-              <div className="rounded-xl border border-border bg-card/40 p-5">
-                <p className="font-mono text-[10px] uppercase tracking-widest text-foreground/40 mb-4">
-                  Estados atendidos
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {['AL','BA','MG','SC','SP','MT','MS','GO','PE','PR'].map((uf) => (
-                    <span
-                      key={uf}
-                      className="font-mono text-[10px] font-semibold px-2 py-0.5 rounded bg-primary/15 text-primary border border-primary/20"
-                    >
-                      {uf}
-                    </span>
-                  ))}
-                </div>
-              </div>
             </div>
             <div className="lg:col-span-8">
               <div className="relative rounded-2xl border border-border bg-card/30 p-6 md:p-8">

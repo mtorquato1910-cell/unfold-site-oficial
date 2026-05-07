@@ -28,8 +28,8 @@ const LABEL_OFFSETS: Record<string, { dx?: number; dy?: number }> = {
   al: { dx: 6, dy: 0 },     // estado pequeno, leve deslocamento à direita
   sp: { dx: 0, dy: -2 },
   pr: { dx: 0, dy: 0 },
-  // SC tem "cauda" no nordeste que distorce o bbox; empurra label pra dentro
-  sc: { dx: -10, dy: 6 },
+  // SC: bbox estende pro sul (centróide cai no RS); empurra label pra cima
+  sc: { dx: 0, dy: -10 },
   ms: { dx: -4, dy: 0 },
 }
 
