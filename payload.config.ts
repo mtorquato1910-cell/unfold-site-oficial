@@ -20,6 +20,7 @@ import AuditLog from './src/collections/AuditLog'
 import Media from './src/collections/Media'
 import Testimonials from './src/collections/Testimonials'
 import Clients from './src/collections/Clients'
+import NewsletterSubscribers from './src/collections/NewsletterSubscribers'
 import Notifications from './src/collections/Notifications'
 import EmailLogs from './src/collections/EmailLogs'
 import FAQs from './src/collections/FAQs'
@@ -86,6 +87,7 @@ export default buildConfig({
     // Sprint 7
     Testimonials,
     Clients,
+    NewsletterSubscribers,
     // Sprint 13 (Notifications & Email)
     Notifications,
     EmailLogs,

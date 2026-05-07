@@ -1,9 +1,8 @@
 import Link from 'next/link'
-import { Linkedin, Instagram, Youtube, Facebook, Twitter, ArrowRight, Phone } from 'lucide-react'
+import { Linkedin, Instagram, Youtube, Facebook, Twitter, Phone } from 'lucide-react'
 import { UnfoldLogo } from '@/components/brand/UnfoldSymbol'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { getPublicSiteSettings } from '@/lib/site-settings'
+import NewsletterForm from './NewsletterForm'
 
 const COLS = [
   {
@@ -62,24 +61,7 @@ export async function Footer() {
               Insights de growth para vendas complexas, direto no seu email.
             </h3>
           </div>
-          <form
-            action="/api/newsletter"
-            method="POST"
-            className="flex w-full gap-2 max-w-md lg:ml-auto"
-          >
-            <Input
-              type="email"
-              name="email"
-              required
-              placeholder="seu@empresa.com.br"
-              className="bg-card border-border h-12"
-              aria-label="E-mail corporativo"
-            />
-            <Button type="submit" size="lg" className="h-12 group">
-              Assinar
-              <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Button>
-          </form>
+          <NewsletterForm />
         </div>
       </div>
 
