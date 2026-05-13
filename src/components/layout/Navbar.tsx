@@ -9,14 +9,17 @@ import { cn } from '@/lib/utils'
 
 function NavLogo({ size = 40 }: { size?: number }) {
   return (
-    <Image
-      src="/icone-c.png"
-      alt="Unfold Growth"
-      width={size}
-      height={size}
-      priority
-      className="shrink-0"
-    />
+    <div className="flex items-center gap-2">
+      <Image
+        src="/icone-c.png"
+        alt="Unfold Growth"
+        width={size}
+        height={size}
+        priority
+        className="shrink-0"
+      />
+      <span className="font-sans text-lg font-bold tracking-tight">unfold</span>
+    </div>
   )
 }
 
