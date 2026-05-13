@@ -40,10 +40,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || 'https://unfoldgrowth.com.br'
   ),
-  icons: {
-    icon: '/icon',
-    apple: '/apple-icon',
-  },
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
