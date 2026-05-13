@@ -81,7 +81,8 @@
       "Bash(pandoc --track-changes=all \"diagnostico_de_growth_especificacao_implementacao.md.docx\" -o \"diagnostico_extracted.md\")",
       "Bash(pandoc --track-changes=all \"diagnostico_de_growth_especificacao_implementacao.md.docx\" -o \"/tmp/diagnostico.md\")",
       "PowerShell(pandoc *)",
-      "PowerShell(cygpath *)"
+      "PowerShell(cygpath *)",
+      "Bash(pandoc \"diagnostico_de_growth_especificacao_implementacao.md.docx\" -o /tmp/diag.md)"
     ]
   }
 }
