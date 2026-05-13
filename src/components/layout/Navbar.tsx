@@ -7,16 +7,35 @@ import { Menu, X, ArrowUpRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-function NavLogo({ height = 32 }: { height?: number }) {
+function NavLogo() {
   return (
-    <Image
-      src="/unfold-wordmark.png"
-      alt="Unfold Growth"
-      width={height * 5}
-      height={height}
-      priority
-      className="shrink-0 h-8 md:h-9 w-auto"
-    />
+    <div className="flex items-center gap-3">
+      {/* Ícone principal (logo) — maior */}
+      <Image
+        src="/icone-c.png"
+        alt=""
+        width={56}
+        height={56}
+        priority
+        className="shrink-0 h-10 md:h-12 w-auto"
+      />
+      {/* Wordmark "UNF[ícone]LD" — letras brancas, O = ícone verde, menor que a logo */}
+      <span
+        className="flex items-baseline text-white font-display font-extrabold uppercase leading-none tracking-tight text-xl md:text-2xl select-none"
+        aria-label="Unfold"
+      >
+        <span>UNF</span>
+        <Image
+          src="/icone-c.png"
+          alt=""
+          width={28}
+          height={28}
+          priority
+          className="inline-block h-[0.85em] w-[0.85em] mx-[0.04em] translate-y-[0.06em] align-baseline"
+        />
+        <span>LD</span>
+      </span>
+    </div>
   )
 }
 
