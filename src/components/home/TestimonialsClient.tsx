@@ -6,7 +6,13 @@ import { ChevronLeft, ChevronRight, Quote } from 'lucide-react'
 import { Reveal } from '@/components/ui/Reveal'
 import type { PublicTestimonial } from '@/lib/testimonials'
 
-export default function TestimonialsClient({ items }: { items: PublicTestimonial[] }) {
+type Props = {
+  items: PublicTestimonial[]
+  eyebrow?: string
+  title?: string
+}
+
+export default function TestimonialsClient({ items, eyebrow, title }: Props) {
   const [i, setI] = useState(0)
   const t = items[i]
   if (!t) return null
@@ -17,6 +23,20 @@ export default function TestimonialsClient({ items }: { items: PublicTestimonial
         <Reveal>
           <Quote className="h-10 w-10 text-[#0a8a5f] mb-8" strokeWidth={1.6} />
         </Reveal>
+        {(eyebrow || title) && (
+          <Reveal delay={40}>
+            {eyebrow && (
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-4">
+                {eyebrow}
+              </p>
+            )}
+            {title && (
+              <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1] max-w-4xl mb-10">
+                {title}
+              </h2>
+            )}
+          </Reveal>
+        )}
         <Reveal delay={80}>
           <blockquote className="font-sans text-2xl md:text-3xl lg:text-4xl leading-snug font-normal italic max-w-4xl">
             &ldquo;{t.depoimento}&rdquo;

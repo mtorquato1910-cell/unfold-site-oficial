@@ -181,12 +181,6 @@ const HomeSettings: GlobalConfig = {
           label: 'Seção Método',
           fields: [
             {
-              name: 'method_eyebrow',
-              type: 'text',
-              label: 'Tagline pequena',
-              defaultValue: 'Método Unfold',
-            },
-            {
               name: 'method_title',
               type: 'textarea',
               label: 'Título da seção',

@@ -70,7 +70,6 @@ export type HomeSettingsData = {
   partners_footer_text: string
   partner_logos: HomeClientLogo[]
   // Método
-  method_eyebrow: string
   method_title: string
   method_description: string
   method_cta_label: string
@@ -194,7 +193,6 @@ const DEFAULTS: HomeSettingsData = {
     { name: 'KOMMO' },
     { name: 'ABRADI ALAGOAS' },
   ],
-  method_eyebrow: 'Método Unfold',
   method_title: 'Um sistema de crescimento, não mais uma série de ações isoladas.',
   method_description:
     'O Unfold Growth System (UGS) conecta as quatro alavancas do crescimento — Diagnosticar, Estruturar, Operar e Evoluir — em uma operação integrada, previsível e orientada a resultado comercial.',
@@ -301,7 +299,6 @@ async function fetchHomeSettings(): Promise<HomeSettingsData> {
       partners_title: settings?.partners_title || DEFAULTS.partners_title,
       partners_footer_text: settings?.partners_footer_text || DEFAULTS.partners_footer_text,
       partner_logos: partnerLogos.length > 0 ? partnerLogos : DEFAULTS.partner_logos,
-      method_eyebrow: settings?.method_eyebrow || DEFAULTS.method_eyebrow,
       method_title: settings?.method_title || DEFAULTS.method_title,
       method_description: settings?.method_description || DEFAULTS.method_description,
       method_cta_label: settings?.method_cta_label || DEFAULTS.method_cta_label,

@@ -7,5 +7,11 @@ export async function Testimonials() {
   if (settings.ocultar_depoimentos) return null
   const items = await getPublicTestimonials()
   if (items.length === 0) return null
-  return <TestimonialsClient items={items} />
+  return (
+    <TestimonialsClient
+      items={items}
+      eyebrow={settings.testimonials_eyebrow}
+      title={settings.testimonials_title}
+    />
+  )
 }
