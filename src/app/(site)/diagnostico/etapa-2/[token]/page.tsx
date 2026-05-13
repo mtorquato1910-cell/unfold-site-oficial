@@ -39,7 +39,7 @@ export default async function DiagnosticoEtapa2Page({ params }: Props) {
 export type QuizPergunta = {
   id: string
   pergunta: string
-  pilar: 'diagnosticar' | 'estruturar' | 'operar'
+  pilar: 'diagnosticar' | 'estruturar' | 'operar' | 'evoluir'
   peso: number
   ordem: number
   opcoes: Array<{ texto: string; valor: number }>

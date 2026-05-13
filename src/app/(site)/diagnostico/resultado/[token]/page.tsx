@@ -1,7 +1,16 @@
+/**
+ * Rota legada — mantida por 30 dias após Sprint 3 como redirect transparente para `/r/[hash]`.
+ *
+ * Estratégia:
+ *  1. Decodifica o JWT antigo.
+ *  2. Se houver `resultId` válido, busca no DB o `url_resultado_hash`.
+ *  3. Redirect 308 (permanent) para `/diagnostico/r/[hash]`.
+ *  4. Fallback: renderiza tela explicativa quando o token é inválido/expirado/sem hash.
+ */
+
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 import { jwtVerify } from 'jose'
-import { notFound } from 'next/navigation'
-import DiagnosticoResultadoClient from '@/components/diagnostico/DiagnosticoResultadoClient'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 
@@ -13,78 +22,65 @@ export const metadata: Metadata = {
 type Props = { params: Promise<{ token: string }> }
 
 const SECRET = new TextEncoder().encode(
-  process.env.PAYLOAD_SECRET || 'dev-secret-CHANGE-IN-PRODUCTION'
+  process.env.PAYLOAD_SECRET || 'dev-secret-CHANGE-IN-PRODUCTION',
 )
 
-export default async function DiagnosticoResultadoPage({ params }: Props) {
+export default async function DiagnosticoResultadoLegacyPage({ params }: Props) {
   const { token } = await params
 
-  let resultData: Record<string, unknown> | null = null
+  let resultId: string | undefined
   try {
     const { payload } = await jwtVerify(token, SECRET)
-    resultData = payload as Record<string, unknown>
+    resultId = (payload as { resultId?: string }).resultId
   } catch {
-    notFound()
+    return <TokenInvalido />
   }
 
-  // Buscar insight personalizado do DB (opcional, fallback para dados do JWT)
-  let insight: { headline: string; corpo: string; cta_texto: string } | null = null
-  if (resultData.insightId && String(resultData.insightId).length > 0) {
-    try {
-      const payloadCMS = await getPayload({ config: configPromise })
-      const found = await payloadCMS.findByID({
-        collection: 'insights-variations',
-        id: String(resultData.insightId),
-      })
-      if (found) {
-        insight = {
-          headline: found.headline as string,
-          corpo: found.corpo as string,
-          cta_texto: (found.cta_texto as string) || 'Agendar conversa estratégica',
-        }
-      }
-    } catch {
-      // DB não disponível — usará fallback
-    }
+  if (!resultId || resultId.startsWith('mock-')) {
+    return <TokenInvalido />
   }
 
-  const nivelFit = String(resultData.nivel_fit || 'medio') as 'alto' | 'medio' | 'baixo'
-
-  // Fallback de insight se DB não disponível
-  if (!insight) {
-    const fallbacks: Record<string, { headline: string; corpo: string; cta_texto: string }> = {
-      alto: {
-        headline: 'Sua operação comercial está madura para escalar',
-        corpo: 'Você demonstra maturidade nos três pilares do método UGS. O próximo passo é implementar ciclos de otimização contínua e escalar o que já funciona com consistência.',
-        cta_texto: 'Agendar conversa estratégica',
-      },
-      medio: {
-        headline: 'Você tem boas bases, mas existem gaps críticos',
-        corpo: 'Sua operação comercial já tem alguns processos definidos, mas ainda existem lacunas que limitam sua previsibilidade e crescimento. O método UGS pode ajudar a identificar e estruturar esses pontos de alavanca.',
-        cta_texto: 'Quero entender meus gaps',
-      },
-      baixo: {
-        headline: 'Sua operação comercial precisa de uma reformulação',
-        corpo: 'Os resultados mostram que sua operação ainda é muito reativa e informal. Com a estrutura certa, os resultados aparecem rapidamente.',
-        cta_texto: 'Iniciar diagnóstico completo',
-      },
-    }
-    insight = fallbacks[nivelFit] || fallbacks.medio
+  let hash: string | undefined
+  try {
+    const payloadCMS = await getPayload({ config: configPromise })
+    const doc = await payloadCMS.findByID({
+      collection: 'diagnostico-results',
+      id: resultId,
+    })
+    hash = (doc as { url_resultado_hash?: string }).url_resultado_hash
+  } catch {
+    return <TokenInvalido />
   }
 
+  if (!hash) {
+    return <TokenInvalido />
+  }
+
+  redirect(`/diagnostico/r/${hash}`)
+}
+
+function TokenInvalido() {
   return (
-    <main className="min-h-screen pt-20">
-      <DiagnosticoResultadoClient
-        nome={String(resultData.leadNome || '')}
-        score_total={Number(resultData.score_total || 0)}
-        score_diagnosticar={Number(resultData.score_diagnosticar || 0)}
-        score_estruturar={Number(resultData.score_estruturar || 0)}
-        score_operar={Number(resultData.score_operar || 0)}
-        score_evoluir={Number(resultData.score_evoluir || 0)}
-        nivel_fit={nivelFit}
-        pilar_mais_fraco={String(resultData.pilar_mais_fraco || 'operar') as 'diagnosticar' | 'estruturar' | 'operar' | 'evoluir'}
-        insight={insight}
-      />
+    <main className="min-h-screen flex items-center justify-center px-6">
+      <div className="text-center max-w-md">
+        <p className="font-mono text-xs uppercase tracking-[0.18em] text-primary mb-4">
+          Resultado indisponível
+        </p>
+        <h1 className="font-display font-bold text-2xl mb-3">
+          Este link expirou ou não está mais ativo.
+        </h1>
+        <p className="text-foreground/60 text-sm mb-8 leading-relaxed">
+          Os links antigos do diagnóstico foram migrados para um novo formato. Se você fez o
+          diagnóstico recentemente, procure no e-mail pelo link mais novo. Caso contrário, refaça
+          em menos de 5 minutos.
+        </p>
+        <a
+          href="/diagnostico"
+          className="inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold px-6 py-3 hover:opacity-90 transition-opacity"
+        >
+          Fazer diagnóstico
+        </a>
+      </div>
     </main>
   )
 }

@@ -4,6 +4,14 @@
     {
       "path": "/api/cron/tick",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/reengajamento-drop-off",
+      "schedule": "30 9 * * *"
+    },
+    {
+      "path": "/api/cron/nutricao-fit-baixo",
+      "schedule": "0 13 * * *"
     }
   ]
 }

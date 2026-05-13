@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import DiagnosticoEtapa1Form from '@/components/diagnostico/DiagnosticoEtapa1Form'
+import DiagnosticoTracker from '@/components/diagnostico/DiagnosticoTracker'
 
 export const metadata: Metadata = {
   title: 'Diagnóstico Gratuito | Unfold Growth',
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 export default function DiagnosticoPage() {
   return (
     <main className="min-h-screen">
+      <DiagnosticoTracker event="diagnostico_iniciado" />
       {/* Hero */}
       <section className="relative isolate overflow-hidden pt-32 pb-16 md:pt-40 md:pb-20">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,hsl(218_94%_78%/0.08),transparent_55%)]" />

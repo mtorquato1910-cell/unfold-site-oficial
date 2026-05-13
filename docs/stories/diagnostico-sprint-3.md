@@ -3,7 +3,7 @@
 **Story ID:** DIAG-S3
 **Spec fonte:** `docs/diagnostico-spec.md` §9
 **Plano completo:** `docs/sprints-diagnostico-v2.md` (Sprint 3)
-**Status:** pending
+**Status:** completed (essencial — OG image dinâmica e Lighthouse manual ficam para validação no browser)
 **Estimativa:** 2 sessões
 **Depende de:** DIAG-S1
 
@@ -19,15 +19,16 @@ Substituir resultado por JWT pela URL pública por hash (`/diagnostico/r/{hash}`
 
 ## Tasks
 
-- [ ] **T3.1** Hook `afterChange` em `DiagnosticoResults` para gerar `url_resultado_hash` (nanoid 12 chars, índice único)
-- [ ] **T3.2** Nova rota `src/app/(site)/diagnostico/r/[hash]/page.tsx` (server component, busca por hash, 404 se não existir)
-- [ ] **T3.3** Manter `/diagnostico/resultado/[token]` como redirect para `/r/{hash}` por 30 dias
-- [ ] **T3.4** Criar `DiagnosticoResultadoV2.tsx` com 7 blocos
-- [ ] **T3.5** Criar `GraficoAranha.tsx` com Recharts `RadarChart` + cores APR V2
-- [ ] **T3.6** Criar `InsightCard.tsx` (numeração ❶❷❸ + título do padrão + texto completo)
-- [ ] **T3.7** Criar `CaminhoCard.tsx` (alavanca / por que / como a Unfold endereça)
-- [ ] **T3.8** Criar `CTAAgendamento.tsx` com texto/slot variando por faixa Fit + placeholder Calendly
-- [ ] **T3.9** Configurar OG tags + `robots: noindex` na rota de hash
+- [x] **T3.1** Hook `beforeChange` em `DiagnosticoResults` gera `url_resultado_hash` via `crypto.randomBytes(6).toString('hex')` (12 chars, idempotente, índice unique no DB)
+- [x] **T3.2** Nova rota `/diagnostico/r/[hash]/page.tsx` — server component com `export const dynamic = 'force-dynamic'`, 404 quando hash inválido
+- [x] **T3.3** Rota legada `/diagnostico/resultado/[token]` redireciona 308 para `/r/{hash}` via DB lookup; fallback de "link expirado" quando JWT inválido
+- [x] **T3.4** `DiagnosticoResultadoV2.tsx` com **7 blocos** completos (cabeçalho personalizado, score consolidado + faixa, aranha + leitura por eixo, 3 insights, 3 caminhos, CTA por faixa Fit, footer com PDF + share + opt-in)
+- [x] **T3.5** `GraficoAranha.tsx` com Recharts `RadarChart` + 5 eixos + cores APR V2 (Crítica substituída por coral `#FF6B5C` por visibilidade no bg navy) + tabela texto-equivalente para screen readers
+- [x] **T3.6** `InsightCard.tsx` (numeração ❶❷❸ + título + resumo + corpo, lê de `textos.ts`)
+- [x] **T3.7** `CaminhoCard.tsx` (3 componentes da spec §8.3: alavanca / por que para você / como a Unfold endereça)
+- [x] **T3.8** `CTAAgendamento.tsx` com headline/microcopy/slot variando por faixa, destaque visual diferenciado para Fit Alto, placeholder ("Calendário em configuração") quando URL vazia
+- [x] **T3.9** Metadata com `robots: { index: false, follow: false }` + OG tags com **apenas score+faixa+branding** (sem nome, sem empresa — LGPD-safe)
+- [x] **T3.10** Tela de processamento 3.3s entre submit e redirect (spec §2) — `TelaProcessamento.tsx` exibida pelo QuizClient após receber `result_hash`
 
 ## Definition of Done
 
@@ -48,4 +49,27 @@ Substituir resultado por JWT pela URL pública por hash (`/diagnostico/r/{hash}`
 
 ## File List
 
-_(preenchida durante execução)_
+- ✏️ `src/collections/DiagnosticoResults.ts` (+ hook `beforeChange` gerando hash)
+- 🆕 `src/app/(site)/diagnostico/r/[hash]/page.tsx`
+- ✏️ `src/app/(site)/diagnostico/resultado/[token]/page.tsx` (rewrite — redirect 308 + fallback)
+- 🆕 `src/components/diagnostico/DiagnosticoResultadoV2.tsx` (server component, 7 blocos)
+- 🆕 `src/components/diagnostico/GraficoAranha.tsx` (client, Recharts)
+- 🆕 `src/components/diagnostico/InsightCard.tsx`
+- 🆕 `src/components/diagnostico/CaminhoCard.tsx`
+- 🆕 `src/components/diagnostico/CTAAgendamento.tsx`
+- 🆕 `src/components/diagnostico/TelaProcessamento.tsx`
+- ✏️ `src/components/diagnostico/QuizClient.tsx` (+ tela de processamento 3.3s antes do redirect)
+
+## Validação
+
+- ✅ `npx tsc --noEmit` — sem erros
+- ✅ `npm test src/lib/scoring` — 24/24 ainda passam (não-regressão)
+
+## Decisões técnicas registradas
+
+- **Hash:** `crypto.randomBytes(6).toString('hex')` = 48 bits ≈ 281 trilhões de combinações, índice unique no DB garante.
+- **Cor da faixa Crítica:** substituí `#001E29` (navy do bg, invisível) por `#FF6B5C` (coral) para visibilidade. Spec original era typo provável; documentado em `docs/sprints-diagnostico-v2-ajustes.md` §B.
+- **OG sem PII:** título mostra `Score X/100 — Faixa`, descrição reforça que é resultado de outra pessoa. Nada de nome, empresa ou email.
+- **`dynamic = 'force-dynamic'`:** edits no admin Payload refletem imediatamente na rota pública.
+- **Rota legada com redirect 308:** preserva links antigos por SEO/share enquanto possível, e mostra tela explicativa quando JWT expirou.
+- **PDF/opt-in:** botões apontam para `/api/diagnostico/pdf/[hash]` e `/api/diagnostico/opt-in` que serão implementados na Sprint 4 — UI já pronta.

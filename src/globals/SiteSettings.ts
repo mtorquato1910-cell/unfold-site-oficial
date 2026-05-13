@@ -149,14 +149,41 @@ const SiteSettings: GlobalConfig = {
             {
               name: 'calendar_embed_url',
               type: 'text',
-              label: 'URL do calendário de agendamento',
-              admin: { description: 'Exibido após o diagnóstico — substituir NEXT_PUBLIC_CALENDAR_EMBED_URL' },
+              label: 'URL do calendário (genérico)',
+              admin: { description: 'Calendário fallback. Diagnóstico v2 prefere as URLs por faixa abaixo.' },
             },
             {
               name: 'calendar_label',
               type: 'text',
               label: 'Texto do botão de agendamento',
               defaultValue: 'Agendar diagnóstico gratuito',
+            },
+            {
+              type: 'collapsible',
+              label: 'URLs Calendly por faixa de Fit (Diagnóstico v2)',
+              admin: {
+                description: 'URLs Calendly específicas usadas no CTA do resultado do diagnóstico. Preencher quando as URLs forem entregues.',
+              },
+              fields: [
+                {
+                  name: 'calendly_url_fit_alto',
+                  type: 'text',
+                  label: 'Fit Alto (slot 45 minutos)',
+                  admin: { description: 'Ex: https://calendly.com/unfold/diagnostico-alto-fit' },
+                },
+                {
+                  name: 'calendly_url_fit_medio',
+                  type: 'text',
+                  label: 'Fit Médio (slot 30 minutos)',
+                  admin: { description: 'Ex: https://calendly.com/unfold/diagnostico-medio-fit' },
+                },
+                {
+                  name: 'calendly_url_fit_baixo_desfit',
+                  type: 'text',
+                  label: 'Fit Baixo / Desfit (slot 20 minutos)',
+                  admin: { description: 'URL única para Fit Baixo e Desfit.' },
+                },
+              ],
             },
           ],
         },

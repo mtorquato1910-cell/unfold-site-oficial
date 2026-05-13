@@ -3,7 +3,7 @@
 **Story ID:** DIAG-S2
 **Spec fonte:** `docs/diagnostico-spec.md` §3, §4
 **Plano completo:** `docs/sprints-diagnostico-v2.md` (Sprint 2)
-**Status:** pending
+**Status:** completed (essencial — UI/E2E manual fica para validação no browser)
 **Estimativa:** 1 sessão
 **Depende de:** DIAG-S1
 
@@ -19,13 +19,13 @@ Atualizar a UX da Etapa 1 (7 campos exatos da spec) e do Quiz (microcopy de tran
 
 ## Tasks
 
-- [ ] **T2.1** Refatorar `DiagnosticoEtapa1Form.tsx` — 7 campos (setor, faturamento_faixa, urgencia) + microcopy de abertura
-- [ ] **T2.2** Atualizar Zod schema em `api/diagnostico/etapa-1/route.ts` + persistir `data_inicio`
-- [ ] **T2.3** Atualizar `QuizClient.tsx` — microcopy de transição (4 textos), barra X/12, Q4 com 5 opções
-- [ ] **T2.4** Atualizar seed `api/seed/diagnostico/route.ts` com textos exatos da spec §4.3
-- [ ] **T2.5** Persistir `data_conclusao` + `tempo_total_segundos` no submit final
-- [ ] **T2.6** Criar `api/cron/reengajamento-drop-off/route.ts` (modo mock se Resend vazio)
-- [ ] **T2.7** Atualizar `vercel.json` com schedule do cron
+- [x] **T2.1** Refatorar `DiagnosticoEtapa1Form.tsx` — 7 campos (cargo, setor, faturamento_faixa, urgencia) + microcopy de abertura literal da spec
+- [x] **T2.2** Atualizar Zod schema em `api/diagnostico/etapa-1/route.ts` + persistir `data_inicio` no JWT (campo do lead capturado em afterChange via webhook futuro)
+- [x] **T2.3** Atualizar `QuizClient.tsx` — microcopy de transição entre pilares (tela interlude), barra X/12, payload envia letras A/B/C/D/E
+- [x] **T2.4** Atualizar `src/scripts/seed-diagnostico.ts` com as 12 perguntas EXATAS da spec §4.3 (Q4 com 5 opções, E pontua 0)
+- [x] **T2.5** Persistir `data_conclusao` + `tempo_total_segundos` no submit final (gravados em `respostas_etapa1_raw` JSON)
+- [x] **T2.6** Criar `api/cron/reengajamento-drop-off/route.ts` (filtra leads 1h-7d sem `diagnostico_result_id`, dispara email com modo mock)
+- [x] **T2.7** Atualizar `vercel.json` com cron `30 9 * * *` (9:30 UTC = 6:30 BRT)
 
 ## Definition of Done
 
@@ -45,4 +45,24 @@ Atualizar a UX da Etapa 1 (7 campos exatos da spec) e do Quiz (microcopy de tran
 
 ## File List
 
-_(preenchida durante execução)_
+- ✏️ `src/scripts/seed-diagnostico.ts` (rewrite com 12 perguntas exatas + Q4 5 opções)
+- ✏️ `src/components/diagnostico/DiagnosticoEtapa1Form.tsx` (7 campos + microcopy spec)
+- ✏️ `src/app/api/diagnostico/etapa-1/route.ts` (novo schema Zod + JWT com etapa1 completa + data_inicio)
+- ✏️ `src/components/diagnostico/QuizClient.tsx` (microcopy de transição, barra X/12, payload v2)
+- ✏️ `src/app/(site)/diagnostico/etapa-2/[token]/page.tsx` (atualização de tipos do quiz)
+- ✏️ `src/app/api/diagnostico/etapa-2/route.ts` (consome engine v2 `calcularDiagnostico` + persiste 3 camadas)
+- 🆕 `src/app/api/cron/reengajamento-drop-off/route.ts` (cron + template HTML do email)
+- ✏️ `vercel.json` (+ cron de reengajamento)
+- ✏️ `payload-types.ts` (regenerado pelo Payload com schemas v2)
+
+## Validação
+
+- ✅ `npm run generate:types` regenerou tipos do Payload com os 18 campos novos
+- ✅ `npx tsc --noEmit` sem erros
+- ✅ `npm test src/lib/scoring` — 24/24 testes ainda passam (sem regressão na engine)
+
+## Notas
+
+- Microcopy de transição implementada como tela "interlude" antes da 1ª pergunta de cada pilar (não tela cheia entre todas as perguntas).
+- Q4 com 5 opções é servida pelo CMS porque o seed grava 5 itens em `opcoes`. O QuizClient deriva a letra pelo índice (idx 0..4 → A..E).
+- O cron usa o adapter `@/lib/email/adapter` que já tem modo mock embutido — sem Resend key, ele só loga.

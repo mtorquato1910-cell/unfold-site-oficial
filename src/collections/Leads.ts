@@ -52,9 +52,11 @@ export const Leads: CollectionConfig = {
     { name: 'email', type: 'email', required: true },
     { name: 'empresa', type: 'text', required: true },
     { name: 'cargo', type: 'text' },
+    // ── Campos legados (v0) — mantidos para compat até Sprint 6+ ───────────
     {
       name: 'tamanho_equipe',
       type: 'select',
+      admin: { description: 'Legado v0 — substituído por `setor`+`faturamento_faixa` na v2.' },
       options: [
         { label: '1–5 pessoas', value: '1-5' },
         { label: '6–20 pessoas', value: '6-20' },
@@ -66,12 +68,52 @@ export const Leads: CollectionConfig = {
     {
       name: 'receita_anual',
       type: 'select',
+      admin: { description: 'Legado v0 — substituído por `faturamento_faixa` (mensal) na v2.' },
       options: [
         { label: 'Até R$1MM', value: 'ate-1mm' },
         { label: 'R$1MM – R$5MM', value: '1mm-5mm' },
         { label: 'R$5MM – R$20MM', value: '5mm-20mm' },
         { label: 'R$20MM – R$100MM', value: '20mm-100mm' },
         { label: 'Acima de R$100MM', value: '100mm+' },
+      ],
+    },
+
+    // ── Campos novos v2 — Etapa 1 do Diagnóstico (spec §3.2) ──────────────
+    {
+      name: 'setor',
+      type: 'select',
+      admin: { description: 'Setor da empresa — alimenta Fit Estrutural (Camada 2).' },
+      options: [
+        { label: 'Construção Civil / Incorporação', value: 'construcao' },
+        { label: 'Agronegócio / Agroindústria', value: 'agro' },
+        { label: 'Tecnologia / SaaS B2B', value: 'saas' },
+        { label: 'Automotivo / Concessionárias', value: 'automotivo' },
+        { label: 'Indústria', value: 'industria' },
+        { label: 'Serviços B2B', value: 'servicos' },
+        { label: 'Outro', value: 'outro' },
+      ],
+    },
+    {
+      name: 'faturamento_faixa',
+      type: 'select',
+      admin: { description: 'Faturamento mensal estimado — alimenta Fit Estrutural.' },
+      options: [
+        { label: 'Até R$ 50.000', value: 'ate-50k' },
+        { label: 'De R$ 50.000 a R$ 200.000', value: '50k-200k' },
+        { label: 'De R$ 200.000 a R$ 500.000', value: '200k-500k' },
+        { label: 'Acima de R$ 500.000', value: 'acima-500k' },
+        { label: 'Prefiro não informar', value: 'prefiro-nao-informar' },
+      ],
+    },
+    {
+      name: 'urgencia',
+      type: 'select',
+      admin: { description: 'Urgência declarada — alimenta Fit de Urgência (Camada 2).' },
+      options: [
+        { label: 'Neste trimestre', value: 'trimestre' },
+        { label: 'Nos próximos 6 meses', value: '6-meses' },
+        { label: 'Sem prazo definido, mas é prioridade', value: 'sem-prazo' },
+        { label: 'Estou apenas pesquisando', value: 'pesquisando' },
       ],
     },
     {

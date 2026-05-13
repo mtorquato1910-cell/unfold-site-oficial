@@ -13,6 +13,7 @@ import QuizQuestions from './src/collections/QuizQuestions'
 import InsightsVariations from './src/collections/InsightsVariations'
 import Leads from './src/collections/Leads'
 import DiagnosticoResults from './src/collections/DiagnosticoResults'
+import DiagnosticoEvents from './src/collections/DiagnosticoEvents'
 import Posts from './src/collections/Posts'
 import Categories from './src/collections/Categories'
 import AIPrompts from './src/collections/AIPrompts'
@@ -77,6 +78,7 @@ export default buildConfig({
     QuizQuestions,
     InsightsVariations,
     DiagnosticoResults,
+    DiagnosticoEvents,
     Leads,
     // Sprint 5
     Posts,

@@ -3,7 +3,7 @@
 **Story ID:** DIAG-S4
 **Spec fonte:** `docs/diagnostico-spec.md` §10
 **Plano completo:** `docs/sprints-diagnostico-v2.md` (Sprint 4)
-**Status:** pending
+**Status:** completed (essencial — PDF binário real via satori adiado para Sprint 6 conforme decisão técnica)
 **Estimativa:** 2 sessões
 **Depende de:** DIAG-S3
 
@@ -19,18 +19,21 @@ Codificar os 6 fluxos automatizados, geração de PDF e adapters de RD Station, 
 
 ## Tasks
 
-- [ ] **T4.1** Adapter `src/lib/crm/rd-station.ts` — 10 custom fields, tags, funil, webhook HMAC, retry, modo mock
-- [ ] **T4.2** Adapter `src/lib/calendar/calendly.ts` — embed por faixa, webhook signing, modo placeholder
-- [ ] **T4.3** Adapter `src/lib/ai/openrouter.ts` — cliente Claude Sonnet 4.5, lê prompt de `AIPrompts` collection, fallback estático
-- [ ] **T4.4** `src/lib/pdf/diagnostico.ts` com `@react-pdf/renderer` + rota `api/diagnostico/pdf/[hash]`
-- [ ] **T4.5** `src/lib/notifications/gabriel.ts` (email/Slack webhook)
-- [ ] **T4.6** Webhook `api/webhooks/rd-station/route.ts` com HMAC SHA256
-- [ ] **T4.7** Webhook `api/webhooks/calendly/route.ts` com signing key
-- [ ] **T4.8** Cron `api/cron/nutricao-fit-baixo/route.ts` (24h pós-conclusão sem agendamento)
-- [ ] **T4.9** Hook `DiagnosticoResults.afterChange` — aplicar tag faixa_fit + notificar Gabriel se fit alto/médio
-- [ ] **T4.10** Atualizar template email resultado com link `/r/{hash}` + PDF anexo
-- [ ] **T4.11** Expandir `SiteSettings` global com 3 URLs Calendly por faixa
-- [ ] **T4.12** Atualizar `.env.example` com todas as keys novas (vazias + comentadas)
+- [x] **T4.1** Adapter `src/lib/crm/rd-station.ts` — 10 custom fields (mapping spec §10.1), tags por faixa Fit, modo mock + real, HMAC SHA256 helper
+- [x] **T4.2** Adapter `src/lib/calendar/calendly.ts` — resolve URL por faixa do SiteSettings, valida HMAC com timestamp anti-replay (180s)
+- [x] **T4.3** Adapter `src/lib/ai/openrouter.ts` — Claude Sonnet 4.5 via OpenRouter (D1), carrega prompt do AIPrompts CMS, fallback `null` quando key vazia
+- [x] **T4.4** Rota `api/diagnostico/pdf/[hash]` — **HTML print-ready (stub Sprint 4)**, `@page A4` CSS, banner explicando Ctrl+P. Sprint 6 troca por satori binário.
+- [x] **T4.5** `src/lib/notifications/gabriel.ts` — email rico HTML + Slack block kit, lê destinatário do `SiteSettings.email_notificacoes`
+- [x] **T4.6** Webhook `api/webhooks/rd-station/route.ts` — valida `x-rd-signature`, 401 se inválida, log estruturado
+- [x] **T4.7** Webhook `api/webhooks/calendly/route.ts` — valida signing key, atualiza `agendou`/`slot_agendado`, dispara automação 6 em cancelamento
+- [x] **T4.8** Cron `api/cron/nutricao-fit-baixo/route.ts` — janela 24h–7d, filtra `agendou=false` e `nutricao_enviada_at` vazio, idempotência via flag
+- [x] **T4.9** `DiagnosticoResults.afterChange` — orquestra: (1) email V2 com link /r/{hash}, (2) sync RD, (3) notificar Gabriel se fit alto/médio, com idempotência via `notificado_at`
+- [x] **T4.10** Template `templateResultadoDiagnosticoV2` com link `/diagnostico/r/{hash}` + link PDF + faixa consolidada + CTA por faixa Fit
+- [x] **T4.11** `SiteSettings` expandido com collapsible "URLs Calendly por faixa" (3 campos: fit-alto, fit-medio, fit-baixo-desfit)
+- [x] **T4.12** `.env.example` com 7 vars novas (CRM_MODE, RD_STATION_API_KEY, RD_STATION_WEBHOOK_SECRET, OPENROUTER_API_KEY, CALENDLY_WEBHOOK_SIGNING_KEY, GABRIEL_NOTIFY_EMAIL, SLACK_WEBHOOK_GABRIEL, CRON_SECRET)
+- [x] **T4.13 (bônus)** Endpoint `api/diagnostico/opt-in` aceita JSON e form-data, registra em `newsletter-subscribers`, redireciona `?optin=ok`
+- [x] **T4.14 (bônus)** Campo `nutricao_enviada_at` no schema (idempotência cron)
+- [x] **T4.15 (bônus)** `vercel.json` com cron nutrição (13h UTC = 10h BRT)
 
 ## Definition of Done
 
@@ -52,4 +55,34 @@ Codificar os 6 fluxos automatizados, geração de PDF e adapters de RD Station, 
 
 ## File List
 
-_(preenchida durante execução)_
+- 🆕 `src/lib/crm/rd-station.ts`
+- 🆕 `src/lib/calendar/calendly.ts`
+- 🆕 `src/lib/ai/openrouter.ts`
+- 🆕 `src/lib/notifications/gabriel.ts`
+- 🆕 `src/lib/email/templates/resultado-diagnostico-v2.ts`
+- 🆕 `src/app/api/webhooks/rd-station/route.ts`
+- 🆕 `src/app/api/webhooks/calendly/route.ts`
+- 🆕 `src/app/api/diagnostico/pdf/[hash]/route.ts`
+- 🆕 `src/app/api/diagnostico/opt-in/route.ts`
+- 🆕 `src/app/api/cron/nutricao-fit-baixo/route.ts`
+- ✏️ `src/collections/DiagnosticoResults.ts` (afterChange v2 + `nutricao_enviada_at`)
+- ✏️ `src/globals/SiteSettings.ts` (+ collapsible URLs Calendly por faixa)
+- ✏️ `src/app/(site)/diagnostico/r/[hash]/page.tsx` (lê Calendly do SiteSettings)
+- ✏️ `vercel.json` (+ cron nutrição)
+- ✏️ `.env.example` (+ 7 keys novas)
+- ✏️ `payload-types.ts` (regenerado)
+
+## Validação
+
+- ✅ `npm run generate:types` ok
+- ✅ `npx tsc --noEmit` — sem erros
+- ✅ `npm test src/lib/scoring` — 24/24 verdes (não-regressão)
+
+## Decisões técnicas registradas
+
+- **PDF stub HTML print-ready:** evita instalação de `satori`+`@resvg/resvg-js` agora. UX aceitável (Ctrl+P salva PDF). Sprint 6 implementa geração binária real com cache em Vercel Blob.
+- **Idempotência tripla:** `email_enviado` (email lead), `notificado_at` (notify Gabriel), `nutricao_enviada_at` (cron nutrição). Hooks afterChange nunca disparam 2x para o mesmo doc.
+- **HMAC validation:** webhook Calendly tem janela anti-replay de 180s. RD usa formato hex direto.
+- **OpenRouter desligado:** sem key vazia, `gerarInsightAI` retorna `texto: null` → consumer cai no texto estático de `textos.ts`. Zero erros visíveis.
+- **3 crons agendados:** drop-off etapa-2 (6:30 BRT), nutrição fit baixo (10h BRT), tick existente (3h BRT).
+- **Endpoint opt-in:** suporta tanto JSON (programático) quanto form-data (form HTML do Bloco 7) com redirect 303 de volta para `/r/{hash}?optin=ok`.
