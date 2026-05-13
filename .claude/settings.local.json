@@ -77,7 +77,11 @@
       "Read(//c/Users/mathe/.claude/**)",
       "Bash(npx next *)",
       "Bash(cross-env NODE_OPTIONS=\"--no-warnings --import tsx\" tsx -e \"import\\('dotenv'\\).then\\(d=>{d.default.config\\({path:'.env.local',override:true}\\);return import\\('payload'\\)}\\).then\\(\\({getPayload}\\)=>import\\('./payload.config.js'\\).then\\(c=>getPayload\\({config:c.default}\\)\\)\\).then\\(p=>console.log\\('payload v',\\(p as any\\).version||'?'\\)\\)\")",
-      "Bash(echo \"EXIT=$?\")"
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(pandoc --track-changes=all \"diagnostico_de_growth_especificacao_implementacao.md.docx\" -o \"diagnostico_extracted.md\")",
+      "Bash(pandoc --track-changes=all \"diagnostico_de_growth_especificacao_implementacao.md.docx\" -o \"/tmp/diagnostico.md\")",
+      "PowerShell(pandoc *)",
+      "PowerShell(cygpath *)"
     ]
   }
 }
