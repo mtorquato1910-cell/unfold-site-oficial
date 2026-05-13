@@ -11,7 +11,7 @@ import configPromise from '@payload-config'
 
 import { validateCalendlySignature } from '@/lib/calendar/calendly'
 import { sendEmail } from '@/lib/email/adapter'
-import { trackEventServer } from '@/lib/analytics/diagnostico-events'
+import { trackEventServer } from '@/lib/analytics/diagnostico-events-server'
 import { logger } from '@/lib/observability/logger'
 
 interface CalendlyInviteePayload {

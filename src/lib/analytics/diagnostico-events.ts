@@ -1,12 +1,12 @@
 /**
- * Analytics do Diagnóstico de Growth v2 — 9 eventos (spec §10.3) + 1 técnico (rd_webhook).
+ * Analytics do Diagnóstico de Growth v2 — versão CLIENT.
  *
- * Dois canais por evento:
- *   1. GA4 (gtag) — se `window.gtag` existir (carregado pelo NEXT_PUBLIC_GA4_ID).
- *   2. Endpoint interno `/api/analytics/event` — persiste em `diagnostico-events`.
+ * Este arquivo contém APENAS o tracker client-side (`trackEvent`) + tipos.
+ * Para tracker server-side, use `diagnostico-events-server.ts` (não importável de client
+ * components — ele puxa Payload/pg).
  *
- * Anti-flood: client mantém `session_id` em sessionStorage; eventos não-idempotentes
- * (`diagnostico_iniciado` etc) usam dedup key `${event_name}:${session_id}` em sessionStorage.
+ * Separação obrigatória: webpack do Next.js falha em bundle client quando algum import
+ * transitivo pesca Node-only modules (`fs`, `net`, `pg`).
  */
 
 export type EventName =
@@ -43,9 +43,9 @@ function getSessionId(): string {
   let id = window.sessionStorage.getItem('diag_session_id')
   if (!id) {
     id =
-      (typeof crypto !== 'undefined' && 'randomUUID' in crypto
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
         ? crypto.randomUUID()
-        : `s${Date.now()}${Math.random().toString(36).slice(2, 10)}`)
+        : `s${Date.now()}${Math.random().toString(36).slice(2, 10)}`
     window.sessionStorage.setItem('diag_session_id', id)
   }
   return id
@@ -105,29 +105,5 @@ export function trackEvent(p: Omit<EventPayload, 'session_id'>): void {
     }
   } catch {
     /* silencioso */
-  }
-}
-
-/**
- * Versão server-side — chamada de route handlers, hooks, crons.
- * Persiste direto via Payload sem GA4.
- */
-export async function trackEventServer(p: EventPayload): Promise<void> {
-  try {
-    const { getPayload } = await import('payload')
-    const configPromise = await import('@payload-config')
-    const payload = await getPayload({ config: configPromise.default })
-    await payload.create({
-      collection: 'diagnostico-events',
-      data: {
-        event_name: p.event_name,
-        session_id: p.session_id,
-        result_hash: p.result_hash,
-        lead_email: p.lead_email,
-        metadata: p.metadata,
-      } as never,
-    })
-  } catch (err) {
-    console.error('[analytics/server] erro:', err)
   }
 }

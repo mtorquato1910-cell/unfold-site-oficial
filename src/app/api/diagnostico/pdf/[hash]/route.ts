@@ -21,7 +21,7 @@ import {
   TEXTOS_CAMINHOS,
   textoPadrao,
 } from '@/lib/scoring/textos'
-import { trackEventServer } from '@/lib/analytics/diagnostico-events'
+import { trackEventServer } from '@/lib/analytics/diagnostico-events-server'
 import type {
   CodigoCaminho,
   CodigoInsight,

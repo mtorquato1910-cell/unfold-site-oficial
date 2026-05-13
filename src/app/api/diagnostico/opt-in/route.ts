@@ -8,7 +8,7 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { z } from 'zod'
 
-import { trackEventServer } from '@/lib/analytics/diagnostico-events'
+import { trackEventServer } from '@/lib/analytics/diagnostico-events-server'
 
 const schema = z.object({
   email: z.string().email(),

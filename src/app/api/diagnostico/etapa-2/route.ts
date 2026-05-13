@@ -6,7 +6,7 @@ import { z } from 'zod'
 
 import { calcularDiagnostico } from '@/lib/scoring'
 import type { InputDiagnostico, RespostasEtapa1, RespostasQuiz } from '@/lib/scoring/types'
-import { trackEventServer } from '@/lib/analytics/diagnostico-events'
+import { trackEventServer } from '@/lib/analytics/diagnostico-events-server'
 
 const SECRET = new TextEncoder().encode(
   process.env.PAYLOAD_SECRET || 'dev-secret-CHANGE-IN-PRODUCTION',

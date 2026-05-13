@@ -4,7 +4,7 @@ import configPromise from '@payload-config'
 import { SignJWT } from 'jose'
 import { z } from 'zod'
 
-import { trackEventServer } from '@/lib/analytics/diagnostico-events'
+import { trackEventServer } from '@/lib/analytics/diagnostico-events-server'
 import { logger } from '@/lib/observability/logger'
 import { rateLimit, resolveClientIP } from '@/lib/rate-limit'
 import { verifyTurnstile } from '@/lib/security/turnstile'
