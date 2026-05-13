@@ -7,19 +7,16 @@ import { Menu, X, ArrowUpRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-function NavLogo({ size = 40 }: { size?: number }) {
+function NavLogo({ height = 32 }: { height?: number }) {
   return (
-    <div className="flex items-center gap-2">
-      <Image
-        src="/icone-c.png"
-        alt="Unfold Growth"
-        width={size}
-        height={size}
-        priority
-        className="shrink-0"
-      />
-      <span className="font-sans text-lg font-bold tracking-tight">unfold</span>
-    </div>
+    <Image
+      src="/unfold-wordmark.png"
+      alt="Unfold Growth"
+      width={height * 5}
+      height={height}
+      priority
+      className="shrink-0 h-8 md:h-9 w-auto"
+    />
   )
 }
 
@@ -54,7 +51,7 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8 flex h-16 md:h-[72px] items-center justify-between gap-6">
         <Link href="/" aria-label="Unfold Growth — Início" className="shrink-0">
-          <NavLogo size={40} />
+          <NavLogo />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7 whitespace-nowrap" aria-label="Principal">
@@ -106,7 +103,7 @@ export function Navbar() {
           )}
         >
           <div className="flex items-center justify-between mb-10">
-            <NavLogo size={36} />
+            <NavLogo />
             <button onClick={() => setOpen(false)} aria-label="Fechar menu" className="p-2 -mr-2">
               <X className="h-5 w-5" />
             </button>
