@@ -32,14 +32,18 @@ export async function GET(req: NextRequest) {
   try {
     const payload = await getPayload({ config: configPromise })
 
-    // Leads de diagnóstico criados na janela de 1h–7d que NÃO têm resultado vinculado.
+    // Leads de diagnóstico criados na janela de 1h–7d que NÃO têm resultado vinculado
+    // E que ainda não receberam o email de reengajamento (idempotência — Débito 1 do QA).
     const { docs } = await payload.find({
       collection: 'leads',
       where: {
-        origem: { equals: 'diagnostico' },
-        createdAt: { less_than: limiteSuperior, greater_than: limiteInferior },
-        diagnostico_result_id: { exists: false },
-      },
+        and: [
+          { origem: { equals: 'diagnostico' } },
+          { createdAt: { less_than: limiteSuperior, greater_than: limiteInferior } },
+          { diagnostico_result_id: { exists: false } },
+          { reengajamento_enviado_at: { exists: false } },
+        ],
+      } as never,
       limit: 200,
     })
 
@@ -54,8 +58,28 @@ export async function GET(req: NextRequest) {
   }
 
   let enviados = 0
+  let payload: Awaited<ReturnType<typeof getPayload>> | null = null
+  try {
+    payload = await getPayload({ config: configPromise })
+  } catch {
+    /* sem DB, segue só com email mock */
+  }
+
   for (const lead of candidatos) {
     try {
+      // Marca ANTES do envio (Débito 5 — race condition). Se o update falha, não envia.
+      if (payload) {
+        try {
+          await payload.update({
+            collection: 'leads',
+            id: lead.id,
+            data: { reengajamento_enviado_at: new Date().toISOString() } as never,
+          })
+        } catch (e) {
+          console.warn('[cron/reengajamento-drop-off] update lead:', e)
+          continue
+        }
+      }
       const result = await sendEmail({
         to: lead.email,
         subject: 'Faltam 5 minutos do seu diagnóstico de growth',

@@ -147,6 +147,15 @@ export const Leads: CollectionConfig = {
     },
     { name: 'rd_contact_id', type: 'text', admin: { readOnly: true } },
     {
+      name: 'reengajamento_enviado_at',
+      type: 'date',
+      admin: {
+        readOnly: true,
+        description:
+          'Quando o cron de drop-off enviou o email de retomada — idempotência (Débito 1 do QA).',
+      },
+    },
+    {
       name: 'rd_sync_attempts',
       type: 'number',
       defaultValue: 0,

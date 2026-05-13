@@ -116,6 +116,28 @@ export async function POST(req: NextRequest) {
     try {
       const payloadCMS = await getPayload({ config: configPromise })
 
+      // ── Dedup por (lead_email, data_inicio) — G2.6 do QA ───────────────
+      // Submit duplicado (double-click ou retry de rede) gera novo POST com mesmo JWT.
+      // data_inicio vem do JWT da Etapa 1 (imutável durante a sessão).
+      if (leadPayload.data_inicio) {
+        const existing = await payloadCMS.find({
+          collection: 'diagnostico-results',
+          where: {
+            and: [
+              { lead_email: { equals: leadPayload.email } },
+              { data_inicio: { equals: leadPayload.data_inicio } },
+            ],
+          },
+          limit: 1,
+        })
+        if (existing.docs.length > 0) {
+          const dup = existing.docs[0] as { id: string | number; url_resultado_hash?: string }
+          resultId = String(dup.id)
+          resultHash = dup.url_resultado_hash
+          throw new Error('__dedup__hit__') // sai do bloco try preservando os valores
+        }
+      }
+
       const created = await payloadCMS.create({
         collection: 'diagnostico-results',
         data: {
@@ -170,7 +192,10 @@ export async function POST(req: NextRequest) {
         }
       }
     } catch (err) {
-      console.warn('[diagnostico/etapa-2] DB não disponível, usando mock:', err)
+      const isDedup = err instanceof Error && err.message === '__dedup__hit__'
+      if (!isDedup) {
+        console.warn('[diagnostico/etapa-2] DB não disponível, usando mock:', err)
+      }
     }
 
     // Token legado para a rota /resultado/[token] enquanto Sprint 3 não troca por /r/[hash].

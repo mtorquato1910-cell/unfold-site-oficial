@@ -53,26 +53,35 @@ export async function GET(req: NextRequest) {
   }
 
   let enviados = 0
+  // Marca ANTES do envio (Débito 5 — race condition). Se o update falha, não envia.
+  // Em caso de email falhar após o update, perdemos UM envio (degradação aceita).
+  let payloadCMS: Awaited<ReturnType<typeof getPayload>> | null = null
+  try {
+    payloadCMS = await getPayload({ config: configPromise })
+  } catch {
+    /* sem DB, ainda pode enviar emails mock */
+  }
+
   for (const cand of candidatos) {
+    if (payloadCMS) {
+      try {
+        await payloadCMS.update({
+          collection: 'diagnostico-results',
+          id: cand.id,
+          data: { nutricao_enviada_at: new Date().toISOString() } as never,
+        })
+      } catch (e) {
+        console.warn('[cron/nutricao-fit-baixo] update flag:', e)
+        continue
+      }
+    }
     try {
       const r = await sendEmail({
         to: cand.email,
         subject: 'Como operações com vendas complexas se estruturam',
         html: templateNutricao(cand.hash),
       })
-      if (r.success) {
-        enviados++
-        try {
-          const payload = await getPayload({ config: configPromise })
-          await payload.update({
-            collection: 'diagnostico-results',
-            id: cand.id,
-            data: { nutricao_enviada_at: new Date().toISOString() } as never,
-          })
-        } catch {
-          /* idempotência fica para próxima execução */
-        }
-      }
+      if (r.success) enviados++
     } catch (err) {
       console.error('[cron/nutricao-fit-baixo] email:', err)
     }
