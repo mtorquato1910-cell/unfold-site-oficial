@@ -1,24 +1,24 @@
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Reveal } from '@/components/ui/Reveal'
-import { UnfoldSymbol } from '@/components/brand/UnfoldSymbol'
 import { getHomeSettings } from '@/lib/home-settings'
 
 export async function Methodology() {
   const s = await getHomeSettings()
   return (
     <section className="bg-[#E7E7E7] text-[#001E29] py-20 md:py-28">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-12 gap-10">
-        <Reveal className="lg:col-span-4 flex flex-col items-start gap-5">
-          <UnfoldSymbol size={80} className="opacity-90" />
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f]">
-            {s.method_eyebrow}
-          </p>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-12 gap-10 items-center">
+        <Reveal className="lg:col-span-4 flex flex-col items-start">
+          <Image
+            src="/icone-a.png"
+            alt="Unfold Growth System"
+            width={160}
+            height={160}
+            className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 object-contain"
+          />
         </Reveal>
         <Reveal delay={120} className="lg:col-span-8">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#0a8a5f] mb-5">
-            {s.method_eyebrow}
-          </p>
           <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
             {s.method_title}
           </h2>

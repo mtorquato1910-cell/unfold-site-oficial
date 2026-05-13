@@ -2,10 +2,23 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
-import { UnfoldLogo } from '@/components/brand/UnfoldSymbol'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+
+function NavLogo({ size = 40 }: { size?: number }) {
+  return (
+    <Image
+      src="/icone-c.png"
+      alt="Unfold Growth"
+      width={size}
+      height={size}
+      priority
+      className="shrink-0"
+    />
+  )
+}
 
 const NAV = [
   { label: 'Método', href: '/metodo' },
@@ -38,7 +51,7 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8 flex h-16 md:h-[72px] items-center justify-between gap-6">
         <Link href="/" aria-label="Unfold Growth — Início" className="shrink-0">
-          <UnfoldLogo />
+          <NavLogo size={40} />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7 whitespace-nowrap" aria-label="Principal">
@@ -90,7 +103,7 @@ export function Navbar() {
           )}
         >
           <div className="flex items-center justify-between mb-10">
-            <UnfoldLogo />
+            <NavLogo size={36} />
             <button onClick={() => setOpen(false)} aria-label="Fechar menu" className="p-2 -mr-2">
               <X className="h-5 w-5" />
             </button>

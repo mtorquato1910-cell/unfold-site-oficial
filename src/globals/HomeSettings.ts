@@ -436,6 +436,36 @@ const HomeSettings: GlobalConfig = {
           ],
         },
 
+        // ── Depoimentos (toggle global) ────────────────────────────
+        {
+          label: 'Depoimentos',
+          fields: [
+            {
+              name: 'ocultar_depoimentos',
+              type: 'checkbox',
+              label: 'Ocultar seção de depoimentos no site',
+              defaultValue: false,
+              admin: {
+                description:
+                  'Marque para esconder completamente a seção de depoimentos da home. Útil enquanto você ainda não cadastrou depoimentos reais.',
+              },
+            },
+            {
+              name: 'testimonials_eyebrow',
+              type: 'text',
+              label: 'Tagline pequena',
+              defaultValue: 'Depoimentos',
+              admin: { description: 'Texto pequeno acima do título da seção' },
+            },
+            {
+              name: 'testimonials_title',
+              type: 'textarea',
+              label: 'Título da seção',
+              defaultValue: 'O que dizem os clientes que organizaram o crescimento com a Unfold.',
+            },
+          ],
+        },
+
         // ── Logos de parceiros ─────────────────────────────────────
         {
           label: 'Parceiros',

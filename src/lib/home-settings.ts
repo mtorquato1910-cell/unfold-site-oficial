@@ -75,6 +75,10 @@ export type HomeSettingsData = {
   method_description: string
   method_cta_label: string
   method_cta_href: string
+  // Depoimentos
+  ocultar_depoimentos: boolean
+  testimonials_eyebrow: string
+  testimonials_title: string
   // CTA Final
   final_cta_title: string
   final_cta_description: string
@@ -196,6 +200,10 @@ const DEFAULTS: HomeSettingsData = {
     'O Unfold Growth System (UGS) conecta as quatro alavancas do crescimento — Diagnosticar, Estruturar, Operar e Evoluir — em uma operação integrada, previsível e orientada a resultado comercial.',
   method_cta_label: 'Conheça o método UGS',
   method_cta_href: '/metodo',
+  ocultar_depoimentos: false,
+  testimonials_eyebrow: 'Depoimentos',
+  testimonials_title:
+    'O que dizem os clientes que organizaram o crescimento com a Unfold.',
   final_cta_title: 'Você já tem marketing e vendas. Falta o sistema que conecta tudo.',
   final_cta_description:
     'Solicite um diagnóstico gratuito. Em até 24h alguém da equipe entra em contato com uma análise inicial da sua operação de crescimento.',
@@ -298,6 +306,9 @@ async function fetchHomeSettings(): Promise<HomeSettingsData> {
       method_description: settings?.method_description || DEFAULTS.method_description,
       method_cta_label: settings?.method_cta_label || DEFAULTS.method_cta_label,
       method_cta_href: settings?.method_cta_href || DEFAULTS.method_cta_href,
+      ocultar_depoimentos: Boolean(settings?.ocultar_depoimentos),
+      testimonials_eyebrow: settings?.testimonials_eyebrow || DEFAULTS.testimonials_eyebrow,
+      testimonials_title: settings?.testimonials_title || DEFAULTS.testimonials_title,
       final_cta_title: settings?.final_cta_title || DEFAULTS.final_cta_title,
       final_cta_description: settings?.final_cta_description || DEFAULTS.final_cta_description,
       final_cta_button_label: settings?.final_cta_button_label || DEFAULTS.final_cta_button_label,
