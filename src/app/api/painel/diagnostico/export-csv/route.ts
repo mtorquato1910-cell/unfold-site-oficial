@@ -87,7 +87,7 @@ export async function GET(req: NextRequest) {
         where: { setor: { equals: setor } },
         limit: 5000,
       })
-      const emails = new Set(leads.map((l) => (l as { email: string }).email))
+      const emails = new Set(leads.map((l) => (l as unknown as { email: string }).email))
       results = results.filter((r) => r.lead_email && emails.has(r.lead_email))
     } catch {
       /* mantém sem filtro */
