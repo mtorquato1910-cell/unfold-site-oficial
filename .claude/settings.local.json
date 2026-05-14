@@ -83,7 +83,26 @@
       "PowerShell(pandoc *)",
       "PowerShell(cygpath *)",
       "Bash(pandoc \"diagnostico_de_growth_especificacao_implementacao.md.docx\" -o /tmp/diag.md)",
-      "Bash(npm test *)"
+      "Bash(npm test *)",
+      "Bash(ls vitest.config.*)",
+      "Bash(cat vitest.config.ts)",
+      "Bash(cat vitest.config.mts)",
+      "Bash(cat vitest.config.js)",
+      "Bash(ls -d tests/*)",
+      "Bash(npx vitest *)",
+      "Bash(npx eslint *)",
+      "Bash(rm -f src/components/calculadora/CalculadoraClient.tsx)",
+      "Bash(rmdir src/components/calculadora)",
+      "Bash(PORT=3457 npm run dev)",
+      "Bash(ls src/app/api/analytics/event)",
+      "Bash(ls src/lib/integrations)",
+      "Bash(ls src/lib/jobs)",
+      "Bash(ls src/lib/analytics)",
+      "Bash(find src/lib/crm)",
+      "Bash(find src/lib -name \"rd*\")",
+      "Bash(find src/lib -name \"*slack*\")",
+      "Bash(find src/lib -name \"*notification*\" -o -name \"*notifier*\")",
+      "Bash(node -e \"console.log\\(require\\('@react-pdf/renderer/package.json'\\).version\\)\")"
     ]
   }
 }

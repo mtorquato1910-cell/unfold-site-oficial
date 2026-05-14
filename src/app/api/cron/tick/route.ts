@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { syncPendingLeadsToRD } from '@/lib/jobs/sync-leads-rd'
 import { notifyHighScoreLeads } from '@/lib/jobs/notify-high-score-leads'
 import { purgeExpiredCalculadora } from '@/lib/jobs/retention-purge'
+import { processarNutricaoPosCalculadora } from '@/lib/jobs/calc-nutricao'
 
 /**
  * Cron multiplexador — Vercel Cron chama 1x/dia.
@@ -46,6 +47,13 @@ export async function GET(req: NextRequest) {
     results.retentionPurge = await purgeExpiredCalculadora()
   } catch (err: any) {
     results.retentionPurge = { error: err?.message || 'unknown' }
+  }
+
+  // Job 4: nutrição pós-Calculadora (Sprint 5 / S5.5)
+  try {
+    results.calcNutricao = await processarNutricaoPosCalculadora()
+  } catch (err: any) {
+    results.calcNutricao = { error: err?.message || 'unknown' }
   }
 
   const durationMs = Date.now() - started

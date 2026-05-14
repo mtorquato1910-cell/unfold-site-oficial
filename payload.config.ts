@@ -26,6 +26,7 @@ import Notifications from './src/collections/Notifications'
 import EmailLogs from './src/collections/EmailLogs'
 import FAQs from './src/collections/FAQs'
 import CalculadoraResults from './src/collections/CalculadoraResults'
+import CalculadoraEvents from './src/collections/CalculadoraEvents'
 import Redirects from './src/collections/Redirects'
 import SiteSettings from './src/globals/SiteSettings'
 import HomeSettings from './src/globals/HomeSettings'
@@ -97,6 +98,8 @@ export default buildConfig({
     FAQs,
     // Sprint 15 (Curadoria + Tool Usage)
     CalculadoraResults,
+    // Calculadora v2 — Sprint 1 (S1.7)
+    CalculadoraEvents,
     // Sprint 10 (SEO Manager)
     Redirects,
   ],

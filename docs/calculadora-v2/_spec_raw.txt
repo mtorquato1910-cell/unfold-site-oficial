@@ -1,0 +1,613 @@
+Calculadora de Performance — Especificação de Implementação
+Versão: 1.0 Status: Especificação fechada — pronta para implementação técnica Destinatário: Matheus (Analista de Tecnologia e Automações — Unfold) Autor da especificação: Equipe estratégica Unfold Documento complementar obrigatório: Base de Benchmarks v1.0
+Sumário
+Visão geral e objetivo da ferramenta
+Fluxo macro do usuário
+Etapa 1 — Os 4 campos de qualificação
+Etapa 2 — Os 6 inputs do lead
+As 4 premissas editáveis
+Fórmulas de cálculo
+Lógica condicional dos insights
+Tela de resultado — estrutura e conteúdo
+Integração com o Diagnóstico de Growth
+Integrações e estrutura de dados
+Exemplo end-to-end de simulação
+1. Visão geral e objetivo da ferramenta
+A Calculadora de Performance é uma ferramenta secundária na hierarquia do site da Unfold, em URL dedicada (/ferramentas/calculadora-trafego). Diferente do Diagnóstico de Growth (CTA principal), a Calculadora serve a uma função tática específica: capturar leads com perfil operacional voltado a mídia paga e direcioná-los para o Diagnóstico.
+A ferramenta cumpre três funções simultâneas:
+Operar como cavalo de Troia do posicionamento Unfold — atrai um lead com a pergunta errada ("quanto investir em mídia gera de retorno?") e devolve uma resposta que reframe a pergunta para o território Unfold (sistema, integração, previsibilidade).
+Capturar leads operacionais que ainda não buscariam o Diagnóstico diretamente — gerentes de marketing, analistas, coordenadores de performance.
+Gerar autoridade técnica ao exibir benchmarks pesquisados com fontes citáveis (ver Base de Benchmarks v1.0).
+Princípio operacional central
+A Calculadora não tem agendamento próprio. O CTA único após o resultado é uma ponte para o Diagnóstico de Growth. Isso protege a hierarquia das ferramentas: Calculadora alimenta Diagnóstico, Diagnóstico alimenta pipeline comercial.
+Diferenças críticas vs Diagnóstico de Growth
+2. Fluxo macro do usuário
+LANDING DA CALCULADORA
+        │
+        ▼
+ETAPA 1 — Qualificação (4 campos, ~30s)
+        │
+        ▼
+ETAPA 2 — Calculadora (6 inputs + 4 premissas)
+  Resultado dinâmico ao lado/abaixo
+  Premissas começam com defaults do setor
+  Lead pode editar livremente
+  Recálculo automático a cada mudança
+        │
+        ▼
+INSIGHT PERSONALIZADO
+  Um dos 5 textos (I-A a I-E)
+  Baseado em CRM × ROI no período
+        │
+        ▼
+CTA — PONTE PARA O DIAGNÓSTICO
+  Único CTA da ferramenta
+  Sem agendamento próprio
+
+Princípios do fluxo:
+Lead não pode acessar a Calculadora sem preencher a Etapa 1 (igual ao Diagnóstico).
+Lead pode salvar e voltar mais tarde via link único (cookie + email).
+Resultado atualiza em tempo real à medida que o lead edita inputs ou premissas — não há tela de processamento.
+Lead pode baixar PDF do resultado ao final.
+3. Etapa 1 — Os 4 campos de qualificação
+A Etapa 1 da Calculadora é deliberadamente menor que a do Diagnóstico (7 campos), porque a Calculadora opera mais cedo no funil e precisa de menos fricção.
+3.1. Especificação dos campos
+3.2. Opções do campo Setor
+Mesmas opções do Diagnóstico de Growth para garantir consistência:
+Construção Civil / Incorporação
+Agronegócio / Agroindústria
+Tecnologia / SaaS B2B
+Automotivo / Concessionárias
+Indústria
+Serviços B2B
+Outro
+Importante: o setor selecionado aqui define os defaults das premissas na Etapa 2. Ver seção 5.
+3.3. Por que não pedimos cargo ou faturamento na Etapa 1 da Calculadora
+Diferente do Diagnóstico (que precisa de cargo e faturamento para o Fit Comercial), a Calculadora não calcula fit comercial. Ela calcula apenas ROI. Pedir cargo ou faturamento aqui aumenta drop-off sem ganho proporcional.
+Cargo e faturamento são capturados se o lead avançar para o Diagnóstico depois — o que é justamente a função do CTA único da Calculadora.
+3.4. Microcopy de UX da Etapa 1
+Abertura da página: "Para acessar a Calculadora, precisamos apenas de algumas informações básicas. Leva menos de 30 segundos."
+Botão de avanço: "Acessar a Calculadora"
+4. Etapa 2 — Os 6 inputs do lead
+A Etapa 2 contém 6 inputs principais. Diferente do Diagnóstico (12 perguntas fechadas A/B/C/D), os inputs da Calculadora são mistos: alguns numéricos diretos, alguns select, alguns toggle.
+4.1. Especificação dos 6 inputs
+4.2. Detalhamento por input
+Input 1 — Investimento mensal
+Campo numérico com máscara de moeda (R$ 0.000,00)
+Slider opcional além do campo (range 1k-500k, step 1.000)
+Microcopy: "Quanto você pretende investir por mês em mídia paga."
+Input 2 — Canais
+Checkboxes (multi-select)
+3 opções: LinkedIn Ads, Google Ads, Meta Ads
+Lead pode selecionar 1, 2 ou 3
+Mínimo 1 canal selecionado
+Microcopy: "Selecione os canais onde pretende distribuir o investimento. O CPL aplicado é a média dos canais selecionados."
+Input 3 — Ticket médio
+Campo numérico com máscara de moeda
+Sem máximo (operações com ticket alto são válidas)
+Microcopy: "Valor médio de um contrato/venda fechada no seu negócio."
+Input 4 — Modelo (B2B/B2C)
+Toggle visual (B2B | B2C)
+Default: B2B (a maioria dos visitantes do site Unfold é B2B)
+Microcopy: "O modelo de negócio afeta as taxas de mercado aplicadas."
+Input 5 — Período de projeção
+Select com 3 opções fixas: 3 / 6 / 12 meses
+Default: 6 meses
+Microcopy: "Por quanto tempo você quer projetar o resultado."
+Input 6 — CRM funcional
+Toggle visual (Sim | Não)
+Default: nenhum pré-selecionado (lead deve responder)
+Microcopy: "Operações com CRM funcional convertem leads em clientes com 2x mais eficiência. Sua resposta aqui afeta as taxas aplicadas no cálculo."
+Atenção estratégica: o microcopy do input 6 já educa o lead antes mesmo dele responder. Esta linha é deliberada — é parte do reframe Unfold acontecendo desde o início.
+5. As 4 premissas editáveis
+As premissas aparecem abaixo dos 6 inputs, em bloco recolhível ("Ajustar premissas do mercado"). Por default, o bloco começa fechado — o lead pode usar a Calculadora sem mexer nas premissas. Quando ele abre o bloco, vê as 4 premissas com valores pré-preenchidos conforme setor + B2B/B2C + CRM.
+5.1. Especificação das 4 premissas
+5.2. Lógica de defaults
+Os defaults aplicados dependem de 3 condições combinadas: setor + B2B/B2C + CRM funcional.
+Premissa 1 — CPL médio
+Depende de setor + canais selecionados. Ver Base de Benchmarks, seção 7.1.
+Cálculo do CPL aplicado:
+CPL_aplicado = média_aritmética dos CPLs dos canais selecionados para o setor
+
+Exemplo: lead de Construção seleciona Google + LinkedIn → CPL = (R$ 250 + R$ 375) / 2 = R$ 312,50
+Premissa 2 — Taxa de qualificação
+Depende de B2B/B2C + CRM funcional:
+Premissa 3 — Conversão MQL → Cliente
+Depende de B2B/B2C + CRM funcional:
+Premissa 4 — Ciclo médio de venda
+Depende apenas do setor (ver Base de Benchmarks, seção 7.4):
+5.3. Atualização dinâmica dos defaults
+Importante: quando o lead muda o input 6 (CRM funcional) após já ter aberto o bloco de premissas, o sistema deve atualizar os defaults das premissas 2 e 3 automaticamente, a menos que o lead já tenha editado manualmente. Se o lead editou manualmente, mantém o valor editado.
+Lógica:
+ao mudar input 6 (CRM):
+  para cada premissa (P2, P3):
+    se valor atual == default anterior:
+      atualizar para novo default
+    senão:
+      manter valor editado pelo lead
+5.4. Exibição do nível de confiança
+Cada premissa deve exibir, próximo ao valor, o nível de confiança do benchmark aplicado (ver Base de Benchmarks):
+Alta — ícone verde
+Média — ícone amarelo
+Baixa — ícone laranja
+Tooltip explicativo: "Nível de confiança da fonte do benchmark. Edite o valor se sua operação tem dados próprios."
+6. Fórmulas de cálculo
+A Calculadora roda 5 passos sequenciais de cálculo. Toda a matemática deve usar valores exatos (com decimais) internamente, e arredondar apenas na exibição final.
+6.1. As 5 fórmulas
+Passo 1 — Leads gerados no período
+investimento_total = investimento_mensal × meses_projetados
+leads_gerados = investimento_total / CPL_aplicado
+
+Passo 2 — MQLs gerados
+mqls = leads_gerados × taxa_qualificacao
+
+Passo 3 — Clientes fechados (total)
+clientes_fechados = mqls × conversao_mql_cliente
+
+Passo 4 — Fator temporal (clientes no período vs em pipeline)
+periodo_dias = meses_projetados × 30
+fator_temporal = max(0, (periodo_dias - ciclo_medio) / periodo_dias)
+clientes_no_periodo = clientes_fechados × fator_temporal
+clientes_em_pipeline = clientes_fechados × (1 - fator_temporal)
+
+Passo 5 — Receita e ROI
+receita_no_periodo = clientes_no_periodo × ticket_medio
+receita_em_pipeline = clientes_em_pipeline × ticket_medio
+ROI_no_periodo = (receita_no_periodo - investimento_total) / investimento_total × 100
+ROI_total = (receita_no_periodo + receita_em_pipeline - investimento_total) / investimento_total × 100
+6.2. Regras de arredondamento para exibição
+6.3. Sobre a fórmula do fator temporal
+Esta fórmula é a inteligência central da Calculadora e o que a diferencia de calculadoras genéricas.
+A ideia: em B2B com ciclo de venda longo, nem todos os clientes fecham dentro da janela de projeção. Se o lead projeta 6 meses (180 dias) e o ciclo médio é 120 dias, os clientes adquiridos no mês 5 e 6 fecham apenas em mês 7-8 — fora da janela. Esses clientes contam como pipeline futuro, não como receita realizada.
+Fórmula simplificada do raciocínio:
+Se ciclo_medio < periodo:
+  proporção_que_fecha = (periodo - ciclo_medio) / periodo
+Se ciclo_medio >= periodo:
+  proporção_que_fecha = 0 (todos viram pipeline)
+
+Exemplo:
+Período 180 dias, ciclo 120 dias → 33% fecha no período, 67% vai para pipeline
+Período 180 dias, ciclo 90 dias → 50% fecha, 50% vai para pipeline
+Período 360 dias, ciclo 90 dias → 75% fecha, 25% vai para pipeline
+Período 180 dias, ciclo 240 dias → 0% fecha no período, 100% pipeline
+7. Lógica condicional dos insights
+A Calculadora exibe um insight principal (de I-A a I-D) baseado em dois eixos. Pode exibir adicionalmente I-E como override complementar quando aplicável.
+7.1. Regras de acionamento
+I-E acontece em paralelo ao insight principal — não substitui. Lead pode ver, por exemplo: I-D + I-E juntos.
+7.2. Os 5 textos de insight
+Cada texto tem 70-90 palavras. Tom técnico, vocabulário Unfold, sem hype.
+I-A — Sistema validado, evolução é a próxima alavanca
+Sua operação tem fundação para crescer — o próximo nível é otimização, não construção.
+Com CRM funcional, sua taxa de aproveitamento da demanda gerada está dentro do que vendas complexas brasileiras conseguem entregar quando operam com sistema mínimo no lugar. O ROI positivo no período mostra que a engrenagem básica está funcionando — investimento entra, lead vira oportunidade, oportunidade vira receita.
+O ponto de atenção é diferente para operações neste estágio: o limite não é mais "fazer o sistema funcionar", é operar o sistema com inteligência de evolução. Empresas que ficam paradas neste patamar tendem a tratar marketing como linha de custo recorrente. Empresas que avançam tratam marketing como sistema que aprende e melhora ciclo após ciclo.
+I-B — Investimento incompatível com o sistema atual
+Você tem o sistema certo, mas a calibração ainda não fecha a conta.
+Sua operação tem CRM funcional, o que significa que a base estrutural existe. Mesmo assim, o cálculo aponta retorno negativo no período projetado — isso normalmente significa que uma de três variáveis está fora do ponto: ticket médio baixo para sustentar o CPL do setor, ciclo de venda longo demais para a janela de projeção, ou taxa de qualificação ainda imatura mesmo com CRM no lugar.
+O resultado não diz que sua operação está errada. Diz que as alavancas precisam ser recalibradas — geralmente em ticket, qualificação ou estratégia de canal. Sistema com CRM mas com calibração errada queima caixa silenciosamente; a leitura honesta é o que evita isso.
+I-C — Resultado bom, mas frágil sem CRM
+O cálculo deu positivo, mas sua operação ainda não tem o que sustenta esse resultado.
+Sua operação não conta com CRM funcional, e mesmo assim o cálculo projeta retorno positivo no período. Isso pode acontecer em três cenários: ticket médio muito alto compensando a perda de eficiência, ciclo curto reduzindo o impacto da falta de qualificação, ou simulação otimista das premissas editáveis.
+O ponto crítico não é o ROI calculado — é a fragilidade do resultado. Operações que entregam resultado sem CRM funcional dependem de fatores externos (poucos leads de alta intenção, vendedor sênior cobrindo o gap, sorte de timing). Quando esses fatores oscilam, o resultado oscila junto. Em vendas complexas, previsibilidade só nasce de sistema — não de execução individual brilhante.
+I-D — O cálculo expõe o problema estrutural
+O problema não está no investimento. Está no sistema que recebe o lead.
+Você está investindo em mídia para alimentar uma operação que ainda não tem CRM funcional como destino. O cálculo expõe a consequência direta: leads são gerados, mas a taxa de aproveitamento cai pela metade quando comparada a operações com CRM no lugar. O resultado é investimento que entra como custo e não retorna como receita.
+A leitura óbvia seria: "preciso investir mais". A leitura correta é: preciso estruturar antes de investir mais. Em vendas complexas, aumentar verba sobre um sistema frágil acelera o problema em vez de resolvê-lo — porque o gargalo não é volume de leads, é capacidade de transformar lead em receita.
+I-E — Override: Sua receita real está no pipeline
+Aciona como observação adicional, em paralelo ao insight principal.
+A leitura do período curto esconde o resultado real desta operação.
+Sua operação tem ciclo de venda mais longo do que a janela projetada, o que significa que a maior parte da receita gerada pelo investimento aparece como pipeline futuro, não como receita realizada no período. Em vendas complexas, esse padrão é regra, não exceção — e é por isso que ler ROI apenas no período pode levar a decisões erradas, como cortar verba de mídia justamente quando ela está construindo pipeline que vai converter nos próximos trimestres.
+O número que importa para decisões de investimento em B2B com ciclo longo é o ROI total (com pipeline), não o ROI no período. Operações que decidem por ROI no período tendem a oscilar entre investimento e corte, criando ciclos de vai-e-vem que destroem a previsibilidade que B2B exige.
+8. Tela de resultado — estrutura e conteúdo
+8.1. Estrutura geral
+A página da Calculadora opera com layout de duas colunas em desktop (inputs à esquerda, resultado à direita) e layout de coluna única em mobile (inputs em cima, resultado embaixo).
+┌──────────────────────────────────────────────────────────┐
+│ BLOCO A — HEADER                                         │
+└──────────────────────────────────────────────────────────┘
+┌──────────────────────────┬───────────────────────────────┐
+│ BLOCO B — INPUTS         │ BLOCO C — RESULTADO DINÂMICO  │
+│ (lado esquerdo desktop / │ (lado direito desktop /       │
+│  cima mobile)            │  embaixo mobile)              │
+└──────────────────────────┴───────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│ BLOCO D — INSIGHT PERSONALIZADO                          │
+└──────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│ BLOCO E — CTA PARA O DIAGNÓSTICO                         │
+└──────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│ BLOCO F — FONTES DOS BENCHMARKS                          │
+└──────────────────────────────────────────────────────────┘
+8.2. Detalhamento por bloco
+Bloco A — Header
+Título grande (tipografia Relicus display, alinhado à esquerda):
+Calculadora de Performance
+
+Subtítulo:
+Descubra quanto seu investimento em mídia paga
+pode realmente retornar — com premissas honestas
+para vendas complexas B2B.
+
+Aplicar paleta APR V2 conforme padrão Unfold.
+Bloco B — Inputs (lado esquerdo)
+Os 6 inputs aparecem em sequência vertical com labels claros. As premissas aparecem abaixo dos inputs, em bloco recolhível ("Ajustar premissas do mercado") que começa fechado.
+Quando expandido, o bloco de premissas mostra as 4 premissas com:
+Label da premissa
+Campo editável (com valor default pré-preenchido)
+Ícone de nível de confiança (verde/amarelo/laranja)
+Tooltip explicativo
+Botão "Resetar premissas para defaults do setor" abaixo das 4 premissas (apenas aparece se alguma premissa foi editada).
+Bloco C — Resultado dinâmico (lado direito)
+Dois cards em destaque, em grid 2x1 desktop / coluna mobile:
+┌──────────────────────────┐  ┌──────────────────────────┐
+│ ROI NO PERÍODO           │  │ ROI TOTAL (COM PIPELINE) │
+│                          │  │                          │
+│        +20%              │  │       +260%              │
+│                          │  │                          │
+│ Receita: R$ 72.000       │  │ Pipeline: R$ 144.000     │
+└──────────────────────────┘  └──────────────────────────┘
+
+Cor dos cards conforme valor:
+ROI positivo: fundo com mint sutil
+ROI negativo: fundo com tom de alerta (não vermelho agressivo — usar purple discreto da paleta)
+Importante: os dois cards têm peso visual idêntico. Não há "ROI principal e ROI secundário".
+Logo abaixo dos cards, o funil visual em 5 etapas:
+INVESTIMENTO TOTAL          R$ 60.000
+        ▼
+LEADS GERADOS               240
+(CPL aplicado: R$ 250)
+        ▼
+QUALIFICADOS (MQLs)         72 (30%)
+(168 leads descartados aqui)
+        ▼
+CLIENTES FECHADOS           ~9 (12%)
+        │
+        ├─► Dentro do período: 3
+        │   Receita: R$ 72.000
+        │
+        └─► Em pipeline futuro: 6
+            Pipeline: R$ 144.000
+
+Interatividade do funil: cada linha tem tooltip explicativo no hover, mostrando a premissa aplicada e link para "Editar premissa" (que abre o bloco de premissas se estiver fechado).
+Bloco D — Insight personalizado
+Card visualmente destacado, em largura total da página.
+Estrutura:
+┌──────────────────────────────────────────────────┐
+│                                                  │
+│ [Título do insight em destaque]                  │
+│                                                  │
+│ [Texto completo do insight, 70-90 palavras]      │
+│                                                  │
+└──────────────────────────────────────────────────┘
+
+Se override I-E também acionar, segundo card abaixo, visualmente menor:
+┌──────────────────────────────────────────────────┐
+│ Observação adicional sobre seu ciclo de venda   │
+│                                                  │
+│ [Texto I-E]                                      │
+└──────────────────────────────────────────────────┘
+
+Bloco E — CTA para o Diagnóstico
+CTA principal da Calculadora. Card de destaque visual:
+┌──────────────────────────────────────────────────┐
+│                                                  │
+│ Esse cálculo assume que sua operação opera com   │
+│ taxas médias de mercado. Quer descobrir como sua │
+│ operação realmente performa contra esses         │
+│ benchmarks?                                      │
+│                                                  │
+│       [Fazer o Diagnóstico de Growth →]          │
+│                                                  │
+│ Diagnóstico completo de 5 min · Gratuito         │
+│                                                  │
+└──────────────────────────────────────────────────┘
+
+Comportamento técnico:
+Botão leva para /diagnostico
+Dados da Etapa 1 da Calculadora (nome, email, empresa, setor) são passados via URL params ou state para o Diagnóstico, permitindo pré-preenchimento da Etapa 1 do Diagnóstico.
+Evento calculadora_para_diagnostico é disparado para rastreamento.
+Em mobile, esse card aparece acima do bloco de fontes — para garantir que o lead vê o CTA antes do scroll terminar.
+Bloco F — Fontes (rodapé discreto)
+Bloco visualmente menor, no rodapé:
+SOBRE OS BENCHMARKS
+Os benchmarks usados nesta calculadora foram
+extraídos de fontes públicas, com janela de 2023
+a 2026:
+• Panorama de Geração de Leads Leadster 2025
+• Conversion Brasil — Google Ads Benchmarks
+• Safira Design — CPL B2B Brasil 2026
+• Data Stone — Benchmark SaaS B2B 2025
+• WordStream Benchmarks 2024/2025
+• Gartner — B2B Buyer Journey
+Base de benchmarks v1.0 — atualizada em maio de 2026.
+
+Sem CTA neste bloco. Função é apenas sustentar autoridade.
+8.3. Botões secundários do resultado
+Acima do bloco de fontes, dois botões discretos:
+[Baixar resultado em PDF]    [Compartilhar por e-mail]
+
+O PDF é gerado dinamicamente com o conteúdo atual da tela (inputs, resultado, insight, fontes).
+9. Integração com o Diagnóstico de Growth
+9.1. Princípio operacional
+A Calculadora alimenta o Diagnóstico de Growth, não compete com ele. A integração precisa ser técnica e estratégica.
+9.2. Passagem de dados Calculadora → Diagnóstico
+Quando o lead clica em "Fazer o Diagnóstico de Growth" no Bloco E:
+Dados da Etapa 1 da Calculadora são passados para o Diagnóstico:
+Nome
+E-mail
+Empresa
+Setor
+Dados adicionais úteis capturados na Calculadora também devem ser passados (como contexto interno, não como campos visíveis):
+Resposta de CRM funcional (Sim/Não)
+Ticket médio informado
+Investimento mensal pretendido
+A Etapa 1 do Diagnóstico pré-preenche os campos correspondentes e o lead só precisa preencher os campos adicionais (cargo, faturamento, urgência).
+9.3. Tag de origem
+Lead que vem da Calculadora deve receber tag específica no CRM: origem_calculadora.
+Isso permite análise de funil:
+Quantos leads passam pela Calculadora?
+Quantos avançam para o Diagnóstico?
+Qual a taxa de conversão Calculadora → Diagnóstico → Agendamento?
+9.4. Comportamento se lead não avança para o Diagnóstico
+Leads que completam a Calculadora mas não avançam para o Diagnóstico devem entrar em fluxo de nutrição específico:
+Fluxo de nutrição "Pós-Calculadora":
+E-mail D+1: "Seu resultado da Calculadora ainda está disponível" + link de acesso ao resultado salvo
+E-mail D+3: Conteúdo educativo sobre o tema do insight que foi exibido (4 fluxos diferentes conforme I-A/B/C/D)
+E-mail D+7: Convite explícito para fazer o Diagnóstico de Growth
+E-mail D+14: Conteúdo de autoridade Unfold (post LinkedIn ou artigo recente do Gabriel)
+E-mail D+21: Última oportunidade — convite final para Diagnóstico
+Após D+21, lead entra em base passiva (recebe newsletter mensal, não mais fluxo de nutrição ativo).
+10. Integrações e estrutura de dados
+10.1. Estrutura de dados do lead (CRM)
+Cada lead que completa a Etapa 1 da Calculadora deve ser registrado no CRM. Lead que conclui a Calculadora completa (Etapa 2) recebe dados adicionais.
+Identificação (Etapa 1):
+nome_completo (texto)
+email (texto)
+empresa (texto)
+setor (select)
+origem (sempre = "calculadora_performance")
+Inputs da Etapa 2:
+calc_investimento_mensal (numérico)
+calc_canais_selecionados (array: ex ["google", "linkedin"])
+calc_ticket_medio (numérico)
+calc_modelo_negocio (enum: "b2b" / "b2c")
+calc_periodo_meses (enum: 3 / 6 / 12)
+calc_crm_funcional (booleano)
+Premissas finais (após edições do lead, se houver):
+calc_premissa_cpl (numérico)
+calc_premissa_taxa_qualif (numérico)
+calc_premissa_conv_mql_cliente (numérico)
+calc_premissa_ciclo_dias (numérico)
+calc_premissas_editadas (booleano — true se o lead mexeu nas premissas)
+Resultados calculados:
+calc_investimento_total (numérico)
+calc_leads_gerados (numérico)
+calc_mqls (numérico)
+calc_clientes_total (numérico)
+calc_clientes_no_periodo (numérico)
+calc_clientes_pipeline (numérico)
+calc_receita_periodo (numérico)
+calc_receita_pipeline (numérico)
+calc_roi_periodo (numérico — pode ser negativo)
+calc_roi_total (numérico)
+Insight exibido:
+calc_insight_principal (enum: "I-A" / "I-B" / "I-C" / "I-D")
+calc_insight_override (booleano — true se I-E também foi exibido)
+Metadados:
+calc_data_inicio (datetime — começou Etapa 1)
+calc_data_conclusao (datetime — visualizou resultado)
+calc_url_resultado (texto — link único para resultado salvo)
+calc_avancou_para_diagnostico (booleano)
+calc_data_avancou_diagnostico (datetime, se aplicável)
+10.2. Automações principais necessárias
+Automação 1 — E-mail de resultado salvo:
+Disparo: imediato após conclusão da Calculadora.
+Conteúdo: link para o resultado salvo + PDF anexo.
+Automação 2 — Tag de origem + cruzamento Calculadora-Diagnóstico:
+Disparo: imediato após conclusão.
+Ação: aplicar tag origem_calculadora e criar campo de cross-reference no CRM.
+Automação 3 — Fluxo de nutrição "Pós-Calculadora" (4 variações conforme insight exibido):
+Disparo: D+1 após conclusão, se lead não avançou para o Diagnóstico em 24h.
+Variação por insight exibido (I-A/B/C/D — conteúdos educativos correspondentes).
+Automação 4 — Notificação interna em casos específicos:
+Disparo: imediato se lead apresentar combinação de ticket médio > R$ 50.000 + CRM = Sim + ROI no período < 0%.
+Ação: notificar Gabriel (e-mail/Slack). Esse perfil é raro e indica lead de alto valor com dor reconhecida — vale abordagem proativa.
+10.3. Eventos para mensuração
+10.4. Dashboard de acompanhamento sugerido
+Para análise de performance da ferramenta, dashboard com:
+Funil completo: Visitas página → Etapa 1 concluída → Resultado visualizado → CTA Diagnóstico clicado → Diagnóstico concluído
+Distribuição dos insights exibidos (% de I-A / I-B / I-C / I-D)
+Distribuição dos setores selecionados
+% de leads que editam premissas (proxy de engajamento profundo)
+ROI médio calculado por setor
+11. Exemplo end-to-end de simulação
+Este exemplo serve como caso de teste para validar a implementação. Lead fictício, respostas reais, cálculo passo a passo, com validação matemática.
+11.1. Perfil do lead fictício
+Etapa 1 — respostas:
+Nome: Marina Costa
+E-mail: marina.costa@inovasementes.com.br
+Empresa: Inova Sementes
+Setor: Agronegócio / Agroindústria
+Etapa 2 — inputs:
+Investimento mensal: R$ 15.000
+Canais: Google Ads + LinkedIn Ads
+Ticket médio: R$ 35.000
+Modelo: B2B
+Período: 12 meses
+CRM funcional: Não
+11.2. Premissas aplicadas (defaults)
+Setor Agro + B2B sem CRM:
+11.3. Cálculo passo a passo
+Passo 1 — Leads gerados
+investimento_total = 15.000 × 12 = R$ 180.000
+leads_gerados = 180.000 / 352,50 = 510,64 → exibir 511 leads
+
+Passo 2 — MQLs
+mqls = 510,64 × 0,18 = 91,92 → exibir 92 MQLs
+
+Passo 3 — Clientes fechados
+clientes_fechados = 91,92 × 0,06 = 5,51 → exibir ~6 clientes
+
+Passo 4 — Fator temporal
+periodo_dias = 12 × 30 = 360
+fator_temporal = (360 - 90) / 360 = 0,75 → 75%
+clientes_no_periodo = 5,51 × 0,75 = 4,14 → exibir 4 clientes
+clientes_em_pipeline = 5,51 × 0,25 = 1,38 → exibir 1 cliente
+
+Passo 5 — Receita e ROI
+receita_no_periodo = 4,14 × 35.000 = R$ 144.766
+receita_em_pipeline = 1,38 × 35.000 = R$ 48.255
+ROI_no_periodo = (144.766 - 180.000) / 180.000 × 100 = -19,57% → exibir -20%
+ROI_total = (144.766 + 48.255 - 180.000) / 180.000 × 100 = 7,23% → exibir +7%
+11.4. Verificação dos gatilhos de insight
+input_6 (CRM): Não
+ROI_no_periodo: -20% (< 0)
+→ Aciona I-D — O cálculo expõe o problema estrutural
+Razão pipeline/receita_periodo: 48.255 / 144.766 = 0,33 (não passa de 3x)
+→ Não aciona override I-E
+11.5. O que Marina vê na tela de resultado
+Bloco A:
+Calculadora de Performance
+
+Bloco B: seus inputs e premissas (todos editáveis)
+Bloco C — Resultado:
+ROI NO PERÍODO: -20%        ROI TOTAL: +7%
+Receita: R$ 144.766         Pipeline: R$ 48.255
+
+Funil visual com 511 leads → 92 MQLs → ~6 clientes → 4 no período / 1 em pipeline.
+Bloco D — Insight I-D:
+O problema não está no investimento. Está no sistema que recebe o lead.
+Você está investindo em mídia para alimentar uma operação que ainda não tem CRM funcional como destino. O cálculo expõe a consequência direta: leads são gerados, mas a taxa de aproveitamento cai pela metade quando comparada a operações com CRM no lugar. O resultado é investimento que entra como custo e não retorna como receita.
+A leitura óbvia seria: "preciso investir mais". A leitura correta é: preciso estruturar antes de investir mais. Em vendas complexas, aumentar verba sobre um sistema frágil acelera o problema em vez de resolvê-lo — porque o gargalo não é volume de leads, é capacidade de transformar lead em receita.
+Bloco E — CTA:
+Esse cálculo assume que sua operação opera com taxas médias de mercado. Quer descobrir como sua operação realmente performa contra esses benchmarks?
+[Fazer o Diagnóstico de Growth →]
+11.6. Cenário comparativo — Marina edita CRM para "Sim"
+Se Marina mudar o input 6 para "Sim" (mantendo todos os outros inputs e aceitando os novos defaults das premissas 2 e 3):
+Recálculo:
+mqls = 510,64 × 0,30 = 153,19
+clientes_fechados = 153,19 × 0,12 = 18,38
+clientes_no_periodo = 18,38 × 0,75 = 13,79
+clientes_em_pipeline = 18,38 × 0,25 = 4,59
+receita_no_periodo = 13,79 × 35.000 = R$ 482.553
+receita_em_pipeline = 4,59 × 35.000 = R$ 160.851
+ROI_no_periodo = (482.553 - 180.000) / 180.000 = +168%
+ROI_total = (482.553 + 160.851 - 180.000) / 180.000 = +257%
+
+Comparativo:
+Mudança de insight:
+input_6 = Sim, ROI_no_periodo = +168% (≥ 0)
+→ Aciona I-A — Sistema validado, evolução é a próxima alavanca
+11.7. Leitura analítica do caso (para o time interno entender)
+Marina representa o lead ideal da Calculadora: gerente operacional que entra com pergunta tática ("quanto invisto para ter retorno?") e sai com reframe estrutural ("o problema é o sistema, não o investimento").
+Por que a Calculadora funciona neste caso: o contraste entre os dois cenários (-20% vs +168%) é dramático o suficiente para gerar provocação real. Marina pode brincar com o toggle ao vivo e ver a diferença.
+Próximo passo natural: Marina clica no CTA, vai para o Diagnóstico, completa as 12 perguntas, descobre que sua operação tem maturidade Estruturar = 28 (Crítica) e Operar = 35 (Em formação). O Diagnóstico confirma o reframe que a Calculadora abriu.
+Roteamento comercial esperado: Marina é cargo "Gerente de Marketing", não decisora final. Mas é influenciadora — pode levar o resultado para o CEO da Inova Sementes. A nutrição pós-Calculadora deve mirar nessa dinâmica.
+Fim da especificação
+Qualquer dúvida na implementação que envolva decisão estratégica (não apenas técnica) deve ser escalada antes de ser resolvida no implementador. Em caso de divergência entre este documento e outras fontes, este documento prevalece para os componentes da Calculadora de Performance.
+Documento complementar obrigatório: Base de Benchmarks v1.0 (referência única para defaults numéricos).
+Versão 1.0 — Especificação fechada.
+
+--- TABLE 0 ---
+Dimensão | Diagnóstico de Growth | Calculadora de Performance
+Posição no site | CTA principal | Ferramenta secundária
+Função | Qualificar fundo de funil | Capilaridade topo/meio de funil
+Estrutura | 7 campos + 12 perguntas fechadas | 4 campos + 6 inputs + 4 premissas
+Resultado | Surpresa total no final | Dinâmico em tempo real
+CTA principal | Agendamento direto (Calendly) | Ponte para o Diagnóstico
+Captura de email | Etapa 1 (antes do diagnóstico) | Etapa 1 (antes da calculadora)
+
+--- TABLE 1 ---
+# | Campo | Tipo | Obrigatório | Opções / Validação
+1 | Nome completo | Texto livre | Sim | Mínimo 3 caracteres
+2 | E-mail corporativo | E-mail | Sim | Validação de formato @
+3 | Empresa | Texto livre | Sim | Mínimo 2 caracteres
+4 | Setor da empresa | Select | Sim | Ver opções abaixo
+
+--- TABLE 2 ---
+# | Input | Tipo | Faixa / Validação | Função no cálculo
+1 | Investimento mensal em mídia paga | Numérico (R$) | Min R$ 1.000 / Max R$ 500.000 | Base do cálculo de receita
+2 | Canais que pretende usar | Multi-select | LinkedIn, Google, Meta | Define CPL ponderado aplicado
+3 | Ticket médio do seu negócio | Numérico (R$) | Min R$ 1.000 | Multiplica clientes fechados
+4 | Modelo de negócio | Toggle | B2B / B2C | Afeta defaults das premissas 2, 3 e 4
+5 | Período de projeção | Select | 3 meses / 6 meses / 12 meses | Janela temporal do cálculo
+6 | Sua operação tem CRM funcional? | Toggle | Sim / Não | Afeta defaults das premissas 2 e 3
+
+--- TABLE 3 ---
+# | Premissa | Tipo | Faixa permitida | Origem do default
+1 | CPL médio (R$ por lead) | Numérico | R$ 30 - R$ 800 | Base de Benchmarks 7.1
+2 | Taxa de qualificação (% leads que viram MQL) | Numérico (%) | 5% - 80% | Base de Benchmarks 7.2
+3 | Conversão MQL → Cliente (%) | Numérico (%) | 1% - 50% | Base de Benchmarks 7.3
+4 | Ciclo médio de venda (dias) | Numérico | 7 - 365 | Base de Benchmarks 7.4
+
+--- TABLE 4 ---
+Cenário | Taxa qualificação default
+B2B com CRM funcional | 30%
+B2B sem CRM funcional | 18%
+B2C com CRM funcional | 50%
+B2C sem CRM funcional | 35%
+
+--- TABLE 5 ---
+Cenário | Conversão default
+B2B com CRM funcional | 12%
+B2B sem CRM funcional | 6%
+B2C (qualquer) | 25%
+
+--- TABLE 6 ---
+Setor | Ciclo default (dias)
+Construção Civil / Incorporação | 120
+Agronegócio / Agroindústria | 90
+Tecnologia / SaaS B2B | 75
+Automotivo / Concessionárias | 45
+Indústria | 90
+Serviços B2B | 60
+Outros B2B | 60
+B2C (qualquer setor) | 14
+
+--- TABLE 7 ---
+Métrica | Regra de exibição
+Investimento total | Sem decimais, separador de milhar (R$ 60.000)
+Leads gerados | Inteiro arredondado
+MQLs | Inteiro arredondado
+Clientes fechados | Inteiro arredondado, com prefixo "~" quando vier de decimal (ex: ~9)
+Receita / Pipeline | Sem decimais, separador de milhar
+ROI | Inteiro com sinal (+25% / -64%)
+Fator temporal | Percentual sem decimais
+
+--- TABLE 8 ---
+Insight | Condição de acionamento
+I-A | input_6_CRM = Sim e ROI_no_periodo ≥ 0
+I-B | input_6_CRM = Sim e ROI_no_periodo < 0
+I-C | input_6_CRM = Não e ROI_no_periodo ≥ 0
+I-D | input_6_CRM = Não e ROI_no_periodo < 0
+I-E (override) | (receita_em_pipeline / receita_no_periodo) > 3
+
+--- TABLE 9 ---
+Evento | Quando dispara
+calculadora_iniciada | Lead clicou para acessar a Etapa 1
+etapa_1_concluida | Lead completou os 4 campos
+calculadora_input_alterado | Cada vez que lead muda um dos 6 inputs (com qual input)
+premissa_alterada | Cada vez que lead edita uma das 4 premissas (com qual premissa e valor)
+resultado_visualizado | Lead viu o resultado pela primeira vez
+insight_exibido | Insight foi gerado e exibido (com qual insight)
+pdf_baixado | Lead clicou em baixar PDF
+resultado_compartilhado | Lead clicou em compartilhar
+calculadora_para_diagnostico | Lead clicou no CTA de avançar para o Diagnóstico
+
+--- TABLE 10 ---
+Premissa | Default aplicado | Confiança
+CPL médio | R$ 352,50 (média de R$ 290 Google + R$ 415 LinkedIn) | Baixa
+Taxa de qualificação | 18% | Alta
+Conversão MQL → Cliente | 6% | Média
+Ciclo médio | 90 dias | Baixa
+
+--- TABLE 11 ---
+Premissa | Novo default
+Taxa de qualificação | 30%
+Conversão MQL → Cliente | 12%
+
+--- TABLE 12 ---
+Indicador | Sem CRM | Com CRM | Diferença
+Clientes fechados | ~6 | ~18 | 3x mais
+Receita no período | R$ 144.766 | R$ 482.553 | R$ 337.787 a mais
+ROI no período | -20% | +168% | De prejuízo a lucro robusto
+ROI total | +7% | +257% | R$ 450k de diferença total

@@ -1,0 +1,304 @@
+Base de Benchmarks — Calculadora de Performance Unfold
+Versão: 1.0 Janela temporal das fontes: 2023-2026 Foco geográfico: Brasil (com fontes globais quando não há dado nacional) Status: Base de conhecimento — referência para Matheus calibrar a Calculadora
+Sobre este documento
+Este documento consolida benchmarks de marketing digital B2B brasileiro extraídos de fontes públicas, com janela de 2023 a 2026. Serve a dois propósitos:
+Calibrar a Calculadora de Performance — os valores default das premissas editáveis (CPL, taxa de qualificação, taxa de conversão, ciclo de venda) saem desta base.
+Sustentar autoridade da ferramenta — a Calculadora exibe ao lead, na tela de resultado, a lista de fontes usadas. Isso transforma a ferramenta em ativo de autoridade técnica.
+Cada benchmark vem com nível de confiança explícito:
+Alta — múltiplas fontes brasileiras convergentes, com amostras grandes e metodologia publicada.
+Média — uma fonte brasileira robusta ou múltiplas fontes globais convergentes.
+Baixa — extrapolação metodológica a partir de fontes setoriais ou globais, sem dado nacional específico.
+A Calculadora deve sinalizar o nível de confiança junto a cada premissa exibida ao lead.
+1. CPL por canal (Brasil, 2024-2026)
+1.1. CPL médio geral
+Google Ads (média global): US$ 70,11 em 2025 (Conversion Brasil, baseado em WordStream Benchmarks 2025) — equivalente a aproximadamente R$ 380-420 em conversão para BRL.
+Meta Ads (média global, leads): US$ 27,66 em 2025 (WordStream Facebook Ads Benchmarks 2025) — equivalente a R$ 140-170 em BRL.
+LinkedIn Ads (média global, B2B): US$ 110 em 2025 (Flyweel 2025, baseado em múltiplos relatórios) — equivalente a R$ 580-650 em BRL.
+Confiança: Alta (dados primários WordStream com referência cruzada).
+1.2. CPL por canal × setor (Google Ads, Brasil)
+Fonte primária: Safira Design (3 semanas atrás de 2026), baseado em campanhas reais brasileiras + WordStream/LocaliQ 2024-2025.
+Confiança: Alta para os setores B2B clássicos. Média para Imóveis/Construtoras (CPL real pode variar muito por região).
+1.3. CPL LinkedIn Ads B2B no Brasil
+Fonte primária: Spiner (abril 2026) + Everflux (2 semanas atrás) + Stackmatix (abril 2026).
+Observação metodológica: LinkedIn brasileiro tem amostras menores que LinkedIn global. Os valores acima são consistentes com benchmark internacional de R$ 580-650 traduzido para o contexto brasileiro (geralmente 30-40% mais barato pela menor competição).
+Confiança: Média. LinkedIn Ads é o canal com mais variabilidade — depende fortemente de qualidade de criativo, oferta e segmentação.
+1.4. CPL específico para os setores prioritários da Unfold
+Construção Civil / Incorporação
+Não há fonte brasileira pública com CPL específico para B2B em Construção. Dados disponíveis:
+Google Ads para imóveis/construtoras: R$ 100-250 (Safira, 2026).
+Atenção: dados B2C dominam. Para B2B (construtora vendendo para clientes corporativos, ou incorporadora vendendo lançamentos), o CPL tende a ser 30-50% mais alto que o B2C imobiliário por causa de menor volume e maior segmentação.
+CPL B2B sugerido para Construção:
+Google Ads: R$ 150 - R$ 350 (ponto médio: R$ 250)
+Meta Ads: R$ 100 - R$ 250 (ponto médio: R$ 175)
+LinkedIn Ads: R$ 250 - R$ 500 (ponto médio: R$ 375)
+Confiança: Média (combinação de dados imobiliários B2C com ajuste B2B).
+Agronegócio / Agroindústria
+Fontes brasileiras (RD Station, Agência Mestre) trazem narrativa estratégica para agro mas não publicam CPL médio. Case Barenbrug do Brasil (RD Station, 2021): ROI de 587% em ações de inbound — mas sem CPL declarado.
+CPL B2B sugerido para Agro:
+Google Ads: R$ 180 - R$ 400 (ponto médio: R$ 290)
+Meta Ads: R$ 120 - R$ 280 (ponto médio: R$ 200)
+LinkedIn Ads: R$ 280 - R$ 550 (ponto médio: R$ 415)
+Confiança: Baixa. Extrapolação a partir do benchmark de Indústria/Manufatura (CPL geralmente mais baixo) ajustado para a complexidade da decisão técnica e ciclo regional do Agro.
+SaaS B2B / Tecnologia
+Setor com mais dados públicos.
+CPL B2B confirmado para SaaS:
+Google Ads: R$ 60 - R$ 280 (ponto médio: R$ 170) — Safira 2026
+Meta Ads: R$ 80 - R$ 200 (ponto médio: R$ 140) — extrapolação
+LinkedIn Ads: R$ 200 - R$ 500 (ponto médio: R$ 350)
+Confiança: Alta.
+Automotivo / Concessionárias
+Fonte: dados Safira/WordStream + Agência Mestre 2022.
+CPL B2B sugerido para Automotivo:
+Google Ads: R$ 70 - R$ 200 (ponto médio: R$ 135)
+Meta Ads: R$ 50 - R$ 150 (ponto médio: R$ 100)
+LinkedIn Ads: R$ 200 - R$ 400 (ponto médio: R$ 300)
+Confiança: Média.
+Indústria
+Fonte primária: witu.digital (março 2026).
+CPL B2B confirmado para Indústria:
+Google Ads: R$ 80 - R$ 200 (ponto médio: R$ 140)
+Meta Ads: R$ 60 - R$ 180 (ponto médio: R$ 120)
+LinkedIn Ads: R$ 220 - R$ 450 (ponto médio: R$ 335)
+Confiança: Alta.
+Serviços B2B (genérico)
+CPL B2B confirmado:
+Google Ads: R$ 40 - R$ 180 (ponto médio: R$ 110)
+Meta Ads: R$ 35 - R$ 150 (ponto médio: R$ 90)
+LinkedIn Ads: R$ 180 - R$ 420 (ponto médio: R$ 300)
+Confiança: Alta.
+2. Taxa de qualificação (lead → MQL)
+Esta é a taxa que mede quantos dos leads brutos gerados são considerados de perfil mínimo pelo time de marketing/SDR para abordagem comercial.
+2.1. Benchmark Brasil
+Média B2B: 30% (Data Stone, set/2025)
+Times maduros com ICP rígido: 35-45%
+Operações sem ICP estruturado / lead scoring: 15-25%
+Empresas que classificam leads por maturidade têm conversão 50% maior (State of Lead Management, Marketo)
+2.2. Default sugerido para a Calculadora
+Confiança: Alta (dados Brasil + cross-reference internacional).
+3. Taxa de conversão MQL → Cliente
+Esta é a métrica com maior divergência entre fontes. É também a métrica mais sensível na Calculadora — pequenas variações geram grandes diferenças no resultado final.
+3.1. Benchmarks comparados
+3.2. Cálculo da conversão MQL→Cliente (composição)
+Para chegar em MQL → Cliente, é preciso compor duas conversões:
+Conversão MQL→Cliente = Conversão MQL→SQL × Conversão SQL→Cliente
+3.3. Default sugerido para a Calculadora
+Confiança: Média. As fontes divergem, mas a faixa central é consistente.
+4. Ciclo médio de venda
+4.1. Benchmarks gerais B2B
+Fonte primária: Sirius (fev/2026) + Salesdrive (4 semanas) + Winning Sales (out/2025).
+Confiança: Alta.
+4.2. Ciclo por setor (Brasil)
+Construção Civil / Incorporação
+Para vendas B2B (suprimentos, projetos): 90-180 dias
+Para incorporadoras (lançamentos): 60-240 dias para fechamento
+Decisão envolve 6-10 stakeholders (Econodata, abr/2026)
+Confiança: Média (deriva de dados sobre vendas complexas em geral aplicados ao setor).
+Agronegócio
+Ciclo sazonal: depende da safra
+B2B agro técnico (sementes, equipamentos, insumos): 60-180 dias
+Decisão envolve produtor + técnicos + consultoria
+Confiança: Baixa (sem fonte com número específico — extrapolação a partir de cases como Barenbrug e do conhecimento setorial).
+SaaS B2B
+Ticket < R$ 5k: 14-45 dias
+Ticket R$ 5k-50k: 45-90 dias (zona de ouro: 45-120 dias)
+Enterprise SaaS (>R$ 100k): 6-12 meses (Winning Sales, out/2025)
+Confiança: Alta.
+Automotivo / Concessionárias
+B2B venda de frotas: 30-90 dias
+B2C consumidor final: 7-30 dias
+Aftermarket (peças, serviços): 7-21 dias
+Confiança: Média.
+Indústria
+B2B compra recorrente (insumos): 30-60 dias
+B2B equipamentos: 90-180 dias
+B2B projetos: 180-365 dias
+Confiança: Alta.
+Serviços B2B
+Ticket baixo: 14-30 dias
+Ticket médio: 30-90 dias
+Consultoria/assessoria: 30-120 dias
+Confiança: Alta.
+4.3. Default sugerido para a Calculadora
+5. Taxa de conversão de site (visitante → lead)
+Para contexto. Não entra diretamente nos cálculos da Calculadora (que parte de leads, não de visitantes), mas serve de referência educacional para o lead.
+Fonte: Panorama de Geração de Leads Leadster 2025 (2.861 sites, 3,7 milhões de leads, 167 milhões de acessos).
+Confiança: Alta (amostra muito grande, metodologia publicada).
+6. Lista de fontes citáveis na Calculadora
+A Calculadora deve exibir, na tela de resultado, uma seção "Fontes" com a lista abaixo. Isso aumenta autoridade e protege a Unfold contra críticas técnicas.
+Fontes primárias (Brasil)
+Panorama de Geração de Leads no Brasil — Leadster 2025
+URL: https://leadster.com.br/panorama-de-geracao-de-leads-no-brasil-2025/
+Maior estudo público de conversão B2B do Brasil. Base: 2.861 sites, 3,7 milhões de leads.
+Conversion Brasil — Google Ads Benchmarks 2024/2025
+URL: https://www.conversion.com.br/blog/google-ads-benchmarks-2024/
+Safira Design — CPL Google Ads B2B Brasil (2026)
+URL: https://safiradesign.com.br/blog/cpl-google-ads-como-calcular/
+Dados reais de campanhas brasileiras + benchmarks WordStream/LocaliQ.
+Data Stone — Benchmark de Conversão em SaaS B2B (set/2025)
+URL: https://blog.datastone.com.br/blog/2025/09/04/benchmark-conversao-saas-b2b/
+Auma Digital — Geração de leads B2B (mar/2026)
+URL: https://aumadigital.com/geracao-de-leads-b2b/
+Reev — Benchmark em vendas (jun/2025)
+URL: https://reev.co/benchmark-em-vendas/
+witu.digital — Quanto Custa Google Ads em 2026 por Setor B2B
+URL: https://witu.digital/quanto-custa-google-ads/
+Sirius — KPIs de Vendas (fev/2026)
+URL: https://sirius.roilabs.com.br/blog/kpis-de-vendas
+Winning Sales — Arquitetura de Receita B2B (out/2025)
+URL: https://winningsales.com.br/blog/arquitetura-de-receita/
+Fontes globais de referência cruzada
+WordStream — Google Ads Benchmarks 2024/2025
+Referência global para CPL por indústria.
+WordStream — Facebook Ads Benchmarks 2025
+URL: https://www.wordstream.com/blog/facebook-ads-benchmarks-2025
+Gartner — Journey to B2B Buying (2023-2024)
+Para dado de 6-10 stakeholders em vendas complexas e 67% da jornada acontecer antes do contato com vendas.
+HubSpot — State of Sales (2024)
+Para contexto de prospecção como etapa mais crítica em B2B.
+Flyweel — Cost Per Lead Benchmarks 2025
+URL: https://www.flyweel.co/blog/lead-gen-cpl-cac-benchmark-index-2025
+LinkedIn $110 CPL B2B média global.
+Como citar na tela de resultado
+Sugestão de microcopy curto para o fim da tela de resultado:
+Os benchmarks usados nesta calculadora foram extraídos de fontes como Leadster (Panorama de Geração de Leads no Brasil 2025), Conversion, Safira Design, Data Stone, Auma Digital, WordStream e Gartner. A janela de dados cobre 2023-2026. Cada premissa é editável — caso sua operação tenha dados próprios, você pode ajustar para refletir sua realidade.
+7. Tabela consolidada — Defaults da Calculadora
+Esta é a tabela de referência única para o Matheus implementar. Todos os valores são editáveis pelo lead, mas estes são os defaults pré-preenchidos conforme setor + flag de CRM funcional.
+7.1. CPL default por canal × setor
+Para uso na Calculadora: quando o lead seleciona múltiplos canais, calcular CPL ponderado pela distribuição igual entre os canais selecionados. Exemplo: lead seleciona Google + Meta = CPL médio é (R$ 170 + R$ 140) / 2 = R$ 155.
+7.2. Taxas de qualificação default
+7.3. Taxas de conversão MQL → Cliente default
+7.4. Ciclo de venda default por setor
+8. Observações metodológicas
+8.1. Sobre a divergência entre fontes
+Os dados de conversão MQL→SQL divergem entre fontes de 13% (Snovio) a 50-70% (Data Stone). Essa divergência tem três explicações:
+Critérios diferentes de MQL/SQL — não existe definição universal. O que uma fonte considera MQL, outra considera Lead bruto.
+Amostras diferentes — Data Stone trabalha com empresas que já usam inteligência comercial estruturada (viés positivo). Snovio considera mercado geral (viés mais conservador).
+Contextos diferentes — taxas médias do mercado vs taxas de alta performance.
+A escolha de 20% como ponto médio para a Calculadora reflete uma posição conservadora-realista — alinhada com o que operações brasileiras médias efetivamente entregam.
+8.2. Sobre os benchmarks com confiança "Baixa"
+Os defaults marcados como confiança Baixa (principalmente Agro) são extrapolações metodológicas. A recomendação é:
+Calibrar com dados próprios da Unfold após 3-6 meses de uso da ferramenta.
+Após 100+ usos da Calculadora, fazer análise de cluster nos dados capturados para refinar os defaults.
+Considerar parceria com associações setoriais (ABAG para Agro, CBIC para Construção) para validação cruzada.
+8.3. Atualização da base
+Esta base de benchmarks deve ser revisada anualmente (recomendado: janeiro de cada ano). O Panorama Leadster sai geralmente no primeiro trimestre, é a principal fonte BR para atualização.
+A versão da base deve aparecer na tela de resultado da Calculadora:
+Base de benchmarks v1.0 — atualizada em maio de 2026. Próxima revisão prevista: janeiro de 2027.
+9. Como esta base pode virar ativo de conteúdo
+Os benchmarks consolidados aqui têm valor que vai além da Calculadora. Recomendações de uso:
+Página dedicada no site: "Benchmarks de Growth B2B 2026" — pode virar ativo de SEO orgânico forte.
+Material rico: PDF/relatório baixável "O Estado do Growth B2B no Brasil — Análise Unfold".
+Conteúdo no LinkedIn: posts com cada benchmark específico ("CPL médio em Construção: R$ 250 — aqui está o que isso significa").
+Slides em propostas comerciais: ancoragem para apresentação de cenários nos pitches.
+Base para nutrição: sequência de e-mails educativos para leads do funil.
+Fim da base de benchmarks v1.0.
+
+--- TABLE 0 ---
+Setor | CPL Google Ads (intervalo) | Ponto médio sugerido
+Imóveis / Construtoras | R$ 100 - R$ 250 | R$ 175
+Jurídico / Advocacia | R$ 80 - R$ 350 | R$ 215
+Tecnologia / SaaS | R$ 60 - R$ 280 | R$ 170
+Saúde B2B | R$ 15 - R$ 80 | R$ 47
+Serviços profissionais | R$ 40 - R$ 180 | R$ 110
+Contabilidade / Financeiro | R$ 50 - R$ 200 | R$ 125
+Indústria / Manufatura | R$ 30 - R$ 150 | R$ 90
+Educação B2B | R$ 20 - R$ 100 | R$ 60
+
+--- TABLE 1 ---
+Senioridade do público | CPL Lead Gen Forms | CPL com agendamento
+Analistas | R$ 50 - R$ 150 | —
+Gerentes e Diretores | R$ 150 - R$ 400 | —
+C-level / VPs | R$ 200 - R$ 500 | R$ 800 - R$ 2.000
+
+--- TABLE 2 ---
+Cenário | Taxa de qualificação
+B2B com CRM funcional + ICP definido | 30%
+B2B sem CRM funcional / ICP fraco | 18%
+B2C (qualquer estágio) | 50%
+
+--- TABLE 3 ---
+Fonte | Faixa MQL → SQL ou MQL → Cliente | Observação
+Data Stone (set/2025) | 50-70% MQL→SQL com ICP bem definido | SQL→Oportunidade: 60-80% / Trial→Pago em SaaS: 10-25%
+Auma Digital/Leadster (mar/2026) | 25-35% MQL→SQL (alta performance), 18-22% (média) | Times com lead scoring estruturado
+Snovio | 13% MQL→SQL como benchmark de mercado | Considera operações sem ICP
+Reev (jun/2025) | 30% conexão→MQL | Não publica MQL→cliente final
+Baita (fev/2026) | 2-5% Lead→Cliente (inbound) / 0,5-1% Lead→Cliente (outbound) | Vendas B2B complexas
+Sirius (fev/2026) | 2-5% conversão lead→cliente saudável B2B | SaaS low-touch: 5-10% / Enterprise: 0,5-2%
+Winning Sales (out/2025) | Lead scoring comportamental → 40% MQL→SQL (vs 13% média) | Top 10% chegam a 39-40%
+
+--- TABLE 4 ---
+Cenário | MQL→SQL | SQL→Cliente | MQL→Cliente final
+B2B sem CRM funcional | 15% | 25% | 3,75%
+B2B básico | 20% | 30% | 6%
+B2B com CRM + processo | 30% | 40% | 12%
+B2B alta performance | 40% | 50% | 20%
+SaaS low-touch | 35% | 30% | 10,5%
+B2C qualificado | 50% | 50% | 25%
+
+--- TABLE 5 ---
+Cenário | Conversão MQL→Cliente
+B2B com CRM funcional | 12%
+B2B sem CRM funcional | 6%
+B2C | 25%
+SaaS low-touch (ticket baixo, ciclo curto) | 10%
+
+--- TABLE 6 ---
+Ticket | Ciclo médio
+R$ 1.000 - R$ 5.000 | 14-30 dias
+R$ 5.000 - R$ 50.000 | 30-90 dias
+R$ 50.000 - R$ 100.000 | 90-180 dias
+Acima de R$ 100.000 (enterprise) | 180-365+ dias
+
+--- TABLE 7 ---
+Setor | Ciclo default (dias)
+Construção Civil / Incorporação | 120
+Agronegócio / Agroindústria | 90
+Tecnologia / SaaS B2B | 75
+Automotivo / Concessionárias | 45
+Indústria | 90
+Serviços B2B | 60
+Outros B2B | 60
+B2C (qualquer setor) | 14
+
+--- TABLE 8 ---
+Segmento | Taxa de conversão mediana 2025
+Média geral Brasil | 2,98%
+B2B Brasil (mediana) | 2,50%
+B2C Brasil | 3,28%
+Top 25% B2B | acima de 7%
+Indústria (alta) | 3,81%
+Logística e Transporte | 2,64% (com pico de 8,05%)
+
+--- TABLE 9 ---
+Setor | Google Ads | Meta Ads | LinkedIn Ads | Confiança
+Construção Civil / Incorporação | R$ 250 | R$ 175 | R$ 375 | Média
+Agronegócio / Agroindústria | R$ 290 | R$ 200 | R$ 415 | Baixa
+Tecnologia / SaaS B2B | R$ 170 | R$ 140 | R$ 350 | Alta
+Automotivo / Concessionárias | R$ 135 | R$ 100 | R$ 300 | Média
+Indústria | R$ 140 | R$ 120 | R$ 335 | Alta
+Serviços B2B | R$ 110 | R$ 90 | R$ 300 | Alta
+Outros B2B | R$ 200 | R$ 150 | R$ 350 | Média
+
+--- TABLE 10 ---
+Cenário (definido por input 6 da Etapa 2) | Taxa qualificação | Confiança
+B2B com CRM funcional (resposta "Sim") | 30% | Alta
+B2B sem CRM funcional (resposta "Não") | 18% | Alta
+B2C com CRM funcional | 50% | Alta
+B2C sem CRM funcional | 35% | Alta
+
+--- TABLE 11 ---
+Cenário | Conversão MQL→Cliente | Confiança
+B2B com CRM funcional | 12% | Média
+B2B sem CRM funcional | 6% | Média
+B2C (qualquer) | 25% | Alta
+
+--- TABLE 12 ---
+Setor | Ciclo default (dias) | Confiança
+Construção Civil / Incorporação | 120 | Média
+Agronegócio / Agroindústria | 90 | Baixa
+Tecnologia / SaaS B2B | 75 | Alta
+Automotivo / Concessionárias | 45 | Média
+Indústria | 90 | Alta
+Serviços B2B | 60 | Alta
+Outros B2B | 60 | Média
+B2C (qualquer setor) | 14 | Alta
