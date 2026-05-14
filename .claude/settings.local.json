@@ -102,7 +102,9 @@
       "Bash(find src/lib -name \"rd*\")",
       "Bash(find src/lib -name \"*slack*\")",
       "Bash(find src/lib -name \"*notification*\" -o -name \"*notifier*\")",
-      "Bash(node -e \"console.log\\(require\\('@react-pdf/renderer/package.json'\\).version\\)\")"
+      "Bash(node -e \"console.log\\(require\\('@react-pdf/renderer/package.json'\\).version\\)\")",
+      "Bash(grep -rn \"CALENDLY\" .env*)",
+      "Bash(ls .env*)"
     ]
   }
 }

@@ -17,12 +17,20 @@ export interface CalendlyURLs {
 
 /**
  * Resolve a URL Calendly correta para uma faixa de Fit.
- * Retorna `undefined` se a URL não estiver configurada.
+ *
+ * Precedência:
+ *   1. URL específica da faixa configurada no SiteSettings.
+ *   2. Fallback global via `NEXT_PUBLIC_CALENDLY_URL` (URL única).
+ *   3. `undefined` (CTAAgendamento mostra placeholder).
+ *
+ * O fallback permite o site funcionar com uma única URL enquanto o Gabriel não
+ * cria slots específicos por faixa no Calendly.
  */
 export function resolveCalendlyURL(urls: CalendlyURLs, faixa: FaixaFit): string | undefined {
-  if (faixa === 'fit-alto') return urls.fit_alto || undefined
-  if (faixa === 'fit-medio') return urls.fit_medio || undefined
-  return urls.fit_baixo_desfit || undefined
+  const fallback = process.env.NEXT_PUBLIC_CALENDLY_URL || undefined
+  if (faixa === 'fit-alto') return urls.fit_alto || fallback
+  if (faixa === 'fit-medio') return urls.fit_medio || fallback
+  return urls.fit_baixo_desfit || fallback
 }
 
 /**
