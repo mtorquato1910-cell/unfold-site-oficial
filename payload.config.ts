@@ -151,11 +151,10 @@ export default buildConfig({
   ],
   db: isPostgres
     ? postgresAdapter({
-        // Schema dedicado para isolar as tabelas do site das demais aplicações
-        // que convivem no mesmo Supabase (decisão 2026-05-15 — motivação A).
-        // O Payload roda `CREATE SCHEMA IF NOT EXISTS "site"` no boot e cria
-        // todas as collections dentro de `site.*`.
-        schemaName: 'site',
+        // TODO sprint+1: migrar tabelas para schema "site" via `payload migrate:create`
+        // regenerando as migrations. Tentativa anterior (2026-05-15) falhou porque
+        // as migrations existentes (20260504/20260505) criam em `public.*` e adicionar
+        // `schemaName: 'site'` faz o runtime esperar em `site.*` — divergência.
         pool: {
           connectionString: process.env.DATABASE_URL as string,
         },
