@@ -151,10 +151,10 @@ export default buildConfig({
   ],
   db: isPostgres
     ? postgresAdapter({
-        // TODO sprint+1: migrar tabelas para schema "site" via `payload migrate:create`
-        // regenerando as migrations. Tentativa anterior (2026-05-15) falhou porque
-        // as migrations existentes (20260504/20260505) criam em `public.*` e adicionar
-        // `schemaName: 'site'` faz o runtime esperar em `site.*` — divergência.
+        // Schema dedicado obrigatório — o banco compartilhado contém outras
+        // 23 tabelas (e-commerce) em `public.*` que conflitam com Payload
+        // (descoberto 2026-05-15). Todas as collections do site ficam em `site.*`.
+        schemaName: 'site',
         pool: {
           connectionString: process.env.DATABASE_URL as string,
         },
