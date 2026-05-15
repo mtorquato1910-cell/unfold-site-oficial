@@ -5,9 +5,15 @@ import { SignJWT } from 'jose'
 import { z } from 'zod'
 
 import { trackEventServer } from '@/lib/analytics/diagnostico-events-server'
+import { missingProductionEnv } from '@/lib/env'
 import { logger } from '@/lib/observability/logger'
 import { rateLimit, resolveClientIP } from '@/lib/rate-limit'
 import { verifyTurnstile } from '@/lib/security/turnstile'
+
+// Sprint hotfix 2026-05-15 (Bug 1): force-dynamic + no-store evita que
+// Vercel CDN cacheie respostas 5xx ou que Next 15 estatifique este POST.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 const schema = z.object({
   nome: z.string().min(3),
@@ -22,17 +28,51 @@ const schema = z.object({
   turnstile_token: z.string().optional(),
 })
 
+const NO_STORE_HEADERS = {
+  'Cache-Control': 'no-store, max-age=0',
+} as const
+
+function resolveTraceId(req: NextRequest): string {
+  const incoming = req.headers.get('x-request-id') || req.headers.get('x-diag-trace-id')
+  if (incoming && /^[\w-]{8,64}$/.test(incoming)) return incoming
+  if (typeof globalThis.crypto?.randomUUID === 'function') return globalThis.crypto.randomUUID()
+  return `diag-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+}
+
+function jsonResponse(traceId: string, body: unknown, status: number) {
+  return NextResponse.json(body, {
+    status,
+    headers: { ...NO_STORE_HEADERS, 'X-Diag-Trace-Id': traceId },
+  })
+}
+
 export async function POST(req: NextRequest) {
+  const traceId = resolveTraceId(req)
+  const isProd = process.env.NODE_ENV === 'production'
+
   try {
+    // Pre-flight: env vars críticas ausentes em produção → 503 estruturado.
+    const missing = missingProductionEnv()
+    if (missing.length > 0) {
+      logger.error('etapa1.env_missing', { request_id: traceId, meta: { missing } })
+      return jsonResponse(
+        traceId,
+        { error: 'Serviço temporariamente indisponível', code: 'ENV_NOT_CONFIGURED', missing },
+        503,
+      )
+    }
+
     // Rate limit: 5 submissões/hora por IP (G6.2 do QA).
     const rl = rateLimit(req, { scope: 'etapa1', max: 5, windowMs: 60 * 60 * 1000 })
     if (!rl.ok) {
-      logger.warn('etapa1.rate_limit_exceeded', { request_id: resolveClientIP(req) })
+      logger.warn('etapa1.rate_limit_exceeded', { request_id: traceId })
       return NextResponse.json(
         { error: 'Muitas tentativas. Tente novamente em alguns minutos.' },
         {
           status: 429,
           headers: {
+            ...NO_STORE_HEADERS,
+            'X-Diag-Trace-Id': traceId,
             'X-RateLimit-Remaining': '0',
             'X-RateLimit-Reset': String(Math.ceil(rl.resetAt / 1000)),
           },
@@ -43,45 +83,72 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const parsed = schema.safeParse(body)
     if (!parsed.success) {
-      return NextResponse.json(
-        { error: 'Dados inválidos', details: parsed.error.flatten() },
-        { status: 400 },
+      return jsonResponse(
+        traceId,
+        { error: 'Dados inválidos', code: 'VALIDATION_FAILED', details: parsed.error.flatten() },
+        400,
       )
     }
 
-    // Turnstile: bypass-dev quando TURNSTILE_SECRET_KEY ausente (G6.1 do QA).
+    // Bug 1 fix: em produção, ausência de TURNSTILE_SECRET_KEY é erro de
+    // configuração — não devemos cair em bypass-dev silenciosamente.
+    if (isProd && !process.env.TURNSTILE_SECRET_KEY) {
+      logger.error('etapa1.turnstile_misconfigured', { request_id: traceId })
+      return jsonResponse(
+        traceId,
+        { error: 'Serviço temporariamente indisponível', code: 'CAPTCHA_NOT_CONFIGURED' },
+        503,
+      )
+    }
+
     const turnstile = await verifyTurnstile(parsed.data.turnstile_token, resolveClientIP(req))
     if (!turnstile.ok) {
-      logger.warn('etapa1.turnstile_failed', { meta: { reason: turnstile.reason } })
-      return NextResponse.json(
-        { error: 'Verificação anti-spam falhou. Recarregue a página e tente novamente.' },
-        { status: 401 },
+      logger.warn('etapa1.turnstile_failed', {
+        request_id: traceId,
+        meta: { reason: turnstile.reason },
+      })
+      return jsonResponse(
+        traceId,
+        { error: 'Verificação anti-spam falhou. Recarregue a página e tente novamente.', code: 'CAPTCHA_FAILED' },
+        400,
       )
     }
 
     const { nome, email, empresa, cargo, setor, faturamento_faixa, urgencia } = parsed.data
     const data_inicio = parsed.data.data_inicio || new Date().toISOString()
-    const payload = await getPayload({ config: configPromise })
+
+    let payloadInstance: Awaited<ReturnType<typeof getPayload>>
+    try {
+      payloadInstance = await getPayload({ config: configPromise })
+    } catch (err) {
+      logger.error('etapa1.payload_init_failed', {
+        request_id: traceId,
+        meta: { err: String(err), stack: err instanceof Error ? err.stack : undefined },
+      })
+      return jsonResponse(
+        traceId,
+        { error: 'Banco de dados indisponível', code: 'DB_NOT_CONFIGURED' },
+        503,
+      )
+    }
 
     let leadId: string | number
     try {
-      const existing = await payload.find({
+      const existing = await payloadInstance.find({
         collection: 'leads',
         where: { email: { equals: email } },
         limit: 1,
       })
       if (existing.docs.length > 0) {
-        // Atualiza lead existente com os campos v2 (não sobrescreve nome se já houver).
         const ex = existing.docs[0]
         leadId = ex.id
         try {
-          await payload.update({
+          await payloadInstance.update({
             collection: 'leads',
             id: leadId,
             data: {
               nome,
               empresa,
-              // cargo e setor são salvos como strings; o cast é para o tipo gerado do Payload.
               cargo,
               setor: setor as never,
               faturamento_faixa: faturamento_faixa as never,
@@ -90,10 +157,19 @@ export async function POST(req: NextRequest) {
             },
           })
         } catch (err) {
-          console.warn('[etapa-1] Falha ao atualizar lead existente:', err)
+          logger.error('etapa1.payload_update_failed', {
+            request_id: traceId,
+            lead_email: email,
+            meta: { err: String(err), stack: err instanceof Error ? err.stack : undefined },
+          })
+          return jsonResponse(
+            traceId,
+            { error: 'Falha ao atualizar lead', code: 'PAYLOAD_UPDATE_FAILED' },
+            500,
+          )
         }
       } else {
-        const lead = await payload.create({
+        const lead = await payloadInstance.create({
           collection: 'leads',
           data: {
             nome,
@@ -112,13 +188,27 @@ export async function POST(req: NextRequest) {
         leadId = lead.id
       }
     } catch (err) {
-      console.warn('[etapa-1] DB não disponível, usando mock:', err)
-      leadId = `mock-${Date.now()}`
+      logger.error('etapa1.payload_find_failed', {
+        request_id: traceId,
+        lead_email: email,
+        meta: { err: String(err), stack: err instanceof Error ? err.stack : undefined },
+      })
+      return jsonResponse(
+        traceId,
+        { error: 'Falha ao consultar lead', code: 'PAYLOAD_FIND_FAILED' },
+        500,
+      )
     }
 
-    const secret = new TextEncoder().encode(
-      process.env.PAYLOAD_SECRET || 'dev-secret-CHANGE-IN-PRODUCTION',
-    )
+    const secret = new TextEncoder().encode(process.env.PAYLOAD_SECRET || '')
+    if (secret.length === 0) {
+      logger.error('etapa1.jwt_secret_missing', { request_id: traceId })
+      return jsonResponse(
+        traceId,
+        { error: 'Serviço temporariamente indisponível', code: 'JWT_SECRET_MISSING' },
+        503,
+      )
+    }
     const token = await new SignJWT({
       leadId: String(leadId),
       email,
@@ -135,18 +225,28 @@ export async function POST(req: NextRequest) {
       .setIssuedAt()
       .sign(secret)
 
-    // Evento spec §10.3: Etapa 1 concluída.
     void trackEventServer({
       event_name: 'etapa_1_concluida',
       lead_email: email,
-      metadata: { setor, faturamento_faixa, urgencia, cargo },
+      metadata: { setor, faturamento_faixa, urgencia, cargo, trace_id: traceId },
     })
 
-    logger.info('etapa1.success', { lead_email: email, meta: { setor, urgencia } })
+    logger.info('etapa1.success', {
+      request_id: traceId,
+      lead_email: email,
+      meta: { setor, urgencia, lead_id: String(leadId) },
+    })
 
-    return NextResponse.json({ ok: true, token })
+    return jsonResponse(traceId, { ok: true, token, leadId: String(leadId) }, 200)
   } catch (err) {
-    logger.error('etapa1.unexpected', { meta: { err: String(err) } })
-    return NextResponse.json({ error: 'Erro interno ao processar diagnóstico' }, { status: 500 })
+    logger.error('etapa1.unexpected', {
+      request_id: traceId,
+      meta: { err: String(err), stack: err instanceof Error ? err.stack : undefined },
+    })
+    return jsonResponse(
+      traceId,
+      { error: 'Erro interno ao processar diagnóstico', code: 'UNEXPECTED' },
+      500,
+    )
   }
 }

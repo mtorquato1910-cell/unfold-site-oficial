@@ -88,18 +88,30 @@ export default function DiagnosticoEtapa1Form() {
       setServerError('Aguarde a verificação anti-spam carregar.')
       return
     }
+    const requestId =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? crypto.randomUUID()
+        : `req-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
     try {
       const res = await fetch('/api/diagnostico/etapa-1', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Request-Id': requestId,
+        },
         body: JSON.stringify({
           ...data,
           data_inicio: new Date().toISOString(),
           turnstile_token: turnstileToken || undefined,
         }),
       })
-      const json = await res.json()
-      if (!res.ok) throw new Error(json.error || 'Erro ao processar')
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        const traceId = res.headers.get('x-diag-trace-id') || requestId
+        const msg = json.error || 'Erro ao processar diagnóstico'
+        console.error('[diagnostico:etapa-1] falha', { traceId, status: res.status, code: json.code })
+        throw new Error(`${msg} (ref: ${traceId.slice(0, 8)})`)
+      }
       router.push(`/diagnostico/etapa-2/${json.token}`)
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Erro inesperado. Tente novamente.')

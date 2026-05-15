@@ -8,6 +8,7 @@
 import { useMemo, useRef } from 'react'
 import { CANAIS } from '@/lib/calculadora/benchmarks'
 import { createDebouncedTracker } from '@/lib/analytics/calculadora-events'
+import { parseLooseNumber, formatBRL } from '@/lib/calculadora/parse-number'
 import type { Canal, Modelo, Periodo } from '@/lib/calculadora/types'
 import type { UseCalculadora } from './useCalculadora'
 
@@ -250,20 +251,6 @@ function CurrencyInput({ id, value, min = 0, max, step = 100, onChange }: Curren
       aria-label="Valor em reais"
     />
   )
-}
-
-function parseLooseNumber(raw: string): number {
-  const cleaned = raw.replace(/[^\d,.-]/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.')
-  const n = parseFloat(cleaned)
-  return Number.isFinite(n) ? n : 0
-}
-
-function formatBRL(n: number): string {
-  return n.toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    maximumFractionDigits: 0,
-  })
 }
 
 interface SegmentedToggleProps<T> {
