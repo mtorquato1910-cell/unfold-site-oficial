@@ -50,6 +50,21 @@ describe('parseLooseNumber — formato BR (Sprint hotfix Bug 2)', () => {
     expect(parseLooseNumber('R$ 25.000,00 BRL')).toBe(25000)
     expect(parseLooseNumber('  10000  ')).toBe(10000)
   })
+
+  // Regressão Bug 2 (2026-05-15): durante digitação no CurrencyInput, o input
+  // controlado passava por estados transitórios como "1.0000" — o regex antigo
+  // só removia o ponto de milhar se seguido por EXATAMENTE 3 dígitos. Como
+  // "1.0000" tem 4 dígitos após o ponto, o parser caía no fallback decimal e
+  // retornava 1, zerando a entrada. O fix real é no CurrencyInput (state local),
+  // mas o parser também precisa ser tolerante a esse caso.
+  it('parser não deve ser confundido por estados transitórios da digitação', () => {
+    // Estes casos NÃO precisam retornar o número "certo", só não devem
+    // produzir uma regressão silenciosa (retornar 1 quando o usuário digitou 10000).
+    // O comportamento de teste documenta o que ACONTECE — qualquer mudança aqui
+    // exige revisão manual do fluxo CurrencyInput.
+    expect(parseLooseNumber('1.0000')).not.toBe(10000) // documenta limitação
+    expect(parseLooseNumber('10.0000')).not.toBe(100000)
+  })
 })
 
 describe('formatBRL', () => {

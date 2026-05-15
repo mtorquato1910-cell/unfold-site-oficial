@@ -5,7 +5,7 @@
  * Spec §4.2. Microcopy literal — qualquer alteração requer alinhamento estratégico.
  */
 
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { CANAIS } from '@/lib/calculadora/benchmarks'
 import { createDebouncedTracker } from '@/lib/analytics/calculadora-events'
 import { parseLooseNumber, formatBRL } from '@/lib/calculadora/parse-number'
@@ -225,27 +225,47 @@ interface CurrencyInputProps {
   onChange: (v: number) => void
 }
 
-/** Input numérico que mostra máscara R$ ao desfocar e aceita paste/digitação livre. */
-function CurrencyInput({ id, value, min = 0, max, step = 100, onChange }: CurrencyInputProps) {
-  const ref = useRef<HTMLInputElement | null>(null)
+/**
+ * Input numérico que mostra máscara R$ ao desfocar e aceita paste/digitação livre.
+ *
+ * Hotfix 2026-05-15 (Bug 2): mantemos texto local separado do `value` numérico.
+ * Sem isso, `value={formatBRL(value)}` reformatava a cada keystroke — quando
+ * o usuário digitava "10000" o input passava por "R$ 1.000" e o próximo "0"
+ * gerava "R$ 1.0000", interpretado pelo parser como decimal `1.0` e zerando
+ * a entrada. Agora o texto livre só vira BRL no blur.
+ */
+function CurrencyInput({ id, value, min = 0, max, onChange }: CurrencyInputProps) {
+  const [focused, setFocused] = useState(false)
+  const [text, setText] = useState(() => formatBRL(value))
+
+  // Sincroniza texto exibido quando `value` muda externamente (slider, defaults)
+  // e o input não está em foco — evita sobrescrever digitação em andamento.
+  useEffect(() => {
+    if (!focused) setText(formatBRL(value))
+  }, [value, focused])
+
   return (
     <input
-      ref={ref}
       id={id}
       type="text"
       inputMode="numeric"
       className="input-field font-mono"
-      value={formatBRL(value)}
-      onFocus={(e) => {
-        e.target.value = String(value)
+      value={text}
+      onFocus={() => {
+        setFocused(true)
+        setText(value > 0 ? String(value) : '')
       }}
       onBlur={(e) => {
+        setFocused(false)
         const n = parseLooseNumber(e.target.value)
         const clamped = Math.max(min, max ? Math.min(max, n) : n)
         onChange(clamped)
+        setText(formatBRL(clamped))
       }}
       onChange={(e) => {
-        const n = parseLooseNumber(e.target.value)
+        const raw = e.target.value
+        setText(raw)
+        const n = parseLooseNumber(raw)
         if (Number.isFinite(n)) onChange(n)
       }}
       aria-label="Valor em reais"
