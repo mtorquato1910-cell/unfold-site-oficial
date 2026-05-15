@@ -109,7 +109,13 @@ export default function DiagnosticoEtapa1Form() {
       if (!res.ok) {
         const traceId = res.headers.get('x-diag-trace-id') || requestId
         const msg = json.error || 'Erro ao processar diagnóstico'
-        console.error('[diagnostico:etapa-1] falha', { traceId, status: res.status, code: json.code })
+        console.error('[diagnostico:etapa-1] falha', {
+          traceId,
+          status: res.status,
+          code: json.code,
+          missing: json.missing,
+          details: json.details,
+        })
         throw new Error(`${msg} (ref: ${traceId.slice(0, 8)})`)
       }
       router.push(`/diagnostico/etapa-2/${json.token}`)
