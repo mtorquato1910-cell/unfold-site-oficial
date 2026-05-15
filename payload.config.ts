@@ -151,6 +151,11 @@ export default buildConfig({
   ],
   db: isPostgres
     ? postgresAdapter({
+        // Schema dedicado para isolar as tabelas do site das demais aplicações
+        // que convivem no mesmo Supabase (decisão 2026-05-15 — motivação A).
+        // O Payload roda `CREATE SCHEMA IF NOT EXISTS "site"` no boot e cria
+        // todas as collections dentro de `site.*`.
+        schemaName: 'site',
         pool: {
           connectionString: process.env.DATABASE_URL as string,
         },
