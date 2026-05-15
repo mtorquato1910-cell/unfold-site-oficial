@@ -157,6 +157,10 @@ export default buildConfig({
         schemaName: 'site',
         pool: {
           connectionString: process.env.DATABASE_URL as string,
+          // Serverless (Vercel): limitar pool evita esgotamento de conexões.
+          // SSL obrigatório para Supabase em produção.
+          max: 3,
+          ssl: { rejectUnauthorized: false },
         },
       })
     : sqliteAdapter({
