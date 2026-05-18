@@ -1,6 +1,6 @@
 'use client'
 
-import { Calendar, Clock } from 'lucide-react'
+import { Calendar, Clock, Mail } from 'lucide-react'
 
 import { trackEvent } from '@/lib/analytics/diagnostico-events'
 import { CTA_POR_FAIXA, LABEL_FAIXA_FIT } from '@/lib/scoring/textos'
@@ -8,8 +8,9 @@ import type { FaixaFit } from '@/lib/scoring/types'
 
 interface Props {
   faixa: FaixaFit
-  /** Sprint 4 vai injetar URLs reais via SiteSettings. Por ora, placeholder. */
   calendlyUrl?: string
+  /** Fallback usado quando `calendlyUrl` está ausente — vira um botão mailto. */
+  contactEmail?: string
 }
 
 const DESTAQUE_POR_FAIXA: Record<FaixaFit, string> = {
@@ -19,9 +20,17 @@ const DESTAQUE_POR_FAIXA: Record<FaixaFit, string> = {
   desfit: 'ring-1 ring-border opacity-90',
 }
 
-export default function CTAAgendamento({ faixa, calendlyUrl }: Props) {
+export default function CTAAgendamento({ faixa, calendlyUrl, contactEmail }: Props) {
   const cta = CTA_POR_FAIXA[faixa]
   const destaque = DESTAQUE_POR_FAIXA[faixa]
+
+  const mailtoHref = contactEmail
+    ? `mailto:${contactEmail}?subject=${encodeURIComponent(
+        'Quero conversar sobre meu diagnóstico de growth',
+      )}&body=${encodeURIComponent(
+        `Olá, acabei de concluir o diagnóstico de growth no site e gostaria de marcar uma conversa.\n\nFaixa de Fit: ${LABEL_FAIXA_FIT[faixa]}\n\nObrigado!`,
+      )}`
+    : undefined
 
   return (
     <section
@@ -43,8 +52,6 @@ export default function CTAAgendamento({ faixa, calendlyUrl }: Props) {
         <span>{cta.slot_minutos} minutos</span>
       </div>
 
-      {/* Placeholder enquanto Calendly não está configurado.
-          Sprint 4 trocará isso por <CalendlyEmbed /> com URL do SiteSettings. */}
       {calendlyUrl ? (
         <a
           href={calendlyUrl}
@@ -55,6 +62,17 @@ export default function CTAAgendamento({ faixa, calendlyUrl }: Props) {
         >
           <Calendar className="h-4 w-4" />
           Agendar conversa
+        </a>
+      ) : mailtoHref ? (
+        <a
+          href={mailtoHref}
+          onClick={() =>
+            trackEvent({ event_name: 'agendamento_iniciado', metadata: { faixa, fallback: 'mailto' } })
+          }
+          className="inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold px-6 py-3 hover:opacity-90 transition-opacity"
+        >
+          <Mail className="h-4 w-4" />
+          Falar com a Unfold
         </a>
       ) : (
         <div className="rounded-xl border border-dashed border-border bg-background/40 p-6 text-center">

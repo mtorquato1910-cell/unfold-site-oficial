@@ -59,6 +59,23 @@ export async function getCalendlyURLsFromSettings(): Promise<CalendlyURLs> {
 }
 
 /**
+ * Lê o email de contato do SiteSettings — usado como fallback de mailto
+ * quando o Calendly URL não está configurado.
+ */
+export async function getContactEmailFromSettings(): Promise<string | undefined> {
+  try {
+    const { getPayload } = await import('payload')
+    const configPromise = await import('@payload-config')
+    const payload = await getPayload({ config: configPromise.default })
+    const settings = await payload.findGlobal({ slug: 'site-settings' })
+    const s = settings as unknown as { email_contato?: string }
+    return s.email_contato || undefined
+  } catch {
+    return undefined
+  }
+}
+
+/**
  * Valida assinatura HMAC de webhook Calendly.
  * Calendly envia header `Calendly-Webhook-Signature: t=<timestamp>,v1=<sig>`.
  * Spec: https://developer.calendly.com/api-docs/ZG9jOjE2MDYwMDQy-webhook-signatures

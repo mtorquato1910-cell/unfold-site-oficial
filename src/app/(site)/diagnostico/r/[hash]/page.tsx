@@ -4,7 +4,11 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 
 import DiagnosticoResultadoV2 from '@/components/diagnostico/DiagnosticoResultadoV2'
-import { getCalendlyURLsFromSettings, resolveCalendlyURL } from '@/lib/calendar/calendly'
+import {
+  getCalendlyURLsFromSettings,
+  getContactEmailFromSettings,
+  resolveCalendlyURL,
+} from '@/lib/calendar/calendly'
 import { LABEL_FAIXA } from '@/lib/scoring/textos'
 import type {
   CodigoCaminho,
@@ -148,6 +152,8 @@ export default async function DiagnosticoResultadoHashPage({ params }: Props) {
 
   const urls = await getCalendlyURLsFromSettings()
   const calendlyUrl = resolveCalendlyURL(urls, diag.faixa_fit)
+  const contactEmail =
+    (await getContactEmailFromSettings()) || 'contato@unfoldgrowth.com.br'
 
   return (
     <main className="min-h-screen pt-16">
@@ -156,6 +162,7 @@ export default async function DiagnosticoResultadoHashPage({ params }: Props) {
         diag={diag}
         hash={hash}
         calendlyUrl={calendlyUrl}
+        contactEmail={contactEmail}
       />
     </main>
   )

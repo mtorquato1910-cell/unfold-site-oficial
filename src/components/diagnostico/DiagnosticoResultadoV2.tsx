@@ -23,6 +23,7 @@ interface Props {
   diag: DiagnosticoCompleto
   hash: string
   calendlyUrl?: string
+  contactEmail?: string
 }
 
 const ORDEM_EIXOS: Eixo[] = ['diagnosticar', 'estruturar', 'operar', 'evoluir', 'gestao']
@@ -34,7 +35,7 @@ function faixaDoScore(s: number): FaixaMaturidade {
   return 'madura'
 }
 
-export default function DiagnosticoResultadoV2({ primeiroNome, diag, hash, calendlyUrl }: Props) {
+export default function DiagnosticoResultadoV2({ primeiroNome, diag, hash, calendlyUrl, contactEmail }: Props) {
   const scores: Record<Eixo, number> = {
     diagnosticar: diag.score_diagnosticar,
     estruturar: diag.score_estruturar,
@@ -137,7 +138,7 @@ export default function DiagnosticoResultadoV2({ primeiroNome, diag, hash, calen
       </section>
 
       {/* ─────── Bloco 6 — CTA ─────── */}
-      <CTAAgendamento faixa={diag.faixa_fit} calendlyUrl={calendlyUrl} />
+      <CTAAgendamento faixa={diag.faixa_fit} calendlyUrl={calendlyUrl} contactEmail={contactEmail} />
 
       {/* ─────── Bloco 7 — Footer ─────── */}
       <footer className="border-t border-border pt-10 space-y-6">
