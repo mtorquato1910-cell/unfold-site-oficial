@@ -8,12 +8,21 @@ import { useCallback, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import TurnstileWidget from '@/components/diagnostico/TurnstileWidget'
+import { formatPhoneBR } from '@/lib/format/phone-mask'
 
-// Schema dos 7 campos da spec §3.1.
+// Schema dos campos da spec §3.1 + WhatsApp opcional (CRM enrichment).
 const schema = z.object({
   nome: z.string().min(3, 'Nome deve ter ao menos 3 caracteres'),
   email: z.string().email('E-mail inválido'),
   empresa: z.string().min(2, 'Nome da empresa obrigatório'),
+  telefone: z
+    .string()
+    .trim()
+    .optional()
+    .refine(
+      (v) => !v || /^\D*(\d\D*){10,11}$/.test(v),
+      'Telefone deve ter 10 ou 11 dígitos',
+    ),
   cargo: z.enum(['ceo', 'diretor', 'gerente', 'analista', 'outro'], {
     required_error: 'Selecione seu cargo',
   }),
@@ -79,6 +88,7 @@ export default function DiagnosticoEtapa1Form() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({ resolver: zodResolver(schema) })
 
@@ -153,13 +163,28 @@ export default function DiagnosticoEtapa1Form() {
           </Field>
         </div>
 
-        <Field label="Empresa" error={errors.empresa?.message}>
-          <input
-            {...register('empresa')}
-            placeholder="Nome da empresa"
-            className="input-field"
-          />
-        </Field>
+        <div className="grid sm:grid-cols-2 gap-5">
+          <Field label="Empresa" error={errors.empresa?.message}>
+            <input
+              {...register('empresa')}
+              placeholder="Nome da empresa"
+              className="input-field"
+            />
+          </Field>
+          <Field label="WhatsApp" optional error={errors.telefone?.message}>
+            <input
+              {...register('telefone')}
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel-national"
+              placeholder="(11) 99999-9999"
+              className="input-field"
+              onChange={(e) =>
+                setValue('telefone', formatPhoneBR(e.target.value), { shouldValidate: false })
+              }
+            />
+          </Field>
+        </div>
 
         <Field label="Cargo" error={errors.cargo?.message}>
           <select {...register('cargo')} className="input-field" defaultValue="">
@@ -247,16 +272,21 @@ export default function DiagnosticoEtapa1Form() {
 
 function Field({
   label,
+  optional,
   error,
   children,
 }: {
   label: string
+  optional?: boolean
   error?: string
   children: React.ReactNode
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-sm font-medium text-foreground/80">{label}</label>
+      <label className="text-sm font-medium text-foreground/80">
+        {label}
+        {optional && <span className="text-foreground/45 font-normal"> (opcional)</span>}
+      </label>
       {children}
       {error && <p className="text-destructive text-xs">{error}</p>}
     </div>

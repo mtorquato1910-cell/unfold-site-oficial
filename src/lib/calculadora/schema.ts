@@ -43,6 +43,15 @@ export const etapa1Schema: z.ZodType<Etapa1> = z.object({
   email: z.string().trim().email('E-mail inválido'),
   empresa: z.string().trim().min(2, 'Empresa obrigatória (mín. 2 caracteres)'),
   setor: setorSchema,
+  // Telefone opcional — quando preenchido, exige 10 ou 11 dígitos (com ou sem máscara).
+  telefone: z
+    .string()
+    .trim()
+    .optional()
+    .refine(
+      (v) => !v || /^\D*(\d\D*){10,11}$/.test(v),
+      'Telefone deve ter 10 ou 11 dígitos',
+    ),
 })
 
 export const inputsSchema: z.ZodType<CalculadoraInputs> = z.object({

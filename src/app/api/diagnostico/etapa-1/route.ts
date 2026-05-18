@@ -19,6 +19,14 @@ const schema = z.object({
   nome: z.string().min(3),
   email: z.string().email(),
   empresa: z.string().min(2),
+  telefone: z
+    .string()
+    .trim()
+    .optional()
+    .refine(
+      (v) => !v || /^\D*(\d\D*){10,11}$/.test(v),
+      'Telefone deve ter 10 ou 11 dígitos',
+    ),
   cargo: z.enum(['ceo', 'diretor', 'gerente', 'analista', 'outro']),
   setor: z.enum(['construcao', 'agro', 'saas', 'automotivo', 'industria', 'servicos', 'outro']),
   faturamento_faixa: z.enum(['ate-50k', '50k-200k', '200k-500k', 'acima-500k', 'prefiro-nao-informar']),
@@ -114,7 +122,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { nome, email, empresa, cargo, setor, faturamento_faixa, urgencia } = parsed.data
+    const { nome, email, empresa, telefone, cargo, setor, faturamento_faixa, urgencia } = parsed.data
     const data_inicio = parsed.data.data_inicio || new Date().toISOString()
 
     let payloadInstance: Awaited<ReturnType<typeof getPayload>>
@@ -153,6 +161,7 @@ export async function POST(req: NextRequest) {
               setor: setor as never,
               faturamento_faixa: faturamento_faixa as never,
               urgencia: urgencia as never,
+              ...(telefone ? { telefone } : {}),
               consentimento_lgpd: parsed.data.consentimento || ex.consentimento_lgpd,
             },
           })
@@ -175,6 +184,7 @@ export async function POST(req: NextRequest) {
             nome,
             email,
             empresa,
+            telefone,
             cargo,
             setor: setor as never,
             faturamento_faixa: faturamento_faixa as never,

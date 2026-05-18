@@ -143,6 +143,7 @@ export async function POST(req: NextRequest) {
         data: {
           nome: d.etapa1.nome,
           empresa: d.etapa1.empresa,
+          ...(d.etapa1.telefone ? { telefone: d.etapa1.telefone } : {}),
         } as never,
       })
     } else {
@@ -152,6 +153,7 @@ export async function POST(req: NextRequest) {
           nome: d.etapa1.nome,
           email: emailLower,
           empresa: d.etapa1.empresa,
+          telefone: d.etapa1.telefone,
           origem: 'calculadora',
           rd_sync_status: 'pending',
           ip_address: ip,
@@ -242,6 +244,7 @@ export async function POST(req: NextRequest) {
     email: emailLower,
     nome: d.etapa1.nome,
     empresa: d.etapa1.empresa,
+    telefone: d.etapa1.telefone,
     setor: d.etapa1.setor,
     crm_funcional: inputs.crm_funcional,
     investimento_mensal: inputs.investimento_mensal,

@@ -31,6 +31,12 @@ export const NewsletterSubscribers: CollectionConfig = {
       label: 'Email',
     },
     {
+      name: 'telefone',
+      type: 'text',
+      label: 'WhatsApp',
+      admin: { description: 'Telefone/WhatsApp informado opcionalmente no form de captura' },
+    },
+    {
       name: 'status',
       type: 'select',
       required: true,

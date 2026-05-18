@@ -18,14 +18,23 @@ export const Leads: CollectionConfig = {
     afterChange: [
       async ({ doc, operation }) => {
         if (operation !== 'create') return doc
+        const caminhoMap: Record<string, 'Diagnóstico' | 'Calculadora' | 'Newsletter' | undefined> = {
+          diagnostico: 'Diagnóstico',
+          calculadora: 'Calculadora',
+          'newsletter-site': 'Newsletter',
+          'diagnostico-optin': 'Newsletter',
+        }
         try {
           const result = await syncContact({
             nome: doc.nome,
             email: doc.email,
             empresa: doc.empresa,
             cargo: doc.cargo,
+            telefone: doc.telefone,
             origem: doc.origem,
+            caminho_do_lead: caminhoMap[doc.origem],
             custom: {
+              setor: doc.setor,
               tamanho_equipe: doc.tamanho_equipe,
               receita_anual: doc.receita_anual,
               utm_source: doc.utm_source,

@@ -17,6 +17,7 @@ import { etapa1Schema } from '@/lib/calculadora/schema'
 import { SETORES } from '@/lib/calculadora/benchmarks'
 import type { Etapa1 } from '@/lib/calculadora/types'
 import { trackCalcEvent } from '@/lib/analytics/calculadora-events'
+import { formatPhoneBR } from '@/lib/format/phone-mask'
 
 interface Props {
   defaultValues: Etapa1
@@ -27,6 +28,7 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<Etapa1>({
     resolver: zodResolver(etapa1Schema),
@@ -96,6 +98,24 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
         />
       </Field>
 
+      <Field
+        id="telefone"
+        label="WhatsApp"
+        optional
+        error={errors.telefone?.message}
+      >
+        <input
+          id="telefone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel-national"
+          placeholder="(11) 99999-9999"
+          className="input-field"
+          {...register('telefone')}
+          onChange={(e) => setValue('telefone', formatPhoneBR(e.target.value), { shouldValidate: false })}
+        />
+      </Field>
+
       <Field id="setor" label="Setor da empresa" error={errors.setor?.message}>
         <select id="setor" className="input-field" {...register('setor')}>
           {SETORES.map((s) => (
@@ -125,11 +145,13 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
 function Field({
   id,
   label,
+  optional,
   error,
   children,
 }: {
   id: string
   label: string
+  optional?: boolean
   error?: string
   children: React.ReactNode
 }) {
@@ -137,6 +159,7 @@ function Field({
     <div>
       <label htmlFor={id} className="text-sm font-medium text-foreground/80 block mb-1.5">
         {label}
+        {optional && <span className="text-foreground/45 font-normal"> (opcional)</span>}
       </label>
       {children}
       {error && (

@@ -64,14 +64,66 @@ export const DiagnosticoResults: CollectionConfig = {
         // ── 2. Sincronizar com RD Station (modo mock por padrão) ────────
         if (hash) {
           try {
+            // Busca dados completos do Lead vinculado para enriquecer o payload RD.
+            let leadData: {
+              nome?: string
+              empresa?: string
+              cargo?: string
+              telefone?: string
+              setor?: string
+              faturamento?: string
+              urgencia?: string
+            } = {}
+            try {
+              const leadId = doc.lead_id as string | number | undefined
+              if (leadId) {
+                const lead = (await req.payload.findByID({
+                  collection: 'leads',
+                  id: leadId,
+                  depth: 0,
+                })) as unknown as Record<string, unknown>
+                leadData = {
+                  nome: lead.nome as string | undefined,
+                  empresa: lead.empresa as string | undefined,
+                  cargo: lead.cargo as string | undefined,
+                  telefone: lead.telefone as string | undefined,
+                  setor: lead.setor as string | undefined,
+                  faturamento: lead.faturamento_faixa as string | undefined,
+                  urgencia: lead.urgencia as string | undefined,
+                }
+              } else {
+                const found = await req.payload.find({
+                  collection: 'leads',
+                  where: { email: { equals: doc.lead_email } },
+                  limit: 1,
+                  depth: 0,
+                })
+                const lead = found.docs[0] as unknown as Record<string, unknown> | undefined
+                if (lead) {
+                  leadData = {
+                    nome: lead.nome as string | undefined,
+                    empresa: lead.empresa as string | undefined,
+                    cargo: lead.cargo as string | undefined,
+                    telefone: lead.telefone as string | undefined,
+                    setor: lead.setor as string | undefined,
+                    faturamento: lead.faturamento_faixa as string | undefined,
+                    urgencia: lead.urgencia as string | undefined,
+                  }
+                }
+              }
+            } catch {
+              /* fallback silencioso — sync continua só com email + primeiroNome */
+            }
+
             const r = await syncDiagnosticoToRD({
               email: doc.lead_email,
-              nome: primeiroNome,
-              empresa: undefined,
-              cargo: undefined,
-              setor: undefined,
-              faturamento_faixa: undefined,
-              urgencia: undefined,
+              nome: leadData.nome || primeiroNome,
+              empresa: leadData.empresa,
+              cargo: leadData.cargo,
+              telefone: leadData.telefone,
+              setor: leadData.setor,
+              faturamento_faixa: leadData.faturamento,
+              urgencia: leadData.urgencia,
               score_consolidado: doc.score_total ?? 0,
               faixa_consolidada: faixaConsolidada ?? 'critica',
               score_fit: (doc.score_fit as number | undefined) ?? 0,

@@ -1,20 +1,32 @@
 /**
- * Adapter CRM com 2 modos:
- * - mock: grava no Payload com rd_sync_status='mock', loga no console
- * - rd-station: integração real via API RD Station CRM Pro (quando credenciais chegarem)
+ * Adapter CRM genérico — usado pela Newsletter e pelo hook de Leads (afterChange).
  *
- * Controlado por CRM_MODE env var (default: mock)
+ * 2 modos controlados por `CRM_MODE`:
+ *  - `mock`       → grava log no console, retorna sucesso fake
+ *  - `rd-station` → POST na API legacy `/api/1.3/conversions` com Public Token
+ *
+ * Para Newsletter usa identificador `newsletter_inscrito` (gatilho da automação).
+ * Para outros contatos genéricos usa `lead_capturado` (sem gatilho específico).
  */
+
+import { postRDLegacyConversion } from './rd-legacy-client'
+import { mapSetor, normalizeTelefone, type CaminhoDoLead } from './rd-mappings'
 
 export type CRMMode = 'mock' | 'rd-station'
 
 export interface CRMContact {
-  nome: string
+  nome?: string
   email: string
   empresa?: string
   cargo?: string
   telefone?: string
   origem?: string
+  /** Mapeia direto para o campo `cf_caminho_do_lead` no RD. */
+  caminho_do_lead?: CaminhoDoLead
+  /** Identificador da conversão no RD (gatilho de automação). */
+  identificador?: string
+  /** Tags livres adicionais. */
+  tags?: string[]
   custom?: Record<string, unknown>
 }
 
@@ -26,36 +38,46 @@ export interface CRMResult {
 }
 
 function getMode(): CRMMode {
-  return (process.env.CRM_MODE as CRMMode) === 'rd-station' ? 'rd-station' : 'mock'
+  return process.env.CRM_MODE === 'rd-station' ? 'rd-station' : 'mock'
+}
+
+function inferIdentificador(c: CRMContact): string {
+  if (c.identificador) return c.identificador
+  if (c.caminho_do_lead === 'Newsletter') return 'newsletter_inscrito'
+  if (c.caminho_do_lead === 'Diagnóstico') return 'diagnostico_concluido'
+  if (c.caminho_do_lead === 'Calculadora') return 'calculadora_concluida'
+  return 'lead_capturado'
+}
+
+function montarCustomFields(c: CRMContact): Record<string, string | number | undefined> {
+  const cf: Record<string, string | number | undefined> = {}
+  if (c.caminho_do_lead) cf.cf_caminho_do_lead = c.caminho_do_lead
+  // Setor — só envia se vier em c.custom.setor (Leads usa esse campo)
+  const setorRaw = c.custom?.setor as string | undefined
+  const setorLabel = mapSetor(setorRaw)
+  if (setorLabel) cf.cf_setor_da_empresa = setorLabel
+  return cf
 }
 
 async function syncToRDStation(contact: CRMContact): Promise<CRMResult> {
-  const apiKey = process.env.RD_STATION_API_KEY
-  if (!apiKey) throw new Error('RD_STATION_API_KEY não configurada')
+  const baseTags = contact.origem ? [`origem_${contact.origem.replace(/[^a-z0-9_]/gi, '_')}`] : []
+  const tags = [...baseTags, ...(contact.tags || [])].filter(Boolean)
 
-  const res = await fetch('https://api.rd.services/platform/contacts', {
-    method: 'PATCH',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      email: contact.email,
-      name: contact.nome,
-      job_title: contact.cargo,
-      company: contact.empresa,
-      tags: [contact.origem || 'site'].filter(Boolean),
-      custom_fields: contact.custom,
-    }),
+  const r = await postRDLegacyConversion({
+    identificador: inferIdentificador(contact),
+    email: contact.email,
+    nome: contact.nome,
+    empresa: contact.empresa,
+    cargo: contact.cargo,
+    celular: normalizeTelefone(contact.telefone),
+    tags,
+    customFields: montarCustomFields(contact),
   })
 
-  if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`RD Station error ${res.status}: ${err}`)
+  if (!r.success) {
+    throw new Error(r.error || `RD legacy status ${r.status}`)
   }
-
-  const data = await res.json()
-  return { success: true, mode: 'rd-station', external_id: data.uuid }
+  return { success: true, mode: 'rd-station' }
 }
 
 function mockSync(contact: CRMContact): CRMResult {
@@ -64,6 +86,9 @@ function mockSync(contact: CRMContact): CRMResult {
     nome: contact.nome,
     empresa: contact.empresa,
     origem: contact.origem,
+    caminho_do_lead: contact.caminho_do_lead,
+    identificador: inferIdentificador(contact),
+    custom_fields: montarCustomFields(contact),
   })
   return { success: true, mode: 'mock', external_id: `mock-${Date.now()}` }
 }

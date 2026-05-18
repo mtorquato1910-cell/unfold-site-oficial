@@ -22,21 +22,38 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
+function digitsOnly(raw: string): string {
+  return raw.replace(/\D/g, '')
+}
+
+function isValidTelefone(raw: string): boolean {
+  const d = digitsOnly(raw)
+  return d.length === 10 || d.length === 11
+}
+
 export async function POST(req: Request) {
   try {
     // Aceita JSON ou form-urlencoded (o <form action="..."> do Footer manda form-urlencoded)
     const ct = req.headers.get('content-type') || ''
     let email = ''
+    let telefone: string | undefined
     if (ct.includes('application/json')) {
       const body = await req.json().catch(() => ({}))
       email = String(body.email || '').trim().toLowerCase()
+      const telRaw = String(body.telefone || '').trim()
+      if (telRaw) telefone = telRaw
     } else {
       const fd = await req.formData()
       email = String(fd.get('email') || '').trim().toLowerCase()
+      const telRaw = String(fd.get('telefone') || '').trim()
+      if (telRaw) telefone = telRaw
     }
 
     if (!email || !isValidEmail(email)) {
       return NextResponse.json({ ok: false, error: 'Email inválido' }, { status: 400 })
+    }
+    if (telefone && !isValidTelefone(telefone)) {
+      return NextResponse.json({ ok: false, error: 'WhatsApp inválido' }, { status: 400 })
     }
 
     const ip =
@@ -77,6 +94,7 @@ export async function POST(req: Request) {
         collection: 'newsletter-subscribers',
         data: {
           email,
+          telefone,
           status: 'subscribed',
           source: 'site-footer',
           rdSyncStatus: 'pending',
@@ -85,12 +103,24 @@ export async function POST(req: Request) {
       subscriberId = created.id
     }
 
+    if (telefone) {
+      try {
+        await payload.update({
+          collection: 'newsletter-subscribers',
+          id: subscriberId,
+          data: { telefone } as any,
+        })
+      } catch {}
+    }
+
     // Sync com RD Station (não bloqueia o sucesso pro usuário)
     try {
       const result = await syncContact({
         email,
         nome: email.split('@')[0],
+        telefone,
         origem: 'newsletter-site',
+        caminho_do_lead: 'Newsletter',
       })
       await payload.update({
         collection: 'newsletter-subscribers',

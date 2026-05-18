@@ -1,9 +1,9 @@
 /**
- * Adapter RD Station v2 — sincroniza o resultado completo do Diagnóstico.
+ * Adapter RD Station — sincroniza o resultado completo do Diagnóstico.
  *
- * Diferente do adapter genérico em `lib/crm/adapter.ts` (que sincroniza só dados básicos do lead
- * no afterChange de Leads), este adapter envia os 10 custom fields da spec §10.1 + tag de faixa
- * + estágio do funil "Diagnóstico Concluído".
+ * Migrado para a API legacy `/api/1.3/conversions` (Public Token), única acessível
+ * no plano Basic do cliente. Identificador `diagnostico_concluido` serve de gatilho
+ * para a automação que cria a negociação no CRM.
  *
  * Modo: lê `CRM_MODE`. Se `mock` ou vazio → loga e retorna sucesso fake.
  */
@@ -11,12 +11,22 @@
 import { createHmac, timingSafeEqual } from 'crypto'
 
 import type { CodigoCaminho, CodigoInsight, FaixaFit, FaixaMaturidade } from '@/lib/scoring/types'
+import { postRDLegacyConversion } from './rd-legacy-client'
+import {
+  mapFaixaFit,
+  mapFaixaMaturidade,
+  mapFaturamento,
+  mapSetor,
+  mapUrgencia,
+  normalizeTelefone,
+} from './rd-mappings'
 
 export interface RDDiagnosticoPayload {
   email: string
   nome: string
   empresa?: string
   cargo?: string
+  telefone?: string
 
   // Etapa 1
   setor?: string
@@ -57,57 +67,46 @@ function modoAtual(): 'rd-station' | 'mock' {
   return process.env.CRM_MODE === 'rd-station' ? 'rd-station' : 'mock'
 }
 
-/**
- * Mapping spec §10.1 → custom fields RD Station.
- * Identificadores `cf_*` precisam ser criados no painel do RD antes do go-live (Sprint 6).
- */
-function montarCustomFields(p: RDDiagnosticoPayload): Record<string, unknown> {
+function montarCustomFields(p: RDDiagnosticoPayload): Record<string, string | number | undefined> {
+  const setorLabel = mapSetor(p.setor)
+  const faturamentoLabel = mapFaturamento(p.faturamento_faixa)
+  const urgenciaLabel = mapUrgencia(p.urgencia)
+  const fitLabel = mapFaixaFit(p.faixa_fit)
+  const maturidadeLabel = mapFaixaMaturidade(p.faixa_consolidada)
+
   return {
-    cf_setor: p.setor,
-    cf_faturamento_faixa: p.faturamento_faixa,
-    cf_urgencia: p.urgencia,
-    cf_score_consolidado: p.score_consolidado,
-    cf_faixa_maturidade: p.faixa_consolidada,
-    cf_score_fit: p.score_fit,
-    cf_fit_faixa: p.faixa_fit,
-    cf_padroes_acionados: p.padroes_acionados.join(','),
-    cf_url_resultado: p.url_resultado,
+    cf_caminho_do_lead: 'Diagnóstico',
+    cf_setor_da_empresa: setorLabel,
+    cf_faturamento_mensal: faturamentoLabel,
+    cf_urgencia: urgenciaLabel,
+    cf_score_de_maturidade: p.score_consolidado,
+    cf_faixa_de_maturidade: maturidadeLabel,
+    cf_score_de_fit: p.score_fit,
+    cf_faixa_de_fit: fitLabel,
+    cf_padroes_acionados: p.padroes_acionados.join(', '),
+    cf_url_do_resultado_diagnostico: p.url_resultado,
     cf_diagnostico_concluido_em: p.concluido_em,
   }
 }
 
 async function syncReal(p: RDDiagnosticoPayload): Promise<RDSyncResult> {
-  const apiKey = process.env.RD_STATION_API_KEY
-  if (!apiKey) {
-    throw new Error('RD_STATION_API_KEY ausente — habilite CRM_MODE=mock ou configure a key')
-  }
-
-  const customFields = montarCustomFields(p)
   const tag = TAG_POR_FAIXA[p.faixa_fit]
 
-  const res = await fetch('https://api.rd.services/platform/contacts', {
-    method: 'PATCH',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      email: p.email,
-      name: p.nome,
-      job_title: p.cargo,
-      company: p.empresa,
-      tags: [tag, 'diagnostico_concluido'],
-      custom_fields: customFields,
-    }),
+  const r = await postRDLegacyConversion({
+    identificador: 'diagnostico_concluido',
+    email: p.email,
+    nome: p.nome,
+    empresa: p.empresa,
+    cargo: p.cargo,
+    celular: normalizeTelefone(p.telefone),
+    tags: [tag, 'diagnostico_concluido'],
+    customFields: montarCustomFields(p),
   })
 
-  if (!res.ok) {
-    const txt = await res.text().catch(() => '')
-    throw new Error(`RD Station ${res.status}: ${txt.slice(0, 200)}`)
+  if (!r.success) {
+    throw new Error(r.error || `RD legacy status ${r.status}`)
   }
-
-  const data = (await res.json().catch(() => ({}))) as { uuid?: string }
-  return { success: true, mode: 'rd-station', external_id: data.uuid }
+  return { success: true, mode: 'rd-station' }
 }
 
 function syncMock(p: RDDiagnosticoPayload): RDSyncResult {
@@ -121,10 +120,6 @@ function syncMock(p: RDDiagnosticoPayload): RDSyncResult {
   return { success: true, mode: 'mock', external_id: `mock-${Date.now()}` }
 }
 
-/**
- * Sincroniza o resultado do diagnóstico no RD Station.
- * Com retry exponencial implícito via consumer (não-bloqueante).
- */
 export async function syncDiagnosticoToRD(p: RDDiagnosticoPayload): Promise<RDSyncResult> {
   const mode = modoAtual()
   try {

@@ -108,7 +108,8 @@
       "Bash(openssl rand *)",
       "Bash(yes)",
       "Bash(grep -oE '\"\\(message|hint|detail|severity|code|where\\)\":[[:space:]]*\"[^\"]{0,200}\"' \"C:\\\\Users\\\\mathe\\\\.claude\\\\projects\\\\C--Users-mathe-OneDrive--rea-de-Trabalho-Site-unfold-unfold-site-oficial\\\\83d82edf-e53c-4e0c-8aae-2d8522e85307\\\\tool-results\\\\bwpkkdg27.txt\")",
-      "Bash(npx tsx *)"
+      "Bash(npx tsx *)",
+      "Bash(awk -F'=' '{n=length\\($2\\); gsub\\(/[^0-9]/, \"\", n\\); print $1\"=PRESENTE\\(\"length\\(substr\\($0, index\\($0,\"=\"\\)+1\\)\\)\" chars\\)\"}')"
     ]
   }
 }
