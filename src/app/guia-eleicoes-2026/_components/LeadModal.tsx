@@ -23,7 +23,9 @@ export function LeadModal({ open, onOpenChange, message, onUnlock }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         // Identidade do guia (RF-11): navy, cantos suaves, largura 440px / 92% mobile.
-        className="w-[92vw] max-w-[440px] gap-5 rounded-[20px] border-0 p-7 sm:p-8 motion-reduce:!animate-none motion-reduce:!transition-none"
+        // Altura limitada à viewport (dvh acompanha a barra do navegador mobile) com
+        // scroll interno — em telas baixas/celular o formulário inteiro fica acessível.
+        className="w-[92vw] max-w-[440px] max-h-[90dvh] overflow-y-auto overscroll-contain gap-4 rounded-[20px] border-0 p-5 sm:gap-5 sm:p-8 motion-reduce:!animate-none motion-reduce:!transition-none"
         style={{ background: '#001E29', color: '#E7E7E7' }}
         // RF-13: só X ou ESC fecham — clicar fora não fecha (frustração controlada).
         onPointerDownOutside={(e) => e.preventDefault()}
