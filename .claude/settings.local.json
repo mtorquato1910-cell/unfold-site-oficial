@@ -111,7 +111,15 @@
       "Bash(npx tsx *)",
       "Bash(awk -F'=' '{n=length\\($2\\); gsub\\(/[^0-9]/, \"\", n\\); print $1\"=PRESENTE\\(\"length\\(substr\\($0, index\\($0,\"=\"\\)+1\\)\\)\" chars\\)\"}')",
       "Bash(find . -name \"memory\" -type d -exec ls -la {} \\\\;)",
-      "Bash(grep -E \"\\\\.md$\")"
+      "Bash(grep -E \"\\\\.md$\")",
+      "Bash(node -e \"console.log\\('postcss', require\\('postcss/package.json'\\).version\\)\")",
+      "Bash(node -e \"console.log\\('tailwind', require\\('tailwindcss/package.json'\\).version\\)\")",
+      "Bash(node scripts/extract-guia-eleicoes.mjs)",
+      "Bash(echo \"dev server iniciando em background \\(PID $!\\)...\")",
+      "Bash(node -e \"const p={...require\\('./package.json'\\).dependencies,...require\\('./package.json'\\).devDependencies}; console.log\\('vitest:',p.vitest\\); console.log\\('vite-tsconfig-paths:',p['vite-tsconfig-paths']||'NÃO'\\); console.log\\('@vitejs:',Object.keys\\(p\\).filter\\(k=>k.includes\\('vite'\\)\\)\\)\")",
+      "Bash(node -e \"try{require.resolve\\('jsdom'\\);console.log\\('jsdom: OK'\\)}catch{console.log\\('jsdom: AUSENTE'\\)}\")",
+      "Bash(node -e \"try{require.resolve\\('happy-dom'\\);console.log\\('happy-dom: OK'\\)}catch{console.log\\('happy-dom: AUSENTE'\\)}\")",
+      "Bash(node -e \"console.log\\('crypto.subtle global:', !!globalThis.crypto?.subtle\\)\")"
     ]
   }
 }

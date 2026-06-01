@@ -18,6 +18,12 @@ export const Leads: CollectionConfig = {
     afterChange: [
       async ({ doc, operation }) => {
         if (operation !== 'create') return doc
+        // Origens que já sincronizam com o RD pelo próprio endpoint (sync dedicada).
+        // Sem esta guarda, o hook genérico dispararia uma 2ª conversão `lead_capturado`
+        // junto da conversão dedicada → dupla conversão no RD. 'calculadora' incluída
+        // porque tinha o mesmo bug latente.
+        const ORIGENS_COM_SYNC_PROPRIA = ['calculadora', 'guia-eleicoes']
+        if (ORIGENS_COM_SYNC_PROPRIA.includes(doc.origem)) return doc
         const caminhoMap: Record<string, 'Diagnóstico' | 'Calculadora' | 'Newsletter' | undefined> = {
           diagnostico: 'Diagnóstico',
           calculadora: 'Calculadora',
@@ -132,6 +138,7 @@ export const Leads: CollectionConfig = {
       options: [
         { label: 'Diagnóstico', value: 'diagnostico' },
         { label: 'Calculadora', value: 'calculadora' },
+        { label: 'Guia Eleições 2026', value: 'guia-eleicoes' },
         { label: 'Contato direto', value: 'contato' },
         { label: 'Outro', value: 'outro' },
       ],

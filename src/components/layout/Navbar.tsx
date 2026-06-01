@@ -39,6 +39,10 @@ function NavLogo() {
   )
 }
 
+// Em produção aponta para o subdomínio público; em dev/preview (sem a env),
+// usa a rota interna para o link continuar funcionando.
+const GUIA_HREF = process.env.NEXT_PUBLIC_GUIA_URL || '/guia-eleicoes-2026'
+
 const NAV = [
   { label: 'Método', href: '/metodo' },
   { label: 'Atuação', href: '/atuacao' },
@@ -46,6 +50,7 @@ const NAV = [
   { label: 'Ferramentas', href: '/ferramentas' },
   { label: 'Sobre', href: '/sobre' },
   { label: 'Blog', href: '/blog' },
+  { label: 'Guia Eleições', href: GUIA_HREF },
 ]
 
 export function Navbar() {

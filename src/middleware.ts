@@ -3,6 +3,39 @@ import { NextRequest, NextResponse } from 'next/server'
 const COOKIE_NAME = 'sb-access-token'
 const PUBLIC_ADMIN_PATHS = ['/admin/login', '/painel/login']
 
+// ── Hotsite "Guia Eleições" — subdomínio (S6.1) ──────────────────────────────
+// O conteúdo vive na rota interna /guia-eleicoes-2026; o subdomínio público
+// `eleicoes.unfoldgrowth.com.br/featwork` é mapeado aqui. A guarda é por HOST no
+// corpo (o matcher do Next filtra path, não host — restringir por host no matcher
+// é impossível), por isso o apex passa intacto.
+const GUIA_HOST = process.env.GUIA_SUBDOMAIN_HOST || 'eleicoes.unfoldgrowth.com.br'
+const PROD_APEX = 'unfoldgrowth.com.br'
+const GUIA_INTERNAL = '/guia-eleicoes-2026'
+
+function handleGuiaSubdomain(request: NextRequest): NextResponse | null {
+  const host = request.headers.get('host') || ''
+  const { pathname } = request.nextUrl
+  const isGuiaSubdomain = host === GUIA_HOST
+
+  if (isGuiaSubdomain) {
+    if (pathname === '/') {
+      return NextResponse.redirect(new URL('/featwork', request.url), 308)
+    }
+    if (pathname === '/featwork' || pathname.startsWith('/featwork/')) {
+      const rest = pathname.replace(/^\/featwork/, '')
+      return NextResponse.rewrite(new URL(`${GUIA_INTERNAL}${rest}`, request.url))
+    }
+  }
+
+  // Canonical: apex de produção /guia-eleicoes-2026 → subdomínio (evita duplicado).
+  // Previews (*.vercel.app) NÃO redirecionam — a rota interna fica acessível para teste.
+  if (!isGuiaSubdomain && pathname === GUIA_INTERNAL && host.endsWith(PROD_APEX)) {
+    return NextResponse.redirect(`https://${GUIA_HOST}/featwork`, 301)
+  }
+
+  return null
+}
+
 // Fix pré-prod (auditoria @architect / ADR-3): rate limit nas rotas públicas
 // de resultado por token (Diagnóstico e Calculadora). 10 hits/min/IP.
 // Aceita-se débito de in-memory (não sobrevive a múltiplas instâncias) — mesma
@@ -39,6 +72,10 @@ function noindexHeaders(res: NextResponse) {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  // ── Subdomínio do Guia Eleições (rewrite/redirect por host) ─────────────
+  const guiaResponse = handleGuiaSubdomain(request)
+  if (guiaResponse) return guiaResponse
 
   // ── Rotas públicas de resultado por token (Diagnóstico + Calculadora) ──
   const isSharePath =
@@ -84,5 +121,12 @@ export const config = {
     '/painel/:path*',
     '/diagnostico/r/:path*',
     '/ferramentas/calculadora-trafego/r/:path*',
+    // Subdomínio do Guia (S6.1): raiz (redirect no subdomínio), /featwork (rewrite)
+    // e a rota interna (canonical apex→subdomínio). A guarda de host garante que o
+    // apex passe intacto. NÃO incluir /api/* (preserva same-origin do endpoint).
+    '/',
+    '/featwork',
+    '/featwork/:path*',
+    '/guia-eleicoes-2026',
   ],
 }

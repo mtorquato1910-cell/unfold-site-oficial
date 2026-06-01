@@ -3,6 +3,8 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://unfoldgrowth.com.br'
+// Hotsite do Guia Eleições vive no subdomínio — entra no sitemap com a URL pública (item 13).
+const GUIA_URL = process.env.NEXT_PUBLIC_GUIA_URL || 'https://eleicoes.unfoldgrowth.com.br/featwork'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -14,6 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
     { url: `${BASE_URL}/diagnostico`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
     { url: `${BASE_URL}/ferramentas/calculadora-trafego`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
+    { url: GUIA_URL, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
   ]
 
   // Cases dinâmicos

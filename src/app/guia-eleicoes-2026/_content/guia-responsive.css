@@ -1,0 +1,46 @@
+/* Responsividade do guia (RF-03) — escrito à mão (o mockup não tinha media queries).
+   As páginas têm largura fixa de 210mm (~793.7px). Em telas menores, escalamos
+   cada página com transform e compensamos o espaço vertical via margin negativa,
+   sem quebrar o fluxo de leitura vertical. O fator --guia-scale é definido por JS
+   (GuiaReader) conforme a largura disponível. */
+
+.guia-doc {
+  min-height: 100vh;
+  overflow-x: hidden; /* o box de 210mm transborda à direita após o scale */
+}
+
+.guia-doc .page {
+  transform: scale(var(--guia-scale, 1));
+  /* origin top-left: o conteúdo visual começa no canto do box. A centralização
+     horizontal é feita por margin-left calculada (JS), porque `margin: auto` não
+     centraliza um elemento (210mm) mais largo que o viewport no mobile. */
+  transform-origin: top left;
+  margin-left: var(--guia-offset-x, auto);
+  margin-right: auto;
+  /* 297mm = altura da página. Ao escalar por s, sobra (297mm * (1 - s)) de
+     espaço fantasma abaixo (transform não afeta layout) — compensamos aqui. */
+  margin-bottom: calc(2rem - 297mm * (1 - var(--guia-scale, 1)));
+}
+
+/* Lazy rendering (RNF-05): as primeiras páginas renderizam de imediato; da 8ª em
+   diante, o browser pula a renderização até o scroll se aproximar. contain-intrinsic-size
+   reserva o tamanho da página A4 para o scroll não saltar (CLS ≤ 0,1). */
+.guia-doc .page:nth-child(n + 8) {
+  content-visibility: auto;
+  contain-intrinsic-size: 210mm 297mm;
+}
+
+/* Em telas muito estreitas, reduz o respiro lateral do container */
+@media (max-width: 420px) {
+  .guia-doc {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+/* Acessibilidade: respeita preferências de movimento reduzido nas transições do gate */
+@media (prefers-reduced-motion: reduce) {
+  .guia-doc .page {
+    transition: none !important;
+  }
+}

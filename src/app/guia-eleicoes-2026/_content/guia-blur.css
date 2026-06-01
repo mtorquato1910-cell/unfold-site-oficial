@@ -1,0 +1,64 @@
+/* Gate visual do hotsite (RF-06..09) — escopado sob .guia-doc.
+   O blur só existe enquanto o container tem a classe `.guia-locked` (controlada
+   pelo GateProvider). Ao desbloquear, a classe sai e o blur some com transição. */
+
+.guia-doc .page {
+  transition: filter 600ms ease; /* RF-09 — desbloqueio suave */
+}
+
+/* Blur gradual (RF-07): capa (1) e folha de rosto (2) sem blur; carta (3) leve;
+   da página 4 em diante, blur pleno (RF-06). Só quando bloqueado. */
+.guia-doc.guia-locked .page:nth-child(3) {
+  filter: blur(2px);
+}
+.guia-doc.guia-locked .page:nth-child(n + 4) {
+  filter: blur(8px);
+}
+
+/* Overlay com degradê escurecido sobre o conteúdo bloqueado (RF-08).
+   Fixo, não captura cliques (o conteúdo borrado ainda rola por baixo do modal). */
+.guia-doc.guia-locked::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(42, 42, 42, 0.12) 0%,
+    rgba(42, 42, 42, 0.45) 55%,
+    rgba(42, 42, 42, 0.7) 100%
+  );
+  transition: opacity 600ms ease;
+}
+
+/* Acessibilidade (item 10): movimento reduzido suprime a animação do blur/overlay,
+   mas a mudança de estado (bloqueado→liberado) continua acontecendo. */
+@media (prefers-reduced-motion: reduce) {
+  .guia-doc .page,
+  .guia-doc.guia-locked::after {
+    transition: none;
+  }
+}
+
+/* Destaque temporário dos CTAs logo após o cadastro (RF-42). */
+@keyframes guia-cta-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(109, 249, 198, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(109, 249, 198, 0);
+  }
+}
+.guia-cta-highlight {
+  animation: guia-cta-pulse 1s ease-in-out 3;
+}
+/* Movimento reduzido: troca a pulsação por destaque estático (item 10). */
+@media (prefers-reduced-motion: reduce) {
+  .guia-cta-highlight {
+    animation: none;
+    outline: 2px solid #6df9c6;
+    outline-offset: 2px;
+  }
+}

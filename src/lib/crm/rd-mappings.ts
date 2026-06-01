@@ -108,6 +108,29 @@ export function mapModelo(slug: Modelo | undefined | null): string | undefined {
   return slug === 'b2b' ? 'B2B' : 'B2C'
 }
 
+/**
+ * Perfil eleitoral do lead do Guia (cf_perfil_eleitoral_2026 — RF-15).
+ * Os labels devem bater 100% com o campo de "escolha única" cadastrado no painel RD
+ * (a API legacy descarta valores divergentes). Ver tarefa operacional S3.7.
+ */
+export function mapPerfilEleitoral(
+  slug: 'candidato' | 'equipe-campanha' | 'setor' | 'outro' | undefined | null,
+): string | undefined {
+  if (!slug) return undefined
+  switch (slug) {
+    case 'candidato':
+      return 'Sim, sou candidato ou pré-candidato'
+    case 'equipe-campanha':
+      return 'Sou parte de equipe de campanha'
+    case 'setor':
+      return 'Não, mas atuo no setor'
+    case 'outro':
+      return 'Outro'
+    default:
+      return undefined
+  }
+}
+
 export function mapSimNao(value: boolean | undefined | null): string | undefined {
   if (value === undefined || value === null) return undefined
   return value ? 'Sim' : 'Não'
