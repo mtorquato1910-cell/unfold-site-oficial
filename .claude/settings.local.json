@@ -122,7 +122,8 @@
       "Bash(node -e \"console.log\\('crypto.subtle global:', !!globalThis.crypto?.subtle\\)\")",
       "Bash(git config *)",
       "Bash(git fetch *)",
-      "Bash(git ls-tree *)"
+      "Bash(git ls-tree *)",
+      "Bash(xargs -I{} echo \"ocorrências no remoto: {}\")"
     ]
   }
 }
