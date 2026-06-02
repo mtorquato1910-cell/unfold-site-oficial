@@ -1,7 +1,9 @@
 import { GateProvider } from './_components/GateProvider'
-import { SectionRenderer } from './_components/redesign/SectionRenderer'
-import { GUIA_SECTIONS } from './_content/guia-data'
+import { GuiaProseRenderer } from './_components/redesign/GuiaProseRenderer'
+import { StatEnhancer } from './_components/redesign/StatEnhancer'
+import { GUIA_PROSE } from './_content/guia-prose-content'
 import './_styles/redesign-dark.css'
+import './_styles/prose-guia-dark.css'
 
 /**
  * Hotsite "Guia de Anúncios Digitais para as Eleições de 2026" — Unfold × Feat.Work.
@@ -41,7 +43,17 @@ export default function GuiaEleicoes2026Page() {
           (usuário que já preencheu), remove o bloqueio na hora — sem flash e sem
           reabrir o formulário. Caso contrário, o GateProvider assume o gate. */}
       <main id="guia-root" className="guia-redesign guia-locked">
-        <SectionRenderer sections={GUIA_SECTIONS} />
+        <section className="r-section r-intro" data-surface="base">
+          <div className="r-container">
+            <p className="r-overline">Guia Executivo · 2026 · Unfold × Feat.Work</p>
+            <h1 className="r-title">Guia de anúncios digitais para as Eleições de 2026</h1>
+            <p className="r-subtitle">
+              Regras, plataformas, riscos e oportunidades da operação política online.
+            </p>
+          </div>
+        </section>
+        <GuiaProseRenderer sections={GUIA_PROSE} />
+        <StatEnhancer />
       </main>
       <script
         dangerouslySetInnerHTML={{
