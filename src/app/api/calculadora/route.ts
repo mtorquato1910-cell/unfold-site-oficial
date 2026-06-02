@@ -23,6 +23,7 @@ import { detectarAdulteracao } from '@/lib/calculadora/anti-tamper'
 import { calcLeadScore } from '@/lib/calculadora/score'
 import { publicResultUrl } from '@/lib/calculadora-server/public-url'
 import { syncCalculadoraToRD } from '@/lib/crm/rd-calculadora'
+import { enforceContato } from '@/lib/validation/enforce-contato'
 import { trackCalcEventServer } from '@/lib/analytics/calculadora-events-server'
 import type {
   CalculadoraInputs,
@@ -79,6 +80,21 @@ export async function POST(req: NextRequest) {
     )
   }
   const d = parsed.data
+
+  // ── Validação reforçada de contato (e-mail MX/DNS + WhatsApp Evolution) ───
+  // Telefone opcional; fail-open p/ não barrar conversão. Normaliza o 9º dígito.
+  const contato = await enforceContato({
+    email: d.etapa1.email,
+    telefone: d.etapa1.telefone,
+    requirePhone: false,
+  })
+  if (!contato.ok) {
+    return NextResponse.json(
+      { ok: false, error: 'contato_invalido', field: contato.field, message: contato.error },
+      { status: 400 },
+    )
+  }
+  const telefoneNorm = contato.telefone
 
   // ── Server-side recompute (ADR-7) ────────────────────────────────────────
   const inputs: CalculadoraInputs = d.inputs
@@ -143,7 +159,7 @@ export async function POST(req: NextRequest) {
         data: {
           nome: d.etapa1.nome,
           empresa: d.etapa1.empresa,
-          ...(d.etapa1.telefone ? { telefone: d.etapa1.telefone } : {}),
+          ...(telefoneNorm ? { telefone: telefoneNorm } : {}),
         } as never,
       })
     } else {
@@ -153,7 +169,7 @@ export async function POST(req: NextRequest) {
           nome: d.etapa1.nome,
           email: emailLower,
           empresa: d.etapa1.empresa,
-          telefone: d.etapa1.telefone,
+          telefone: telefoneNorm,
           origem: 'calculadora',
           rd_sync_status: 'pending',
           ip_address: ip,
@@ -244,7 +260,7 @@ export async function POST(req: NextRequest) {
     email: emailLower,
     nome: d.etapa1.nome,
     empresa: d.etapa1.empresa,
-    telefone: d.etapa1.telefone,
+    telefone: telefoneNorm,
     setor: d.etapa1.setor,
     crm_funcional: inputs.crm_funcional,
     investimento_mensal: inputs.investimento_mensal,

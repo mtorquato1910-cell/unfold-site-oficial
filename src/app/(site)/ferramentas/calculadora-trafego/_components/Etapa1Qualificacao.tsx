@@ -18,6 +18,7 @@ import { SETORES } from '@/lib/calculadora/benchmarks'
 import type { Etapa1 } from '@/lib/calculadora/types'
 import { trackCalcEvent } from '@/lib/analytics/calculadora-events'
 import { formatPhoneBR } from '@/lib/format/phone-mask'
+import { useContatoCheck } from '@/lib/validation/use-contato-check'
 
 interface Props {
   defaultValues: Etapa1
@@ -36,12 +37,22 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
     mode: 'onBlur',
   })
 
+  const { emailError, phoneError, checkingEmail, checkingPhone, checkEmail, checkPhone } =
+    useContatoCheck()
+  const emailReg = register('email')
+
   // Evento "calculadora_iniciada" — uma vez por sessão.
   useEffect(() => {
     trackCalcEvent({ event_name: 'calculadora_iniciada' })
   }, [])
 
-  function submit(data: Etapa1) {
+  async function submit(data: Etapa1) {
+    // Valida e-mail (MX) e WhatsApp (Evolution) antes de liberar a calculadora.
+    const [emailOk, phoneOk] = await Promise.all([
+      checkEmail(data.email),
+      checkPhone(data.telefone ?? ''),
+    ])
+    if (!emailOk || !phoneOk) return
     trackCalcEvent({
       event_name: 'etapa_1_concluida',
       lead_email: data.email.toLowerCase().trim(),
@@ -76,14 +87,18 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
         />
       </Field>
 
-      <Field id="email" label="E-mail corporativo" error={errors.email?.message}>
+      <Field id="email" label="E-mail corporativo" error={errors.email?.message || emailError || undefined}>
         <input
           id="email"
           type="email"
           autoComplete="email"
           placeholder="marina@empresa.com.br"
           className="input-field"
-          {...register('email')}
+          {...emailReg}
+          onBlur={(e) => {
+            emailReg.onBlur(e)
+            void checkEmail(e.target.value)
+          }}
         />
       </Field>
 
@@ -102,7 +117,7 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
         id="telefone"
         label="WhatsApp"
         optional
-        error={errors.telefone?.message}
+        error={errors.telefone?.message || phoneError || undefined}
       >
         <input
           id="telefone"
@@ -113,6 +128,7 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
           className="input-field"
           {...register('telefone')}
           onChange={(e) => setValue('telefone', formatPhoneBR(e.target.value), { shouldValidate: false })}
+          onBlur={(e) => void checkPhone(e.target.value)}
         />
       </Field>
 
@@ -126,7 +142,11 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
         </select>
       </Field>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full gap-2 h-11">
+      <Button
+        type="submit"
+        disabled={isSubmitting || checkingEmail || checkingPhone}
+        className="w-full gap-2 h-11"
+      >
         Acessar a Calculadora <ArrowRight className="h-4 w-4" />
       </Button>
 

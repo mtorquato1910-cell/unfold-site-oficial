@@ -10,6 +10,7 @@ import { guiaLeadSchema, type GuiaLeadInput } from '../_lib/validation'
 import { PERFIL_OPTIONS, type PerfilEleitoral } from '../_lib/perfil'
 import { submitGuiaLead } from '../_lib/submit-lead'
 import { POLITICA_URL } from '../_lib/links'
+import { useContatoCheck } from '@/lib/validation/use-contato-check'
 
 const ALERT = '#E24B4A'
 const MINT = '#6DF9C6'
@@ -25,6 +26,8 @@ interface Props {
 export function LeadForm({ onUnlock }: Props) {
   const [turnstileToken, setTurnstileToken] = useState('')
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const { emailError, phoneError, checkingEmail, checkingPhone, checkEmail, checkPhone } =
+    useContatoCheck()
 
   const {
     register,
@@ -37,8 +40,16 @@ export function LeadForm({ onUnlock }: Props) {
     defaultValues: { nome: '', email: '', telefone: '', perfil: undefined },
   })
 
+  const emailReg = register('email')
+
   async function onSubmit(values: GuiaLeadInput) {
     setSubmitError(null)
+    // Revalida e-mail (MX) e WhatsApp (Evolution) no envio — defesa client-side.
+    const [emailOk, phoneOk] = await Promise.all([
+      checkEmail(values.email),
+      checkPhone(values.telefone, { requirePhone: true }),
+    ])
+    if (!emailOk || !phoneOk) return
     try {
       const result = await submitGuiaLead({
         nome: values.nome,
@@ -67,7 +78,14 @@ export function LeadForm({ onUnlock }: Props) {
   }
 
   // Em dev sem site key, o TurnstileWidget já chama onVerify('mock-...') no mount.
-  const canSubmit = isValid && !!turnstileToken && !isSubmitting
+  const canSubmit =
+    isValid &&
+    !!turnstileToken &&
+    !isSubmitting &&
+    !emailError &&
+    !phoneError &&
+    !checkingEmail &&
+    !checkingPhone
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4" style={{ color: CREAM }}>
@@ -105,14 +123,21 @@ export function LeadForm({ onUnlock }: Props) {
           autoComplete="email"
           placeholder="voce@exemplo.com"
           className={inputBase}
-          style={{ borderColor: errors.email ? ALERT : 'rgba(231,231,231,0.2)', color: CREAM }}
-          aria-invalid={!!errors.email}
-          aria-describedby={errors.email ? 'guia-email-err' : undefined}
-          {...register('email')}
+          style={{
+            borderColor: errors.email || emailError ? ALERT : 'rgba(231,231,231,0.2)',
+            color: CREAM,
+          }}
+          aria-invalid={!!errors.email || !!emailError}
+          aria-describedby={errors.email || emailError ? 'guia-email-err' : undefined}
+          {...emailReg}
+          onBlur={(e) => {
+            emailReg.onBlur(e)
+            void checkEmail(e.target.value)
+          }}
         />
-        {errors.email && (
+        {(errors.email || emailError) && (
           <p id="guia-email-err" className="mt-1 text-xs" style={{ color: ALERT }}>
-            {errors.email.message}
+            {errors.email?.message || emailError}
           </p>
         )}
       </div>
@@ -133,18 +158,24 @@ export function LeadForm({ onUnlock }: Props) {
               autoComplete="tel"
               placeholder="(00) 00000-0000"
               className={inputBase}
-              style={{ borderColor: errors.telefone ? ALERT : 'rgba(231,231,231,0.2)', color: CREAM }}
-              aria-invalid={!!errors.telefone}
-              aria-describedby={errors.telefone ? 'guia-telefone-err' : undefined}
+              style={{
+                borderColor: errors.telefone || phoneError ? ALERT : 'rgba(231,231,231,0.2)',
+                color: CREAM,
+              }}
+              aria-invalid={!!errors.telefone || !!phoneError}
+              aria-describedby={errors.telefone || phoneError ? 'guia-telefone-err' : undefined}
               value={formatPhoneBR(field.value || '')}
               onChange={(e) => field.onChange(extractDigits(e.target.value))}
-              onBlur={field.onBlur}
+              onBlur={(e) => {
+                field.onBlur()
+                void checkPhone(e.target.value, { requirePhone: true })
+              }}
             />
           )}
         />
-        {errors.telefone && (
+        {(errors.telefone || phoneError) && (
           <p id="guia-telefone-err" className="mt-1 text-xs" style={{ color: ALERT }}>
-            {errors.telefone.message}
+            {errors.telefone?.message || phoneError}
           </p>
         )}
       </div>

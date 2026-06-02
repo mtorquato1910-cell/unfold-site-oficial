@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { formatPhoneBR, isValidPhoneBR } from '@/lib/format/phone-mask'
+import { formatPhoneBR } from '@/lib/format/phone-mask'
+import { useContatoCheck } from '@/lib/validation/use-contato-check'
 
 type State = 'idle' | 'loading' | 'success' | 'error'
 
@@ -13,13 +14,16 @@ export default function NewsletterForm() {
   const [telefone, setTelefone] = useState('')
   const [state, setState] = useState<State>('idle')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const { emailError, phoneError, checkingEmail, checkingPhone, checkEmail, checkPhone } =
+    useContatoCheck()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!email) return
-    if (telefone && !isValidPhoneBR(telefone)) {
-      setState('error')
-      setErrorMsg('WhatsApp inválido — use 10 ou 11 dígitos (ou deixe em branco).')
+    // Valida e-mail (MX) e WhatsApp (Evolution) antes de enviar.
+    const [emailOk, phoneOk] = await Promise.all([checkEmail(email), checkPhone(telefone)])
+    if (!emailOk || !phoneOk) {
+      setState('idle')
       return
     }
     setState('loading')
@@ -66,12 +70,19 @@ export default function NewsletterForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onBlur={(e) => void checkEmail(e.target.value)}
             disabled={state === 'loading'}
             placeholder="seu@empresa.com.br"
             className="bg-card border-border h-12"
             aria-label="E-mail corporativo"
+            aria-invalid={!!emailError}
           />
-          <Button type="submit" size="lg" className="h-12 group" disabled={state === 'loading' || !email}>
+          <Button
+            type="submit"
+            size="lg"
+            className="h-12 group"
+            disabled={state === 'loading' || !email || checkingEmail || checkingPhone}
+          >
             {state === 'loading' ? 'Enviando...' : 'Assinar'}
             {state !== 'loading' && (
               <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -85,16 +96,18 @@ export default function NewsletterForm() {
           autoComplete="tel-national"
           value={telefone}
           onChange={(e) => setTelefone(formatPhoneBR(e.target.value))}
+          onBlur={(e) => void checkPhone(e.target.value)}
           disabled={state === 'loading'}
           placeholder="WhatsApp (opcional) — (11) 99999-9999"
           className="bg-card border-border h-11 text-sm"
           aria-label="WhatsApp (opcional)"
+          aria-invalid={!!phoneError}
         />
       </form>
-      {state === 'error' && errorMsg && (
+      {(emailError || phoneError || (state === 'error' && errorMsg)) && (
         <p className="mt-2 flex items-center gap-1.5 text-xs text-destructive">
           <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-          {errorMsg}
+          {emailError || phoneError || errorMsg}
         </p>
       )}
       <p className="mt-2 text-[11px] text-foreground/40">

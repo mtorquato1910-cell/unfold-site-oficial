@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import TurnstileWidget from '@/components/diagnostico/TurnstileWidget'
 import { formatPhoneBR } from '@/lib/format/phone-mask'
+import { useContatoCheck } from '@/lib/validation/use-contato-check'
 
 // Schema dos campos da spec §3.1 + WhatsApp opcional (CRM enrichment).
 const schema = z.object({
@@ -82,6 +83,8 @@ export default function DiagnosticoEtapa1Form() {
   const [serverError, setServerError] = useState<string | null>(null)
   const [turnstileToken, setTurnstileToken] = useState<string>('')
   const hasTurnstile = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY)
+  const { emailError, phoneError, checkingEmail, checkingPhone, checkEmail, checkPhone } =
+    useContatoCheck()
 
   const onTurnstileToken = useCallback((token: string) => setTurnstileToken(token), [])
 
@@ -92,12 +95,20 @@ export default function DiagnosticoEtapa1Form() {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({ resolver: zodResolver(schema) })
 
+  const emailReg = register('email')
+
   async function onSubmit(data: FormData) {
     setServerError(null)
     if (hasTurnstile && !turnstileToken) {
       setServerError('Aguarde a verificação anti-spam carregar.')
       return
     }
+    // Valida e-mail (MX) e WhatsApp (Evolution) antes de prosseguir.
+    const [emailOk, phoneOk] = await Promise.all([
+      checkEmail(data.email),
+      checkPhone(data.telefone ?? ''),
+    ])
+    if (!emailOk || !phoneOk) return
     const requestId =
       typeof crypto !== 'undefined' && 'randomUUID' in crypto
         ? crypto.randomUUID()
@@ -153,9 +164,13 @@ export default function DiagnosticoEtapa1Form() {
               className="input-field"
             />
           </Field>
-          <Field label="E-mail corporativo" error={errors.email?.message}>
+          <Field label="E-mail corporativo" error={errors.email?.message || emailError || undefined}>
             <input
-              {...register('email')}
+              {...emailReg}
+              onBlur={(e) => {
+                emailReg.onBlur(e)
+                void checkEmail(e.target.value)
+              }}
               type="email"
               placeholder="joao@empresa.com.br"
               className="input-field"
@@ -171,7 +186,7 @@ export default function DiagnosticoEtapa1Form() {
               className="input-field"
             />
           </Field>
-          <Field label="WhatsApp" optional error={errors.telefone?.message}>
+          <Field label="WhatsApp" optional error={errors.telefone?.message || phoneError || undefined}>
             <input
               {...register('telefone')}
               type="tel"
@@ -182,6 +197,7 @@ export default function DiagnosticoEtapa1Form() {
               onChange={(e) =>
                 setValue('telefone', formatPhoneBR(e.target.value), { shouldValidate: false })
               }
+              onBlur={(e) => void checkPhone(e.target.value)}
             />
           </Field>
         </div>
@@ -255,7 +271,7 @@ export default function DiagnosticoEtapa1Form() {
 
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || checkingEmail || checkingPhone}
           size="lg"
           className="w-full h-12 text-base group"
         >

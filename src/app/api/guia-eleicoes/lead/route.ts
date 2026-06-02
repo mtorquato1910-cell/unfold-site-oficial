@@ -20,6 +20,7 @@ import { rateLimit, resolveClientIP } from '@/lib/rate-limit'
 import { verifyTurnstile } from '@/lib/security/turnstile'
 import { sendEmail } from '@/lib/email/adapter'
 import { syncGuiaToRD } from '@/lib/crm/rd-guia-eleicoes'
+import { enforceContato } from '@/lib/validation/enforce-contato'
 import { guiaLeadSchema } from '@/app/guia-eleicoes-2026/_lib/validation'
 import { anonymizeIp } from '@/app/guia-eleicoes-2026/_lib/anonymize-ip'
 import type { PerfilEleitoral } from '@/app/guia-eleicoes-2026/_lib/perfil'
@@ -125,6 +126,18 @@ export async function POST(req: NextRequest) {
   const origin = body.origin || {}
   const dataCadastro = new Date().toISOString()
 
+  // 4.5 Validação reforçada: e-mail (MX/DNS) + WhatsApp (Evolution) + 9º dígito.
+  // Telefone obrigatório no hotsite (requirePhone). Fail-open p/ não barrar conversão.
+  const contato = await enforceContato({ email, telefone: data.telefone, requirePhone: true })
+  if (!contato.ok) {
+    log('contato_invalido', { field: contato.field })
+    return NextResponse.json(
+      { ok: false, error: 'contato_invalido', field: contato.field, message: contato.error },
+      { status: 400 },
+    )
+  }
+  const telefoneNorm = contato.telefone || data.telefone
+
   // 5. Persiste o lead (persistir-primeiro — RF-25)
   let leadId: string | null = null
   try {
@@ -141,7 +154,7 @@ export async function POST(req: NextRequest) {
         id: existing.docs[0].id,
         data: {
           nome: data.nome,
-          ...(data.telefone ? { telefone: data.telefone } : {}),
+          ...(telefoneNorm ? { telefone: telefoneNorm } : {}),
         } as never,
       })
     } else {
@@ -151,7 +164,7 @@ export async function POST(req: NextRequest) {
           nome: data.nome,
           email,
           empresa: '(não informado)', // DEC-1/GAP-A1 — collection exige empresa
-          telefone: data.telefone,
+          telefone: telefoneNorm,
           origem: 'guia-eleicoes',
           rd_sync_status: 'pending',
           ip_address: ipAnon, // IP anonimizado /24 (cuidado LGPD do dado político)
@@ -171,7 +184,7 @@ export async function POST(req: NextRequest) {
   void syncGuiaToRD({
     nome: data.nome,
     email,
-    telefone: data.telefone,
+    telefone: telefoneNorm,
     perfil,
     utm_source: origin.utm_source,
     utm_medium: origin.utm_medium,

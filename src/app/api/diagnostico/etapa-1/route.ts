@@ -9,6 +9,7 @@ import { missingProductionEnv } from '@/lib/env'
 import { logger } from '@/lib/observability/logger'
 import { rateLimit, resolveClientIP } from '@/lib/rate-limit'
 import { verifyTurnstile } from '@/lib/security/turnstile'
+import { enforceContato } from '@/lib/validation/enforce-contato'
 
 // Sprint hotfix 2026-05-15 (Bug 1): force-dynamic + no-store evita que
 // Vercel CDN cacheie respostas 5xx ou que Next 15 estatifique este POST.
@@ -122,8 +123,24 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { nome, email, empresa, telefone, cargo, setor, faturamento_faixa, urgencia } = parsed.data
+    const { nome, email, empresa, cargo, setor, faturamento_faixa, urgencia } = parsed.data
     const data_inicio = parsed.data.data_inicio || new Date().toISOString()
+
+    // Validação reforçada: e-mail (MX/DNS) + WhatsApp (Evolution) + 9º dígito.
+    // Telefone opcional aqui; fail-open p/ não barrar conversão.
+    const contato = await enforceContato({
+      email,
+      telefone: parsed.data.telefone,
+      requirePhone: false,
+    })
+    if (!contato.ok) {
+      return jsonResponse(
+        traceId,
+        { error: contato.error || 'Dados de contato inválidos', code: 'CONTATO_INVALID', field: contato.field },
+        400,
+      )
+    }
+    const telefone = contato.telefone
 
     let payloadInstance: Awaited<ReturnType<typeof getPayload>>
     try {

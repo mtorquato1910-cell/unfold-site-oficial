@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { syncContact } from '@/lib/crm/adapter'
+import { enforceContato } from '@/lib/validation/enforce-contato'
 
 // Rate limit simples por IP (memória, suficiente para form de newsletter)
 const submissions = new Map<string, number[]>()
@@ -16,19 +17,6 @@ function checkRateLimit(ip: string): boolean {
   recent.push(now)
   submissions.set(ip, recent)
   return true
-}
-
-function isValidEmail(email: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-}
-
-function digitsOnly(raw: string): string {
-  return raw.replace(/\D/g, '')
-}
-
-function isValidTelefone(raw: string): boolean {
-  const d = digitsOnly(raw)
-  return d.length === 10 || d.length === 11
 }
 
 export async function POST(req: Request) {
@@ -49,12 +37,19 @@ export async function POST(req: Request) {
       if (telRaw) telefone = telRaw
     }
 
-    if (!email || !isValidEmail(email)) {
+    if (!email) {
       return NextResponse.json({ ok: false, error: 'Email inválido' }, { status: 400 })
     }
-    if (telefone && !isValidTelefone(telefone)) {
-      return NextResponse.json({ ok: false, error: 'WhatsApp inválido' }, { status: 400 })
+    // Validação reforçada: e-mail (MX/DNS) + WhatsApp (Evolution) + normalização do 9º dígito.
+    const contato = await enforceContato({ email, telefone, requirePhone: false })
+    if (!contato.ok) {
+      return NextResponse.json(
+        { ok: false, error: contato.error || 'Dados inválidos' },
+        { status: 400 },
+      )
     }
+    // A partir daqui, grava o telefone já normalizado (com 9) no banco e no RD.
+    if (telefone) telefone = contato.telefone
 
     const ip =
       req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
