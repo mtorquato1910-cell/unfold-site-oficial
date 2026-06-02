@@ -1,14 +1,16 @@
-import { GuiaScale } from './_components/GuiaScale'
 import { GateProvider } from './_components/GateProvider'
-import { GUIA_HTML } from './_content/guia-content'
+import { SectionRenderer } from './_components/redesign/SectionRenderer'
+import { GUIA_SECTIONS } from './_content/guia-data'
+import './_styles/redesign-dark.css'
 
 /**
  * Hotsite "Guia de Anúncios Digitais para as Eleições de 2026" — Unfold × Feat.Work.
  *
- * O conteúdo das 37 páginas é renderizado no servidor (SSR) via dangerouslySetInnerHTML
- * — é o nosso próprio mockup, confiável, preservado 100% (RF-02) — o que mantém o
- * bundle do cliente leve e favorece SEO/LCP. A escala responsiva (RF-03) é ajustada
- * pelo GuiaScale; o gate (blur + modal de cadastro) é orquestrado pelo GateProvider.
+ * Repaginação dark premium "dossiê tech" (vitrine enxuta): o conteúdo de maior
+ * impacto é renderizado como seções fluidas/animadas (SectionRenderer) a partir
+ * do modelo estruturado (guia-data). O conteúdo completo das 36 páginas vive no
+ * PDF, baixado automaticamente ao concluir o cadastro. O gate (blur + modal +
+ * captura de lead) é orquestrado pelo GateProvider sobre o container .guia-redesign.
  */
 const GUIA_URL =
   process.env.NEXT_PUBLIC_GUIA_URL || 'https://eleicoes.unfoldgrowth.com.br/featwork'
@@ -34,8 +36,9 @@ export default function GuiaEleicoes2026Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ARTICLE_LD) }}
       />
-      <div className="guia-doc" dangerouslySetInnerHTML={{ __html: GUIA_HTML }} />
-      <GuiaScale />
+      <main className="guia-redesign">
+        <SectionRenderer sections={GUIA_SECTIONS} />
+      </main>
       <GateProvider />
     </>
   )

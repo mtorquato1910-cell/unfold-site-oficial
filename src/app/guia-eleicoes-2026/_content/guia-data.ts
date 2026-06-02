@@ -91,8 +91,22 @@ export interface GuiaSection {
   intro?: boolean
 }
 
-/** Parte 00 — O cenário (POC da S0). Conteúdo preservado do material original. */
+/**
+ * Conteúdo do hotsite (vitrine enxuta tipo driva.io). As seções de maior impacto
+ * do guia, repaginadas; o conteúdo completo das 36 páginas vive no PDF.
+ * Conteúdo preservado fielmente do material original.
+ */
 export const GUIA_SECTIONS_POC: GuiaSection[] = [
+  {
+    id: 'capa',
+    overline: 'Guia Executivo · 2026 · Unfold × Feat.Work',
+    titulo: 'Guia de anúncios digitais para as Eleições de 2026',
+    subtitulo:
+      'Regras, plataformas, riscos e oportunidades da operação política online.',
+    intro: true,
+    surface: 'base',
+    blocks: [],
+  },
   {
     id: 'parte-00',
     parte: 'Parte 00',
@@ -334,3 +348,6 @@ export const GUIA_SECTIONS_POC: GuiaSection[] = [
     ],
   },
 ]
+
+/** Alias usado pela página de produção (mesmo conteúdo da vitrine). */
+export const GUIA_SECTIONS = GUIA_SECTIONS_POC

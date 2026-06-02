@@ -75,7 +75,7 @@ export default function GuiaLayout({ children }: { children: React.ReactNode }) 
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetBrainsMono.variable}`}
       suppressHydrationWarning
     >
-      <body>
+      <body style={{ background: '#0a0c10' }}>
         <GTMNoScript />
         <GTMScript />
         {children}

@@ -44,6 +44,26 @@
   font-family: var(--r-body);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  min-height: 100dvh;
+}
+
+/* Gate (produção): blur do conteúdo enquanto bloqueado, controlado pelo
+   GateProvider via classe .guia-locked. O modal de cadastro fica por cima. */
+.guia-redesign.guia-locked {
+  filter: blur(8px);
+  transition: filter 600ms ease;
+  pointer-events: none;
+  user-select: none;
+}
+@media (max-width: 640px) {
+  .guia-redesign.guia-locked {
+    filter: blur(6px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guia-redesign.guia-locked {
+    transition: none;
+  }
 }
 
 .guia-redesign *,

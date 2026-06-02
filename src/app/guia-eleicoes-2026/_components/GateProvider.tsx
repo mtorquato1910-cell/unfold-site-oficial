@@ -47,7 +47,7 @@ export function GateProvider() {
 
   // Aplica/remove blur + aria-hidden no container do conteúdo (RF-06..09, RNF-08).
   useEffect(() => {
-    const el = document.querySelector('.guia-doc')
+    const el = document.querySelector('.guia-redesign')
     if (!el) return
     el.classList.toggle('guia-locked', !unlocked)
     if (unlocked) el.removeAttribute('aria-hidden')
@@ -73,6 +73,19 @@ export function GateProvider() {
     setModalOpen(false)
     setDismissed(false)
     trackGuia('lead_capturado', { perfil: data.perfil }) // RF-20
+
+    // Download automático do PDF assim que o cadastro é concluído.
+    try {
+      const a = document.createElement('a')
+      a.href = '/static/Guia-Eleicoes-2026-Unfold-FeatWork.pdf'
+      a.download = 'Guia-Eleicoes-2026-Unfold-FeatWork.pdf'
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      trackGuia('pdf_baixado', { lead_email_hash: data.emailHash, origem_botao: 'auto_unlock' })
+    } catch {
+      /* download best-effort — não bloqueia a liberação */
+    }
 
     // Toast de sucesso (RF-41) + destaque dos CTAs (RF-42).
     toast.success('Pronto! Boa leitura.', {

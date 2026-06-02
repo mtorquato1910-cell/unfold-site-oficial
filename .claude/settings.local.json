@@ -125,7 +125,8 @@
       "Bash(git ls-tree *)",
       "Bash(xargs -I{} echo \"ocorrências no remoto: {}\")",
       "Bash(git check-ignore *)",
-      "PowerShell($c = Get-NetTCPConnection -LocalPort 3002 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { Stop-Process -Id $c.OwningProcess -Force; \"Dev server \\(PID $\\($c.OwningProcess\\)\\) encerrado\" } else { \"Nenhum processo na 3002\" })"
+      "PowerShell($c = Get-NetTCPConnection -LocalPort 3002 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { Stop-Process -Id $c.OwningProcess -Force; \"Dev server \\(PID $\\($c.OwningProcess\\)\\) encerrado\" } else { \"Nenhum processo na 3002\" })",
+      "PowerShell($c = Get-NetTCPConnection -LocalPort 3002 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { Stop-Process -Id $c.OwningProcess -Force; \"Dev encerrado\" } else { \"Nada na 3002\" })"
     ]
   }
 }
