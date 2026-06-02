@@ -36,9 +36,19 @@ export default function GuiaEleicoes2026Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ARTICLE_LD) }}
       />
-      <main className="guia-redesign">
+      {/* O conteúdo nasce BLOQUEADO (guia-locked) no HTML do servidor. O script
+          abaixo roda antes do paint: se há sessão de cadastro no localStorage
+          (usuário que já preencheu), remove o bloqueio na hora — sem flash e sem
+          reabrir o formulário. Caso contrário, o GateProvider assume o gate. */}
+      <main id="guia-root" className="guia-redesign guia-locked">
         <SectionRenderer sections={GUIA_SECTIONS} />
       </main>
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            "try{var s=localStorage.getItem('hotsite_unlocked');if(s&&JSON.parse(s).hotsite_unlocked===true){var e=document.getElementById('guia-root');if(e){e.classList.remove('guia-locked')}}}catch(_){}",
+        }}
+      />
       <GateProvider />
     </>
   )
