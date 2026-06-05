@@ -162,7 +162,7 @@ export function ChapterCover({
   const bg = band && ALLOWED_BANDS.has(band) ? band : 'var(--paper-band)'
   return (
     <section className="relative overflow-hidden" style={{ background: bg }}>
-      <Orb className="absolute -right-32 -top-20 w-[640px] opacity-[0.05] pointer-events-none select-none" />
+      <Orb className="absolute -right-32 -top-20 w-[640px] opacity-30 pointer-events-none select-none" />
       <div className="container-edit py-24 md:py-32 relative">
         <Reveal>
           <Eyebrow>{eyebrow}</Eyebrow>

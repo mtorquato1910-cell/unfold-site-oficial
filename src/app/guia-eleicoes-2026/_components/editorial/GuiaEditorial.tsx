@@ -80,10 +80,10 @@ function GuiaContent() {
         <div className="guia-blob" style={{ background: 'var(--mint-wash)', width: 420, height: 420, left: -90, top: -80, opacity: 0.6 }} />
         <div className="guia-blob" style={{ background: 'var(--blue)', width: 300, height: 300, right: '12%', bottom: -60, opacity: 0.22, animationDelay: '-7s' }} />
         <motion.div style={{ y: orbY }} className="absolute right-[-10%] top-10 hidden md:block pointer-events-none select-none">
-          <Orb className="w-[60vw] max-w-[700px] opacity-90" />
+          <Orb className="w-[60vw] max-w-[700px] opacity-30" />
         </motion.div>
         <motion.div initial={{ y: 0 }} animate={{ y: [0, -16, 0] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute right-[-30%] top-20 w-[80vw] opacity-60 pointer-events-none select-none md:hidden">
+          className="absolute right-[-30%] top-20 w-[80vw] opacity-30 pointer-events-none select-none md:hidden">
           <Orb className="w-full" />
         </motion.div>
         <div className="container-edit pt-16 md:pt-28 pb-20 md:pb-32 relative z-[1]">
@@ -516,7 +516,7 @@ function GuiaContent() {
       {/* CONVITE — DARK SPREAD */}
       <Section id="convite" band="dark">
         <div className="relative overflow-hidden">
-          <Orb className="absolute -right-20 -top-20 w-[300px] md:w-[500px] opacity-30 pointer-events-none select-none" style={{ filter: 'hue-rotate(120deg) saturate(1.4)' }} />
+          <Orb className="absolute -right-20 -top-20 w-[300px] md:w-[500px] opacity-30 pointer-events-none select-none" />
           <div className="relative max-w-3xl">
             <Eyebrow><span style={{ color: 'var(--spark)' }}>CONVITE</span></Eyebrow>
             <Reveal delay={0.1}>
