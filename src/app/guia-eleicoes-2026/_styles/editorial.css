@@ -150,6 +150,22 @@ html {
   }
 }
 
+/* Gate do hotsite: conteúdo borrado + sem interação enquanto não há cadastro.
+   O modal de captura fica por cima (portal do Dialog). Desbloqueio com transição. */
+.guia-editorial-gate {
+  transition: filter 500ms ease;
+}
+.guia-editorial-gate[data-locked='true'] {
+  filter: blur(8px);
+  pointer-events: none;
+  user-select: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .guia-editorial-gate {
+    transition: none;
+  }
+}
+
 /* Destaque temporário dos CTAs logo após o desbloqueio (RF-42). */
 @keyframes guiaCtaPulse {
   0%,
