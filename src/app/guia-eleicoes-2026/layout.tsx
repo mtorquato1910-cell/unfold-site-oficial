@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google'
+import { Space_Grotesk, Inter, JetBrains_Mono, Fraunces } from 'next/font/google'
 import GTMScript, { GTMNoScript } from '@/components/analytics/GTMScript'
 import '../globals.css'
 import './_content/guia.css'
@@ -34,6 +34,15 @@ const jetBrainsMono = JetBrains_Mono({
   variable: '--font-guia-mono',
   display: 'swap',
   weight: ['400', '500'],
+})
+
+// Serif editorial do redesign (RF-11): Fraunces, exposta na var que editorial.css usa.
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-guia-serif',
+  display: 'swap',
+  style: ['normal', 'italic'],
+  weight: ['400', '500', '600', '700'],
 })
 
 // URL pública do hotsite (subdomínio). OG/canonical devem usar esta URL — NÃO o apex
@@ -72,10 +81,12 @@ export default function GuiaLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="pt-BR"
-      className={`${spaceGrotesk.variable} ${inter.variable} ${jetBrainsMono.variable}`}
+      className={`${spaceGrotesk.variable} ${inter.variable} ${jetBrainsMono.variable} ${fraunces.variable}`}
       suppressHydrationWarning
     >
-      <body style={{ background: '#0a0c10' }}>
+      {/* Fundo papel do redesign editorial (a classe é estilizada em editorial.css,
+          carregado pela página principal). As rotas /preview trazem o próprio fundo. */}
+      <body className="guia-editorial">
         <GTMNoScript />
         <GTMScript />
         {children}

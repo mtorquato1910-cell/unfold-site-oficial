@@ -127,7 +127,9 @@
       "Bash(git check-ignore *)",
       "PowerShell($c = Get-NetTCPConnection -LocalPort 3002 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { Stop-Process -Id $c.OwningProcess -Force; \"Dev server \\(PID $\\($c.OwningProcess\\)\\) encerrado\" } else { \"Nenhum processo na 3002\" })",
       "PowerShell($c = Get-NetTCPConnection -LocalPort 3002 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { Stop-Process -Id $c.OwningProcess -Force; \"Dev encerrado\" } else { \"Nada na 3002\" })",
-      "Bash(node scripts/migrate-guia-prose.mjs \"guia_eleicoes_2026_diagramado \\(1\\) \\(2\\).html\")"
+      "Bash(node scripts/migrate-guia-prose.mjs \"guia_eleicoes_2026_diagramado \\(1\\) \\(2\\).html\")",
+      "Bash(git checkout *)",
+      "Bash(grep -nE \"include|exclude|\\\\\"\\\\\\\\.\" tsconfig.json)"
     ]
   }
 }

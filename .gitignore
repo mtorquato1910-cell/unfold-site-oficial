@@ -56,3 +56,6 @@ meu-projeto/
 # Uploads de mídia do Payload CMS (não versionar arquivos de upload)
 public/media/*
 !public/media/.gitkeep
+
+# Material de origem do esboço Lovable do redesign do guia (já portado para src/app/guia-eleicoes-2026)
+campaign-bloom-studio-main/
