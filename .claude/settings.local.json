@@ -137,7 +137,10 @@
       "Bash(git add *)",
       "Bash(git commit -m 'feat\\(guia-eleicoes-2026\\): ajustes do redesign + form de consultoria com RD Station *)",
       "Bash(git branch *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "PowerShell($src = \"c:\\\\Users\\\\mathe\\\\OneDrive\\\\Área de Trabalho\\\\Site unfold\\\\unfold-site-oficial\\\\ÍCONE_C \\(1\\).png\"; if \\(Test-Path $src\\) { Copy-Item -LiteralPath $src -Destination \"c:\\\\Users\\\\mathe\\\\OneDrive\\\\Área de Trabalho\\\\Site unfold\\\\unfold-site-oficial\\\\public\\\\guia\\\\unfold-icone.png\" -Force; $img = Get-Item \"c:\\\\Users\\\\mathe\\\\OneDrive\\\\Área de Trabalho\\\\Site unfold\\\\unfold-site-oficial\\\\public\\\\guia\\\\unfold-icone.png\"; Write-Output \\(\"Copiado. Tamanho: \" + [math]::Round\\($img.Length/1KB,1\\) + \" KB\"\\) } else { Write-Output \"ARQUIVO NAO ENCONTRADO: $src\" })",
+      "Bash(git commit -m 'fix\\(guia-eleicoes-2026\\): usa o icone real da Unfold no lugar do orb CSS *)",
+      "Bash(git commit -m 'chore\\(contato\\): e-mail da Unfold passa a tecnologia@unfoldgrowth.com.br e remove e-mail Feat.Work *)"
     ]
   }
 }
