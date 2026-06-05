@@ -150,6 +150,27 @@ html {
   }
 }
 
+/* Barra de rolagem do modal de cadastro — fina, verde-escura, trilho discreto.
+   Aplicada via classe no DialogContent (portal, fora de .guia-editorial). */
+.guia-modal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--mint-deep) transparent;
+}
+.guia-modal-scroll::-webkit-scrollbar {
+  width: 7px;
+}
+.guia-modal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 6px 0;
+}
+.guia-modal-scroll::-webkit-scrollbar-thumb {
+  background: var(--mint-deep);
+  border-radius: 999px;
+}
+.guia-modal-scroll::-webkit-scrollbar-thumb:hover {
+  background: #17855f;
+}
+
 /* Gate do hotsite: conteúdo borrado + sem interação enquanto não há cadastro.
    O modal de captura fica por cima (portal do Dialog). Desbloqueio com transição. */
 .guia-editorial-gate {

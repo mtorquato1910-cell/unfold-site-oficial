@@ -12,12 +12,14 @@ import { submitGuiaLead } from '../_lib/submit-lead'
 import { POLITICA_URL } from '../_lib/links'
 import { useContatoCheck } from '@/lib/validation/use-contato-check'
 
-const ALERT = '#E24B4A'
-const MINT = '#6DF9C6'
-const CREAM = '#E7E7E7'
+// Tema light editorial (mesma paleta do site).
+const ALERT = 'var(--vedado)'
+const MINT = 'var(--mint)'
+const INK = 'var(--ink)'
+const HAIR = 'var(--ink-hair)'
 
 const inputBase =
-  'w-full rounded-lg border bg-white/[0.06] px-4 py-3 text-[15px] outline-none transition-colors placeholder:text-[#E7E7E7]/35 focus:border-[#6DF9C6]'
+  'w-full rounded-lg border px-4 py-3 text-[15px] outline-none transition-colors bg-[var(--paper)] placeholder:text-[var(--ink-faint)] focus:border-[var(--mint-deep)]'
 
 interface Props {
   onUnlock: (data: { perfil: PerfilEleitoral; emailHash?: string; leadId?: string }) => void
@@ -88,7 +90,7 @@ export function LeadForm({ onUnlock }: Props) {
     !checkingPhone
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4" style={{ color: CREAM }}>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4" style={{ color: INK }}>
       {/* Nome */}
       <div>
         <label htmlFor="guia-nome" className="mb-1.5 block text-sm font-medium">
@@ -100,7 +102,7 @@ export function LeadForm({ onUnlock }: Props) {
           autoComplete="name"
           placeholder="Seu nome completo"
           className={inputBase}
-          style={{ borderColor: errors.nome ? ALERT : 'rgba(231,231,231,0.2)', color: CREAM }}
+          style={{ borderColor: errors.nome ? ALERT : HAIR, color: INK }}
           aria-invalid={!!errors.nome}
           aria-describedby={errors.nome ? 'guia-nome-err' : undefined}
           {...register('nome')}
@@ -124,8 +126,8 @@ export function LeadForm({ onUnlock }: Props) {
           placeholder="voce@exemplo.com"
           className={inputBase}
           style={{
-            borderColor: errors.email || emailError ? ALERT : 'rgba(231,231,231,0.2)',
-            color: CREAM,
+            borderColor: errors.email || emailError ? ALERT : HAIR,
+            color: INK,
           }}
           aria-invalid={!!errors.email || !!emailError}
           aria-describedby={errors.email || emailError ? 'guia-email-err' : undefined}
@@ -159,8 +161,8 @@ export function LeadForm({ onUnlock }: Props) {
               placeholder="(00) 00000-0000"
               className={inputBase}
               style={{
-                borderColor: errors.telefone || phoneError ? ALERT : 'rgba(231,231,231,0.2)',
-                color: CREAM,
+                borderColor: errors.telefone || phoneError ? ALERT : HAIR,
+                color: INK,
               }}
               aria-invalid={!!errors.telefone || !!phoneError}
               aria-describedby={errors.telefone || phoneError ? 'guia-telefone-err' : undefined}
@@ -200,13 +202,13 @@ export function LeadForm({ onUnlock }: Props) {
                 <label
                   key={opt.value}
                   htmlFor={`guia-perfil-${opt.value}`}
-                  className="flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 text-sm transition-colors hover:bg-white/[0.04]"
-                  style={{ borderColor: 'rgba(231,231,231,0.2)' }}
+                  className="flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 text-sm transition-colors hover:bg-[var(--mint-wash)]"
+                  style={{ borderColor: HAIR }}
                 >
                   <RadioGroupItem
                     id={`guia-perfil-${opt.value}`}
                     value={opt.value}
-                    className="border-[#6DF9C6] text-[#6DF9C6]"
+                    className="border-[var(--mint-deep)] text-[var(--mint-deep)]"
                   />
                   <span>{opt.label}</span>
                 </label>
@@ -236,15 +238,15 @@ export function LeadForm({ onUnlock }: Props) {
         type="submit"
         disabled={!canSubmit}
         className="mt-1 inline-flex items-center justify-center rounded-lg px-5 py-3 text-[15px] font-semibold transition-opacity disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none"
-        style={{ background: MINT, color: '#001E29', fontFamily: 'var(--font-guia-display)' }}
+        style={{ background: MINT, color: INK, fontFamily: 'var(--font-guia-display)' }}
       >
         {isSubmitting ? 'Desbloqueando…' : 'Desbloquear estudo'}
       </button>
 
       {/* Rodapé LGPD (RNF-14) */}
-      <p className="text-center text-[11px] leading-relaxed" style={{ color: 'rgba(231,231,231,0.8)', fontFamily: 'var(--font-guia-mono)' }}>
+      <p className="text-center text-[11px] leading-relaxed" style={{ color: 'var(--ink-faint)', fontFamily: 'var(--font-guia-mono)' }}>
         Seus dados são tratados conforme nossa{' '}
-        <a href={POLITICA_URL} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: '#E7E7E7' }}>
+        <a href={POLITICA_URL} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: INK }}>
           Política de Privacidade
         </a>{' '}
         e a LGPD. Não enviamos spam.
