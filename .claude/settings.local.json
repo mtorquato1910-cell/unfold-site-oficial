@@ -142,7 +142,9 @@
       "Bash(git commit -m 'fix\\(guia-eleicoes-2026\\): usa o icone real da Unfold no lugar do orb CSS *)",
       "Bash(git commit -m 'chore\\(contato\\): e-mail da Unfold passa a tecnologia@unfoldgrowth.com.br e remove e-mail Feat.Work *)",
       "Bash(git commit -m 'feat\\(guia-eleicoes-2026\\): restaura gate bloqueante \\(blur + cadastro obrigatorio\\) *)",
-      "Bash(git commit -m 'style\\(guia-eleicoes-2026\\): modal de cadastro na paleta light + scrollbar verde *)"
+      "Bash(git commit -m 'style\\(guia-eleicoes-2026\\): modal de cadastro na paleta light + scrollbar verde *)",
+      "PowerShell(New-Item *)",
+      "Bash(git commit -m 'security\\(guia-eleicoes-2026\\): PDF protegido por cookie, Turnstile na consultoria, HSTS 30d *)"
     ]
   }
 }
