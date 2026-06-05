@@ -83,18 +83,42 @@ export function StatCounter({
   suffix?: string
   staticValue?: string
 }) {
+  // Highlight deliberado (TASK 6): card com top-rule mint, "highlighter" mint-wash
+  // atrás dos dígitos e uma barra-sublinhado que desenha da esquerda ao entrar na
+  // viewport — junto da contagem. Sem o antigo "swoosh".
   return (
-    <Reveal className="relative pl-5 border-l hairline">
+    <Reveal className="h-full">
       <div
-        className="font-display font-bold leading-none"
-        style={{ fontSize: 'clamp(2.75rem, 6vw, 4.5rem)', color: 'var(--ink)' }}
+        className="guia-lift relative h-full rounded-2xl p-6"
+        style={{ background: 'var(--paper-hi)', border: '1px solid var(--ink-hair)' }}
       >
-        {staticValue ?? <CountUp to={value ?? 0} suffix={suffix} />}
+        <span aria-hidden className="absolute top-0 left-6 h-1 w-10 rounded-b-full" style={{ background: 'var(--mint)' }} />
+        <div className="relative inline-block">
+          <span
+            aria-hidden
+            className="absolute left-[-6px] right-[-6px] bottom-[6px] rounded"
+            style={{ height: '40%', background: 'var(--mint-wash)', opacity: 0.75, zIndex: 0 }}
+          />
+          <div
+            className="relative font-display font-bold leading-none"
+            style={{ fontSize: 'clamp(2.75rem, 6vw, 4.5rem)', color: 'var(--ink)', zIndex: 1 }}
+          >
+            {staticValue ?? <CountUp to={value ?? 0} suffix={suffix} />}
+          </div>
+        </div>
+        <motion.div
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.9, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="origin-left mt-3 h-[3px] rounded-full"
+          style={{ background: 'var(--mint)', width: '3.5rem' }}
+        />
+        <div className="mt-3 max-w-xs" style={{ color: 'var(--ink-body)' }}>
+          {label}
+        </div>
+        {source && <div className="font-mono-tag mt-3">{source}</div>}
       </div>
-      <div className="mt-3 max-w-xs" style={{ color: 'var(--ink-body)' }}>
-        {label}
-      </div>
-      {source && <div className="font-mono-tag mt-3">{source}</div>}
     </Reveal>
   )
 }

@@ -73,7 +73,7 @@ export function LedgerPodeNaoPode() {
       <div className="grid md:grid-cols-2 gap-3">
         {filtered.map(([title, info], i) => (
           <motion.div key={title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }}
-            className="p-5 rounded-xl flex gap-3" style={{ background: 'var(--paper-hi)', border: '1px solid var(--ink-hair)' }}>
+            className="guia-lift p-5 rounded-xl flex gap-3" style={{ background: 'var(--paper-hi)', border: '1px solid var(--ink-hair)' }}>
             {tab === 'pode'
               ? <Check className="w-5 h-5 flex-shrink-0 mt-1" style={{ color: 'var(--pode)' }} />
               : <X className="w-5 h-5 flex-shrink-0 mt-1" style={{ color: 'var(--vedado)' }} />}
@@ -131,51 +131,82 @@ export function MatrizPlataformas() {
   )
 }
 
-const calMarcos = [
-  { d: '15/05', label: 'Financiamento coletivo', t: 0 },
-  { d: '05/07', label: 'Propaganda intrapartidária', t: 12 },
-  { d: '20/07', label: 'Início das convenções', t: 18 },
-  { d: '05/08', label: 'Fim das convenções', t: 22 },
-  { d: '16/08', label: 'Início propaganda + impulsionamento', t: 27, em: true },
-  { d: '13/09', label: 'Prestação parcial de contas', t: 42 },
-  { d: '01/10', label: 'Último dia de mídia paga · início blackout IA (72h)', t: 50, em: true },
-  { d: '04/10', label: '1º turno', t: 53, em: true },
-  { d: '05/10', label: 'Fim do blackout · reabertura 2º turno', t: 54, em: true },
-  { d: '25/10', label: 'Eventual 2º turno', t: 75 },
+// Slots uniformes (TASK 7): a posição é o índice, não a data real — evita a
+// colisão do cluster set/out. Os intervalos (janela/blackout) referenciam índices.
+const calMarcos: { d: string; label: string; em?: boolean }[] = [
+  { d: '15/05', label: 'Financiamento coletivo' },
+  { d: '05/07', label: 'Propaganda intrapartidária' },
+  { d: '20/07', label: 'Início das convenções' },
+  { d: '05/08', label: 'Fim das convenções' },
+  { d: '16/08', label: 'Início da propaganda e impulsionamento', em: true },
+  { d: '13/09', label: 'Prestação parcial de contas' },
+  { d: '01/10', label: 'Último dia de mídia paga', em: true },
+  { d: '04/10', label: '1º turno', em: true },
+  { d: '25/10', label: 'Eventual 2º turno' },
 ]
+const CAL_N = calMarcos.length
+const calSlot = (i: number) => ((i + 0.5) / CAL_N) * 100 // centro do slot, em %
 
 export function CalendarioEleitoral() {
+  // Intervalos por índice de slot: janela 16/08(4)→01/10(6), blackout 01/10(6)→04/10(7).
+  const janL = calSlot(4)
+  const janW = calSlot(6) - calSlot(4)
+  const blkL = calSlot(6)
+  const blkW = calSlot(7) - calSlot(6)
   return (
     <Reveal>
       <div className="rounded-2xl p-6 md:p-10" style={{ background: 'var(--paper-hi)', border: '1px solid var(--ink-hair)' }}>
-        <div className="hidden md:block relative h-64">
-          <div className="absolute left-0 right-0 top-32 h-px" style={{ background: 'var(--ink-hair)' }} />
-          <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute top-28 h-9 rounded origin-left flex items-center justify-center font-mono-tag text-white" style={{ left: `${(27 / 80) * 100}%`, width: `${(23 / 80) * 100}%`, background: 'var(--mint-deep)' }}>
+        {/* DESKTOP — bands em duas lanes ACIMA da linha; nós uniformes com descrição alternada */}
+        <div className="hidden md:block relative" style={{ height: 320 }}>
+          {/* Lane A — janela de campanha */}
+          <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute h-7 rounded origin-left flex items-center justify-center px-2 font-mono-tag text-white whitespace-nowrap" style={{ top: 8, left: `${janL}%`, width: `${janW}%`, background: 'var(--mint-deep)' }}>
             JANELA DE CAMPANHA · 47 DIAS
           </motion.div>
-          <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 1 }}
-            className="absolute top-28 h-9 origin-left flex items-center justify-center font-mono-tag text-white rounded" style={{ left: `${(50 / 80) * 100}%`, width: `${(4 / 80) * 100}%`, background: 'var(--vedado)' }}>
-            BLACKOUT 72H
+          {/* Lane B — blackout (linha logo abaixo, sem sobrepor a lane A) */}
+          <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.6 }}
+            className="absolute h-7 rounded origin-left flex items-center justify-center px-2 font-mono-tag text-white whitespace-nowrap" style={{ top: 44, left: `${blkL}%`, width: `${blkW}%`, background: 'var(--vedado)' }}>
+            BLACKOUT IA · 72H
           </motion.div>
-          {calMarcos.map((m, i) => (
-            <motion.div key={m.d} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 + i * 0.06 }}
-              className="absolute -translate-x-1/2 top-32 group cursor-pointer" style={{ left: `${(m.t / 80) * 100}%` }}>
-              <div className="w-3 h-3 rounded-full -mt-1.5" style={{ background: m.em ? 'var(--ink)' : 'var(--ink-faint)' }} />
-              <div className="font-display font-bold text-sm mt-3 tabular" style={{ color: 'var(--ink)' }}>{m.d}</div>
-              <div className="text-xs max-w-[120px] mt-1" style={{ color: 'var(--ink-body)' }}>{m.label}</div>
-            </motion.div>
-          ))}
+
+          {/* Linha principal */}
+          <div className="absolute left-0 right-0 h-px" style={{ top: 165, background: 'var(--ink-hair)' }} />
+
+          {calMarcos.map((m, i) => {
+            const left = calSlot(i)
+            const above = i % 2 === 1 // alterna descrição acima/abaixo p/ não colidir
+            return (
+              <div key={m.d}>
+                {/* Ponto */}
+                <motion.div initial={{ opacity: 0, scale: 0 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 + i * 0.05 }}
+                  className="absolute w-3 h-3 rounded-full -translate-x-1/2" style={{ top: 159, left: `${left}%`, background: m.em ? 'var(--ink)' : 'var(--ink-faint)' }} />
+                {/* Data + descrição (alternadas) */}
+                <motion.div initial={{ opacity: 0, y: above ? -6 : 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.35 + i * 0.05 }}
+                  className="absolute -translate-x-1/2 text-center" style={above ? { bottom: 163, left: `${left}%`, width: 124 } : { top: 178, left: `${left}%`, width: 124 }}>
+                  <div className="font-display font-bold text-sm tabular" style={{ color: 'var(--ink)' }}>{m.d}</div>
+                  <div className="text-xs mt-1 leading-snug" style={{ color: 'var(--ink-body)' }}>{m.label}</div>
+                </motion.div>
+              </div>
+            )
+          })}
         </div>
-        <ol className="md:hidden relative border-l-2 pl-6 space-y-6" style={{ borderColor: 'var(--ink-hair)' }}>
-          {calMarcos.map((m) => (
-            <li key={m.d} className="relative">
-              <span className="absolute -left-[31px] top-1 w-3 h-3 rounded-full" style={{ background: m.em ? 'var(--mint-deep)' : 'var(--ink-faint)' }} />
-              <div className="font-display font-bold tabular text-lg" style={{ color: 'var(--ink)' }}>{m.d}</div>
-              <div className="text-sm" style={{ color: 'var(--ink-body)' }}>{m.label}</div>
-            </li>
-          ))}
-        </ol>
+
+        {/* MOBILE — segmentos rotulados + timeline vertical */}
+        <div className="md:hidden">
+          <div className="flex flex-col gap-2 mb-6">
+            <div className="rounded-lg px-3 py-2 font-mono-tag text-white" style={{ background: 'var(--mint-deep)' }}>16/08–01/10 · Janela de campanha (47 dias)</div>
+            <div className="rounded-lg px-3 py-2 font-mono-tag text-white" style={{ background: 'var(--vedado)' }}>01/10–04/10 · Blackout IA (72h)</div>
+          </div>
+          <ol className="relative border-l-2 pl-6 space-y-6" style={{ borderColor: 'var(--ink-hair)' }}>
+            {calMarcos.map((m) => (
+              <li key={m.d} className="relative">
+                <span className="absolute -left-[31px] top-1 w-3 h-3 rounded-full" style={{ background: m.em ? 'var(--mint-deep)' : 'var(--ink-faint)' }} />
+                <div className="font-display font-bold tabular text-lg" style={{ color: 'var(--ink)' }}>{m.d}</div>
+                <div className="text-sm" style={{ color: 'var(--ink-body)' }}>{m.label}</div>
+              </li>
+            ))}
+          </ol>
+        </div>
         <div className="font-mono-tag mt-8 pt-6" style={{ borderTop: '1px solid var(--ink-hair)' }}>Fonte: Res. TSE 23.760/2026</div>
       </div>
     </Reveal>
@@ -291,100 +322,6 @@ export function ChecklistPublicacao() {
   )
 }
 
-const diagQs = [
-  "Todos os criativos pagos vão exibir 'Propaganda Eleitoral' + CNPJ no próprio conteúdo?",
-  'O pagamento da mídia sairá só da conta de campanha (nunca de apoiador/terceiro)?',
-  'Sua base foi construída com consentimento (sem lista comprada)?',
-  'A operação evita qualquer disparo em massa por WhatsApp/SMS?',
-  'Há regra interna proibindo IA com voz/imagem de pessoa real (inclusive sátira)?',
-  'Existe um encarregado de LGPD (DPO) definido?',
-  'Há contador eleitoral conciliando gasto na Meta vs. declarado, toda semana?',
-]
-
-export function DiagnosticoRisco() {
-  const [answers, setAnswers] = useState<('sim' | 'nao' | 'ns' | null)[]>(Array(7).fill(null))
-  const [step, setStep] = useState(0)
-  const [done, setDone] = useState(false)
-  const [started, setStarted] = useState(false)
-
-  function answer(v: 'sim' | 'nao' | 'ns') {
-    const next = [...answers]
-    next[step] = v
-    setAnswers(next)
-    if (step < 6) setStep(step + 1)
-    else setDone(true)
-  }
-  function restart() {
-    setAnswers(Array(7).fill(null))
-    setStep(0)
-    setDone(false)
-    setStarted(false)
-  }
-
-  const sims = answers.filter((a) => a === 'sim').length
-  const result =
-    sims >= 6
-      ? { t: 'Operação blindada', c: 'var(--pode)', bg: 'var(--pode-wash)' }
-      : sims >= 3
-        ? { t: 'Zona de atenção', c: 'var(--atencao)', bg: 'var(--atencao-wash)' }
-        : { t: 'Risco de cassação', c: 'var(--vedado)', bg: 'var(--vedado-wash)' }
-
-  return (
-    <div className="max-w-2xl mx-auto rounded-3xl p-8 md:p-12" style={{ background: 'var(--paper-hi)', border: '1px solid var(--ink-hair)' }}>
-      {!started ? (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="font-mono-tag" style={{ color: 'var(--mint-deep)' }}>DIAGNÓSTICO</div>
-          <h4 className="font-serif mt-3" style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', lineHeight: 1.1, color: 'var(--ink)' }}>Sua operação está blindada para 2026?</h4>
-          <p className="mt-5 text-lg" style={{ color: 'var(--ink-body)' }}>Sete perguntas. Dois minutos. Sem cadastro.</p>
-          <button onClick={() => setStarted(true)} className="mt-8 px-8 py-4 rounded-full font-display font-medium" style={{ background: 'var(--mint)', color: 'var(--ink)' }}>Começar →</button>
-        </motion.div>
-      ) : !done ? (
-        <>
-          <div className="flex items-center justify-between mb-8">
-            <span className="font-mono-tag">Pergunta {step + 1} / 7</span>
-            <div className="flex-1 mx-4 h-1 rounded-full" style={{ background: 'var(--paper-band)' }}>
-              <div className="h-full rounded-full transition-all" style={{ width: `${(step / 7) * 100}%`, background: 'var(--mint-deep)' }} />
-            </div>
-          </div>
-          <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }}>
-            <h4 className="font-serif text-2xl md:text-3xl leading-tight" style={{ color: 'var(--ink)' }}>{diagQs[step]}</h4>
-            <div className="flex flex-col sm:flex-row gap-3 mt-10">
-              <button onClick={() => answer('sim')} className="flex-1 py-4 rounded-full font-display font-medium" style={{ background: 'var(--mint)', color: 'var(--ink)' }}>Sim</button>
-              <button onClick={() => answer('nao')} className="flex-1 py-4 rounded-full font-display font-medium" style={{ background: 'var(--vedado-wash)', color: 'var(--vedado)', border: '1px solid var(--vedado)' }}>Não</button>
-              <button onClick={() => answer('ns')} className="flex-1 py-4 rounded-full font-display font-medium" style={{ background: 'transparent', color: 'var(--ink)', border: '1px solid var(--ink-hair)' }}>Não sei</button>
-            </div>
-          </motion.div>
-        </>
-      ) : (
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="font-mono-tag" style={{ color: result.c }}>RESULTADO</div>
-          <h4 className="font-serif text-4xl md:text-5xl mt-3" style={{ color: 'var(--ink)' }}>{result.t}</h4>
-          <div className="mt-6 p-5 rounded-xl" style={{ background: result.bg }}>
-            <div className="font-display font-bold text-3xl tabular" style={{ color: result.c }}>{sims}/7</div>
-            <div className="text-sm mt-1">respostas &ldquo;Sim&rdquo; — quanto mais, mais blindada está a operação.</div>
-          </div>
-          {answers.some((a) => a !== 'sim') && (
-            <div className="mt-6">
-              <div className="font-mono-tag mb-3">Pontos de atenção</div>
-              <ul className="space-y-2">
-                {answers.map((a, i) =>
-                  a !== 'sim' ? (
-                    <li key={i} className="flex gap-3 text-sm"><AlertTriangle className="w-4 h-4 flex-shrink-0 mt-1" style={{ color: 'var(--atencao)' }} /><span>{diagQs[i]}</span></li>
-                  ) : null,
-                )}
-              </ul>
-            </div>
-          )}
-          <div className="flex flex-col sm:flex-row gap-3 mt-8">
-            <a href="#convite" className="flex-1 text-center py-3 rounded-full font-display font-medium" style={{ background: 'var(--ink)', color: 'var(--paper)' }}>Quer revisar isso com a gente? Agendar conversa →</a>
-            <button onClick={restart} className="px-6 py-3 rounded-full font-display font-medium" style={{ border: '1px solid var(--ink-hair)', color: 'var(--ink)' }}>Refazer</button>
-          </div>
-        </motion.div>
-      )}
-    </div>
-  )
-}
-
 export function UsoRedesChart() {
   const data = [
     { name: 'WhatsApp', v: 93 }, { name: 'Instagram', v: 91 }, { name: 'Facebook', v: 83 }, { name: 'TikTok', v: 65 }, { name: 'Kwai', v: 38 }, { name: 'X', v: 26 },
@@ -415,17 +352,24 @@ export function BlackoutVisualizer() {
     <Reveal>
       <div className="rounded-2xl p-8 md:p-10" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)' }}>
         <div className="font-mono-tag" style={{ color: 'var(--spark)' }}>BLACKOUT IA · 01–04/10/2026</div>
-        <div className="relative mt-8 h-24">
-          <div className="absolute left-0 right-0 top-12 h-px" style={{ background: 'rgba(246,244,237,0.3)' }} />
-          <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1.2 }}
-            className="absolute top-8 h-10 origin-center rounded" style={{ left: '20%', width: '60%', background: 'repeating-linear-gradient(45deg, var(--vedado) 0 6px, transparent 6px 12px)' }} />
-          <div className="absolute -translate-x-1/2 top-12" style={{ left: '50%' }}>
-            <div className="w-4 h-4 rounded-full -mt-2" style={{ background: 'var(--spark)' }} />
-            <div className="font-display font-bold mt-3" style={{ color: 'var(--paper)' }}>04/10</div>
+        {/* Zona proibida: retângulo de altura uniforme; split 72h:24h = 3:1 → votação em 67,5% */}
+        <div className="relative mt-8" style={{ height: 120 }}>
+          <div className="absolute left-0 right-0 h-px" style={{ top: 50, background: 'rgba(246,244,237,0.3)' }} />
+          {/* −72h (centro do segmento esquerdo) e +24h (centro do direito) */}
+          <div className="absolute -translate-x-1/2 font-mono-tag" style={{ left: '41.25%', top: 4, color: 'rgba(246,244,237,0.6)' }}>−72h</div>
+          <div className="absolute -translate-x-1/2 font-mono-tag" style={{ left: '76.25%', top: 4, color: 'rgba(246,244,237,0.6)' }}>+24h</div>
+          {/* Retângulo hachurado (15%→85%), borda uniforme, hatch contido por overflow */}
+          <div className="absolute rounded overflow-hidden" style={{ left: '15%', width: '70%', top: 30, height: 40, border: '1px solid var(--vedado)' }}>
+            <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+              className="origin-left w-full h-full" style={{ background: 'repeating-linear-gradient(45deg, var(--vedado) 0 6px, transparent 6px 12px)' }} />
+          </div>
+          {/* Marcador da votação na divisão 3:1 (não centrado) */}
+          <div className="absolute" style={{ left: '67.5%', top: 22, width: 2, height: 56, background: 'var(--spark)', transform: 'translateX(-50%)' }} />
+          <div className="absolute -translate-x-1/2 w-3 h-3 rounded-full" style={{ left: '67.5%', top: 18, background: 'var(--spark)' }} />
+          <div className="absolute -translate-x-1/2 text-center" style={{ left: '67.5%', top: 82 }}>
+            <div className="font-display font-bold" style={{ color: 'var(--paper)' }}>04/10</div>
             <div className="font-mono-tag" style={{ color: 'var(--spark)' }}>VOTAÇÃO</div>
           </div>
-          <div className="absolute font-mono-tag" style={{ left: '18%', top: '70%', color: 'rgba(246,244,237,0.6)' }}>−72h</div>
-          <div className="absolute font-mono-tag" style={{ left: '78%', top: '70%', color: 'rgba(246,244,237,0.6)' }}>+24h</div>
         </div>
         <div className="grid md:grid-cols-3 gap-6 mt-10">
           <div><div className="font-mono-tag" style={{ color: 'var(--spark)' }}>JANELA</div><div className="mt-2">72h antes · 24h depois</div></div>

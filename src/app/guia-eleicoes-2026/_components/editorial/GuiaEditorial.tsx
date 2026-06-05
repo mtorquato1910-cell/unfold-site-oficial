@@ -1,19 +1,19 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, MotionConfig, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 import { Download, Share2, ArrowDown, Check, X } from 'lucide-react'
 import { Header, Footer, CoBrand } from './Chrome'
 import { Orb } from './Orb'
 import { EditorialGate } from './EditorialGate'
-import { useGate } from '../gate-context'
 import { useDownloadGuia, useShareGuia } from './actions'
 import {
   Reveal, Eyebrow, StatCounter, PullQuote, ChapterCover, Section, SectionTitle,
 } from './primitives'
 import {
   LedgerPodeNaoPode, MatrizPlataformas, CalendarioEleitoral, RankingErros,
-  ChecklistPublicacao, DiagnosticoRisco, UsoRedesChart, BlackoutVisualizer, Janela47Dias,
+  ChecklistPublicacao, UsoRedesChart, BlackoutVisualizer, Janela47Dias,
 } from './Visualizations'
+import { ContatoForm } from './ContatoForm'
 
 const verdades: [string, string, string][] = [
   ['01', 'A Meta é praticamente o único motor pago de escala', 'Google/YouTube proíbem anúncios eleitorais desde mai/2024; TikTok, Kwai, LinkedIn e X também vetam. Em 2026, só Facebook e Instagram operam impulsionamento eleitoral no Brasil.'],
@@ -60,10 +60,15 @@ const metricasImportam = ['CPM por segmento', 'Frequência semanal por base', 'V
 const metricasEnganam = ['Curtidas totais', 'Seguidores brutos', 'Compartilhamentos sem contexto', 'Impressões agregadas', 'Visualizações de 3s', "CPM 'mais barato' fora do segmento", 'Engajamento de fora da circunscrição', 'Picos virais sem retenção']
 
 function GuiaContent() {
-  const { openModal } = useGate()
   const downloadHero = useDownloadGuia('hero')
   const downloadConvite = useDownloadGuia('convite_final')
   const share = useShareGuia()
+
+  // Parallax do orb do hero (TASK 9) — desativado sob prefers-reduced-motion.
+  const reduce = useReducedMotion()
+  const { scrollY } = useScroll()
+  const orbYRaw = useTransform(scrollY, [0, 800], [0, -120])
+  const orbY = reduce ? 0 : orbYRaw
 
   return (
     <div id="top">
@@ -71,12 +76,17 @@ function GuiaContent() {
 
       {/* HERO */}
       <section className="relative overflow-hidden" style={{ background: 'var(--paper)' }}>
-        <Orb className="absolute right-[-10%] top-10 w-[60vw] max-w-[700px] opacity-90 pointer-events-none select-none hidden md:block" />
+        {/* Profundidade: blobs desfocados atrás do conteúdo */}
+        <div className="guia-blob" style={{ background: 'var(--mint-wash)', width: 420, height: 420, left: -90, top: -80, opacity: 0.6 }} />
+        <div className="guia-blob" style={{ background: 'var(--blue)', width: 300, height: 300, right: '12%', bottom: -60, opacity: 0.22, animationDelay: '-7s' }} />
+        <motion.div style={{ y: orbY }} className="absolute right-[-10%] top-10 hidden md:block pointer-events-none select-none">
+          <Orb className="w-[60vw] max-w-[700px] opacity-90" />
+        </motion.div>
         <motion.div initial={{ y: 0 }} animate={{ y: [0, -16, 0] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute right-[-30%] top-20 w-[80vw] opacity-60 pointer-events-none select-none md:hidden">
           <Orb className="w-full" />
         </motion.div>
-        <div className="container-edit pt-16 md:pt-28 pb-20 md:pb-32 relative">
+        <div className="container-edit pt-16 md:pt-28 pb-20 md:pb-32 relative z-[1]">
           <Reveal><Eyebrow>ESTUDO · ELEIÇÕES 2026 · UNFOLD ✕ FEAT.WORK</Eyebrow></Reveal>
           <Reveal delay={0.1}>
             <h1 className="mt-6 font-serif max-w-4xl" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', lineHeight: 1.02, letterSpacing: '-0.02em', color: 'var(--ink)' }}>
@@ -122,23 +132,28 @@ function GuiaContent() {
         </div>
       </section>
 
-      {/* OPENING */}
+      {/* OPENING — hierarquia: eyebrow → tese (foco) → apoio → citação (offset) */}
       <Section id="abertura">
         <Eyebrow>POR QUE ESTE GUIA EXISTE</Eyebrow>
-        <div className="grid md:grid-cols-2 gap-10 md:gap-16 mt-6">
+        <Reveal>
+          <p className="mt-6 font-serif max-w-4xl" style={{ fontSize: 'clamp(1.9rem, 4.5vw, 3.5rem)', lineHeight: 1.12, color: 'var(--ink)' }}>
+            O cenário de 2026 é mais restritivo, mais complexo e tem{' '}
+            <em className="italic" style={{ color: 'var(--mint-deep)' }}>menos margem para improviso</em> do que qualquer ciclo anterior.
+          </p>
+        </Reveal>
+        <div className="grid md:grid-cols-[1.4fr_1fr] gap-10 md:gap-16 mt-12 md:mt-16 items-start">
           <Reveal>
-            <p className="text-lg" style={{ color: 'var(--ink-body)' }}>
+            <p style={{ color: 'var(--ink-body)' }}>
               Em 2024, candidatos brasileiros descobriram, no meio da campanha, que o Google tinha proibido anúncios políticos. Plataformas que operavam mídia eleitoral em ciclos anteriores deixaram de operar. Outras criaram regras mais rigorosas, com janelas de blackout para conteúdo de IA. O TSE atualizou a regulamentação. A LGPD entrou em vigor de vez para campanhas, sob fiscalização cooperada da ANPD.
             </p>
-            <p className="mt-8 font-serif italic text-2xl md:text-3xl" style={{ color: 'var(--ink)', lineHeight: 1.25 }}>
-              O cenário de 2026 é mais restritivo, mais complexo e tem menos margem para improviso do que qualquer ciclo anterior.
-            </p>
           </Reveal>
-          <div className="md:pt-8">
-            <PullQuote attribution="EQUIPE UNFOLD × FEAT.WORK">
-              Uma sem a outra produz risco. As duas juntas produzem resultado.
-            </PullQuote>
-          </div>
+          <Reveal delay={0.1}>
+            <div className="rounded-2xl p-6 md:p-8" style={{ background: 'var(--paper-hi)', border: '1px solid var(--ink-hair)' }}>
+              <PullQuote attribution="EQUIPE UNFOLD × FEAT.WORK">
+                Uma sem a outra produz risco. As duas juntas produzem resultado.
+              </PullQuote>
+            </div>
+          </Reveal>
         </div>
       </Section>
 
@@ -471,28 +486,28 @@ function GuiaContent() {
         <ChecklistPublicacao />
       </Section>
 
-      {/* DIAGNÓSTICO */}
-      <Section id="diagnostico" band="mint">
-        <SectionTitle eyebrow="DIAGNÓSTICO INTERATIVO" title="Sua operação está blindada para 2026?" lede="Sete perguntas. Dois minutos. Sem cadastro. Você termina com um veredito honesto sobre o risco da sua operação." />
-        <DiagnosticoRisco />
+      {/* CONTATO / CONSULTORIA */}
+      <Section id="contato" band="mint">
+        <SectionTitle eyebrow="CONSULTORIA" title="Consultoria em marketing e mídia política." lede="Operação digital, regras e estratégia para 2026 — estruturada por quem faz growth e por quem faz campanha política." />
+        <ContatoForm />
       </Section>
 
       {/* QUEM SOMOS */}
       <ChapterCover num="05" eyebrow="PARTE 05 · QUEM SOMOS" title="Unfold × Feat.Work, em colaboração." intro="Este guia nasce do encontro entre a disciplina de growth da Unfold e a experiência política da Feat.Work." band="var(--paper-band)" />
       <Section>
-        <div className="grid md:grid-cols-2 gap-10">
-          <Reveal>
+        <div className="grid md:grid-cols-2 gap-10 items-stretch">
+          <Reveal className="h-full">
             <div className="p-8 rounded-2xl h-full" style={{ background: 'var(--paper-hi)', border: '1px solid var(--ink-hair)' }}>
               <div className="font-display font-bold text-2xl" style={{ color: 'var(--ink)' }}>UNFOLD</div>
-              <p className="mt-4">Assessoria de growth especializada em vendas complexas. Estruturamos operações de geração de demanda, mídia paga e dados — com foco em resultado mensurável e governança rigorosa.</p>
-              <div className="font-mono-tag mt-6">[ CONTEÚDO A FORNECER · CASES · PRÊMIOS · BIO ]</div>
+              <div className="font-mono-tag mt-2" style={{ color: 'var(--mint-deep)' }}>GROWTH MARKETING</div>
+              <p className="mt-4">Consultoria e assessoria de growth marketing. Estruturamos operações de geração de demanda, mídia paga, dados e monitoramento — com foco em resultado mensurável e governança rigorosa. Mais de R$ 850k gerenciados em mídia nas principais plataformas digitais.</p>
             </div>
           </Reveal>
-          <Reveal delay={0.1}>
+          <Reveal delay={0.1} className="h-full">
             <div className="p-8 rounded-2xl h-full" style={{ background: 'var(--paper-hi)', border: '1px solid var(--ink-hair)' }}>
               <div className="font-display font-bold text-2xl" style={{ color: 'var(--ink)' }}>Feat<span style={{ color: 'var(--feat-dot)' }}>.</span>Work</div>
-              <p className="mt-4">Agência de comunicação e publicidade alagoana (Maceió/AL), criativa e híbrida: vai do conceito à veiculação, com criação de campanhas, produção audiovisual e mídia. Tem forte atuação em comunicação política e eleitoral — de prefeituras a mandatos federais —, além de clientes institucionais e comerciais. Constrói posicionamento &ldquo;do off ao on, do planner à veiculação&rdquo;. Atuando desde 2022.</p>
-              <div className="font-mono-tag mt-6">[ CASES · PRÊMIOS ]</div>
+              <div className="font-mono-tag mt-2" style={{ color: 'var(--mint-deep)' }}>MARKETING E COMUNICAÇÃO POLÍTICA</div>
+              <p className="mt-4">Agência especializada em comunicação estratégica, marketing político e operação eleitoral. Unimos planejamento, criatividade, produção audiovisual e estratégias digitais para construir posicionamento e fortalecer a imagem pública de lideranças e instituições. Premiada no Prêmio CAMP de Marketing Político (Melhor Filme e Melhor Slogan de Campanha).</p>
             </div>
           </Reveal>
         </div>
@@ -500,8 +515,8 @@ function GuiaContent() {
 
       {/* CONVITE — DARK SPREAD */}
       <Section id="convite" band="dark">
-        <div className="relative">
-          <Orb className="absolute -right-20 -top-20 w-[500px] opacity-30 pointer-events-none select-none" style={{ filter: 'hue-rotate(120deg) saturate(1.4)' }} />
+        <div className="relative overflow-hidden">
+          <Orb className="absolute -right-20 -top-20 w-[300px] md:w-[500px] opacity-30 pointer-events-none select-none" style={{ filter: 'hue-rotate(120deg) saturate(1.4)' }} />
           <div className="relative max-w-3xl">
             <Eyebrow><span style={{ color: 'var(--spark)' }}>CONVITE</span></Eyebrow>
             <Reveal delay={0.1}>
@@ -516,16 +531,13 @@ function GuiaContent() {
             </Reveal>
             <Reveal delay={0.3}>
               <div className="flex flex-wrap gap-3 mt-10">
-                <button onClick={() => openModal('Deixe seu contato e retornamos em até 2 dias úteis para agendar a conversa.')} className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-display font-medium text-lg" style={{ background: 'var(--spark)', color: 'var(--ink)' }}>
+                <a href="#contato" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-display font-medium text-lg" style={{ background: 'var(--spark)', color: 'var(--ink)' }}>
                   Agendar uma conversa →
-                </button>
+                </a>
                 <button onClick={downloadConvite} className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-display font-medium text-lg" style={{ border: '1px solid rgba(246,244,237,0.3)', color: 'var(--paper)' }}>
                   <Download className="w-4 h-4" /> Baixar o PDF
                 </button>
               </div>
-            </Reveal>
-            <Reveal delay={0.4}>
-              <div className="font-mono-tag mt-8" style={{ color: 'var(--spark)' }}>RESPOSTA EM ATÉ 2 DIAS ÚTEIS</div>
             </Reveal>
           </div>
         </div>
@@ -548,8 +560,10 @@ function GuiaContent() {
 
 export function GuiaEditorial() {
   return (
-    <EditorialGate>
-      <GuiaContent />
-    </EditorialGate>
+    <MotionConfig reducedMotion="user">
+      <EditorialGate>
+        <GuiaContent />
+      </EditorialGate>
+    </MotionConfig>
   )
 }

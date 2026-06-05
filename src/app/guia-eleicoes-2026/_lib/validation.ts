@@ -38,3 +38,25 @@ export const guiaLeadSchema = z.object({
 
 export type GuiaLeadInput = z.input<typeof guiaLeadSchema>
 export type GuiaLeadParsed = z.output<typeof guiaLeadSchema>
+
+/**
+ * Schema do formulário de Consultoria (#contato). Sem perfil/turnstile — campos
+ * livres de organização/cargo e mensagem. Reutilizável no client e no endpoint
+ * /api/guia-eleicoes/consultoria.
+ */
+export const consultoriaSchema = z.object({
+  nome: z
+    .string()
+    .trim()
+    .transform((s) => s.replace(/\s+/g, ' '))
+    .refine((v) => v.length >= 2, 'Informe seu nome completo')
+    .refine((v) => v.length <= 80, 'Máximo de 80 caracteres')
+    .refine((v) => palavrasValidas(v) >= 2, 'Informe nome e sobrenome'),
+  email: z.string().trim().toLowerCase().email('E-mail inválido'),
+  telefone: z.string().refine(isValidPhoneBR, 'Telefone inválido — informe DDD + número'),
+  organizacao: z.string().trim().max(120, 'Máximo de 120 caracteres').optional().or(z.literal('')),
+  mensagem: z.string().trim().max(2000, 'Máximo de 2000 caracteres').optional().or(z.literal('')),
+})
+
+export type ConsultoriaInput = z.input<typeof consultoriaSchema>
+export type ConsultoriaParsed = z.output<typeof consultoriaSchema>

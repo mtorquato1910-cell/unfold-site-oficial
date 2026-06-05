@@ -100,6 +100,56 @@
   border-color: var(--ink-hair);
 }
 
+/* Rolagem suave para âncoras do índice/nav (TASK 9). */
+html {
+  scroll-behavior: smooth;
+}
+/* Compensa o header sticky ao saltar para âncoras. */
+.guia-editorial :where(section[id]) {
+  scroll-margin-top: 80px;
+}
+
+/* Profundidade (TASK 9): blobs desfocados com drift lento atrás de aberturas. */
+.guia-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(64px);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+  animation: guiaDrift 20s ease-in-out infinite alternate;
+}
+@keyframes guiaDrift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(26px, -22px, 0) scale(1.08);
+  }
+}
+
+/* Micro-interação: lift sutil em cards/linhas interativas. */
+.guia-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.guia-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 30, 41, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .guia-blob {
+    animation: none;
+  }
+  .guia-lift:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
 /* Destaque temporário dos CTAs logo após o desbloqueio (RF-42). */
 @keyframes guiaCtaPulse {
   0%,

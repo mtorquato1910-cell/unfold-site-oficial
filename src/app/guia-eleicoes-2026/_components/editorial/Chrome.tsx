@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useScroll } from 'framer-motion'
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 import { useState } from 'react'
 import { Menu, X, Download } from 'lucide-react'
 import { Orb } from './Orb'
@@ -12,7 +12,7 @@ const nav: [string, string][] = [
   ['#parte-02', '02 Pode × Não pode'],
   ['#parte-03', '03 Operação'],
   ['#parte-04', '04 Erros'],
-  ['#diagnostico', 'Diagnóstico'],
+  ['#contato', 'Consultoria'],
   ['#convite', 'Convite'],
 ]
 
@@ -36,41 +36,49 @@ export function CoBrand({ dark = false, size = 'md' }: { dark?: boolean; size?: 
 }
 
 export function Header() {
-  const { scrollYProgress } = useScroll()
+  const { scrollYProgress, scrollY } = useScroll()
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  useMotionValueEvent(scrollY, 'change', (v) => setScrolled(v > 40)) // shrink após 40px
   const download = useDownloadGuia('header')
   return (
     <>
       <motion.div className="fixed top-0 left-0 right-0 h-[2px] z-50 origin-left" style={{ background: 'var(--mint-deep)', scaleX: scrollYProgress }} />
       <header className="sticky top-0 z-40 backdrop-blur-sm" style={{ background: 'rgba(246,244,237,0.85)', borderBottom: '1px solid var(--ink-hair)' }}>
-        <div className="container-edit flex items-center justify-between py-4">
+        {/* gap-6 separa os três grupos; nav inline só a partir de 1180px, senão drawer */}
+        <div className={`container-edit flex items-center justify-between gap-6 transition-[padding] duration-300 ${scrolled ? 'py-2.5' : 'py-4'}`}>
           <CoBrand />
-          <nav className="hidden xl:flex items-center gap-5 font-mono-tag">
+          <nav className="hidden min-[1180px]:flex items-center gap-x-6 font-mono-tag">
             {nav.map(([href, label]) => (
-              <a key={href} href={href} className="hover:text-[var(--mint-deep)] transition-colors whitespace-nowrap">{label}</a>
+              <a key={href} href={href} className="relative whitespace-nowrap transition-colors hover:text-[var(--mint-deep)] after:absolute after:left-0 after:-bottom-1 after:h-px after:w-0 after:bg-[var(--mint-deep)] after:transition-all hover:after:w-full">{label}</a>
             ))}
           </nav>
-          <div className="flex items-center gap-2">
-            <button onClick={download} className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-display font-medium" style={{ background: 'var(--mint)', color: 'var(--ink)' }}>
+          <div className="flex items-center gap-3 shrink-0">
+            <button onClick={download} className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-display font-medium transition-transform active:scale-95 hover:-translate-y-0.5 motion-reduce:transform-none" style={{ background: 'var(--mint)', color: 'var(--ink)' }}>
               <Download className="w-4 h-4" /> Baixar PDF
             </button>
-            <button onClick={() => setOpen(true)} className="xl:hidden p-2" aria-label="Abrir menu">
+            <button onClick={() => setOpen(true)} className="min-[1180px]:hidden p-3 -mr-2" aria-label="Abrir menu">
               <Menu className="w-5 h-5" />
             </button>
           </div>
         </div>
       </header>
       {open && (
-        <div className="fixed inset-0 z-[60]" style={{ background: 'var(--paper)' }}>
+        <div className="fixed inset-0 z-[60] flex flex-col" style={{ background: 'var(--paper)' }}>
           <div className="container-edit py-6 flex items-center justify-between">
             <CoBrand />
-            <button onClick={() => setOpen(false)} aria-label="Fechar menu" className="p-2"><X /></button>
+            <button onClick={() => setOpen(false)} aria-label="Fechar menu" className="p-3 -mr-2"><X /></button>
           </div>
-          <nav className="container-edit flex flex-col gap-5 mt-8 font-serif text-2xl">
+          <nav className="container-edit flex flex-col gap-5 mt-6 font-serif text-2xl">
             {nav.map(([href, label]) => (
               <a key={href} href={href} onClick={() => setOpen(false)} style={{ color: 'var(--ink)' }}>{label}</a>
             ))}
           </nav>
+          <div className="container-edit mt-auto pb-10 pt-8">
+            <button onClick={() => { setOpen(false); download() }} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-display font-medium" style={{ background: 'var(--mint)', color: 'var(--ink)' }}>
+              <Download className="w-4 h-4" /> Baixar PDF
+            </button>
+          </div>
         </div>
       )}
     </>
