@@ -37,7 +37,7 @@ export type PublicSiteSettings = {
 const DEFAULTS: PublicSiteSettings = {
   tagline: 'Assessoria de growth para empresas com vendas complexas.',
   cidade: 'Maceió – AL · Brasil · Atuação nacional',
-  email_contato: 'oi@unfoldgrowth.com.br',
+  email_contato: 'tecnologia@unfoldgrowth.com.br',
   telefone: null,
   whatsapp: null,
   endereco: null,

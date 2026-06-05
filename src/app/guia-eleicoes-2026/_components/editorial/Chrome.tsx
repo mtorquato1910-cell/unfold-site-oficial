@@ -88,7 +88,7 @@ export function Header() {
 export function Footer() {
   return (
     <footer style={{ background: 'var(--paper-band)', borderTop: '1px solid var(--ink-hair)' }}>
-      <div className="container-edit py-16 grid md:grid-cols-3 gap-10">
+      <div className="container-edit py-16 grid md:grid-cols-2 gap-10">
         <div>
           <CoBrand />
           <p className="mt-6 text-sm max-w-xs" style={{ color: 'var(--ink-faint)' }}>
@@ -96,12 +96,8 @@ export function Footer() {
           </p>
         </div>
         <div>
-          <div className="font-mono-tag mb-3">Unfold</div>
-          <p className="text-sm" style={{ color: 'var(--ink-body)' }}>contato@unfoldgrowth.com.br</p>
-        </div>
-        <div>
-          <div className="font-mono-tag mb-3">Feat.Work</div>
-          <p className="text-sm" style={{ color: 'var(--ink-body)' }}>contato@feat.work</p>
+          <div className="font-mono-tag mb-3">Contato</div>
+          <a href="mailto:tecnologia@unfoldgrowth.com.br" className="text-sm underline-offset-2 hover:underline" style={{ color: 'var(--ink-body)' }}>tecnologia@unfoldgrowth.com.br</a>
         </div>
       </div>
       <div className="container-edit pb-10 font-mono-tag flex flex-wrap gap-3 justify-between" style={{ borderTop: '1px solid var(--ink-hair)', paddingTop: '1.5rem' }}>

@@ -11,7 +11,7 @@ import { trackGuia } from '../../_lib/analytics'
 import { getStoredOrigin } from '../../_lib/origin'
 import { consultoriaSchema, type ConsultoriaInput } from '../../_lib/validation'
 
-const CONTATO_EMAIL = 'contato@unfoldgrowth.com.br'
+const CONTATO_EMAIL = 'tecnologia@unfoldgrowth.com.br'
 
 /** Fallback de resiliência: abre o cliente de e-mail com os dados preenchidos. */
 function mailtoFallback(v: ConsultoriaInput) {

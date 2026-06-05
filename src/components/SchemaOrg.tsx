@@ -14,7 +14,7 @@ export function OrganizationSchema() {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
-      email: 'contato@unfoldgrowth.com.br',
+      email: 'tecnologia@unfoldgrowth.com.br',
       availableLanguage: 'Portuguese',
     },
   }

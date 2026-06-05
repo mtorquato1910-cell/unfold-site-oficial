@@ -153,7 +153,7 @@ export default async function DiagnosticoResultadoHashPage({ params }: Props) {
   const urls = await getCalendlyURLsFromSettings()
   const calendlyUrl = resolveCalendlyURL(urls, diag.faixa_fit)
   const contactEmail =
-    (await getContactEmailFromSettings()) || 'contato@unfoldgrowth.com.br'
+    (await getContactEmailFromSettings()) || 'tecnologia@unfoldgrowth.com.br'
 
   return (
     <main className="min-h-screen pt-16">
