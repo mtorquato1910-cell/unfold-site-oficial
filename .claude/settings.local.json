@@ -129,7 +129,15 @@
       "PowerShell($c = Get-NetTCPConnection -LocalPort 3002 -State Listen -ErrorAction SilentlyContinue; if \\($c\\) { Stop-Process -Id $c.OwningProcess -Force; \"Dev encerrado\" } else { \"Nada na 3002\" })",
       "Bash(node scripts/migrate-guia-prose.mjs \"guia_eleicoes_2026_diagramado \\(1\\) \\(2\\).html\")",
       "Bash(git checkout *)",
-      "Bash(grep -nE \"include|exclude|\\\\\"\\\\\\\\.\" tsconfig.json)"
+      "Bash(grep -nE \"include|exclude|\\\\\"\\\\\\\\.\" tsconfig.json)",
+      "Bash(ls src/lib/format/phone-mask.*)",
+      "Bash(ls src/lib/validation/)",
+      "Bash(sed -i '294,387d' src/app/guia-eleicoes-2026/_components/editorial/Visualizations.tsx)",
+      "Bash(sed -n '290,296p' src/app/guia-eleicoes-2026/_components/editorial/Visualizations.tsx)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'feat\\(guia-eleicoes-2026\\): ajustes do redesign + form de consultoria com RD Station *)",
+      "Bash(git branch *)",
+      "Bash(git push *)"
     ]
   }
 }
