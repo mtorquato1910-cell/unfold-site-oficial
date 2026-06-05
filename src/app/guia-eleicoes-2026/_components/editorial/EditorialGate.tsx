@@ -8,14 +8,13 @@ import { captureOrigin } from '../../_lib/origin'
 import { trackGuia } from '../../_lib/analytics'
 import { GateContext, type UnlockData } from '../gate-context'
 import { LeadModal } from '../LeadModal'
+import { fetchAndSaveGuiaPdf } from './actions'
 
 const DEFAULT_MSG =
   'Preencha seus dados para desbloquear o estudo completo, baixar o PDF e compartilhar com sua equipe.'
 const OPEN_MS = 600 // abre o modal logo após carregar (conteúdo já nasce bloqueado)
 const REOPEN_MS = 20000 // se fechar sem cadastrar, reabre uma vez
 const HIGHLIGHT_MS = 4000 // RF-42
-const PDF_PATH = '/static/Guia-Eleicoes-2026-Unfold-FeatWork.pdf'
-const PDF_NAME = 'Guia-Eleicoes-2026-Unfold-FeatWork.pdf'
 
 /**
  * Gate do redesign editorial. O conteúdo (children) nasce BLOQUEADO: borrado, sem
@@ -81,18 +80,8 @@ export function EditorialGate({ children }: { children: ReactNode }) {
     setDismissed(false)
     trackGuia('lead_capturado', { perfil: data.perfil }) // RF-20
 
-    // Download automático do PDF assim que o cadastro conclui.
-    try {
-      const a = document.createElement('a')
-      a.href = PDF_PATH
-      a.download = PDF_NAME
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-      trackGuia('pdf_baixado', { lead_email_hash: data.emailHash, origem_botao: 'auto_unlock' })
-    } catch {
-      /* download best-effort — não bloqueia a liberação */
-    }
+    // Download automático do PDF (endpoint protegido; o cookie acabou de ser emitido).
+    void fetchAndSaveGuiaPdf('auto_unlock')
 
     toast.success('Pronto! O estudo está liberado e o PDF está baixando.', {
       description: 'Você também pode compartilhar com sua equipe.',

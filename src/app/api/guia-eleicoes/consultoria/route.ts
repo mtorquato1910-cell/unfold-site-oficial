@@ -12,10 +12,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { rateLimit, resolveClientIP } from '@/lib/rate-limit'
+import { verifyTurnstile } from '@/lib/security/turnstile'
 import { enforceContato } from '@/lib/validation/enforce-contato'
 import { syncConsultoriaToRD } from '@/lib/crm/rd-consultoria'
 import { consultoriaSchema } from '@/app/guia-eleicoes-2026/_lib/validation'
 import { anonymizeIp } from '@/app/guia-eleicoes-2026/_lib/anonymize-ip'
+import {
+  UNLOCK_COOKIE_NAME,
+  signUnlockValue,
+  unlockCookieOptions,
+} from '@/app/guia-eleicoes-2026/_lib/unlock-cookie'
 
 const DEFAULT_ORIGINS = ['https://eleicoes.unfoldgrowth.com.br', 'https://unfoldgrowth.com.br']
 
@@ -88,7 +94,19 @@ export async function POST(req: NextRequest) {
     )
   }
   const data = parsed.data
-  const body = raw as { origin?: OriginPayload }
+  const body = raw as { origin?: OriginPayload; turnstileToken?: string }
+
+  // 3.5 Turnstile (anti-bot). Em dev casa o bypass do widget; em produção verifica de verdade.
+  const isDev = process.env.NODE_ENV !== 'production'
+  const ts =
+    isDev && body.turnstileToken === 'dev-bypass'
+      ? { ok: true as const }
+      : await verifyTurnstile(body.turnstileToken, ipReal)
+  if (!ts.ok) {
+    log('turnstile_failed', { reason: ts.reason })
+    return NextResponse.json({ ok: false, error: 'captcha_failed' }, { status: 403 })
+  }
+
   const origin = body.origin || {}
   const email = data.email
   const organizacao = data.organizacao?.trim() || undefined
@@ -177,5 +195,7 @@ export async function POST(req: NextRequest) {
     })
     .catch(() => {})
 
-  return NextResponse.json({ ok: true, lead_id: leadId })
+  const okRes = NextResponse.json({ ok: true, lead_id: leadId })
+  okRes.cookies.set(UNLOCK_COOKIE_NAME, signUnlockValue(Date.now()), unlockCookieOptions())
+  return okRes
 }

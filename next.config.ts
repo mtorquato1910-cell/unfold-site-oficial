@@ -1,13 +1,17 @@
 import { withPayload } from '@payloadcms/next/withPayload'
 import type { NextConfig } from 'next'
 
-// Sprint hotfix 2026-05-15 (Bug 3): HSTS em deploy gradual.
-// Fase 1 (atual): max-age=300 (5min), SEM preload, SEM includeSubDomains — reversível.
-// Fase 2 (follow-up, após 48h estável): max-age=2592000 (30d).
-// Fase 3 (follow-up, após 7d estável): max-age=63072000; includeSubDomains; preload.
-const HSTS_MAX_AGE_PHASE_1 = '300'
+// HSTS em deploy gradual (Bug 3).
+// Fase 1: max-age=300 (5min). Fase 2 (ATUAL, 2026-06-05): max-age=2592000 (30d),
+// ainda SEM includeSubDomains/preload — reversível. Fase 3 (follow-up, após estável):
+// max-age=63072000; includeSubDomains; preload.
+const HSTS_MAX_AGE = '2592000'
 
 const nextConfig: NextConfig = {
+  // Inclui o PDF privado (fora de /public) no bundle do endpoint que o serve.
+  outputFileTracingIncludes: {
+    '/api/guia-eleicoes/pdf': ['./private-assets/**'],
+  },
   images: {
     remotePatterns: [
       {
@@ -52,8 +56,8 @@ const nextConfig: NextConfig = {
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-          // Bug 3 fix — HSTS Fase 1 (reversível). NÃO adicionar preload nem includeSubDomains aqui.
-          { key: 'Strict-Transport-Security', value: `max-age=${HSTS_MAX_AGE_PHASE_1}` },
+          // HSTS Fase 2 (30d). NÃO adicionar preload nem includeSubDomains até a Fase 3.
+          { key: 'Strict-Transport-Security', value: `max-age=${HSTS_MAX_AGE}` },
           // Promove qualquer recurso http:// para https:// no nível do browser.
           { key: 'Content-Security-Policy', value: 'upgrade-insecure-requests' },
         ],

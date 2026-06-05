@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 import { formatPhoneBR, extractDigits } from '@/lib/format/phone-mask'
 import { useContatoCheck } from '@/lib/validation/use-contato-check'
+import { GuiaTurnstile } from '../GuiaTurnstile'
 import { trackGuia } from '../../_lib/analytics'
 import { getStoredOrigin } from '../../_lib/origin'
 import { consultoriaSchema, type ConsultoriaInput } from '../../_lib/validation'
@@ -38,6 +39,7 @@ function mailtoFallback(v: ConsultoriaInput) {
 export function ContatoForm() {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
   const { emailError, phoneError, checkingEmail, checkingPhone, checkEmail, checkPhone } =
     useContatoCheck()
 
@@ -78,6 +80,7 @@ export function ContatoForm() {
             telefone: extractDigits(values.telefone),
             organizacao: values.organizacao || undefined,
             mensagem: values.mensagem || undefined,
+            turnstileToken,
             origin: {
               utm_source: origin.utm_source,
               utm_medium: origin.utm_medium,
@@ -218,9 +221,12 @@ export function ContatoForm() {
           />
         </div>
 
+        {/* Anti-bot (widget real em prod; bypass em dev) */}
+        <GuiaTurnstile onVerify={setTurnstileToken} />
+
         <button
           type="submit"
-          disabled={!isValid || submitting || checkingEmail || checkingPhone || !!emailError || !!phoneError}
+          disabled={!isValid || submitting || checkingEmail || checkingPhone || !!emailError || !!phoneError || !turnstileToken}
           className="mt-1 inline-flex items-center justify-center rounded-full px-7 py-4 text-[15px] font-semibold font-display transition-opacity disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none"
           style={{ background: 'var(--mint)', color: 'var(--ink)' }}
         >

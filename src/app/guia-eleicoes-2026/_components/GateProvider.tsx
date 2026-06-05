@@ -77,7 +77,7 @@ export function GateProvider() {
     // Download automático do PDF assim que o cadastro é concluído.
     try {
       const a = document.createElement('a')
-      a.href = '/static/Guia-Eleicoes-2026-Unfold-FeatWork.pdf'
+      a.href = '/api/guia-eleicoes/pdf'
       a.download = 'Guia-Eleicoes-2026-Unfold-FeatWork.pdf'
       document.body.appendChild(a)
       a.click()

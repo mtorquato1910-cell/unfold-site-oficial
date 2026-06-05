@@ -23,6 +23,11 @@ import { syncGuiaToRD } from '@/lib/crm/rd-guia-eleicoes'
 import { enforceContato } from '@/lib/validation/enforce-contato'
 import { guiaLeadSchema } from '@/app/guia-eleicoes-2026/_lib/validation'
 import { anonymizeIp } from '@/app/guia-eleicoes-2026/_lib/anonymize-ip'
+import {
+  UNLOCK_COOKIE_NAME,
+  signUnlockValue,
+  unlockCookieOptions,
+} from '@/app/guia-eleicoes-2026/_lib/unlock-cookie'
 import type { PerfilEleitoral } from '@/app/guia-eleicoes-2026/_lib/perfil'
 
 const DEFAULT_ORIGINS = [
@@ -217,7 +222,10 @@ export async function POST(req: NextRequest) {
     })
     .catch(() => {})
 
-  return NextResponse.json({ ok: true, lead_id: leadId })
+  // Cookie de desbloqueio (gate): autoriza o download do PDF protegido.
+  const okRes = NextResponse.json({ ok: true, lead_id: leadId })
+  okRes.cookies.set(UNLOCK_COOKIE_NAME, signUnlockValue(Date.now()), unlockCookieOptions())
+  return okRes
 }
 
 /** E-mail de alerta para reprocesso manual em falha do RD (RF-25). */

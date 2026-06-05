@@ -2,7 +2,7 @@
 
 import { Download } from 'lucide-react'
 
-const PDF_PATH = '/static/Guia-Eleicoes-2026-Unfold-FeatWork.pdf'
+const PDF_PATH = '/api/guia-eleicoes/pdf'
 const PDF_NAME = 'Guia-Eleicoes-2026-Unfold-FeatWork.pdf'
 
 /**
