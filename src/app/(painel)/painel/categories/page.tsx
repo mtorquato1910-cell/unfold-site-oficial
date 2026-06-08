@@ -8,7 +8,7 @@ export default async function CategoriesPage() {
   const user = await getSession()
   if (!user) redirect('/admin/login')
 
-  const result = await getCollection('categories', { limit: 100, sort: 'name' })
+  const result = await getCollection('categories', { limit: 100, sort: 'nome' })
 
   return (
     <PainelLayout user={user}>

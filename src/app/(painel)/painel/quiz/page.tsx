@@ -8,7 +8,7 @@ export default async function QuizPage() {
   const user = await getSession()
   if (!user) redirect('/admin/login')
 
-  const result = await getCollection('quiz-questions', { sort: 'order', limit: 200 })
+  const result = await getCollection('quiz-questions', { sort: 'ordem', limit: 200 })
 
   return (
     <PainelLayout user={user}>

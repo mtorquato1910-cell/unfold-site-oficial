@@ -25,6 +25,10 @@ out/
 dev.db
 dev.db-journal
 payload-types.ts
+# importMap é artefato gerado por `payload generate:importmap` (roda no vercel-build.sh).
+# Versioná-lo causava bug: cópia stale com handler de storage errado (Vercel Blob vs S3)
+# sombreava a versão correta gerada no build. NÃO versionar.
+src/app/(payload)/admin/importMap.js
 
 # Environment variables
 .env

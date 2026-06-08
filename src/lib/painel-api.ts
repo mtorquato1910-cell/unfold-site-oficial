@@ -14,7 +14,8 @@ export async function getCollectionCount(collection: string): Promise<number> {
       pagination: false,
     })
     return result.totalDocs ?? 0
-  } catch {
+  } catch (e) {
+    console.error(`[painel-api] getCollectionCount('${collection}') falhou:`, e)
     return 0
   }
 }
@@ -40,7 +41,8 @@ export async function getRecentLeads(limit = 5) {
       sort: '-createdAt',
     })
     return result.docs ?? []
-  } catch {
+  } catch (e) {
+    console.error('[painel-api] getRecentLeads falhou:', e)
     return []
   }
 }
@@ -54,7 +56,8 @@ export async function getRecentDiagnosticos(limit = 4) {
       sort: '-createdAt',
     })
     return result.docs ?? []
-  } catch {
+  } catch (e) {
+    console.error('[painel-api] getRecentDiagnosticos falhou:', e)
     return []
   }
 }
@@ -71,7 +74,8 @@ export async function getCollection(collection: string, options?: { limit?: numb
     })
     const docs = (result.docs ?? []).map((d: any) => ({ ...d, id: String(d.id) }))
     return { docs, totalDocs: result.totalDocs ?? 0, totalPages: result.totalPages ?? 1, page: result.page ?? 1 }
-  } catch {
+  } catch (e) {
+    console.error(`[painel-api] getCollection('${collection}') falhou:`, e)
     return { docs: [], totalDocs: 0, totalPages: 1, page: 1 }
   }
 }
@@ -80,7 +84,8 @@ export async function getDocument(collection: string, id: string) {
   try {
     const payload = await getPayloadInstance()
     return await payload.findByID({ collection: collection as any, id })
-  } catch {
+  } catch (e) {
+    console.error(`[painel-api] getDocument('${collection}', '${id}') falhou:`, e)
     return null
   }
 }
