@@ -27,6 +27,8 @@ import EmailLogs from './src/collections/EmailLogs'
 import FAQs from './src/collections/FAQs'
 import CalculadoraResults from './src/collections/CalculadoraResults'
 import CalculadoraEvents from './src/collections/CalculadoraEvents'
+import MapaIcpResults from './src/collections/MapaIcpResults'
+import MapaIcpEvents from './src/collections/MapaIcpEvents'
 import Redirects from './src/collections/Redirects'
 import SiteSettings from './src/globals/SiteSettings'
 import HomeSettings from './src/globals/HomeSettings'
@@ -100,6 +102,9 @@ export default buildConfig({
     CalculadoraResults,
     // Calculadora v2 — Sprint 1 (S1.7)
     CalculadoraEvents,
+    // Radar de Comitê de Compra (Mapa de ICP)
+    MapaIcpResults,
+    MapaIcpEvents,
     // Sprint 10 (SEO Manager)
     Redirects,
   ],

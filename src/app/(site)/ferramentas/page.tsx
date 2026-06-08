@@ -1,4 +1,4 @@
-import { ArrowRight, Calculator, ClipboardList } from 'lucide-react'
+import { ArrowRight, Calculator, ClipboardList, Radar } from 'lucide-react'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -28,6 +28,16 @@ const TOOLS = [
     href: '/diagnostico',
     accent: 'text-secondary',
     border: 'hover:border-secondary/30',
+  },
+  {
+    icon: Radar,
+    tag: 'Gratuito',
+    title: 'Radar de Comitê de Compra',
+    desc: 'Monte o ICP estrutural do seu negócio e o mapa do comitê de compra — com o ângulo certo para falar com cada decisor. Mapa de ICP em ~4 minutos.',
+    cta: 'Montar meu mapa',
+    href: '/ferramentas/mapa-icp',
+    accent: 'text-primary',
+    border: 'hover:border-primary/30',
   },
 ]
 
