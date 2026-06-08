@@ -159,7 +159,21 @@
       "Bash(git --no-pager show 30cf592:\"src/app/\\(payload\\)/admin/importMap.ts\")",
       "Bash(git --no-pager show 30cf592 -- src/collections/Cases.ts src/collections/Posts.ts src/collections/Testimonials.ts src/admin/AdminNav.tsx)",
       "Bash(git commit -m ' *)",
-      "PowerShell(npx tsc --noEmit)"
+      "PowerShell(npx tsc --noEmit)",
+      "Read(//c/Users/mathe/OneDrive/Área de Trabalho/Site unfold/**)",
+      "Bash(node -e \"const f=require\\('next/font/google'\\); console.log\\('Host_Grotesk' in f ? 'YES Host_Grotesk' : 'NO Host_Grotesk'\\); console.log\\(Object.keys\\(f\\).filter\\(k=>k.toLowerCase\\(\\).includes\\('grotesk'\\)\\).join\\(', '\\)\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const p=require.resolve\\('next/font/google'\\); const d=fs.readFileSync\\(p.replace\\('index.js','index.d.ts'\\),'utf8'\\); const m=d.match\\(/Host\\\\w*Grotesk|Hanken\\\\w*|Grotesk\\\\w*/g\\); console.log\\([...new Set\\(m||[]\\)].join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const g=require\\('next/font/google'\\); console.log\\('Host_Grotesk' in g, 'JetBrains_Mono' in g, 'Inter' in g\\)\")",
+      "Bash(node -e \"const f=require\\('next/font/google'\\); console.log\\(Object.keys\\(f\\).filter\\(k=>/grotesk|host/i.test\\(k\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"try{const m=require\\('next/dist/compiled/@next/font/dist/google/font-data.json'\\); console.log\\(!!m['Host Grotesk'], !!m['JetBrains Mono']\\)}catch\\(e\\){console.log\\('no font-data.json',e.message\\)}\")",
+      "Bash(node -e \"const f=require\\('next/font/google'\\); const ks=Object.keys\\(f\\); console.log\\('total',ks.length\\); console.log\\(ks.filter\\(k=>/Grotesk/.test\\(k\\)\\).join\\(', '\\) || 'none with Grotesk'\\); console.log\\(ks.filter\\(k=>/JetBrains|Inter/.test\\(k\\)\\).join\\(', '\\)\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\);const path=require\\('path'\\);const base=path.dirname\\(require.resolve\\('next/font/package.json'\\)\\);const dts=path.join\\(base,'google','index.d.ts'\\);console.log\\(dts, fs.existsSync\\(dts\\)\\);const c=fs.readFileSync\\(dts,'utf8'\\);const names=[...c.matchAll\\(/export declare function \\(\\\\w+\\)/g\\)].map\\(m=>m[1]\\);console.log\\('Host_Grotesk?',names.includes\\('Host_Grotesk'\\)\\);console.log\\(names.filter\\(n=>/Grotesk|Inter|JetBrains/.test\\(n\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\);const c=fs.readFileSync\\('node_modules/next/font/google/index.d.ts','utf8'\\);console.log\\('len',c.length\\);console.log\\('HostGrotesk',/Host_?Grotesk/.test\\(c\\)\\);const names=[...c.matchAll\\(/\\(?:declare function|export function|function \\)\\\\s*\\([A-Z][A-Za-z0-9_]+\\)/g\\)].map\\(m=>m[1]\\);console.log\\('count',names.length\\);console.log\\(names.filter\\(n=>/Inter|JetBrains|Grotesk/.test\\(n\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\);const c=fs.readFileSync\\('node_modules/next/font/google/index.d.ts','utf8'\\);console.log\\(JSON.stringify\\(c\\)\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\);const dir='node_modules/next/dist/compiled/@next/font/dist/google';console.log\\(fs.readdirSync\\(dir\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const m=require\\('./node_modules/next/dist/compiled/@next/font/dist/google/google-fonts-metadata.js'\\);const data=m.googleFontsMetadata||m.default||m;const keys=Object.keys\\(data\\);console.log\\('Host Grotesk:', keys.includes\\('Host Grotesk'\\)\\);console.log\\('Inter:', keys.includes\\('Inter'\\)\\);console.log\\('JetBrains Mono:', keys.includes\\('JetBrains Mono'\\)\\);console.log\\(keys.filter\\(k=>/Grotesk/.test\\(k\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const m=require\\('./node_modules/next/dist/compiled/@next/font/dist/google/google-fonts-metadata.js'\\);const data=m.googleFontsMetadata||m.default||m;console.log\\('Host Grotesk:',JSON.stringify\\(data['Host Grotesk']\\)\\);console.log\\('JetBrains Mono:',JSON.stringify\\(data['JetBrains Mono']\\)\\)\")",
+      "Bash(node -e \"const i=require\\('lucide-react'\\); console.log\\('Radar' in i ? 'Radar OK' : 'Radar MISSING'\\)\")"
     ]
   }
 }
