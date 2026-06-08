@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de ICP & Comitê de Compra — Unfold</title>
+<meta name="description" content="Descubra quem realmente vale o seu pipeline e como falar com cada decisor do comitê de compra. Ferramenta gratuita para operações de vendas complexas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#001E29;
+    --navy-2:#062A37;
+    --navy-3:#0A323F;
+    --mint:#6DF9C6;
+    --mint-dim:rgba(109,249,198,.14);
+    --ink:#EAF4F2;
+    --muted:#8AA6AD;
+    --line:rgba(109,249,198,.18);
+    --line-soft:rgba(234,244,242,.08);
+    --display:'Host Grotesk',sans-serif;
+    --body:'Inter',sans-serif;
+    --mono:'JetBrains Mono',monospace;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--navy);
+    color:var(--ink);
+    font-family:var(--body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(var(--line-soft) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 75%);
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;position:relative;z-index:1}
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--mint);display:inline-flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--mint);display:inline-block}
+  h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.04;letter-spacing:-.02em}
+  .muted{color:var(--muted)}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);
+    background:rgba(0,30,41,.72);border-bottom:1px solid var(--line-soft)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .logo{font-family:var(--display);font-weight:800;letter-spacing:.18em;font-size:20px;color:var(--ink)}
+  .logo span{color:var(--mint)}
+  .nav-cta{font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--navy);background:var(--mint);padding:11px 18px;border-radius:2px;text-decoration:none;
+    font-weight:600;transition:transform .2s ease,box-shadow .2s ease}
+  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(109,249,198,.25)}
+
+  /* HERO */
+  .hero{padding:96px 0 88px;position:relative}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  .hero h1{font-size:clamp(40px,5.6vw,68px);margin:26px 0 22px}
+  .hero h1 em{font-style:normal;color:var(--mint)}
+  .hero p.lead{font-size:19px;color:var(--muted);max-width:33ch}
+  .cta-row{display:flex;align-items:center;gap:22px;margin-top:38px;flex-wrap:wrap}
+  .btn{font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;
+    background:var(--mint);color:var(--navy);padding:16px 28px;border-radius:2px;text-decoration:none;
+    display:inline-flex;align-items:center;gap:12px;transition:transform .2s ease,box-shadow .2s ease}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(109,249,198,.28)}
+  .btn svg{transition:transform .2s ease}
+  .btn:hover svg{transform:translateX(4px)}
+  .cta-note{font-family:var(--mono);font-size:12px;letter-spacing:.05em;color:var(--muted)}
+
+  /* committee map visual */
+  .map{position:relative;aspect-ratio:1/1;max-width:460px;margin-left:auto;width:100%}
+  .map svg{width:100%;height:100%;overflow:visible}
+  .node{fill:var(--navy-2);stroke:var(--line);stroke-width:1.2}
+  .node-label{font-family:var(--mono);font-size:11px;font-weight:600;fill:var(--ink);letter-spacing:.04em}
+  .edge{stroke:rgba(109,249,198,.35);stroke-width:1.2;fill:none}
+  .center{fill:var(--mint)}
+  .center-label{font-family:var(--mono);font-size:11px;font-weight:600;fill:var(--navy);letter-spacing:.06em}
+  .veto{stroke:var(--mint);stroke-width:1.6;fill:rgba(109,249,198,.12)}
+  .veto-tag{font-family:var(--mono);font-size:9.5px;font-weight:600;fill:var(--mint);letter-spacing:.1em}
+  .pulse{transform-origin:center;animation:pulse 3.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+
+  /* SECTION SHELL */
+  section{padding:84px 0;position:relative}
+  .sec-head{max-width:54ch}
+  .sec-head h2{font-size:clamp(28px,3.6vw,42px);margin:18px 0 16px}
+  .sec-head p{color:var(--muted);font-size:17px}
+  .divider{height:1px;background:var(--line-soft);max-width:var(--maxw);margin:0 auto}
+
+  /* PROBLEM */
+  .problem{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line-soft);
+    border-radius:4px;overflow:hidden;margin-top:48px}
+  .problem > div{padding:38px}
+  .problem .bad{background:transparent;border-right:1px solid var(--line-soft)}
+  .problem .good{background:linear-gradient(180deg,var(--mint-dim),transparent)}
+  .tag-bad{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .tag-good{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mint)}
+  .problem h3{font-size:22px;margin:14px 0 10px}
+  .problem p{color:var(--muted);font-size:15.5px}
+
+  /* CARDS */
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:48px}
+  .card{background:var(--navy-2);border:1px solid var(--line-soft);border-radius:4px;padding:30px;
+    position:relative;transition:border-color .25s ease,transform .25s ease}
+  .card::before{content:"";position:absolute;top:0;left:0;width:38px;height:2px;background:var(--mint)}
+  .card:hover{border-color:var(--line);transform:translateY(-3px)}
+  .card .idx{font-family:var(--mono);font-size:12px;color:var(--mint);letter-spacing:.1em}
+  .card h3{font-size:20px;margin:16px 0 10px}
+  .card p{color:var(--muted);font-size:15px}
+
+  /* STEPS */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:48px;
+    border-top:1px solid var(--line-soft)}
+  .step{padding:34px 28px 34px 0;border-right:1px solid var(--line-soft);position:relative}
+  .step:last-child{border-right:none;padding-right:0}
+  .step .num{font-family:var(--display);font-weight:800;font-size:40px;color:var(--mint);line-height:1}
+  .step h3{font-size:19px;margin:18px 0 8px}
+  .step p{color:var(--muted);font-size:15px}
+
+  /* DIFFERENTIATION */
+  .diff{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-top:42px}
+  .diff-block{border-left:2px solid var(--mint);padding-left:24px}
+  .diff-block h3{font-size:24px;margin-bottom:12px}
+  .diff-block p{color:var(--muted)}
+
+  /* AUDIENCE */
+  .aud{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:42px}
+  .aud-col{padding:30px;border:1px solid var(--line-soft);border-radius:4px}
+  .aud-col h3{font-size:18px;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+  .aud-col ul{list-style:none;display:flex;flex-direction:column;gap:13px}
+  .aud-col li{color:var(--muted);font-size:15px;padding-left:24px;position:relative}
+  .aud-col li::before{position:absolute;left:0;font-family:var(--mono);font-size:13px}
+  .aud-col.is li::before{content:"+";color:var(--mint)}
+  .aud-col.not li::before{content:"–";color:var(--muted)}
+
+  /* FINAL CTA */
+  .final{background:linear-gradient(160deg,var(--navy-3),var(--navy));
+    border:1px solid var(--line);border-radius:6px;padding:64px 48px;text-align:center;margin:40px 0}
+  .final h2{font-size:clamp(28px,4vw,44px);max-width:20ch;margin:18px auto 14px}
+  .final h2 em{font-style:normal;color:var(--mint)}
+  .final p{color:var(--muted);max-width:48ch;margin:0 auto 34px}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--line-soft);padding:42px 0}
+  .foot-in{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot-in .logo{font-size:16px}
+  .foot-links{display:flex;gap:24px}
+  .foot-links a{color:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:.06em;
+    text-transform:uppercase;text-decoration:none}
+  .foot-links a:hover{color:var(--mint)}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  [data-delay="1"]{transition-delay:.08s}
+  [data-delay="2"]{transition-delay:.16s}
+  [data-delay="3"]{transition-delay:.24s}
+
+  @media(max-width:900px){
+    .hero-grid,.problem,.cards,.steps,.diff,.aud{grid-template-columns:1fr}
+    .map{margin:8px auto 0;max-width:380px}
+    .problem .bad{border-right:none;border-bottom:1px solid var(--line-soft)}
+    .step{border-right:none;border-bottom:1px solid var(--line-soft);padding:28px 0}
+    .step:last-child{border-bottom:none}
+    .hero{padding:64px 0 56px}
+    section{padding:60px 0}
+    .final{padding:48px 26px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    .pulse{animation:none;opacity:.8}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <div class="logo">UNF<span>O</span>LD</div>
+    <a href="#start" class="nav-cta" data-cta="nav">Montar meu mapa</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow reveal in">Mapa de ICP &amp; Comitê de Compra</span>
+      <h1 class="reveal in" data-delay="1">Em venda complexa, você não vende para <em>uma pessoa</em>.</h1>
+      <p class="lead reveal in" data-delay="2">Monte o ICP estrutural do seu negócio e o mapa do comitê de compra — com o ângulo certo para falar com cada decisor.</p>
+      <div class="cta-row reveal in" data-delay="3">
+        <a href="#start" id="start" class="btn" data-cta="hero">
+          Montar meu mapa
+          <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M1 7h15M11 1l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <span class="cta-note">~4 min · gratuito · sem compromisso</span>
+      </div>
+    </div>
+
+    <div class="map reveal in" data-delay="2" aria-hidden="true">
+      <svg viewBox="0 0 400 400">
+        <!-- edges -->
+        <path class="edge" d="M200 200 L200 70"/>
+        <path class="edge" d="M200 200 L330 140"/>
+        <path class="edge" d="M200 200 L330 280"/>
+        <path class="edge" d="M200 200 L200 340"/>
+        <path class="edge" d="M200 200 L70 280"/>
+        <path class="edge pulse" d="M200 200 L70 140"/>
+        <!-- center -->
+        <circle class="center" cx="200" cy="200" r="34"/>
+        <text class="center-label" x="200" y="204" text-anchor="middle">DECISÃO</text>
+        <!-- nodes -->
+        <g>
+          <rect class="node" x="160" y="46" width="80" height="36" rx="3"/>
+          <text class="node-label" x="200" y="69" text-anchor="middle">CEO</text>
+        </g>
+        <g>
+          <rect class="node" x="288" y="120" width="84" height="36" rx="3"/>
+          <text class="node-label" x="330" y="143" text-anchor="middle">CFO</text>
+        </g>
+        <g>
+          <rect class="node" x="288" y="262" width="84" height="36" rx="3"/>
+          <text class="node-label" x="330" y="285" text-anchor="middle">CMO</text>
+        </g>
+        <g>
+          <rect class="node" x="158" y="322" width="84" height="36" rx="3"/>
+          <text class="node-label" x="200" y="345" text-anchor="middle">CRO</text>
+        </g>
+        <g>
+          <rect class="node" x="28" y="262" width="84" height="36" rx="3"/>
+          <text class="node-label" x="70" y="285" text-anchor="middle">TI / CIO</text>
+        </g>
+        <!-- veto node -->
+        <g>
+          <rect class="veto" x="22" y="120" width="96" height="44" rx="3"/>
+          <text class="node-label" x="70" y="140" text-anchor="middle">COMPRAS</text>
+          <text class="veto-tag" x="70" y="156" text-anchor="middle">VETO</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<div class="divider"></div>
+
+<!-- PROBLEM -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">O problema</span>
+      <h2>Um ICP chapado não sustenta uma venda de comitê.</h2>
+      <p>Quanto maior o ticket e o ciclo, mais gente decide — e cada uma quer uma coisa diferente. Tratar tudo como uma persona só é o que faz pipeline qualificado morrer no meio do caminho.</p>
+    </div>
+    <div class="problem reveal" data-delay="1">
+      <div class="bad">
+        <span class="tag-bad">Abordagem comum</span>
+        <h3>Uma persona</h3>
+        <p>Uma descrição genérica de "cliente ideal", uma mensagem só, esperando que ela convença financeiro, marketing, comercial e TI ao mesmo tempo.</p>
+      </div>
+      <div class="good">
+        <span class="tag-good">Abordagem Unfold</span>
+        <h3>Um comitê</h3>
+        <p>ICP por fit estrutural, anti-ICP explícito e um mapa de quem decide — com o que convence e o que trava cada decisor, incluindo quem tem poder de veto.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section style="padding-top:24px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">O que você recebe</span>
+      <h2>O mapa completo da sua conta-alvo.</h2>
+    </div>
+    <div class="cards">
+      <div class="card reveal"><div class="idx">01</div><h3>ICP estrutural</h3><p>Os atributos de fit que realmente preveem fechamento e permanência — definidos por estrutura, não por segmento.</p></div>
+      <div class="card reveal" data-delay="1"><div class="idx">02</div><h3>Anti-ICP</h3><p>Os sinais de desfit que indicam onde você não deveria gastar pipeline. Saber dizer não é parte do método.</p></div>
+      <div class="card reveal" data-delay="2"><div class="idx">03</div><h3>Mapa do comitê</h3><p>Para cada decisor: o que prioriza, o que o convence, o que o trava e o ângulo de mensagem. Veto sinalizado.</p></div>
+      <div class="card reveal" data-delay="3"><div class="idx">04</div><h3>Maturidade do ICP</h3><p>Uma leitura honesta de onde sua definição de cliente está hoje — e o que falta para virar estrutura.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Como funciona</span>
+      <h2>Quatro minutos. Um mapa que você usa de verdade.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="num">01</div><h3>Você responde</h3><p>Perguntas estratégicas sobre seu negócio, seus melhores clientes e quem participa da decisão de compra.</p></div>
+      <div class="step reveal" data-delay="1"><div class="num">02</div><h3>Nós estruturamos</h3><p>Suas respostas são organizadas na lógica de fit estrutural e comitê de compra — sem achismo, sem dado inventado.</p></div>
+      <div class="step reveal" data-delay="2"><div class="num">03</div><h3>Você recebe o mapa</h3><p>ICP, anti-ICP, maturidade e o mapa do comitê com ângulo por decisor — na tela e em PDF.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DIFFERENTIATION -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Por que é diferente</span>
+      <h2>A lente certa para vendas complexas.</h2>
+    </div>
+    <div class="diff">
+      <div class="diff-block reveal"><h3>Fit estrutural, não segmento</h3><p>Setor não define se um cliente é bom. O que define é estrutura: ticket, ciclo, complexidade e como a empresa decide. É nisso que o mapa se apoia.</p></div>
+      <div class="diff-block reveal" data-delay="1"><h3>Comitê, não persona</h3><p>Em ticket alto e ciclo longo, a decisão é coletiva. Ferramentas genéricas devolvem uma figura só. Aqui você sai com o mapa de quem realmente decide.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIENCE -->
+<section style="padding-top:24px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Para quem é</span>
+      <h2>Feito para quem já vende — e quer vender com método.</h2>
+    </div>
+    <div class="aud">
+      <div class="aud-col is reveal">
+        <h3>Faz sentido se você</h3>
+        <ul>
+          <li>Já tem clientes e quer transformar isso em ICP estruturado</li>
+          <li>Vende com ticket alto e ciclo longo</li>
+          <li>Lida com mais de um decisor por negócio</li>
+          <li>Sente que perde pipeline com conta errada</li>
+        </ul>
+      </div>
+      <div class="aud-col not reveal" data-delay="1">
+        <h3>Não é para você se</h3>
+        <ul>
+          <li>Vende ticket baixo, ciclo curto, uma decisão só</li>
+          <li>Procura uma lista pronta de leads para comprar</li>
+          <li>Ainda não tem nenhuma operação comercial</li>
+          <li>Quer um quiz de marketing sem profundidade</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section style="padding-top:24px">
+  <div class="wrap">
+    <div class="final reveal">
+      <span class="eyebrow" style="justify-content:center">Comece agora</span>
+      <h2>Seu ICP é uma <em>estrutura</em> ou um chute?</h2>
+      <p>Monte o mapa em quatro minutos. Se quiser ir além e olhar o funil que atrai esse ICP, o próximo passo é o Diagnóstico de Growth.</p>
+      <a href="#" class="btn" data-cta="final">
+        Montar meu mapa
+        <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M1 7h15M11 1l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <div class="logo">UNF<span>O</span>LD</div>
+    <div class="foot-links">
+      <a href="#">Diagnóstico de Growth</a>
+      <a href="#">Política de Privacidade</a>
+      <a href="#">unfoldgrowth.com.br</a>
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:18px">
+    <p class="muted" style="font-family:var(--mono);font-size:11px;letter-spacing:.05em">Unfold Growth Intelligence · Growth com método para operações com vendas complexas.</p>
+  </div>
+</footer>
+
+<script>
+  // scroll reveal
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:.16});
+  document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));
+
+  // analytics hook stub — dev wires to GA4/GTM (event: cta_click -> tool_start)
+  document.querySelectorAll('[data-cta]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(window.dataLayer){window.dataLayer.push({event:'cta_click',location:btn.dataset.cta});}
+      // dev: redirect to tool route, e.g. /ferramentas/mapa-icp
+    });
+  });
+</script>
+</body>
+</html>

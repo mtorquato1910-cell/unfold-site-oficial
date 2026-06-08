@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa de ICP & Comitê de Compra — Ferramenta (protótipo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#001E29;--navy-2:#062A37;--navy-3:#0A323F;
+    --mint:#6DF9C6;--mint-dim:rgba(109,249,198,.12);
+    --ink:#EAF4F2;--muted:#8AA6AD;
+    --line:rgba(109,249,198,.20);--line-soft:rgba(234,244,242,.10);
+    --display:'Host Grotesk',sans-serif;--body:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--navy);color:var(--ink);font-family:var(--body);line-height:1.6;
+    -webkit-font-smoothing:antialiased;min-height:100vh}
+  h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.02em;line-height:1.08}
+  .mono{font-family:var(--mono)}
+  .muted{color:var(--muted)}
+
+  /* top bar + progress */
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(0,30,41,.85);backdrop-filter:blur(8px)}
+  .topbar-in{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;
+    height:60px;padding:0 24px}
+  .logo{font-family:var(--display);font-weight:800;letter-spacing:.16em;font-size:18px}
+  .logo span{color:var(--mint)}
+  .step-count{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--muted)}
+  .progress{height:2px;background:var(--line-soft);width:100%}
+  .progress-fill{height:100%;background:var(--mint);width:0;transition:width .45s cubic-bezier(.4,0,.2,1)}
+
+  /* stage */
+  .stage{max-width:680px;margin:0 auto;padding:56px 24px 96px}
+  .screen{animation:fade .5s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--mint);display:inline-flex;align-items:center;gap:9px;margin-bottom:20px}
+  .eyebrow::before{content:"";width:18px;height:1px;background:var(--mint)}
+  .q{font-size:clamp(24px,4vw,32px);margin-bottom:12px}
+  .helper{color:var(--muted);font-size:15.5px;margin-bottom:30px;max-width:48ch}
+
+  /* inputs */
+  input[type=text],input[type=email],input[type=tel],textarea{
+    width:100%;background:var(--navy-2);border:1px solid var(--line-soft);border-radius:3px;
+    color:var(--ink);font-family:var(--body);font-size:16px;padding:15px 16px;transition:border-color .2s}
+  textarea{min-height:120px;resize:vertical}
+  input:focus,textarea:focus{outline:none;border-color:var(--mint)}
+  input::placeholder,textarea::placeholder{color:#5b7780}
+
+  /* options */
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opts.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .opt{display:flex;align-items:center;gap:13px;background:var(--navy-2);border:1px solid var(--line-soft);
+    border-radius:3px;padding:15px 16px;cursor:pointer;transition:border-color .18s,background .18s;font-size:15.5px}
+  .opt:hover{border-color:var(--line)}
+  .opt .box{width:18px;height:18px;border:1.5px solid var(--muted);border-radius:3px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;transition:.18s}
+  .opt.multi .box{border-radius:3px}
+  .opt.single .box{border-radius:50%}
+  .opt.sel{border-color:var(--mint);background:var(--mint-dim)}
+  .opt.sel .box{border-color:var(--mint);background:var(--mint)}
+  .opt.sel .box::after{content:"";width:7px;height:7px;background:var(--navy);border-radius:1px}
+  .opt.single.sel .box::after{border-radius:50%}
+
+  /* capture */
+  .field{margin-bottom:16px}
+  .field label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .field .opt-note{font-weight:400;text-transform:none;letter-spacing:0}
+  .consent{display:flex;gap:11px;align-items:flex-start;margin-top:8px;cursor:pointer}
+  .consent input{margin-top:3px;accent-color:var(--mint)}
+  .consent span{font-size:13px;color:var(--muted)}
+  .consent a{color:var(--mint);text-decoration:none}
+
+  /* nav buttons */
+  .nav-btns{display:flex;align-items:center;gap:14px;margin-top:34px}
+  .btn{font-family:var(--mono);font-size:13px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;
+    background:var(--mint);color:var(--navy);padding:15px 26px;border:none;border-radius:2px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:10px;transition:transform .2s,box-shadow .2s,opacity .2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(109,249,198,.25)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line-soft)}
+  .btn-ghost:hover{color:var(--ink);border-color:var(--line);box-shadow:none}
+  .err{color:#ff9b8a;font-size:13px;margin-top:12px;font-family:var(--mono);letter-spacing:.03em;display:none}
+
+  /* loading */
+  .loading{text-align:center;padding:120px 24px}
+  .spinner{width:54px;height:54px;margin:0 auto 30px;border:2px solid var(--line-soft);
+    border-top-color:var(--mint);border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .load-msg{font-family:var(--mono);font-size:14px;letter-spacing:.04em;color:var(--muted);min-height:22px}
+
+  /* result */
+  .result{max-width:840px}
+  .result .eyebrow{margin-bottom:14px}
+  .result h1{font-size:clamp(28px,4.4vw,40px);margin-bottom:10px}
+  .result .sub{color:var(--muted);margin-bottom:40px}
+  .block{margin-bottom:34px}
+  .block-head{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--mint);margin-bottom:14px;display:flex;align-items:center;gap:9px}
+  .block-head::before{content:"";width:18px;height:1px;background:var(--mint)}
+  .panel{background:var(--navy-2);border:1px solid var(--line-soft);border-radius:4px;padding:26px;
+    position:relative}
+  .panel::before{content:"";position:absolute;top:0;left:0;width:38px;height:2px;background:var(--mint)}
+  .panel h3{font-size:20px;margin-bottom:10px}
+  .panel p{color:var(--muted);font-size:15px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .chip{font-family:var(--mono);font-size:12px;letter-spacing:.03em;color:var(--ink);
+    background:var(--mint-dim);border:1px solid var(--line);border-radius:2px;padding:7px 11px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .level{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--mint);border:1px solid var(--line);
+    padding:6px 12px;border-radius:2px;margin-bottom:12px}
+
+  /* committee map */
+  .map-wrap{display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:center}
+  .map svg{width:100%;height:auto;overflow:visible}
+  .cnode{fill:var(--navy-3);stroke:var(--line);stroke-width:1.2}
+  .cnode.veto{stroke:var(--mint);stroke-width:1.8;fill:var(--mint-dim)}
+  .cedge{stroke:rgba(109,249,198,.3);stroke-width:1.1}
+  .ctext{font-family:var(--mono);font-size:9px;font-weight:600;fill:var(--ink);letter-spacing:.02em}
+  .ccenter{fill:var(--mint)}
+  .ccenter-t{font-family:var(--mono);font-size:9px;font-weight:600;fill:var(--navy);letter-spacing:.05em}
+  .com-cards{display:flex;flex-direction:column;gap:12px}
+  .com-card{background:var(--navy-2);border:1px solid var(--line-soft);border-radius:4px;padding:18px 20px}
+  .com-card .cc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .com-card .cc-role{font-family:var(--display);font-weight:700;font-size:17px}
+  .com-card .veto-badge{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--mint);
+    border:1px solid var(--mint);border-radius:2px;padding:4px 8px}
+  .cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}
+  .cc-item .k{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  .cc-item .v{font-size:14px;color:var(--ink)}
+  .cc-angle{margin-top:14px;padding-top:14px;border-top:1px solid var(--line-soft)}
+  .cc-angle .k{color:var(--mint)}
+
+  .next-step{background:linear-gradient(160deg,var(--navy-3),var(--navy));border:1px solid var(--line);
+    border-radius:6px;padding:36px;text-align:center;margin-top:40px}
+  .next-step h3{font-size:24px;margin-bottom:10px}
+  .next-step h3 em{font-style:normal;color:var(--mint)}
+  .next-step p{color:var(--muted);max-width:46ch;margin:0 auto 24px}
+  .next-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  .sample-note{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);
+    border:1px dashed var(--line-soft);border-radius:3px;padding:10px 14px;margin-bottom:28px;text-align:center}
+
+  @media(max-width:720px){
+    .opts.grid,.two,.cc-grid{grid-template-columns:1fr}
+    .map-wrap{grid-template-columns:1fr}
+    .map{max-width:300px;margin:0 auto}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .screen{animation:none}.spinner{animation-duration:0s;border-top-color:var(--line-soft)}
+    .progress-fill{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="logo">UNF<span>O</span>LD</div>
+    <div class="step-count" id="stepCount"></div>
+  </div>
+  <div class="progress"><div class="progress-fill" id="progress"></div></div>
+</div>
+
+<div class="stage" id="stage"></div>
+
+<script>
+/* ============================================================
+   CONFIG — também serve de schema de perguntas para o dev.
+   Tipos: text | textarea | single | multi | capture
+   ============================================================ */
+const STEPS = [
+  {id:"A1",block:"Seu negócio",type:"text",required:true,
+   q:"O que sua empresa vende, em uma frase?",
+   helper:"Sem rodeio. A frase que você usaria numa apresentação.",
+   placeholder:"Ex.: Implantamos e operamos CRM para incorporadoras."},
+  {id:"A2",block:"Seu negócio",type:"text",required:true,
+   q:"Que transformação o cliente tem ao comprar de você?",
+   helper:"O antes e o depois — o que muda na vida dele.",
+   placeholder:"Ex.: Sai de um funil cego para previsibilidade de vendas."},
+  {id:"A3",block:"Seu negócio",type:"single",required:true,
+   q:"Qual o ticket médio (contrato ou projeto)?",
+   options:[["<5k","Até R$ 5 mil"],["5-20k","R$ 5 mil a 20 mil"],["20-50k","R$ 20 mil a 50 mil"],["50-200k","R$ 50 mil a 200 mil"],["200k+","Acima de R$ 200 mil"]]},
+  {id:"A4",block:"Seu negócio",type:"single",required:true,
+   q:"Qual o ciclo de venda típico?",
+   options:[["<30d","Menos de 30 dias"],["30-60d","30 a 60 dias"],["60-120d","60 a 120 dias"],["120d+","Mais de 120 dias"]]},
+  {id:"A5",block:"Seu negócio",type:"single",required:true,
+   q:"Qual o modelo de venda?",
+   options:[["B2B","B2B"],["B2C","B2C"],["Hibrido","Híbrido"]]},
+
+  {id:"B1",block:"Seus melhores clientes",type:"textarea",required:true,
+   q:"Descreva 1 a 3 dos seus melhores clientes atuais.",
+   helper:"Setor e porte. São a âncora real do seu ICP.",
+   placeholder:"Ex.: Incorporadora média em capital do Nordeste; agroindústria de grãos com força de venda em campo."},
+  {id:"B2",block:"Seus melhores clientes",type:"multi",required:true,
+   q:"Por que esses clientes fecham com você e permanecem?",
+   helper:"Selecione os principais.",
+   options:[["preco","Preço"],["autoridade","Autoridade técnica"],["relacionamento","Relacionamento"],["resultado","Resultado entregue"],["urgencia","Urgência da dor"],["indicacao","Indicação"]]},
+  {id:"B3",block:"Seus melhores clientes",type:"textarea",required:true,
+   q:"Que tipo de cliente dá trabalho e não vale a pena?",
+   helper:"Isso vira seu anti-ICP.",
+   placeholder:"Ex.: Empresa pequena que quer resultado em 30 dias e resiste a CRM."},
+
+  {id:"C1",block:"O comitê de compra",type:"single",required:true,
+   q:"Quantas pessoas costumam participar da decisão?",
+   options:[["1","Uma"],["2-3","2 a 3"],["4-6","4 a 6"],["7+","7 ou mais"]]},
+  {id:"C2",block:"O comitê de compra",type:"multi",required:true,
+   q:"Quais áreas ou cargos participam ou influenciam?",
+   helper:"Selecione todos que entram na conversa.",
+   options:[["ceo","CEO / Sócio"],["cfo","CFO / Financeiro"],["cmo","CMO / Marketing"],["cro","CRO / Comercial"],["ti","CTO / CIO / TI"],["tecnica","Área técnica / Operação"],["compras","Compras / Procurement"],["juridico","Jurídico"]]},
+  {id:"C3",block:"O comitê de compra",type:"single",required:true,
+   q:"Quem costuma ter poder de veto (pode matar o negócio)?",
+   helper:"A pessoa que, sozinha, derruba a compra.",
+   options:[["ceo","CEO / Sócio"],["cfo","CFO / Financeiro"],["cmo","CMO / Marketing"],["cro","CRO / Comercial"],["ti","CTO / CIO / TI"],["tecnica","Área técnica / Operação"],["compras","Compras / Procurement"],["juridico","Jurídico"]]},
+
+  {id:"D1",block:"O que trava",type:"multi",required:true,
+   q:"Qual a principal objeção ou motivo de perda?",
+   options:[["preco","Preço"],["timing","Timing"],["prioridade","Prioridade interna"],["confianca","Falta de confiança"],["concorrente","Concorrente"],["indecisao","Indecisão do comitê"]]},
+  {id:"D2",block:"O que trava",type:"single",required:true,
+   q:"Você já tem um ICP definido hoje?",
+   options:[["nao","Não"],["informal","Informalmente"],["documentado","Sim, documentado"]]},
+
+  {id:"CAP",block:"Última etapa",type:"capture",
+   q:"Para onde enviamos o seu mapa?",
+   helper:"Geramos seu mapa de ICP e comitê na próxima tela — e mandamos uma cópia em PDF."}
+];
+
+/* ============================================================
+   DICIONÁRIO DE COMITÊ (mock — no app real, vem da IA)
+   ============================================================ */
+const ROLE_LABEL={ceo:"CEO / Sócio",cfo:"CFO / Financeiro",cmo:"CMO / Marketing",cro:"CRO / Comercial",ti:"CTO / CIO / TI",tecnica:"Área técnica",compras:"Compras",juridico:"Jurídico"};
+const ROLE_SHORT={ceo:"CEO",cfo:"CFO",cmo:"CMO",cro:"CRO",ti:"TI",tecnica:"OPER",compras:"COMPRAS",juridico:"JURÍD"};
+const ROLE_DATA={
+  ceo:{prioriza:"Visão de longo prazo e risco do negócio",convence:"Impacto em receita e previsibilidade",trava:"Promessa vaga, sem lastro",angulo:"Conecte a solução a crescimento previsível — não a táticas."},
+  cfo:{prioriza:"Retorno, eficiência e custo de oportunidade",convence:"Payback claro e redução de desperdício",trava:"Ausência de números e cenário",angulo:"Fale em eficiência de capital e receita que não se perde no funil."},
+  cmo:{prioriza:"Atribuição e integração com vendas",convence:"Prova de impacto e leitura de funil",trava:"Virar mais uma ferramenta solta",angulo:"Mostre como marketing passa a conversar com o comercial."},
+  cro:{prioriza:"Qualidade e velocidade do pipeline",convence:"Menos lead desperdiçado, melhor passagem",trava:"Mais volume sem qualificação",angulo:"Prometa pipeline melhor, não pipeline maior."},
+  ti:{prioriza:"Governança de dados e integração",convence:"Arquitetura clara e baixo atrito de implantação",trava:"Ferramenta que cria dívida técnica",angulo:"Trate dados e integração como parte do desenho, não anexo."},
+  tecnica:{prioriza:"Viabilidade e esforço de operação",convence:"Processo que reduz retrabalho",trava:"Promessa que ignora a operação real",angulo:"Mostre que o método respeita a rotina de quem executa."},
+  compras:{prioriza:"Condições, risco contratual e comparabilidade",convence:"Escopo claro e critério objetivo",trava:"Proposta difícil de comparar",angulo:"Entregue clareza de escopo e critério — facilite a comparação."},
+  juridico:{prioriza:"Risco, conformidade e dados",convence:"Termos claros e LGPD resolvida",trava:"Lacunas contratuais",angulo:"Antecipe conformidade e propriedade de dados."}
+};
+const LOAD_MSGS=["Organizando suas respostas...","Definindo o fit estrutural...","Montando o anti-ICP...","Mapeando o comitê de compra...","Finalizando seu mapa..."];
+
+/* ============================================================ */
+const state={i:0,answers:{}};
+const stage=document.getElementById("stage");
+const progress=document.getElementById("progress");
+const stepCount=document.getElementById("stepCount");
+
+function setProgress(){
+  const pct=Math.min(100,(state.i/STEPS.length)*100);
+  progress.style.width=pct+"%";
+  stepCount.textContent="Etapa "+Math.min(state.i+1,STEPS.length)+" / "+STEPS.length;
+}
+
+function render(){
+  const s=STEPS[state.i];
+  setProgress();
+  if(s.type==="capture")return renderCapture(s);
+  let html=`<div class="screen"><span class="eyebrow">${s.block} · ${String(state.i+1).padStart(2,"0")}</span>
+    <h2 class="q">${s.q}</h2>${s.helper?`<p class="helper">${s.helper}</p>`:""}`;
+  if(s.type==="text"||s.type==="textarea"){
+    const v=state.answers[s.id]||"";
+    html+= s.type==="textarea"
+      ? `<textarea id="inp" placeholder="${s.placeholder||""}">${v}</textarea>`
+      : `<input id="inp" type="text" placeholder="${s.placeholder||""}" value="${v.replace(/"/g,'&quot;')}">`;
+  } else {
+    const sel=state.answers[s.id]||(s.type==="multi"?[]:null);
+    const cls=s.type==="multi"?"multi":"single";
+    const grid=s.options.length>4?"grid":"";
+    html+=`<div class="opts ${grid}">`;
+    s.options.forEach(([val,label])=>{
+      const on=s.type==="multi"?sel.includes(val):sel===val;
+      html+=`<div class="opt ${cls} ${on?"sel":""}" data-val="${val}"><span class="box"></span><span>${label}</span></div>`;
+    });
+    html+=`</div>`;
+  }
+  html+=`<p class="err" id="err">Selecione uma opção para continuar.</p>
+    <div class="nav-btns">
+      ${state.i>0?`<button class="btn btn-ghost" id="back">Voltar</button>`:""}
+      <button class="btn" id="next">Continuar
+        <svg width="16" height="12" viewBox="0 0 18 14" fill="none"><path d="M1 7h15M11 1l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div></div>`;
+  stage.innerHTML=html;
+  bind(s);
+}
+
+function bind(s){
+  const next=document.getElementById("next");
+  const back=document.getElementById("back");
+  if(back)back.onclick=()=>{state.i--;render();window.scrollTo(0,0);};
+  if(s.type==="text"||s.type==="textarea"){
+    const inp=document.getElementById("inp");
+    inp.focus();
+    if(s.type==="text")inp.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();next.click();}});
+  } else {
+    stage.querySelectorAll(".opt").forEach(o=>o.onclick=()=>{
+      const v=o.dataset.val;
+      if(s.type==="multi"){
+        let arr=state.answers[s.id]||[];
+        arr=arr.includes(v)?arr.filter(x=>x!==v):[...arr,v];
+        state.answers[s.id]=arr;
+      } else { state.answers[s.id]=v; }
+      render();
+    });
+  }
+  next.onclick=()=>{
+    const s2=STEPS[state.i];
+    if(s2.type==="text"||s2.type==="textarea"){
+      const val=document.getElementById("inp").value.trim();
+      if(s2.required&&!val){return showErr("Preencha para continuar.");}
+      state.answers[s2.id]=val;
+    } else {
+      const a=state.answers[s2.id];
+      if(s2.required&&(!a||(Array.isArray(a)&&!a.length)))return showErr("Selecione ao menos uma opção.");
+    }
+    state.i++;render();window.scrollTo(0,0);
+  };
+}
+function showErr(m){const e=document.getElementById("err");if(e){e.textContent=m;e.style.display="block";}}
+
+function renderCapture(s){
+  stepCount.textContent="Última etapa";
+  stage.innerHTML=`<div class="screen"><span class="eyebrow">${s.block}</span>
+    <h2 class="q">${s.q}</h2><p class="helper">${s.helper}</p>
+    <div class="field"><label>Nome</label><input id="c_nome" type="text" placeholder="Seu nome"></div>
+    <div class="field"><label>E-mail corporativo</label><input id="c_email" type="email" placeholder="voce@empresa.com"></div>
+    <div class="two">
+      <div class="field"><label>Empresa</label><input id="c_emp" type="text" placeholder="Nome da empresa"></div>
+      <div class="field"><label>Cargo</label><input id="c_cargo" type="text" placeholder="Seu cargo"></div>
+    </div>
+    <div class="field"><label>Telefone <span class="opt-note">(opcional)</span></label><input id="c_tel" type="tel" placeholder="(00) 00000-0000"></div>
+    <label class="consent"><input type="checkbox" id="c_consent">
+      <span>Autorizo o contato da Unfold e o tratamento dos meus dados conforme a <a href="#">Política de Privacidade</a>.</span></label>
+    <p class="err" id="err">Preencha os campos obrigatórios.</p>
+    <div class="nav-btns">
+      <button class="btn btn-ghost" id="back">Voltar</button>
+      <button class="btn" id="gen">Gerar meu mapa
+        <svg width="16" height="12" viewBox="0 0 18 14" fill="none"><path d="M1 7h15M11 1l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div></div>`;
+  setProgress();
+  document.getElementById("back").onclick=()=>{state.i--;render();window.scrollTo(0,0);};
+  document.getElementById("gen").onclick=()=>{
+    const nome=val("c_nome"),email=val("c_email"),emp=val("c_emp"),cargo=val("c_cargo");
+    const consent=document.getElementById("c_consent").checked;
+    if(!nome||!emp||!cargo||!/^\S+@\S+\.\S+$/.test(email)||!consent)
+      return showErr("Preencha nome, e-mail válido, empresa, cargo e o consentimento.");
+    state.answers.CAP={nome,email,emp,cargo,tel:val("c_tel")};
+    // DEV: aqui ocorre o POST server-side -> scoring + IA + RD Station.
+    runProcessing();
+  };
+}
+const val=id=>document.getElementById(id).value.trim();
+
+function runProcessing(){
+  state.i=STEPS.length;setProgress();
+  stage.innerHTML=`<div class="loading"><div class="spinner"></div><p class="load-msg" id="lmsg">${LOAD_MSGS[0]}</p></div>`;
+  let k=0;const el=document.getElementById("lmsg");
+  const t=setInterval(()=>{k++;if(k<LOAD_MSGS.length){el.textContent=LOAD_MSGS[k];}else{clearInterval(t);renderResult();}},900);
+}
+
+/* monta resultado a partir das respostas (mock da saída da IA) */
+function buildMockResult(){
+  const a=state.answers;
+  const ticketLabel={"<5k":"até R$ 5 mil","5-20k":"R$ 5–20 mil","20-50k":"R$ 20–50 mil","50-200k":"R$ 50–200 mil","200k+":"acima de R$ 200 mil"}[a.A3]||"—";
+  const cicloLabel={"<30d":"curto","30-60d":"de 30–60 dias","60-120d":"de 60–120 dias","120d+":"longo (120+ dias)"}[a.A4]||"—";
+  const modelo={"B2B":"B2B","B2C":"B2C","Hibrido":"híbrido"}[a.A5]||"—";
+  const nDec={"1":"decisor único","2-3":"2 a 3 decisores","4-6":"comitê de 4 a 6","7+":"comitê amplo (7+)"}[a.C1]||"—";
+  const matur={nao:["inicial","Seu ICP ainda é intuição. O maior ganho imediato é transformá-lo em estrutura escrita e compartilhada com o comercial."],
+    informal:["intermediário","Existe um ICP na cabeça do time, mas não documentado. Falta consistência entre marketing e vendas."],
+    documentado:["avançado","Você já tem ICP documentado. O próximo passo é refiná-lo por fit estrutural e ativá-lo no comitê de compra."]}[a.D2]||["—",""];
+  const roles=(a.C2||[]).filter(r=>ROLE_DATA[r]);
+  const veto=a.C3;
+  return {
+    icp:{resumo:`Operações ${modelo} com ticket ${ticketLabel} e ciclo ${cicloLabel}, decisão por ${nDec}.`,
+      atributos:[`Modelo ${modelo}`,`Ticket ${ticketLabel}`,`Ciclo ${cicloLabel}`,`Decisão: ${nDec}`]},
+    anti:{resumo:"Contas fora do seu fit estrutural — onde o esforço comercial tende a não converter ou não permanecer.",
+      sinais:["Ticket abaixo do seu piso","Ciclo curto com decisão isolada","Resistência a processo e dados","Compra orientada só por preço"]},
+    maturidade:{nivel:matur[0],leitura:matur[1]},
+    comite:roles.map(r=>({papel:ROLE_LABEL[r],short:ROLE_SHORT[r],veto:r===veto,...ROLE_DATA[r]})),
+    veto
+  };
+}
+
+function renderResult(){
+  progress.style.width="100%";stepCount.textContent="Seu mapa";
+  const r=buildMockResult();const nome=(state.answers.CAP&&state.answers.CAP.nome)||"";
+  let com="";
+  r.comite.forEach(c=>{
+    com+=`<div class="com-card"><div class="cc-head"><span class="cc-role">${c.papel}</span>
+      ${c.veto?`<span class="veto-badge">VETO</span>`:""}</div>
+      <div class="cc-grid">
+        <div class="cc-item"><div class="k">Prioriza</div><div class="v">${c.prioriza}</div></div>
+        <div class="cc-item"><div class="k">O que convence</div><div class="v">${c.convence}</div></div>
+        <div class="cc-item"><div class="k">O que trava</div><div class="v">${c.trava}</div></div>
+        <div class="cc-item"><div class="k">Veto</div><div class="v">${c.veto?"Sim — pode derrubar a compra":"Influencia, não veta"}</div></div>
+      </div>
+      <div class="cc-angle"><div class="k">Ângulo de mensagem</div><div class="v">${c.angulo}</div></div>
+    </div>`;
+  });
+
+  stage.innerHTML=`<div class="screen result">
+    <p class="sample-note">Resultado de amostra — no app, este conteúdo é gerado pela IA a partir das respostas.</p>
+    <span class="eyebrow">Seu mapa de ICP &amp; comitê</span>
+    <h1>${nome?nome+", seu":"Seu"} mapa está pronto.</h1>
+    <p class="sub">${r.icp.resumo}</p>
+
+    <div class="block"><div class="block-head">ICP estrutural</div>
+      <div class="panel"><h3>Quem realmente vale o seu pipeline</h3>
+        <p>${r.icp.resumo}</p>
+        <div class="chips">${r.icp.atributos.map(x=>`<span class="chip">${x}</span>`).join("")}</div></div></div>
+
+    <div class="block"><div class="block-head">Anti-ICP</div>
+      <div class="panel"><h3>Onde não gastar pipeline</h3>
+        <p>${r.anti.resumo}</p>
+        <div class="chips">${r.anti.sinais.map(x=>`<span class="chip">${x}</span>`).join("")}</div></div></div>
+
+    <div class="block"><div class="block-head">Maturidade do seu ICP</div>
+      <div class="panel"><span class="level">Nível ${r.maturidade.nivel}</span>
+        <p>${r.maturidade.leitura}</p></div></div>
+
+    <div class="block"><div class="block-head">Mapa do comitê de compra</div>
+      <div class="map-wrap">
+        <div class="map">${committeeSVG(r)}</div>
+        <div class="com-cards">${com}</div>
+      </div></div>
+
+    <div class="next-step"><span class="eyebrow" style="justify-content:center">Próximo passo</span>
+      <h3>Seu ICP está claro. Seu <em>funil</em> está pronto para atraí-lo?</h3>
+      <p>O mapa diz quem perseguir. O Diagnóstico de Growth mostra se a sua máquina de aquisição está pronta para converter esse ICP.</p>
+      <div class="next-actions">
+        <a class="btn" href="#">Fazer o Diagnóstico de Growth
+          <svg width="16" height="12" viewBox="0 0 18 14" fill="none"><path d="M1 7h15M11 1l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn-ghost" href="#">Receber em PDF</a>
+      </div></div>
+  </div>`;
+  window.scrollTo(0,0);
+}
+
+/* SVG radial do comitê, posições calculadas pelos papéis selecionados */
+function committeeSVG(r){
+  const cx=150,cy=150,R=108;const n=r.comite.length||1;
+  let edges="",nodes="";
+  r.comite.forEach((c,idx)=>{
+    const ang=(-90+(360/n)*idx)*Math.PI/180;
+    const x=cx+R*Math.cos(ang),y=cy+R*Math.sin(ang);
+    edges+=`<line class="cedge" x1="${cx}" y1="${cy}" x2="${x}" y2="${y}"/>`;
+    nodes+=`<g><rect class="cnode ${c.veto?"veto":""}" x="${x-30}" y="${y-15}" width="60" height="30" rx="3"/>
+      <text class="ctext" x="${x}" y="${y+3}" text-anchor="middle">${c.short}${c.veto?" ✦":""}</text></g>`;
+  });
+  return `<svg viewBox="0 0 300 300">${edges}
+    <circle class="ccenter" cx="${cx}" cy="${cy}" r="26"/>
+    <text class="ccenter-t" x="${cx}" y="${cy+3}" text-anchor="middle">DECISÃO</text>
+    ${nodes}</svg>`;
+}
+
+render();
+</script>
+</body>
+</html>
