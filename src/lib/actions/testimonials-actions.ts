@@ -15,6 +15,14 @@ export type TestimonialInput = {
   destaque?: boolean
   ativo?: boolean
   ordem?: number
+  foto?: string
+  logo_empresa?: string
+}
+
+// Aceita só IDs de media (numérico ou UUID). Strings vazias / inválidas viram undefined.
+function mediaId(v?: string): string | undefined {
+  if (!v) return undefined
+  return /^[a-f0-9-]{8,}$/i.test(v) || /^\d+$/.test(v) ? v : undefined
 }
 
 function validate(data: TestimonialInput) {
@@ -42,6 +50,8 @@ export async function createTestimonial(data: TestimonialInput) {
         destaque: !!data.destaque,
         ativo: data.ativo ?? true,
         ordem: data.ordem ?? 0,
+        foto: mediaId(data.foto),
+        logo_empresa: mediaId(data.logo_empresa),
       } as any,
     })
     revalidatePath('/admin/testimonials')
@@ -72,6 +82,8 @@ export async function updateTestimonial(id: string, data: TestimonialInput) {
         destaque: data.destaque,
         ativo: data.ativo,
         ordem: data.ordem,
+        foto: mediaId(data.foto),
+        logo_empresa: mediaId(data.logo_empresa),
       } as any,
     })
     revalidatePath('/admin/testimonials')

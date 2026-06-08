@@ -2,7 +2,9 @@
 
 import { useState, useTransition } from 'react'
 import { Copy, Trash2, ImageIcon, Check, ExternalLink } from 'lucide-react'
-import { PageHeader, GlassCard, EmptyState } from '@/components/painel/ui'
+import { PageHeader, EmptyState } from '@/components/painel/ui'
+import ImageInput from '@/components/painel/ImageInput'
+import { deleteMedia } from '@/lib/actions/media-actions'
 
 type MediaItem = Record<string, any>
 
@@ -121,11 +123,19 @@ function MediaCard({ item, onDelete }: { item: MediaItem; onDelete: (id: string)
 
 export default function MediaClient({ initialMedia }: { initialMedia: MediaItem[] }) {
   const [media, setMedia] = useState<MediaItem[]>(initialMedia)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [, startDelete] = useTransition()
 
   function handleDelete(id: string) {
-    // Note: delete via Payload admin or API — here apenas remove da view local
-    // Para delete real, precisaria de uma server action deleteMedia
-    setMedia(prev => prev.filter(m => m.id !== id))
+    setDeleteError(null)
+    startDelete(async () => {
+      const res: any = await deleteMedia(id)
+      if (!res?.ok) {
+        setDeleteError(res?.error || 'Falha ao excluir')
+        return
+      }
+      setMedia(prev => prev.filter(m => m.id !== id))
+    })
   }
 
   return (
@@ -133,57 +143,34 @@ export default function MediaClient({ initialMedia }: { initialMedia: MediaItem[
       <PageHeader
         title="Mídia"
         description="Imagens e arquivos do site"
-        actions={
-          <a
-            href="/admin/collections/media"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-[13px] transition"
-            style={{ background: 'hsl(158 92% 70% / 0.12)', color: 'hsl(158 92% 70%)', border: '1px solid hsl(158 92% 70% / 0.2)' }}
-          >
-            <ExternalLink className="h-4 w-4" />
-            Upload via Payload Admin
-          </a>
-        }
       />
 
-      {/* Info banner */}
-      <div
-        className="mb-6 rounded-xl px-4 py-3 flex items-start gap-3 text-[13px]"
-        style={{ background: 'hsl(217 93% 78% / 0.08)', border: '1px solid hsl(217 93% 78% / 0.15)', color: 'hsl(217 93% 78%)' }}
-      >
-        <ImageIcon className="h-4 w-4 mt-0.5 shrink-0" />
-        <span>
-          Para fazer upload de novos arquivos, use o{' '}
-          <a
-            href="/admin/collections/media"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline underline-offset-2 font-medium"
-          >
-            Payload Admin → Media
-          </a>
-          . Aqui você pode visualizar e copiar URLs dos arquivos existentes.
-        </span>
+      {/* Upload */}
+      <div className="mb-6 max-w-xl">
+        <ImageInput
+          label="Enviar nova imagem"
+          value={null}
+          onChange={(v) => {
+            if (!v) return
+            setMedia(prev => [{ id: v.id, url: v.url, filename: v.url.split('/').pop()?.split('?')[0] || v.id }, ...prev])
+          }}
+        />
       </div>
+
+      {deleteError && (
+        <div
+          className="mb-4 rounded-lg px-4 py-2.5 text-[13px]"
+          style={{ background: 'hsl(0 70% 60% / 0.10)', color: 'hsl(0 70% 80%)', border: '1px solid hsl(0 70% 60% / 0.25)' }}
+        >
+          {deleteError}
+        </div>
+      )}
 
       {media.length === 0 ? (
         <EmptyState
           title="Nenhum arquivo de mídia"
-          description="Faça upload de imagens e arquivos pelo Payload Admin para que apareçam aqui."
+          description="Arraste uma imagem na área acima ou cole uma URL para enviar o primeiro arquivo."
           icon={ImageIcon}
-          action={
-            <a
-              href="/admin/collections/media"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-[13px]"
-              style={{ background: 'hsl(158 92% 70%)', color: 'hsl(194 100% 8%)' }}
-            >
-              <ExternalLink className="h-4 w-4" />
-              Abrir Payload Admin
-            </a>
-          }
         />
       ) : (
         <>

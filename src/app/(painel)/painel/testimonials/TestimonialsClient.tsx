@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, X, MessageSquareQuote, Eye, EyeOff, Star } from 'lucide-react'
 import { PageHeader, GlassCard, EmptyState, Field, MintButton } from '@/components/painel/ui'
+import ImageInput from '@/components/painel/ImageInput'
 import {
   createTestimonial,
   updateTestimonial,
@@ -22,6 +23,7 @@ type Testimonial = {
   destaque: boolean
   ativo: boolean
   ordem: number
+  foto?: any
   createdAt?: string
 }
 
@@ -46,6 +48,7 @@ const EMPTY = {
   destaque: false,
   ativo: true,
   ordem: 0,
+  foto: '',
 }
 
 export default function TestimonialsClient({
@@ -59,6 +62,7 @@ export default function TestimonialsClient({
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<Testimonial | null>(null)
   const [form, setForm] = useState<typeof EMPTY>(EMPTY)
+  const [fotoUrl, setFotoUrl] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
@@ -67,12 +71,15 @@ export default function TestimonialsClient({
   function openCreate() {
     setEditing(null)
     setForm({ ...EMPTY, ordem: items.length })
+    setFotoUrl('')
     setError(null)
     setOpen(true)
   }
 
   function openEdit(t: Testimonial) {
     setEditing(t)
+    const fotoId = t.foto?.id ?? t.foto ?? ''
+    const fotoUrlVal = t.foto?.url ?? ''
     setForm({
       nome: t.nome,
       cargo: t.cargo || '',
@@ -83,7 +90,9 @@ export default function TestimonialsClient({
       destaque: t.destaque,
       ativo: t.ativo,
       ordem: t.ordem || 0,
+      foto: fotoId ? String(fotoId) : '',
     })
+    setFotoUrl(fotoUrlVal)
     setError(null)
     setOpen(true)
   }
@@ -312,6 +321,15 @@ export default function TestimonialsClient({
                   placeholder="Acme Ltda."
                 />
               </Field>
+
+              <ImageInput
+                label="Foto do cliente"
+                value={form.foto ? { id: form.foto, url: fotoUrl } : null}
+                onChange={(v) => {
+                  setFotoUrl(v?.url || '')
+                  setForm((f) => ({ ...f, foto: v?.id || '' }))
+                }}
+              />
 
               <Field label="Depoimento" hint="Recomendado: 80–180 caracteres">
                 <textarea

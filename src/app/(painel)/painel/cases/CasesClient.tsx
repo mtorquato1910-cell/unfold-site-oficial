@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, X, Star } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field, MintButton } from '@/components/painel/ui'
+import ImageInput from '@/components/painel/ImageInput'
 import { createCase, updateCase, deleteCase } from '@/lib/actions/cases-actions'
 
 type Case = Record<string, any>
@@ -17,6 +18,7 @@ const EMPTY_FORM = {
   metrics: '',
   status: 'draft',
   featured: false,
+  imagem_destaque: '',
 }
 
 export default function CasesClient({ initialCases }: { initialCases: Case[] }) {
@@ -24,18 +26,22 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<Case | null>(null)
   const [form, setForm] = useState<typeof EMPTY_FORM>(EMPTY_FORM)
+  const [coverUrl, setCoverUrl] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   function openCreate() {
     setEditing(null)
     setForm(EMPTY_FORM)
+    setCoverUrl('')
     setError(null)
     setOpen(true)
   }
 
   function openEdit(c: Case) {
     setEditing(c)
+    const mediaId = c.imagem_destaque?.id ?? c.imagem_destaque ?? ''
+    const mediaUrl = c.imagem_destaque?.url ?? ''
     setForm({
       title: c.title ?? '',
       company: c.company ?? '',
@@ -46,7 +52,9 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
       metrics: c.metrics ?? '',
       status: c.status ?? 'draft',
       featured: !!c.featured,
+      imagem_destaque: mediaId ? String(mediaId) : '',
     })
+    setCoverUrl(mediaUrl)
     setError(null)
     setOpen(true)
   }
@@ -215,6 +223,15 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                   onChange={e => setForm(f => ({ ...f, result: e.target.value }))}
                 />
               </Field>
+
+              <ImageInput
+                label="Imagem de destaque"
+                value={form.imagem_destaque ? { id: form.imagem_destaque, url: coverUrl } : null}
+                onChange={(v) => {
+                  setCoverUrl(v?.url || '')
+                  setForm(f => ({ ...f, imagem_destaque: v?.id || '' }))
+                }}
+              />
 
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Status">

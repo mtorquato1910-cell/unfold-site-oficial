@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, X, FileText, CheckCircle2, XCircle, ExternalLink } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field } from '@/components/painel/ui'
+import ImageInput from '@/components/painel/ImageInput'
 import { createPost, updatePost, deletePost } from '@/lib/actions/posts-actions'
 import { approvePost, rejectPost } from '@/lib/actions/blog-submit-actions'
 
@@ -15,10 +16,12 @@ const EMPTY_FORM = {
   title: '',
   slug: '',
   excerpt: '',
+  content: '',
   category: '',
   status: 'draft',
   tags: '',
   cover_image: '',
+  imagem_destaque: '',
   meta_title: '',
   meta_description: '',
 }
@@ -34,6 +37,7 @@ export default function PostsClient({
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<Post | null>(null)
   const [form, setForm] = useState(EMPTY_FORM)
+  const [coverUrl, setCoverUrl] = useState('')
   const [filter, setFilter] = useState<'all' | 'pending_review' | 'published' | 'draft'>('all')
   const [rejectingId, setRejectingId] = useState<string | null>(null)
   const [rejectReason, setRejectReason] = useState('')
@@ -93,22 +97,28 @@ export default function PostsClient({
   function openCreate() {
     setEditing(null)
     setForm(EMPTY_FORM)
+    setCoverUrl('')
     setOpen(true)
   }
 
   function openEdit(post: Post) {
     setEditing(post)
+    const mediaId = post.imagem_destaque?.id ?? post.imagem_destaque ?? ''
+    const mediaUrl = post.imagem_destaque?.url ?? post.cover_image ?? ''
     setForm({
       title: post.title ?? '',
       slug: post.slug ?? '',
       excerpt: post.excerpt ?? '',
+      content: '',
       category: typeof post.category === 'object' ? (post.category?.name ?? '') : (post.category ?? ''),
       status: post.status ?? 'draft',
       tags: Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags ?? ''),
-      cover_image: post.cover_image ?? '',
+      cover_image: mediaUrl,
+      imagem_destaque: mediaId ? String(mediaId) : '',
       meta_title: post.meta_title ?? '',
       meta_description: post.meta_description ?? '',
     })
+    setCoverUrl(mediaUrl)
     setOpen(true)
   }
 
@@ -418,6 +428,24 @@ export default function PostsClient({
                 />
               </Field>
 
+              <Field
+                label="Conteúdo"
+                hint={
+                  editing
+                    ? 'Texto do artigo. Parágrafos separados por linha em branco. Ao salvar, substitui o corpo atual do post.'
+                    : 'Texto do artigo. Parágrafos separados por linha em branco.'
+                }
+              >
+                <textarea
+                  rows={10}
+                  className="w-full px-3 py-2.5 rounded-lg text-[13px] resize-none"
+                  style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
+                  value={form.content}
+                  onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
+                  placeholder="Escreva o corpo do artigo..."
+                />
+              </Field>
+
               <div className="grid grid-cols-2 gap-4">
                 <Field label="Categoria">
                   <input
@@ -452,15 +480,14 @@ export default function PostsClient({
                 />
               </Field>
 
-              <Field label="Imagem de Capa (URL)">
-                <input
-                  className="w-full h-10 px-3 rounded-lg text-[13px]"
-                  style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
-                  value={form.cover_image}
-                  onChange={e => setForm(f => ({ ...f, cover_image: e.target.value }))}
-                  placeholder="https://..."
-                />
-              </Field>
+              <ImageInput
+                label="Imagem de capa"
+                value={form.imagem_destaque ? { id: form.imagem_destaque, url: coverUrl } : null}
+                onChange={(v) => {
+                  setCoverUrl(v?.url || '')
+                  setForm(f => ({ ...f, imagem_destaque: v?.id || '', cover_image: v?.url || '' }))
+                }}
+              />
 
               {/* SEO */}
               <div className="pt-2" style={{ borderTop: '1px solid hsl(0 0% 100% / 0.06)' }}>

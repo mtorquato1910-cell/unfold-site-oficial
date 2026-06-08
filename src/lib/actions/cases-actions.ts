@@ -33,6 +33,14 @@ function mapCase(input: FlexibleData) {
     status: STATUS_MAP[input.status] ?? input.status ?? 'draft',
   }
 
+  // Imagem de destaque: aceita ID numérico/UUID de media (campo upload relationTo: 'media')
+  const imagem_destaque = input.imagem_destaque ?? input.cover_image ?? undefined
+  if (imagem_destaque && (typeof imagem_destaque === 'string' || typeof imagem_destaque === 'number')) {
+    if (/^[a-f0-9-]{8,}$/i.test(String(imagem_destaque)) || /^\d+$/.test(String(imagem_destaque))) {
+      data.imagem_destaque = imagem_destaque
+    }
+  }
+
   // Result/metrics: aceita string única (legado) e converte
   if (typeof input.result === 'string' && input.result) {
     data.results = [{ metrica: 'Resultado', valor: input.result, contexto: '' }]
