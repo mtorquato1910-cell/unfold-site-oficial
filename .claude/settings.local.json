@@ -149,7 +149,17 @@
       "Bash(node --env-file=.env.local scripts/diag-db.mjs)",
       "Bash(npx cross-env *)",
       "Bash(echo \"---- exit $? ----\")",
-      "Bash(git rm *)"
+      "Bash(git rm *)",
+      "Bash(git --no-pager diff --stat HEAD)",
+      "Bash(git --no-pager status)",
+      "Bash(git --no-pager log --oneline -15 -- \"src/app/\\(payload\\)/admin/importMap.js\" \"src/app/\\(payload\\)/admin/importMap.ts\")",
+      "Bash(echo \"ignore-check-exit:$?\")",
+      "Bash(git --no-pager show 30cf592 --stat)",
+      "Bash(echo \"=====tsc-exit:$?\")",
+      "Bash(git --no-pager show 30cf592:\"src/app/\\(payload\\)/admin/importMap.ts\")",
+      "Bash(git --no-pager show 30cf592 -- src/collections/Cases.ts src/collections/Posts.ts src/collections/Testimonials.ts src/admin/AdminNav.tsx)",
+      "Bash(git commit -m ' *)",
+      "PowerShell(npx tsc --noEmit)"
     ]
   }
 }
