@@ -125,16 +125,6 @@ const NAV_GROUPS = [
           </svg>
         ),
       },
-      {
-        label: 'Prompts de IA',
-        href: '/admin/collections/ai-prompts',
-        icon: (
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-            <path d="M3 3h9a1 1 0 011 1v6a1 1 0 01-1 1H8l-3 2v-2H3a1 1 0 01-1-1V4a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
-            <path d="M5 6.5h5M5 8.5h3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-          </svg>
-        ),
-      },
     ],
   },
   {

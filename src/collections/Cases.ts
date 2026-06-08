@@ -11,7 +11,7 @@ const Cases: CollectionConfig = {
     read: () => true,
     create: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
-    delete: ({ req }) => req.user?.role === 'super-admin',
+    delete: ({ req }) => Boolean(req.user),
   },
   fields: [
     {

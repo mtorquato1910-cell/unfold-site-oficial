@@ -6,6 +6,12 @@ export const Categories: CollectionConfig = {
     useAsTitle: 'nome',
     group: 'Blog',
   },
+  access: {
+    read: () => true,
+    create: ({ req }) => Boolean(req.user),
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => Boolean(req.user),
+  },
   fields: [
     { name: 'nome', type: 'text', required: true },
     { name: 'slug', type: 'text', required: true, unique: true },

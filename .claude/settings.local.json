@@ -144,7 +144,12 @@
       "Bash(git commit -m 'feat\\(guia-eleicoes-2026\\): restaura gate bloqueante \\(blur + cadastro obrigatorio\\) *)",
       "Bash(git commit -m 'style\\(guia-eleicoes-2026\\): modal de cadastro na paleta light + scrollbar verde *)",
       "PowerShell(New-Item *)",
-      "Bash(git commit -m 'security\\(guia-eleicoes-2026\\): PDF protegido por cookie, Turnstile na consultoria, HSTS 30d *)"
+      "Bash(git commit -m 'security\\(guia-eleicoes-2026\\): PDF protegido por cookie, Turnstile na consultoria, HSTS 30d *)",
+      "Bash(git rev-list *)",
+      "Bash(node --env-file=.env.local scripts/diag-db.mjs)",
+      "Bash(npx cross-env *)",
+      "Bash(echo \"---- exit $? ----\")",
+      "Bash(git rm *)"
     ]
   }
 }

@@ -6,6 +6,7 @@ export const AIPrompts: CollectionConfig = {
     useAsTitle: 'nome',
     defaultColumns: ['nome', 'tipo', 'modelo', 'ativo'],
     group: 'IA',
+    hidden: true,
   },
   fields: [
     { name: 'nome', type: 'text', required: true },
