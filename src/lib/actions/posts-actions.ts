@@ -89,31 +89,41 @@ function mapPost(input: FlexibleData) {
 }
 
 export async function createPost(input: FlexibleData) {
-  await requireRole('editor')
-  if (!input.title?.trim() && !input.titulo?.trim()) throw new Error('Título obrigatório')
-  if (!input.slug?.trim()) throw new Error('Slug obrigatório')
+  try {
+    await requireRole('editor')
+    if (!input.title?.trim() && !input.titulo?.trim()) throw new Error('Título obrigatório')
+    if (!input.slug?.trim()) throw new Error('Slug obrigatório')
 
-  const payload = await getPayload({ config })
-  const data = mapPost(input)
-  const created = await payload.create({ collection: 'posts', data: data as any })
-  revalidatePath('/admin/posts')
-  revalidatePath('/blog')
-  return { ok: true, id: created.id }
+    const payload = await getPayload({ config })
+    const data = mapPost(input)
+    const created = await payload.create({ collection: 'posts', data: data as any })
+    revalidatePath('/admin/posts')
+    revalidatePath('/blog')
+    return { ok: true, id: created.id }
+  } catch (e: any) {
+    console.error('[createPost]', e)
+    return { ok: false, error: e?.message || 'Falha ao salvar' }
+  }
 }
 
 export async function updatePost(id: string, input: FlexibleData) {
-  await requireRole('editor')
-  const payload = await getPayload({ config })
-  const data = mapPost(input)
-  const updated: any = await payload.update({ collection: 'posts', id, data: data as any })
-  revalidatePath('/admin/posts')
-  revalidatePath('/blog')
-  if (updated?.slug) revalidatePath(`/blog/${updated.slug}`)
-  return { ok: true }
+  try {
+    await requireRole('editor')
+    const payload = await getPayload({ config })
+    const data = mapPost(input)
+    const updated: any = await payload.update({ collection: 'posts', id, data: data as any })
+    revalidatePath('/admin/posts')
+    revalidatePath('/blog')
+    if (updated?.slug) revalidatePath(`/blog/${updated.slug}`)
+    return { ok: true }
+  } catch (e: any) {
+    console.error('[updatePost]', e)
+    return { ok: false, error: e?.message || 'Falha ao salvar' }
+  }
 }
 
 export async function deletePost(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const payload = await getPayload({ config })
   await payload.delete({ collection: 'posts', id })
   revalidatePath('/admin/posts')

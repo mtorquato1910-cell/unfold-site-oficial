@@ -45,7 +45,7 @@ export async function updateCategory(id: string, input: FlexibleData) {
 }
 
 export async function deleteCategory(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const payload = await getPayload({ config })
   await payload.delete({ collection: 'categories', id })
   revalidatePath('/admin/categories')

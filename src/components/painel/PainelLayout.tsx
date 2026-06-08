@@ -7,7 +7,7 @@ import { logoutAction } from '@/app/(painel)/painel/login/actions'
 import {
   LayoutDashboard, FileText, Briefcase, MessageSquareQuote,
   FolderTree, Image as ImageIcon, Users, ClipboardList,
-  HelpCircle, Sparkles as SparklesIcon, Bot,
+  HelpCircle, Sparkles as SparklesIcon,
   Settings, UserCog, Activity, LogOut, Search, Command, ChevronRight,
 } from 'lucide-react'
 import BellDropdown from './BellDropdown'
@@ -39,7 +39,6 @@ const sections: Section[] = [
       { to: '/admin/calculadora', label: 'Calculadora', icon: ClipboardList },
       { to: '/admin/quiz', label: 'Questões do Quiz', icon: HelpCircle },
       { to: '/admin/insights', label: 'Variações de Insights', icon: SparklesIcon },
-      { to: '/admin/prompts', label: 'Prompts de IA', icon: Bot },
     ],
   },
   {

@@ -93,12 +93,20 @@ export default function TestimonialsClient({
     startTransition(async () => {
       try {
         if (editing) {
-          await updateTestimonial(editing.id, form)
+          const res: any = await updateTestimonial(editing.id, form)
+          if (!res?.ok) {
+            setError(res?.error || 'Falha ao salvar')
+            return
+          }
           setItems((prev) =>
             prev.map((x) => (x.id === editing.id ? { ...x, ...form } : x)),
           )
         } else {
           const res: any = await createTestimonial(form)
+          if (!res?.ok) {
+            setError(res?.error || 'Falha ao salvar')
+            return
+          }
           setItems((prev) => [
             ...prev,
             { id: res.id, ...form, createdAt: new Date().toISOString() },

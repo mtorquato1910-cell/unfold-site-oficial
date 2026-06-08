@@ -24,11 +24,13 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<Case | null>(null)
   const [form, setForm] = useState<typeof EMPTY_FORM>(EMPTY_FORM)
+  const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
   function openCreate() {
     setEditing(null)
     setForm(EMPTY_FORM)
+    setError(null)
     setOpen(true)
   }
 
@@ -45,19 +47,33 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
       status: c.status ?? 'draft',
       featured: !!c.featured,
     })
+    setError(null)
     setOpen(true)
   }
 
   function handleSubmit() {
+    setError(null)
     startTransition(async () => {
-      if (editing) {
-        await updateCase(editing.id, form)
-        setCases(prev => prev.map(c => c.id === editing.id ? { ...c, ...form } : c))
-      } else {
-        await createCase(form)
-        setCases(prev => [{ id: Date.now().toString(), ...form, createdAt: new Date().toISOString() }, ...prev])
+      try {
+        if (editing) {
+          const res: any = await updateCase(editing.id, form)
+          if (!res?.ok) {
+            setError(res?.error || 'Falha ao salvar')
+            return
+          }
+          setCases(prev => prev.map(c => c.id === editing.id ? { ...c, ...form } : c))
+        } else {
+          const res: any = await createCase(form)
+          if (!res?.ok) {
+            setError(res?.error || 'Falha ao salvar')
+            return
+          }
+          setCases(prev => [{ id: res.id, ...form, createdAt: new Date().toISOString() }, ...prev])
+        }
+        setOpen(false)
+      } catch (err: any) {
+        setError(err?.message || 'Falha ao salvar')
       }
-      setOpen(false)
     })
   }
 
@@ -224,6 +240,19 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                 </Field>
               </div>
             </div>
+
+            {error && (
+              <div
+                className="mt-4 rounded-lg px-4 py-2.5 text-[13px]"
+                style={{
+                  background: 'hsl(0 70% 60% / 0.10)',
+                  color: 'hsl(0 70% 80%)',
+                  border: '1px solid hsl(0 70% 60% / 0.25)',
+                }}
+              >
+                {error}
+              </div>
+            )}
 
             <div className="flex items-center justify-end gap-3 mt-8">
               <button

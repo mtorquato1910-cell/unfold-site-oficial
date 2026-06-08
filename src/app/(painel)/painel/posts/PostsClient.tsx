@@ -121,16 +121,29 @@ export default function PostsClient({
       ...form,
       tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
     }
+    setError(null)
     startTransition(async () => {
-      if (editing) {
-        await updatePost(editing.id, data)
-        setPosts(prev => prev.map(p => p.id === editing.id ? { ...p, ...data } : p))
-      } else {
-        await createPost(data)
-        // Re-fetch simple: just prepend optimistically
-        setPosts(prev => [{ id: Date.now().toString(), ...data, createdAt: new Date().toISOString() }, ...prev])
+      try {
+        if (editing) {
+          const res: any = await updatePost(editing.id, data)
+          if (!res?.ok) {
+            setError(res?.error || 'Falha ao salvar')
+            return
+          }
+          setPosts(prev => prev.map(p => p.id === editing.id ? { ...p, ...data } : p))
+        } else {
+          const res: any = await createPost(data)
+          if (!res?.ok) {
+            setError(res?.error || 'Falha ao salvar')
+            return
+          }
+          // Re-fetch simple: just prepend optimistically
+          setPosts(prev => [{ id: res.id, ...data, createdAt: new Date().toISOString() }, ...prev])
+        }
+        setOpen(false)
+      } catch (err: any) {
+        setError(err?.message || 'Falha ao salvar')
       }
-      setOpen(false)
     })
   }
 

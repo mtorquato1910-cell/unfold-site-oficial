@@ -28,7 +28,7 @@ export default async function TestimonialsPage() {
     <PainelLayout user={user}>
       <TestimonialsClient
         initialTestimonials={items}
-        canDelete={user.role === 'admin'}
+        canDelete={true}
       />
     </PainelLayout>
   )

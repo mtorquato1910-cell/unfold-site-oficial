@@ -34,7 +34,7 @@ export default async function FAQsPage() {
 
   return (
     <PainelLayout user={user}>
-      <FAQsClient initialFaqs={faqs} canDelete={user.role === 'admin'} />
+      <FAQsClient initialFaqs={faqs} canDelete={true} />
     </PainelLayout>
   )
 }

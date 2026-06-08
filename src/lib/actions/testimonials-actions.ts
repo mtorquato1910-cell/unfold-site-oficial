@@ -26,56 +26,66 @@ function validate(data: TestimonialInput) {
 }
 
 export async function createTestimonial(data: TestimonialInput) {
-  await requireRole('editor')
-  validate(data)
-  const payload = await getPayload({ config })
-  const created = await payload.create({
-    collection: 'testimonials',
-    data: {
-      nome: data.nome,
-      cargo: data.cargo,
-      empresa: data.empresa,
-      depoimento: data.depoimento,
-      vertical: data.vertical as any,
-      avaliacao: data.avaliacao ?? 5,
-      destaque: !!data.destaque,
-      ativo: data.ativo ?? true,
-      ordem: data.ordem ?? 0,
-    } as any,
-  })
-  revalidatePath('/admin/testimonials')
-  revalidatePath('/')
-  revalidateTag('testimonials')
-  return { ok: true, id: created.id }
+  try {
+    await requireRole('editor')
+    validate(data)
+    const payload = await getPayload({ config })
+    const created = await payload.create({
+      collection: 'testimonials',
+      data: {
+        nome: data.nome,
+        cargo: data.cargo,
+        empresa: data.empresa,
+        depoimento: data.depoimento,
+        vertical: data.vertical as any,
+        avaliacao: data.avaliacao ?? 5,
+        destaque: !!data.destaque,
+        ativo: data.ativo ?? true,
+        ordem: data.ordem ?? 0,
+      } as any,
+    })
+    revalidatePath('/admin/testimonials')
+    revalidatePath('/')
+    revalidateTag('testimonials')
+    return { ok: true, id: created.id }
+  } catch (e: any) {
+    console.error('[createTestimonial]', e)
+    return { ok: false, error: e?.message || 'Falha ao salvar' }
+  }
 }
 
 export async function updateTestimonial(id: string, data: TestimonialInput) {
-  await requireRole('editor')
-  validate(data)
-  const payload = await getPayload({ config })
-  await payload.update({
-    collection: 'testimonials',
-    id,
-    data: {
-      nome: data.nome,
-      cargo: data.cargo,
-      empresa: data.empresa,
-      depoimento: data.depoimento,
-      vertical: data.vertical as any,
-      avaliacao: data.avaliacao,
-      destaque: data.destaque,
-      ativo: data.ativo,
-      ordem: data.ordem,
-    } as any,
-  })
-  revalidatePath('/admin/testimonials')
-  revalidatePath('/')
-  revalidateTag('testimonials')
-  return { ok: true }
+  try {
+    await requireRole('editor')
+    validate(data)
+    const payload = await getPayload({ config })
+    await payload.update({
+      collection: 'testimonials',
+      id,
+      data: {
+        nome: data.nome,
+        cargo: data.cargo,
+        empresa: data.empresa,
+        depoimento: data.depoimento,
+        vertical: data.vertical as any,
+        avaliacao: data.avaliacao,
+        destaque: data.destaque,
+        ativo: data.ativo,
+        ordem: data.ordem,
+      } as any,
+    })
+    revalidatePath('/admin/testimonials')
+    revalidatePath('/')
+    revalidateTag('testimonials')
+    return { ok: true }
+  } catch (e: any) {
+    console.error('[updateTestimonial]', e)
+    return { ok: false, error: e?.message || 'Falha ao salvar' }
+  }
 }
 
 export async function deleteTestimonial(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const payload = await getPayload({ config })
   await payload.delete({ collection: 'testimonials', id })
   revalidatePath('/admin/testimonials')

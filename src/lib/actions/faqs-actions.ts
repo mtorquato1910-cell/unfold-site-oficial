@@ -92,7 +92,7 @@ export async function updateFAQ(id: string, data: FAQInput) {
 }
 
 export async function deleteFAQ(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const payload = await getPayload({ config })
   await payload.delete({ collection: 'faqs', id })
   revalidatePath('/admin/faqs')
