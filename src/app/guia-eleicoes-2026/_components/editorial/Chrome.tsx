@@ -44,7 +44,7 @@ export function Header() {
   return (
     <>
       <motion.div className="fixed top-0 left-0 right-0 h-[2px] z-50 origin-left" style={{ background: 'var(--mint-deep)', scaleX: scrollYProgress }} />
-      <header className="sticky top-0 z-40 backdrop-blur-sm" style={{ background: 'rgba(246,244,237,0.85)', borderBottom: '1px solid var(--ink-hair)' }}>
+      <header className="guia-editorial-header sticky top-0 z-40 backdrop-blur-md" style={{ background: 'rgba(0,21,29,0.82)', borderBottom: '1px solid var(--ink-hair)' }}>
         {/* gap-6 separa os três grupos; nav inline só a partir de 1180px, senão drawer */}
         <div className={`container-edit flex items-center justify-between gap-6 transition-[padding] duration-300 ${scrolled ? 'py-2.5' : 'py-4'}`}>
           <CoBrand />
@@ -54,7 +54,7 @@ export function Header() {
             ))}
           </nav>
           <div className="flex items-center gap-3 shrink-0">
-            <button onClick={download} className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-display font-medium transition-transform active:scale-95 hover:-translate-y-0.5 motion-reduce:transform-none" style={{ background: 'var(--mint)', color: 'var(--ink)' }}>
+            <button onClick={download} className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-display font-medium transition-transform active:scale-95 hover:-translate-y-0.5 motion-reduce:transform-none" style={{ background: 'var(--mint)', color: 'var(--on-accent)', boxShadow: 'var(--glow-mint)' }}>
               <Download className="w-4 h-4" /> Baixar PDF
             </button>
             <button onClick={() => setOpen(true)} className="min-[1180px]:hidden p-3 -mr-2" aria-label="Abrir menu">
@@ -75,7 +75,7 @@ export function Header() {
             ))}
           </nav>
           <div className="container-edit mt-auto pb-10 pt-8">
-            <button onClick={() => { setOpen(false); download() }} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-display font-medium" style={{ background: 'var(--mint)', color: 'var(--ink)' }}>
+            <button onClick={() => { setOpen(false); download() }} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-display font-medium" style={{ background: 'var(--mint)', color: 'var(--on-accent)', boxShadow: 'var(--glow-mint)' }}>
               <Download className="w-4 h-4" /> Baixar PDF
             </button>
           </div>

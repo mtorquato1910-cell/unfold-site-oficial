@@ -211,7 +211,7 @@ export function Section({
         : band === 'dark'
           ? 'var(--feature-bg)'
           : 'var(--paper)'
-  const color = band === 'dark' ? 'var(--paper)' : 'var(--ink-body)'
+  const color = band === 'dark' ? 'var(--ink)' : 'var(--ink-body)'
   return (
     <section id={id} className={className} style={{ background: bg, color }}>
       <div className="container-edit py-20 md:py-28">{children}</div>
@@ -238,7 +238,7 @@ export function SectionTitle({
         </Reveal>
       )}
       <Reveal delay={0.1}>
-        <h3 className="mt-3 font-serif" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.08, color: dark ? 'var(--paper)' : 'var(--ink)' }}>
+        <h3 className="mt-3 font-serif" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.08, color: 'var(--ink)' }}>
           {title}
         </h3>
       </Reveal>

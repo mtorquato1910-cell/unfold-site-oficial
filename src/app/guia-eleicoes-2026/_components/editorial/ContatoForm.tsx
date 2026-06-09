@@ -102,7 +102,7 @@ export function ContatoForm() {
   }
 
   const inputBase =
-    'w-full rounded-xl px-4 py-3 text-[15px] outline-none transition-colors bg-[var(--paper)] focus:border-[var(--mint-deep)]'
+    'w-full rounded-xl px-4 py-3 text-[15px] outline-none transition-colors bg-[var(--paper)] text-[var(--ink)] placeholder:text-[var(--ink-faint)] focus:border-[var(--mint-deep)]'
 
   if (submitted) {
     return (
@@ -228,7 +228,7 @@ export function ContatoForm() {
           type="submit"
           disabled={!isValid || submitting || checkingEmail || checkingPhone || !!emailError || !!phoneError || !turnstileToken}
           className="mt-1 inline-flex items-center justify-center rounded-full px-7 py-4 text-[15px] font-semibold font-display transition-opacity disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none"
-          style={{ background: 'var(--mint)', color: 'var(--ink)' }}
+          style={{ background: 'var(--mint)', color: 'var(--on-accent)', boxShadow: 'var(--glow-mint)' }}
         >
           {submitting ? 'Enviando…' : 'Solicitar consultoria'}
         </button>

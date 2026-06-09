@@ -100,7 +100,7 @@ function GuiaContent() {
           </Reveal>
           <Reveal delay={0.3}>
             <div className="flex flex-wrap gap-3 mt-10">
-              <button onClick={downloadHero} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-display font-medium" style={{ background: 'var(--mint)', color: 'var(--ink)' }}>
+              <button onClick={downloadHero} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-display font-medium" style={{ background: 'var(--mint)', color: 'var(--on-accent)', boxShadow: 'var(--glow-mint)' }}>
                 <Download className="w-4 h-4" /> Baixar PDF
               </button>
               <button onClick={share} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-display font-medium" style={{ border: '1px solid var(--ink-hair)', color: 'var(--ink)' }}>
@@ -228,7 +228,7 @@ function GuiaContent() {
           ))}
         </div>
         <Reveal>
-          <div className="mt-16 p-8 md:p-12 rounded-2xl text-center" style={{ background: 'var(--ink)', color: 'var(--paper)' }}>
+          <div className="mt-16 p-8 md:p-12 rounded-2xl text-center" style={{ background: 'linear-gradient(135deg, #073842 0%, #001e29 70%)', color: 'var(--ink)', border: '1px solid rgba(109,249,198,0.18)', boxShadow: 'var(--shadow-elev), var(--glow-mint)' }}>
             <p className="font-serif text-2xl md:text-3xl" style={{ lineHeight: 1.3 }}>
               &ldquo;A campanha digital de 2026 não é a de 2022. Quem replicar o playbook anterior vai jogar com regras que mudaram <span style={{ color: 'var(--spark)' }}>e contra plataformas que mudaram.</span>&rdquo;
             </p>
@@ -360,8 +360,8 @@ function GuiaContent() {
           ] as [string, string][]).map(([t, d]) => (
             <Reveal key={t}>
               <div className="p-6 rounded-2xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                <h4 className="font-serif text-2xl" style={{ color: 'var(--paper)' }}>{t}</h4>
-                <p className="mt-3" style={{ color: 'rgba(246,244,237,0.78)' }}>{d}</p>
+                <h4 className="font-serif text-2xl" style={{ color: 'var(--ink)' }}>{t}</h4>
+                <p className="mt-3" style={{ color: 'rgba(234,242,240,0.78)' }}>{d}</p>
               </div>
             </Reveal>
           ))}
@@ -520,7 +520,7 @@ function GuiaContent() {
           <div className="relative max-w-3xl">
             <Eyebrow><span style={{ color: 'var(--spark)' }}>CONVITE</span></Eyebrow>
             <Reveal delay={0.1}>
-              <h2 className="mt-4 font-serif" style={{ fontSize: 'clamp(2.25rem, 5vw, 4rem)', color: 'var(--paper)', lineHeight: 1.05 }}>
+              <h2 className="mt-4 font-serif" style={{ fontSize: 'clamp(2.25rem, 5vw, 4rem)', color: 'var(--ink)', lineHeight: 1.05 }}>
                 Se você está estruturando uma operação digital para 2026, <span style={{ color: 'var(--spark)' }}>vamos conversar.</span>
               </h2>
             </Reveal>
@@ -531,10 +531,10 @@ function GuiaContent() {
             </Reveal>
             <Reveal delay={0.3}>
               <div className="flex flex-wrap gap-3 mt-10">
-                <a href="#contato" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-display font-medium text-lg" style={{ background: 'var(--spark)', color: 'var(--ink)' }}>
+                <a href="#contato" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-display font-medium text-lg" style={{ background: 'var(--spark)', color: 'var(--on-accent)', boxShadow: 'var(--glow-mint)' }}>
                   Agendar uma conversa →
                 </a>
-                <button onClick={downloadConvite} className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-display font-medium text-lg" style={{ border: '1px solid rgba(246,244,237,0.3)', color: 'var(--paper)' }}>
+                <button onClick={downloadConvite} className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-display font-medium text-lg" style={{ border: '1px solid rgba(234,242,240,0.3)', color: 'var(--ink)' }}>
                   <Download className="w-4 h-4" /> Baixar o PDF
                 </button>
               </div>

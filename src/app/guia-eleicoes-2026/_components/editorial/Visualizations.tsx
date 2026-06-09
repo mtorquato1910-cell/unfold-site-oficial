@@ -61,12 +61,12 @@ export function LedgerPodeNaoPode() {
       </div>
       <div className="flex flex-col sm:flex-row gap-3 mb-6 sticky top-16 z-10 py-3" style={{ background: 'var(--paper)' }}>
         <div className="inline-flex p-1 rounded-full" style={{ background: 'var(--paper-band)' }}>
-          <button onClick={() => setTab('pode')} className="px-5 py-2 rounded-full font-display text-sm" style={{ background: tab === 'pode' ? 'var(--pode)' : 'transparent', color: tab === 'pode' ? 'white' : 'var(--ink)' }}>Pode</button>
-          <button onClick={() => setTab('nao')} className="px-5 py-2 rounded-full font-display text-sm" style={{ background: tab === 'nao' ? 'var(--vedado)' : 'transparent', color: tab === 'nao' ? 'white' : 'var(--ink)' }}>Não pode</button>
+          <button onClick={() => setTab('pode')} className="px-5 py-2 rounded-full font-display text-sm" style={{ background: tab === 'pode' ? 'var(--pode)' : 'transparent', color: tab === 'pode' ? 'var(--on-accent)' : 'var(--ink)' }}>Pode</button>
+          <button onClick={() => setTab('nao')} className="px-5 py-2 rounded-full font-display text-sm" style={{ background: tab === 'nao' ? 'var(--vedado)' : 'transparent', color: tab === 'nao' ? 'var(--on-accent)' : 'var(--ink)' }}>Não pode</button>
         </div>
         <div className="flex-1 flex items-center gap-2 px-4 rounded-full" style={{ border: '1px solid var(--ink-hair)', background: 'var(--paper-hi)' }}>
           <Search className="w-4 h-4 opacity-60" />
-          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar prática…" className="flex-1 bg-transparent py-2 outline-none text-sm" />
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar prática…" className="flex-1 bg-transparent py-2 outline-none text-sm text-[var(--ink)] placeholder:text-[var(--ink-faint)]" />
         </div>
       </div>
       {filtered.length === 0 && <p className="font-mono-tag py-8">Nenhuma prática encontrada. Limpe a busca para ver tudo.</p>}
@@ -160,12 +160,12 @@ export function CalendarioEleitoral() {
         <div className="hidden md:block relative" style={{ height: 320 }}>
           {/* Lane A — janela de campanha */}
           <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute h-7 rounded origin-left flex items-center justify-center px-2 font-mono-tag text-white whitespace-nowrap" style={{ top: 8, left: `${janL}%`, width: `${janW}%`, background: 'var(--mint-deep)' }}>
+            className="absolute h-7 rounded origin-left flex items-center justify-center px-2 font-mono-tag text-[var(--on-accent)] whitespace-nowrap" style={{ top: 8, left: `${janL}%`, width: `${janW}%`, background: 'var(--mint-deep)' }}>
             JANELA DE CAMPANHA · 47 DIAS
           </motion.div>
           {/* Lane B — blackout (linha logo abaixo, sem sobrepor a lane A) */}
           <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.6 }}
-            className="absolute h-7 rounded origin-left flex items-center justify-center px-2 font-mono-tag text-white whitespace-nowrap" style={{ top: 44, left: `${blkL}%`, width: `${blkW}%`, background: 'var(--vedado)' }}>
+            className="absolute h-7 rounded origin-left flex items-center justify-center px-2 font-mono-tag text-[var(--on-accent)] whitespace-nowrap" style={{ top: 44, left: `${blkL}%`, width: `${blkW}%`, background: 'var(--vedado)' }}>
             BLACKOUT IA · 72H
           </motion.div>
 
@@ -194,8 +194,8 @@ export function CalendarioEleitoral() {
         {/* MOBILE — segmentos rotulados + timeline vertical */}
         <div className="md:hidden">
           <div className="flex flex-col gap-2 mb-6">
-            <div className="rounded-lg px-3 py-2 font-mono-tag text-white" style={{ background: 'var(--mint-deep)' }}>16/08–01/10 · Janela de campanha (47 dias)</div>
-            <div className="rounded-lg px-3 py-2 font-mono-tag text-white" style={{ background: 'var(--vedado)' }}>01/10–04/10 · Blackout IA (72h)</div>
+            <div className="rounded-lg px-3 py-2 font-mono-tag text-[var(--on-accent)]" style={{ background: 'var(--mint-deep)' }}>16/08–01/10 · Janela de campanha (47 dias)</div>
+            <div className="rounded-lg px-3 py-2 font-mono-tag text-[var(--on-accent)]" style={{ background: 'var(--vedado)' }}>01/10–04/10 · Blackout IA (72h)</div>
           </div>
           <ol className="relative border-l-2 pl-6 space-y-6" style={{ borderColor: 'var(--ink-hair)' }}>
             {calMarcos.map((m) => (
@@ -218,8 +218,8 @@ const erros = [
   { t: 'Apoiador impulsionando posts', s: 'MULTA + RONI + CASSAÇÃO', sev: 85, color: 'var(--vedado)', evitar: 'Só candidato/partido/federação/coligação contratam mídia, com pagamento da conta de campanha.' },
   { t: 'Disparo em massa no WhatsApp', s: 'MULTA + ABUSO + CASSAÇÃO', sev: 90, color: 'var(--vedado)', evitar: 'Use Click-to-WhatsApp via Meta e API oficial; nunca compre listas.' },
   { t: 'Pedido de voto antes de 16/08', s: 'MULTA R$ 5–25K', sev: 30, color: 'var(--atencao)', evitar: "Antes de 16/08 só pré-campanha — sem 'vote em mim' explícito." },
-  { t: 'IA com voz ou imagem de adversário', s: 'MULTA + CASSAÇÃO + CRIME', sev: 100, color: '#8B1F18', evitar: 'Política interna: jamais usar voz/imagem real de pessoa, nem em sátira.' },
-  { t: 'Compra de base de eleitores', s: 'CASSAÇÃO + CRIME + ANPD', sev: 95, color: '#8B1F18', evitar: 'Construa base própria com opt-in documentado.' },
+  { t: 'IA com voz ou imagem de adversário', s: 'MULTA + CASSAÇÃO + CRIME', sev: 100, color: '#ff5247', evitar: 'Política interna: jamais usar voz/imagem real de pessoa, nem em sátira.' },
+  { t: 'Compra de base de eleitores', s: 'CASSAÇÃO + CRIME + ANPD', sev: 95, color: '#ff5247', evitar: 'Construa base própria com opt-in documentado.' },
   { t: 'Não declarar despesa com Meta', s: 'REPROVAÇÃO + INELEGIBILIDADE', sev: 80, color: 'var(--vedado)', evitar: 'Conciliação semanal Meta × prestação, NF para o CNPJ de campanha.' },
 ]
 
@@ -332,10 +332,10 @@ export function UsoRedesChart() {
         <div className="font-mono-tag mb-4">USO POR REDE · % DOS BRASILEIROS</div>
         <ResponsiveContainer width="100%" height={320}>
           <BarChart data={data} layout="vertical" margin={{ left: 20, right: 40 }}>
-            <CartesianGrid horizontal={false} stroke="rgba(0,30,41,0.08)" />
+            <CartesianGrid horizontal={false} stroke="rgba(231,240,237,0.08)" />
             <XAxis type="number" hide domain={[0, 100]} />
-            <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#001E29', fontFamily: 'Space Grotesk', fontSize: 13 }} width={90} />
-            <Tooltip contentStyle={{ background: 'var(--paper-hi)', border: '1px solid var(--ink-hair)', borderRadius: 8, fontFamily: 'Space Grotesk' }} formatter={(v: number) => `${v}%`} />
+            <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#eaf2f0', fontFamily: 'Space Grotesk', fontSize: 13 }} width={90} />
+            <Tooltip contentStyle={{ background: 'var(--paper-hi)', border: '1px solid var(--ink-hair)', borderRadius: 8, fontFamily: 'Space Grotesk', color: 'var(--ink)' }} labelStyle={{ color: 'var(--ink)' }} itemStyle={{ color: 'var(--ink)' }} formatter={(v: number) => `${v}%`} />
             <Bar dataKey="v" radius={[0, 6, 6, 0]} animationDuration={1200}>
               {data.map((_, i) => <RCell key={i} fill={i === 0 ? 'var(--mint-deep)' : 'var(--mint)'} />)}
             </Bar>
@@ -367,7 +367,7 @@ export function BlackoutVisualizer() {
           <div className="absolute" style={{ left: '67.5%', top: 22, width: 2, height: 56, background: 'var(--spark)', transform: 'translateX(-50%)' }} />
           <div className="absolute -translate-x-1/2 w-3 h-3 rounded-full" style={{ left: '67.5%', top: 18, background: 'var(--spark)' }} />
           <div className="absolute -translate-x-1/2 text-center" style={{ left: '67.5%', top: 82 }}>
-            <div className="font-display font-bold" style={{ color: 'var(--paper)' }}>04/10</div>
+            <div className="font-display font-bold" style={{ color: 'var(--ink)' }}>04/10</div>
             <div className="font-mono-tag" style={{ color: 'var(--spark)' }}>VOTAÇÃO</div>
           </div>
         </div>

@@ -125,13 +125,13 @@ export function EditorialGate({ children }: { children: ReactNode }) {
           type="button"
           onClick={() => openModal()}
           className="fixed bottom-5 left-1/2 z-[55] -translate-x-1/2 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold font-display shadow-lg"
-          style={{ background: 'var(--mint)', color: 'var(--ink)' }}
+          style={{ background: 'var(--mint)', color: 'var(--on-accent)', boxShadow: 'var(--glow-mint)' }}
         >
           <Lock className="h-4 w-4" /> Liberar o estudo completo
         </button>
       )}
 
-      <Toaster position="top-right" theme="light" offset={72} />
+      <Toaster position="top-right" theme="dark" offset={72} />
     </GateContext.Provider>
   )
 }

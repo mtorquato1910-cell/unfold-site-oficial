@@ -12,39 +12,57 @@
  */
 
 :root {
-  /* Superfícies (papel) */
-  --paper: #f6f4ed;
-  --paper-hi: #fcfbf6;
-  --paper-band: #edeae0;
-  --mint-wash: #e7f6ef;
+  /*
+   * Paleta "verde dark Unfold" (jun/2026). Invertida do editorial light original:
+   * as superfícies passam a ser o verde-petróleo da marca (#001E29) e a tinta vira
+   * clara. Mantém os MESMOS nomes de token e papéis, então toda a estrutura e o
+   * movimento dos componentes continuam intactos — só os valores mudam. Espelha o
+   * design system do site (globals.css: --background #001E29, --primary #6DF9C6).
+   */
 
-  /* Tinta (texto) */
-  --ink: #001e29;
-  --ink-body: #1c3a43;
-  --ink-faint: rgba(0, 30, 41, 0.55);
-  --ink-hair: rgba(0, 30, 41, 0.14);
+  /* Superfícies (verde-dark, em escala de elevação) */
+  --paper: #001e29;        /* base — fundo geral (= --background do site) */
+  --paper-hi: #0a3340;     /* cards/painéis elevados */
+  --paper-band: #00141c;   /* faixas alternadas (mais profundas) */
+  --mint-wash: #052a2e;    /* washes com leve viés mint sobre o dark */
 
-  /* Acentos mint */
-  --mint: #5fcfa6;
-  --mint-soft: #b8e8d2;
-  --mint-deep: #1e9d74;
-  --spark: #6df9c6;
+  /* Tinta (texto) — agora clara */
+  --ink: #eaf2f0;          /* títulos e texto forte (≈ --foreground #E7E7E7) */
+  --ink-body: rgba(231, 240, 237, 0.74);  /* corpo */
+  --ink-faint: rgba(231, 240, 237, 0.5);  /* legendas/eyebrows neutras */
+  --ink-hair: rgba(231, 240, 237, 0.14);  /* fios/bordas */
+
+  /* Texto escuro para uso SOBRE acentos claros (botões mint/spark) */
+  --on-accent: #001e29;
+
+  /* Acentos mint (brilham sobre o dark) */
+  --mint: #6df9c6;         /* CTAs/botões (= --primary do site) */
+  --mint-soft: #2e7d63;    /* barras/preenchimentos suaves */
+  --mint-deep: #3fe0a6;    /* acento de TEXTO vibrante (eyebrows, links, hover) */
+  --spark: #8affda;        /* realce máximo */
 
   /* Azul (fase institucional) */
-  --blue: #8fb4eb;
-  --blue-deep: #4f79c2;
+  --blue: #93bafb;
+  --blue-deep: #6e96d6;
 
-  /* Semáforo regulatório */
-  --pode: #1e9d74;
-  --pode-wash: #e7f6ef;
-  --atencao: #c98a1e;
-  --atencao-wash: #fbf1dd;
-  --vedado: #c8483f;
-  --vedado-wash: #fbe8e5;
+  /* Semáforo regulatório — tons claros + washes escuros translúcidos */
+  --pode: #45d9a0;
+  --pode-wash: rgba(69, 217, 160, 0.12);
+  --atencao: #e8b15c;
+  --atencao-wash: rgba(232, 177, 92, 0.12);
+  --vedado: #f4756b;
+  --vedado-wash: rgba(244, 117, 107, 0.12);
 
-  /* Spreads escuros + marca Feat.Work */
-  --feature-bg: #001e29;
+  /* Spreads escuros (imersões dramáticas) + marca Feat.Work */
+  --feature-bg: #00131a;
   --feat-dot: #00e649;
+
+  /* Profundidade / sombreado (dark precisa de sombra + glow, não preto chapado) */
+  --shadow-card: 0 1px 0 rgba(109, 249, 198, 0.04) inset,
+    0 18px 44px -24px rgba(0, 0, 0, 0.72);
+  --shadow-elev: 0 0 0 1px rgba(231, 240, 237, 0.05),
+    0 28px 60px -26px rgba(0, 0, 0, 0.82);
+  --glow-mint: 0 0 42px -10px rgba(109, 249, 198, 0.32);
 
   /* Fontes — reaproveitam as variáveis next/font do layout (--font-guia-*) */
   --font-serif: var(--font-guia-serif), "Fraunces", Georgia, serif;
@@ -61,8 +79,15 @@
   font-size: clamp(1.0625rem, 1.1vw, 1.1875rem);
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
-  /* Grão sutil de papel (mesmo do esboço). */
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0.1176  0 0 0 0 0.1607  0 0 0 0.035 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  /* Grão sutil (claro, para texturizar o fundo escuro sem virar ruído visível). */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.02 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* Sombreado dos painéis: profundidade dirigida por sombra escura + fio mint sutil.
+   Atinge os cards arredondados do corpo (rounded-xl/2xl/3xl). As pílulas (rounded-full)
+   e o modal (portal, fora de .guia-editorial) NÃO são afetados. */
+.guia-editorial :is(.rounded-xl, .rounded-2xl, .rounded-3xl) {
+  box-shadow: var(--shadow-card);
 }
 
 .guia-editorial h1,
@@ -134,7 +159,12 @@ html {
 }
 .guia-lift:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0, 30, 41, 0.08);
+  box-shadow: var(--shadow-elev), var(--glow-mint);
+}
+
+/* Header sticky do hotsite (Chrome.tsx): glow/sombra para descolar do conteúdo. */
+.guia-editorial-header {
+  box-shadow: 0 8px 28px -18px rgba(0, 0, 0, 0.85);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -238,7 +238,7 @@ export function LeadForm({ onUnlock }: Props) {
         type="submit"
         disabled={!canSubmit}
         className="mt-1 inline-flex items-center justify-center rounded-lg px-5 py-3 text-[15px] font-semibold transition-opacity disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none"
-        style={{ background: MINT, color: INK, fontFamily: 'var(--font-guia-display)' }}
+        style={{ background: MINT, color: 'var(--on-accent)', boxShadow: 'var(--glow-mint)', fontFamily: 'var(--font-guia-display)' }}
       >
         {isSubmitting ? 'Desbloqueando…' : 'Desbloquear estudo'}
       </button>
