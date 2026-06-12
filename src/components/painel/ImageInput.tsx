@@ -6,6 +6,59 @@ import { uploadMedia, uploadMediaFromUrl } from '@/lib/actions/media-actions'
 
 type ImageValue = { id?: string; url?: string } | null
 
+// Vercel/Serverless rejeita requisições com body > ~4.5MB (HTTP 413) ANTES do
+// handler rodar — e uploads do painel passam por Server Action (FormData). Por isso
+// redimensionamos/comprimimos no browser antes de enviar: capas não precisam de mais
+// que ~1920px, e o Payload gera os tamanhos (thumb/card/og) a partir do que receber.
+const MAX_DIMENSION = 1920
+// Alvo bem abaixo do teto da Vercel para folga com headers/multipart.
+const TARGET_MAX_BYTES = 3_500_000
+
+async function compressImage(file: File): Promise<File> {
+  // GIF (animado) e SVG não podem passar por canvas sem perder dados — manda como está.
+  if (file.type === 'image/gif' || file.type === 'image/svg+xml') return file
+  if (typeof document === 'undefined' || typeof createImageBitmap === 'undefined') return file
+
+  let bitmap: ImageBitmap
+  try {
+    bitmap = await createImageBitmap(file)
+  } catch {
+    return file // formato não decodificável no browser — deixa o servidor validar
+  }
+
+  const scale = Math.min(1, MAX_DIMENSION / Math.max(bitmap.width, bitmap.height))
+  const w = Math.max(1, Math.round(bitmap.width * scale))
+  const h = Math.max(1, Math.round(bitmap.height * scale))
+
+  const canvas = document.createElement('canvas')
+  canvas.width = w
+  canvas.height = h
+  const ctx = canvas.getContext('2d')
+  if (!ctx) {
+    bitmap.close?.()
+    return file
+  }
+  ctx.drawImage(bitmap, 0, 0, w, h)
+  bitmap.close?.()
+
+  // WebP preserva transparência (importante p/ logos) e comprime bem.
+  // Baixa a qualidade em passos até caber no alvo.
+  const toBlob = (q: number) =>
+    new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', q))
+
+  let blob: Blob | null = null
+  for (const q of [0.85, 0.72, 0.6, 0.48]) {
+    blob = await toBlob(q)
+    if (blob && blob.size <= TARGET_MAX_BYTES) break
+  }
+  if (!blob) return file
+  // Se mesmo assim ficou maior que o original, mantém o original (sem ganho).
+  if (blob.size >= file.size) return file
+
+  const baseName = file.name.replace(/\.[^.]+$/, '') || 'imagem'
+  return new File([blob], `${baseName}.webp`, { type: 'image/webp' })
+}
+
 export default function ImageInput({
   value,
   onChange,
@@ -23,9 +76,20 @@ export default function ImageInput({
 
   function handleFile(file: File) {
     setError(null)
-    const fd = new FormData()
-    fd.append('file', file)
     startTransition(async () => {
+      let toSend = file
+      try {
+        toSend = await compressImage(file)
+      } catch {
+        toSend = file // se a compressão falhar, tenta enviar o original
+      }
+      // Guarda final: se ainda passar do teto da Vercel, avisa em vez de estourar 413.
+      if (toSend.size > TARGET_MAX_BYTES + 500_000) {
+        setError('Imagem muito grande mesmo após compressão. Use um arquivo menor (< 4MB).')
+        return
+      }
+      const fd = new FormData()
+      fd.append('file', toSend)
       const res: any = await uploadMedia(fd)
       if (!res?.ok) {
         setError(res?.error || 'Falha no upload')
