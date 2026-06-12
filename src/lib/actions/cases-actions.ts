@@ -49,12 +49,13 @@ function mapCase(input: FlexibleData) {
     status: STATUS_MAP[input.status] ?? 'rascunho',
   }
 
-  // Imagem de destaque: aceita ID numérico/UUID de media (campo upload relationTo: 'media')
+  // Imagem de destaque: ID de media. Postgres usa integer no relacionamento — coerce
+  // string numérica p/ Number (string crua dava "field is invalid").
   const imagem_destaque = input.imagem_destaque ?? input.cover_image ?? undefined
-  if (imagem_destaque && (typeof imagem_destaque === 'string' || typeof imagem_destaque === 'number')) {
-    if (/^[a-f0-9-]{8,}$/i.test(String(imagem_destaque)) || /^\d+$/.test(String(imagem_destaque))) {
-      data.imagem_destaque = imagem_destaque
-    }
+  if (imagem_destaque != null && imagem_destaque !== '') {
+    const s = String(imagem_destaque)
+    if (/^\d+$/.test(s)) data.imagem_destaque = Number(s)
+    else if (/^[a-f0-9-]{8,}$/i.test(s)) data.imagem_destaque = imagem_destaque
   }
 
   // Result/metrics → array `results` (metrica/valor são required no schema, então

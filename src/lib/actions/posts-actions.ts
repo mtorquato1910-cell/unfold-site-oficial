@@ -90,10 +90,12 @@ function mapPost(input: FlexibleData) {
   } else if (categoria) {
     data.categoria = categoria
   }
-  if (imagem_destaque && (typeof imagem_destaque === 'string' || typeof imagem_destaque === 'number')) {
-    if (/^[a-f0-9-]{8,}$/i.test(String(imagem_destaque)) || /^\d+$/.test(String(imagem_destaque))) {
-      data.imagem_destaque = imagem_destaque
-    }
+  // ID de mídia: no Postgres o relacionamento é integer — manda string numérica
+  // dava "The following field is invalid: Imagem de destaque". Coerce p/ Number.
+  if (imagem_destaque != null && imagem_destaque !== '') {
+    const s = String(imagem_destaque)
+    if (/^\d+$/.test(s)) data.imagem_destaque = Number(s)
+    else if (/^[a-f0-9-]{8,}$/i.test(s)) data.imagem_destaque = imagem_destaque
   }
 
   return data

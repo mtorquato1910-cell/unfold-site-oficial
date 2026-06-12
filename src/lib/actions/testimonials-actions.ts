@@ -19,10 +19,12 @@ export type TestimonialInput = {
   logo_empresa?: string
 }
 
-// Aceita só IDs de media (numérico ou UUID). Strings vazias / inválidas viram undefined.
-function mediaId(v?: string): string | undefined {
+// Aceita só IDs de media. No Postgres o relacionamento é integer, então string
+// numérica é coercida p/ Number (evita "field is invalid"). UUID fica string.
+function mediaId(v?: string): string | number | undefined {
   if (!v) return undefined
-  return /^[a-f0-9-]{8,}$/i.test(v) || /^\d+$/.test(v) ? v : undefined
+  if (/^\d+$/.test(v)) return Number(v)
+  return /^[a-f0-9-]{8,}$/i.test(v) ? v : undefined
 }
 
 function validate(data: TestimonialInput) {
