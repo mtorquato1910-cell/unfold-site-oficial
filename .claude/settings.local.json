@@ -183,7 +183,8 @@
       "Bash(find . -name \"payload.config.ts\" -not -path \"*/node_modules/*\")",
       "Bash(grep -E '\"@payload-config\"' tsconfig.json)",
       "Bash(grep -A1 \"payload-config\" tsconfig.json)",
-      "Bash(node -e \"const s=require\\('./package.json'\\).scripts; console.log\\(JSON.stringify\\(s,null,2\\)\\)\")"
+      "Bash(node -e \"const s=require\\('./package.json'\\).scripts; console.log\\(JSON.stringify\\(s,null,2\\)\\)\")",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/@payloadcms/storage-vercel-blob/package.json'\\).version\\)\")"
     ]
   }
 }
