@@ -8,10 +8,24 @@ import { createCase, updateCase, deleteCase } from '@/lib/actions/cases-actions'
 
 type Case = Record<string, any>
 
+const slugify = (s: string) =>
+  s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+
+// Valores válidos do select `vertical` no schema (src/collections/Cases.ts).
+const VERTICAIS = [
+  { value: 'construcao', label: 'Construção Civil' },
+  { value: 'agro', label: 'Agronegócio' },
+  { value: 'b2b-saas', label: 'B2B / SaaS' },
+  { value: 'industria', label: 'Indústria' },
+  { value: 'varejo', label: 'Varejo' },
+  { value: 'servicos', label: 'Serviços Profissionais' },
+]
+
 const EMPTY_FORM = {
   title: '',
+  slug: '',
   company: '',
-  sector: '',
+  vertical: '',
   challenge: '',
   solution: '',
   result: '',
@@ -44,8 +58,9 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
     const mediaUrl = c.imagem_destaque?.url ?? ''
     setForm({
       title: c.title ?? '',
-      company: c.company ?? '',
-      sector: c.sector ?? '',
+      slug: c.slug ?? '',
+      company: c.company ?? c.client ?? '',
+      vertical: c.vertical ?? '',
       challenge: c.challenge ?? '',
       solution: c.solution ?? '',
       result: c.result ?? '',
@@ -59,8 +74,17 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
     setOpen(true)
   }
 
+  function handleTitleChange(val: string) {
+    // Edição: não sobrescreve slug existente (preserva URL já publicada).
+    setForm(f => ({ ...f, title: val, slug: editing ? f.slug : slugify(val) }))
+  }
+
   function handleSubmit() {
     setError(null)
+    // Campos required no schema (Cases.ts): title, slug, client, vertical.
+    if (!form.title.trim()) { setError('Informe o título do case.'); return }
+    if (!form.company.trim()) { setError('Informe o cliente.'); return }
+    if (!form.vertical) { setError('Selecione a vertical do case.'); return }
     startTransition(async () => {
       try {
         if (editing) {
@@ -172,8 +196,17 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                 <input
                   className="input-mint"
                   value={form.title}
-                  onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
+                  onChange={e => handleTitleChange(e.target.value)}
                   placeholder="Como a Acme cresceu 3x"
+                />
+              </Field>
+
+              <Field label="Slug" hint="Gerado automaticamente a partir do título · usado na URL /cases/...">
+                <input
+                  className="input-mint font-mono"
+                  value={form.slug}
+                  onChange={e => setForm(f => ({ ...f, slug: slugify(e.target.value) }))}
+                  placeholder="como-a-acme-cresceu-3x"
                 />
               </Field>
 
@@ -186,13 +219,17 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                     placeholder="Nome da empresa"
                   />
                 </Field>
-                <Field label="Segmento">
-                  <input
+                <Field label="Vertical">
+                  <select
                     className="input-mint"
-                    value={form.sector}
-                    onChange={e => setForm(f => ({ ...f, sector: e.target.value }))}
-                    placeholder="SaaS, E-commerce..."
-                  />
+                    value={form.vertical}
+                    onChange={e => setForm(f => ({ ...f, vertical: e.target.value }))}
+                  >
+                    <option value="">Selecione…</option>
+                    {VERTICAIS.map(v => (
+                      <option key={v.value} value={v.value}>{v.label}</option>
+                    ))}
+                  </select>
                 </Field>
               </div>
 

@@ -12,6 +12,16 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     '/api/guia-eleicoes/pdf': ['./private-assets/**'],
   },
+  experimental: {
+    // Uploads de imagem do painel passam por Server Actions (uploadMedia recebe
+    // o File via FormData). O default do Next é 1MB, o que estoura com quase
+    // qualquer foto e dispara "An unexpected response was received from the server"
+    // ANTES do handler rodar (por isso o try/catch do action nunca pega). 10MB cobre
+    // imagens de capa/destaque sem permitir uploads abusivos.
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+  },
   images: {
     remotePatterns: [
       {

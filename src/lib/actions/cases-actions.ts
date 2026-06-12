@@ -20,10 +20,24 @@ const STATUS_MAP: Record<string, string> = {
   publicado: 'publicado',
 }
 
+function slugify(s: string) {
+  return s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '')
+}
+
 function mapCase(input: FlexibleData) {
+  const title = input.title ?? input.titulo ?? ''
+  // Slug é required + unique no schema. Se o front não enviar, derivamos do título
+  // para não falhar com "Slug obrigatório".
+  const slug = (input.slug?.trim() ? input.slug.trim() : slugify(title)) || ''
+
   const data: FlexibleData = {
-    title: input.title ?? input.titulo ?? '',
-    slug: input.slug ?? '',
+    title,
+    slug,
     client: input.client ?? input.cliente ?? input.company ?? input.empresa ?? '',
     vertical: input.vertical ?? input.sector ?? input.setor ?? undefined,
     tagline: input.tagline ?? input.subtitulo ?? undefined,
