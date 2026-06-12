@@ -184,7 +184,8 @@
       "Bash(grep -E '\"@payload-config\"' tsconfig.json)",
       "Bash(grep -A1 \"payload-config\" tsconfig.json)",
       "Bash(node -e \"const s=require\\('./package.json'\\).scripts; console.log\\(JSON.stringify\\(s,null,2\\)\\)\")",
-      "Bash(node -e \"console.log\\(require\\('./node_modules/@payloadcms/storage-vercel-blob/package.json'\\).version\\)\")"
+      "Bash(node -e \"console.log\\(require\\('./node_modules/@payloadcms/storage-vercel-blob/package.json'\\).version\\)\")",
+      "Bash(node -e \"try{const u=require\\('undici'\\);console.log\\('undici OK, version:', require\\('undici/package.json'\\).version, '| Agent:', typeof u.Agent\\)}catch\\(e\\){console.log\\('undici NAO disponivel:', e.message\\)}\")"
     ]
   }
 }
