@@ -1,8 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+
+function mediaUrl(field: any): string | null {
+  if (field && typeof field === 'object') return field.url || field.sizes?.card?.url || null
+  return null
+}
 
 export const metadata: Metadata = {
   title: 'Blog | Unfold Growth',
@@ -93,12 +99,24 @@ export default async function BlogPage() {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {posts.map((post) => {
                 const pilarCfg = PILAR_CONFIG[post.pilar as string] || PILAR_CONFIG.geral
+                const imgUrl = mediaUrl(post.imagem_destaque)
                 return (
                   <Link
                     key={post.id}
                     href={`/blog/${post.slug}`}
                     className="group rounded-2xl border border-border bg-card p-6 hover:border-primary/40 transition-all duration-300 flex flex-col"
                   >
+                    {imgUrl && (
+                      <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-border/60 mb-5">
+                        <Image
+                          src={imgUrl}
+                          alt={post.titulo as string}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
+                      </div>
+                    )}
                     <div className="flex items-center justify-between mb-4">
                       <span className={`font-mono text-xs uppercase tracking-[0.15em] px-2.5 py-1 rounded-full border ${pilarCfg.color}`}>
                         {pilarCfg.label}

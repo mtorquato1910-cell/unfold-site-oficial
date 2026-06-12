@@ -1,12 +1,19 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import RichTextRenderer from '@/components/RichTextRenderer'
 
 export const revalidate = 60
+
+// Extrai a URL da mídia (campo upload populado com depth>=1).
+function mediaUrl(field: any): string | null {
+  if (field && typeof field === 'object') return field.url || field.sizes?.og?.url || null
+  return null
+}
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -31,9 +38,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { docs } = await payload.find({ collection: 'posts', where: { slug: { equals: slug } } })
     const post = docs[0]
     if (!post) return { title: 'Post não encontrado | Unfold Growth' }
+    const og = mediaUrl(post.imagem_destaque)
     return {
       title: `${post.titulo as string} | Blog | Unfold Growth`,
       description: post.resumo as string,
+      openGraph: og
+        ? { title: post.titulo as string, description: post.resumo as string, images: [{ url: og }] }
+        : undefined,
     }
   } catch {
     return { title: 'Blog | Unfold Growth' }
@@ -55,6 +66,8 @@ export default async function BlogPostPage({ params }: Props) {
   }
 
   if (!post) notFound()
+
+  const imgUrl = mediaUrl(post.imagem_destaque)
 
   return (
     <main className="min-h-screen">
@@ -91,6 +104,20 @@ export default async function BlogPostPage({ params }: Props) {
             )}
           </div>
         </header>
+
+        {/* Imagem de destaque */}
+        {imgUrl && (
+          <figure className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-border mb-12 bg-card">
+            <Image
+              src={imgUrl}
+              alt={post.titulo as string}
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 768px"
+            />
+          </figure>
+        )}
 
         {/* Conteúdo — RichText do Payload renderizado como HTML */}
         <div className="prose prose-invert prose-lg max-w-none">

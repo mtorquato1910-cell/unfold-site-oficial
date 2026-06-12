@@ -1,9 +1,15 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { Button } from '@/components/ui/button'
+
+function mediaUrl(field: any): string | null {
+  if (field && typeof field === 'object') return field.url || field.sizes?.card?.url || null
+  return null
+}
 
 export const metadata: Metadata = {
   title: 'Cases | Unfold Growth',
@@ -174,12 +180,25 @@ export default async function CasesPage() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-6">
-              {cases.map((c) => (
+              {cases.map((c) => {
+                const imgUrl = mediaUrl(c.imagem_destaque)
+                return (
                 <Link
                   key={c.id}
                   href={`/cases/${c.slug}`}
                   className="group rounded-2xl border border-border bg-card p-8 hover:border-primary/40 transition-all duration-300 hover:bg-card/80"
                 >
+                  {imgUrl && (
+                    <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-border/60 mb-6 -mt-2">
+                      <Image
+                        src={imgUrl}
+                        alt={(c.title || c.tagline) as string}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </div>
+                  )}
                   {/* Vertical badge */}
                   <div className="flex items-center justify-between mb-6">
                     <span className="font-mono text-xs uppercase tracking-[0.15em] text-primary/80 px-3 py-1 rounded-full border border-primary/20 bg-primary/5">
@@ -225,7 +244,8 @@ export default async function CasesPage() {
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </div>
                 </Link>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>

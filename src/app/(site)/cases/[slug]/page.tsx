@@ -1,10 +1,16 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { Button } from '@/components/ui/button'
+
+function mediaUrl(field: any): string | null {
+  if (field && typeof field === 'object') return field.url || field.sizes?.og?.url || null
+  return null
+}
 
 const VERTICAL_LABELS: Record<string, string> = {
   construcao: 'Construção Civil',
@@ -47,9 +53,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     })
     const c = docs[0]
     if (!c) return { title: 'Case não encontrado | Unfold Growth' }
+    const og = mediaUrl(c.imagem_destaque)
     return {
       title: `${c.title} | Cases | Unfold Growth`,
       description: c.tagline || c.title,
+      openGraph: og
+        ? { title: c.title as string, description: (c.tagline || c.title) as string, images: [{ url: og }] }
+        : undefined,
     }
   } catch {
     return { title: 'Cases | Unfold Growth' }
@@ -71,6 +81,7 @@ export default async function CaseDetailPage({ params }: Props) {
   }
   if (!c) notFound()
 
+  const imgUrl = mediaUrl(c.imagem_destaque)
   const highlights = (c.highlights ?? []) as Array<{ label: string; value: string }>
   const pillars = (c.pillars ?? []) as Array<{
     pilar: string
@@ -121,6 +132,20 @@ export default async function CaseDetailPage({ params }: Props) {
                 </div>
               ))}
             </div>
+          )}
+
+          {/* Imagem de destaque */}
+          {imgUrl && (
+            <figure className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden border border-border bg-card mt-12">
+              <Image
+                src={imgUrl}
+                alt={c.title as string}
+                fill
+                priority
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 1024px"
+              />
+            </figure>
           )}
         </div>
       </section>
