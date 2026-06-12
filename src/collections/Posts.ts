@@ -139,6 +139,18 @@ export const Posts: CollectionConfig = {
       admin: { description: 'Quando foi aprovado/rejeitado' },
     },
   ],
+  hooks: {
+    beforeChange: [
+      ({ data, originalDoc }) => {
+        // Carimba publicado_em na primeira vez que o post vira "published".
+        // Preserva a data original em edições posteriores.
+        if (data?.status === 'published' && !data.publicado_em && !originalDoc?.publicado_em) {
+          data.publicado_em = new Date().toISOString()
+        }
+        return data
+      },
+    ],
+  },
   timestamps: true,
 }
 

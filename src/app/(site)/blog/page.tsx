@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   description: 'Conteúdo técnico sobre geração de demanda B2B, vendas complexas e o método UGS.',
 }
 
+// Rede de segurança: além do revalidatePath disparado ao publicar, a página
+// se reconstrói a cada 60s para refletir novos posts sem depender só do purge.
+export const revalidate = 60
+
 const PILAR_CONFIG: Record<string, { label: string; color: string }> = {
   diagnosticar: { label: 'Diagnosticar', color: 'text-primary border-primary/20 bg-primary/5' },
   estruturar: { label: 'Estruturar', color: 'text-secondary border-secondary/20 bg-secondary/5' },

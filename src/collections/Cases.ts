@@ -192,6 +192,17 @@ const Cases: CollectionConfig = {
       label: 'Data de publicação',
     },
   ],
+  hooks: {
+    beforeChange: [
+      ({ data, originalDoc }) => {
+        // Carimba published_at na primeira vez que o case vira "publicado".
+        if (data?.status === 'publicado' && !data.published_at && !originalDoc?.published_at) {
+          data.published_at = new Date().toISOString()
+        }
+        return data
+      },
+    ],
+  },
   timestamps: true,
 }
 

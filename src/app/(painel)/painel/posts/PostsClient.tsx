@@ -24,6 +24,7 @@ const EMPTY_FORM = {
   imagem_destaque: '',
   meta_title: '',
   meta_description: '',
+  destaque_home: false,
 }
 
 export default function PostsClient({
@@ -117,6 +118,7 @@ export default function PostsClient({
       imagem_destaque: mediaId ? String(mediaId) : '',
       meta_title: post.meta_title ?? '',
       meta_description: post.meta_description ?? '',
+      destaque_home: !!post.destaque_home,
     })
     setCoverUrl(mediaUrl)
     setOpen(true)
@@ -464,11 +466,26 @@ export default function PostsClient({
                     value={form.status}
                     onChange={e => setForm(f => ({ ...f, status: e.target.value }))}
                   >
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
+                    <option value="draft">Rascunho</option>
+                    <option value="published">Publicado</option>
                   </select>
                 </Field>
               </div>
+
+              <Field
+                label="Destacar na Home"
+                hint='Exibe o post na seção "Insights" da página inicial (só vale se Publicado)'
+              >
+                <label className="flex h-10 items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.destaque_home}
+                    onChange={e => setForm(f => ({ ...f, destaque_home: e.target.checked }))}
+                    style={{ accentColor: 'hsl(158 92% 70%)' }}
+                  />
+                  <span className="text-[13px] text-dim-2">Exibir nos Insights da home</span>
+                </label>
+              </Field>
 
               <Field label="Tags" hint="Separadas por vírgula">
                 <input

@@ -11,6 +11,9 @@ export const metadata: Metadata = {
     'Conheça os resultados que a Unfold Growth já entregou — cases reais de crescimento estruturado em vendas complexas.',
 }
 
+// Rede de segurança: reconstrói a cada 60s além do revalidatePath ao publicar.
+export const revalidate = 60
+
 const MOCK_CASES = [
   {
     id: 1,

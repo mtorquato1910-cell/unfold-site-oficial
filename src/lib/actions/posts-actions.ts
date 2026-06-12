@@ -1,6 +1,6 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
@@ -59,6 +59,10 @@ function mapPost(input: FlexibleData) {
   const categoria = input.categoria ?? input.category ?? undefined
   const imagem_destaque = input.imagem_destaque ?? input.cover_image ?? undefined
 
+  // Destaque na Home (seção "Insights"). Sem isto, o post nunca aparece na home —
+  // a home filtra por destaque_home === true.
+  const destaque_home = input.destaque_home ?? input.featured_home ?? false
+
   const data: FlexibleData = {
     titulo,
     slug,
@@ -67,7 +71,14 @@ function mapPost(input: FlexibleData) {
     pilar,
     autor,
     tags,
+    destaque_home: !!destaque_home,
   }
+  if (input.ordem_home != null && input.ordem_home !== '') {
+    data.ordem_home = Number(input.ordem_home) || 0
+  }
+  // publicado_em é carimbado pelo hook beforeChange da collection (Posts.ts) na
+  // primeira vez que o status vira "published" — não setamos aqui para não resetar
+  // a data a cada edição.
   if (conteudoRT) data.conteudo = conteudoRT
   if (tempo_leitura) data.tempo_leitura = tempo_leitura
   if (typeof categoria === 'string' && categoria) {
@@ -99,6 +110,9 @@ export async function createPost(input: FlexibleData) {
     const created = await payload.create({ collection: 'posts', data: data as any })
     revalidatePath('/admin/posts')
     revalidatePath('/blog')
+    revalidatePath('/') // home (seção Insights)
+    revalidateTag('posts')
+    revalidateTag('home-insights')
     return { ok: true, id: created.id }
   } catch (e: any) {
     console.error('[createPost]', e)
@@ -114,6 +128,9 @@ export async function updatePost(id: string, input: FlexibleData) {
     const updated: any = await payload.update({ collection: 'posts', id, data: data as any })
     revalidatePath('/admin/posts')
     revalidatePath('/blog')
+    revalidatePath('/') // home (seção Insights)
+    revalidateTag('posts')
+    revalidateTag('home-insights')
     if (updated?.slug) revalidatePath(`/blog/${updated.slug}`)
     return { ok: true }
   } catch (e: any) {
