@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, X, Star } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field, MintButton } from '@/components/painel/ui'
 import ImageInput from '@/components/painel/ImageInput'
-import RichTextEditor from '@/components/painel/RichTextEditor'
+import BlockEditor from '@/components/painel/BlockEditor'
 import { plainToHtml } from '@/lib/rich-text'
 import { createCase, updateCase, deleteCase } from '@/lib/actions/cases-actions'
 
@@ -239,18 +239,16 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                 </Field>
               </div>
 
-              <Field label="Desafio" hint="Títulos, listas, imagens, links e vídeos do YouTube disponíveis.">
-                <RichTextEditor
+              <Field label="Desafio" hint="Monte em blocos com “+ Adicionar conteúdo”: texto, títulos, imagens, vídeos e tabelas.">
+                <BlockEditor
                   value={form.challengeHtml}
                   onChange={(html) => setForm(f => ({ ...f, challengeHtml: html }))}
-                  placeholder="Contexto e problema que o cliente enfrentava…"
                 />
               </Field>
-              <Field label="Solução" hint="Títulos, listas, imagens, links e vídeos do YouTube disponíveis.">
-                <RichTextEditor
+              <Field label="Solução" hint="Monte em blocos com “+ Adicionar conteúdo”: texto, títulos, imagens, vídeos e tabelas.">
+                <BlockEditor
                   value={form.solutionHtml}
                   onChange={(html) => setForm(f => ({ ...f, solutionHtml: html }))}
-                  placeholder="Como a Unfold estruturou a solução…"
                 />
               </Field>
               <Field label="Resultado">

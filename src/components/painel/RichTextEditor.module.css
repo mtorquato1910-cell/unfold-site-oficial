@@ -68,6 +68,15 @@
   font-size: 14px;
   line-height: 1.7;
 }
+.compact .content :global(.ProseMirror) {
+  min-height: 64px;
+}
+.compact .content {
+  padding: 8px 12px;
+}
+.compact .toolbar {
+  padding: 4px;
+}
 .content :global(.ProseMirror:focus) {
   outline: none;
 }

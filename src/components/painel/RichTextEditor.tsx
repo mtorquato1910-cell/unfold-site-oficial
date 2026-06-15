@@ -20,23 +20,28 @@ import { extractYouTubeId } from '@/lib/rich-text'
 import { uploadMedia } from '@/lib/actions/media-actions'
 import styles from './RichTextEditor.module.css'
 
-type Variant = 'full' | 'lite'
+// full: tudo (legado). text: parágrafo rico SEM títulos nem mídia (bloco de texto do
+// BlockEditor). lite: só negrito/itálico/sublinhado/link (depoimentos).
+type Variant = 'full' | 'lite' | 'text'
 
 export default function RichTextEditor({
   value,
   onChange,
   variant = 'full',
   placeholder = 'Escreva o conteúdo…',
+  compact = false,
 }: {
   value: string
   onChange: (html: string) => void
   variant?: Variant
   placeholder?: string
+  compact?: boolean
 }) {
   const [uploading, setUploading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
   const lastEmitted = useRef(value)
   const full = variant === 'full'
+  const showBlocks = variant === 'full' || variant === 'text' // listas e citação
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -129,7 +134,7 @@ export default function RichTextEditor({
 
   if (!editor) {
     return (
-      <div className={styles.wrapper}>
+      <div className={`${styles.wrapper} ${compact ? styles.compact : ''}`}>
         <div className={styles.content} style={{ color: 'hsl(0 0% 91% / 0.4)', fontSize: 13 }}>
           Carregando editor…
         </div>
@@ -138,7 +143,7 @@ export default function RichTextEditor({
   }
 
   return (
-    <div className={styles.wrapper}>
+    <div className={`${styles.wrapper} ${compact ? styles.compact : ''}`}>
       <div className={styles.toolbar}>
         <Btn icon={<Bold className="h-4 w-4" />} title="Negrito"
           active={editor.isActive('bold')} onClick={() => editor.chain().focus().toggleBold().run()} />
@@ -155,6 +160,11 @@ export default function RichTextEditor({
                 active={editor.isActive('heading', { level: lvl })}
                 onClick={() => editor.chain().focus().toggleHeading({ level: lvl as any }).run()} />
             ))}
+          </>
+        )}
+
+        {showBlocks && (
+          <>
             <span className={styles.sep} />
             <Btn icon={<List className="h-4 w-4" />} title="Lista"
               active={editor.isActive('bulletList')} onClick={() => editor.chain().focus().toggleBulletList().run()} />

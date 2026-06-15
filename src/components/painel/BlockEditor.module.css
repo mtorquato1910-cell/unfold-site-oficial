@@ -1,0 +1,233 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.block {
+  position: relative;
+  border: 1px solid hsl(158 92% 70% / 0.14);
+  border-radius: 0.7rem;
+  background: hsl(197 100% 9%);
+  padding: 10px 12px 12px;
+}
+
+.blockHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.blockLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: hsl(158 92% 70%);
+}
+
+.blockTools {
+  display: flex;
+  gap: 2px;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: hsl(0 0% 91% / 0.6);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.iconBtn:hover {
+  background: hsl(158 92% 70% / 0.1);
+  color: hsl(0 0% 91%);
+}
+.iconBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.danger:hover {
+  background: hsl(0 70% 60% / 0.15);
+  color: hsl(0 70% 80%);
+}
+
+/* Inputs internos dos blocos (título, legenda, vídeo) */
+.input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: hsl(197 100% 11%);
+  border: 1px solid hsl(158 92% 70% / 0.14);
+  color: hsl(0 0% 91%);
+  outline: none;
+  font-size: 14px;
+}
+.input:focus {
+  border-color: hsl(158 92% 70% / 0.4);
+}
+
+.titleRow {
+  display: flex;
+  gap: 8px;
+}
+.levelSelect {
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: hsl(197 100% 11%);
+  border: 1px solid hsl(158 92% 70% / 0.14);
+  color: hsl(0 0% 91%);
+  outline: none;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.hint {
+  font-size: 11px;
+  color: hsl(0 0% 91% / 0.45);
+  margin-top: 6px;
+}
+
+/* Imagem */
+.imgPreview {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid hsl(158 92% 70% / 0.14);
+  background: hsl(197 100% 8%);
+}
+.imgPreview img {
+  width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+  display: block;
+}
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 26px 16px;
+  border-radius: 8px;
+  border: 1px dashed hsl(158 92% 70% / 0.25);
+  background: hsl(197 100% 11%);
+  color: hsl(0 0% 91% / 0.7);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.12s ease;
+}
+.dropzone:hover {
+  border-color: hsl(158 92% 70% / 0.45);
+}
+
+/* Vídeo preview */
+.videoPreview {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 360px;
+}
+.videoPreview img {
+  width: 100%;
+  display: block;
+  filter: brightness(0.7);
+}
+.videoBadge {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Tabela */
+.tableWrap {
+  overflow-x: auto;
+}
+.tableGrid {
+  border-collapse: collapse;
+  width: 100%;
+}
+.tableGrid td {
+  border: 1px solid hsl(158 92% 70% / 0.18);
+  padding: 0;
+}
+.cellInput {
+  width: 100%;
+  min-width: 90px;
+  height: 34px;
+  padding: 0 8px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: hsl(0 0% 91%);
+  font-size: 13px;
+}
+.cellInput:focus {
+  background: hsl(158 92% 70% / 0.07);
+}
+.tableActions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+/* Barra "Adicionar conteúdo" */
+.addBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 8px;
+  border: 1px dashed hsl(158 92% 70% / 0.22);
+  border-radius: 0.7rem;
+  background: hsl(197 100% 8%);
+}
+.addLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: hsl(0 0% 91% / 0.55);
+  margin-right: 2px;
+}
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 11px;
+  border-radius: 7px;
+  background: hsl(158 92% 70% / 0.1);
+  border: 1px solid hsl(158 92% 70% / 0.22);
+  color: hsl(158 92% 70%);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.addBtn:hover {
+  background: hsl(158 92% 70% / 0.18);
+}
+
+.empty {
+  font-size: 12px;
+  color: hsl(0 0% 91% / 0.4);
+  text-align: center;
+  padding: 4px 0;
+}

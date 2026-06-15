@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { CheckCircle2, Send, AlertCircle, ImagePlus, X } from 'lucide-react'
 import { submitGuestPost, type GuestPostInput } from '@/lib/actions/blog-submit-actions'
-import RichTextEditor from '@/components/painel/RichTextEditor'
+import BlockEditor from '@/components/painel/BlockEditor'
 
 const plainLen = (html: string) =>
   html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length
@@ -274,13 +274,9 @@ export default function ContribuirClient() {
 
           <div>
             <label className="block text-sm font-medium mb-1.5">Conteúdo do post *</label>
-            <RichTextEditor
-              value={contentHtml}
-              onChange={setContentHtml}
-              placeholder="Escreva o conteúdo completo. Use a barra para títulos, negrito, listas, links, imagens com legenda, tabelas e vídeos do YouTube. Mínimo 200 caracteres."
-            />
+            <BlockEditor value={contentHtml} onChange={setContentHtml} />
             <p className="mt-1 text-xs text-foreground/50">
-              {plainLen(contentHtml)} caracteres (mínimo 200)
+              Monte o artigo em blocos (texto, título, imagem, vídeo, tabela) com “+ Adicionar conteúdo”. {plainLen(contentHtml)} caracteres (mínimo 200)
             </p>
           </div>
         </fieldset>

@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, X, FileText, CheckCircle2, XCircle, ExternalLink } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field } from '@/components/painel/ui'
 import ImageInput from '@/components/painel/ImageInput'
-import RichTextEditor from '@/components/painel/RichTextEditor'
+import BlockEditor from '@/components/painel/BlockEditor'
 import { lexicalToHtml } from '@/lib/rich-text'
 import { createPost, updatePost, deletePost } from '@/lib/actions/posts-actions'
 import { approvePost, rejectPost } from '@/lib/actions/blog-submit-actions'
@@ -441,12 +441,11 @@ export default function PostsClient({
 
               <Field
                 label="Conteúdo"
-                hint="Use a barra para títulos (H1–H4), negrito, listas, links, imagens com legenda, tabelas e vídeos do YouTube."
+                hint="Monte o artigo em blocos: clique em “+ Adicionar conteúdo” e vá empilhando texto, títulos, imagens, vídeos do YouTube e tabelas na ordem que quiser."
               >
-                <RichTextEditor
+                <BlockEditor
                   value={form.contentHtml}
                   onChange={(html) => setForm(f => ({ ...f, contentHtml: html }))}
-                  placeholder="Escreva o corpo do artigo..."
                 />
               </Field>
 
