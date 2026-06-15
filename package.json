@@ -10,6 +10,7 @@
     "lint": "next lint",
     "generate:types": "payload generate:types",
     "seed:clients": "cross-env NODE_OPTIONS=\"--no-warnings --import tsx\" tsx scripts/seed-clients.ts",
+    "seed:banners": "cross-env NODE_OPTIONS=\"--no-warnings --import tsx\" tsx scripts/seed-banners.ts",
     "test:storage": "cross-env NODE_OPTIONS=\"--no-warnings --import tsx\" tsx scripts/test-storage.ts",
     "test": "vitest run",
     "test:watch": "vitest"

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import typography from "@tailwindcss/typography";
 
 export default {
   darkMode: ["class"],
@@ -109,7 +110,88 @@ export default {
         "fade-in": "fade-in 0.6s ease-out both",
         "scale-in": "scale-in 0.4s ease-out both",
       },
+      // ── Typography (@tailwindcss/typography) ──────────────────────────────
+      // Tema do conteúdo de artigos (blog, cases, preview do painel).
+      // O HTML vem do editor rico; aqui damos legibilidade: espaçamento entre
+      // parágrafos, hierarquia clara de títulos e tabelas com bordas completas.
+      // A página usa `prose prose-invert prose-lg` (fundo dark da marca).
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: "none",
+            // Cores da marca no modo dark (prose-invert). Precisam ficar na base
+            // `.prose` para que `.prose-invert` as remapeie corretamente.
+            "--tw-prose-invert-body": "hsl(0 0% 91% / 0.82)",
+            "--tw-prose-invert-headings": "hsl(0 0% 100%)",
+            "--tw-prose-invert-links": "hsl(158 92% 70%)",
+            "--tw-prose-invert-bold": "hsl(0 0% 100%)",
+            "--tw-prose-invert-counters": "hsl(200 15% 65%)",
+            "--tw-prose-invert-bullets": "hsl(158 92% 70% / 0.6)",
+            "--tw-prose-invert-hr": "hsl(197 45% 20%)",
+            "--tw-prose-invert-quotes": "hsl(0 0% 91%)",
+            "--tw-prose-invert-quote-borders": "hsl(158 92% 70%)",
+            "--tw-prose-invert-captions": "hsl(200 15% 60%)",
+            "--tw-prose-invert-code": "hsl(158 92% 70%)",
+            "--tw-prose-invert-pre-code": "hsl(0 0% 91%)",
+            "--tw-prose-invert-pre-bg": "hsl(195 75% 11%)",
+            "--tw-prose-invert-th-borders": "hsl(197 45% 34%)",
+            "--tw-prose-invert-td-borders": "hsl(197 45% 24%)",
+            // Offset para as âncoras do índice não ficarem sob o header fixo.
+            "h1, h2, h3, h4": {
+              scrollMarginTop: "7rem",
+              fontFamily: "var(--font-display), Space Grotesk, system-ui, sans-serif",
+              letterSpacing: "-0.02em",
+              fontWeight: "700",
+            },
+            h2: { marginTop: "2.5em", marginBottom: "0.9em", lineHeight: "1.2" },
+            h3: { marginTop: "2em", marginBottom: "0.7em", lineHeight: "1.25" },
+            h4: { marginTop: "1.6em", marginBottom: "0.6em" },
+            p: { marginTop: "1.25em", marginBottom: "1.25em", lineHeight: "1.8" },
+            "ul, ol": { marginTop: "1.25em", marginBottom: "1.25em" },
+            li: { marginTop: "0.5em", marginBottom: "0.5em" },
+            a: { fontWeight: "500", textDecoration: "underline", textUnderlineOffset: "3px" },
+            blockquote: {
+              fontStyle: "normal",
+              borderLeftWidth: "3px",
+              paddingLeft: "1.25em",
+            },
+            img: { borderRadius: "0.75rem" },
+            figure: { marginTop: "2em", marginBottom: "2em" },
+            figcaption: { textAlign: "center", fontSize: "0.875em", marginTop: "0.75em" },
+            // ── Tabelas com bordas completas (corrige "tabelas sem bordas") ──
+            table: {
+              width: "100%",
+              marginTop: "2em",
+              marginBottom: "2em",
+              borderCollapse: "collapse",
+              fontSize: "0.95em",
+              overflow: "hidden",
+              borderRadius: "0.5rem",
+              borderWidth: "1px",
+              borderColor: "var(--tw-prose-td-borders)",
+            },
+            "thead th": {
+              borderWidth: "1px",
+              borderColor: "var(--tw-prose-th-borders)",
+              backgroundColor: "var(--tw-prose-pre-bg)",
+              padding: "0.7em 0.9em",
+              fontWeight: "700",
+              verticalAlign: "middle",
+            },
+            "tbody td, tfoot td": {
+              borderWidth: "1px",
+              borderColor: "var(--tw-prose-td-borders)",
+              padding: "0.7em 0.9em",
+              verticalAlign: "top",
+            },
+            "thead th:first-child": { paddingLeft: "0.9em" },
+            "thead th:last-child": { paddingRight: "0.9em" },
+            "tbody td:first-child": { paddingLeft: "0.9em" },
+            "tbody td:last-child": { paddingRight: "0.9em" },
+          },
+        },
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), typography],
 } satisfies Config;

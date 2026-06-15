@@ -196,7 +196,11 @@
       "Bash(vercel --prod --yes)",
       "Bash(node -e \"const fs=require\\('fs'\\);const t=fs.readFileSync\\('.vercel/.env.production.local','utf8'\\);const has=/DATABASE_URL\\\\s*=/.test\\(t\\);console.log\\('DATABASE_URL presente:', has\\);const m=t.match\\(/DATABASE_URL\\\\s*=\\\\s*\\\\\"?\\(postgres[^\\\\\"\\\\n]+\\)/\\);console.log\\('Começa com postgres:', !!m\\); if\\(m\\){const u=new URL\\(m[1]\\);console.log\\('Host:', u.host\\);}\")",
       "Bash(node -e \"const fs=require\\('fs'\\);const t=fs.readFileSync\\('.vercel/.env.production.local','utf8'\\);const keys=t.split\\('\\\\n'\\).map\\(l=>l.split\\('='\\)[0].trim\\(\\)\\).filter\\(Boolean\\);console.log\\(keys.filter\\(k=>/DATA|POSTGRES|SUPA|DB|URL/i.test\\(k\\)\\).join\\('\\\\n'\\)\\)\")",
-      "Bash(node scripts/ensure-html-columns.cjs)"
+      "Bash(node scripts/ensure-html-columns.cjs)",
+      "Bash(node -e \"const fs=require\\('fs'\\);const p='src/lib/article-toc.ts';let s=fs.readFileSync\\(p,'utf8'\\);s=s.replace\\(/\\\\.replace\\\\\\(\\\\/\\\\[[^\\\\]]*\\\\]\\\\/g, ''\\\\\\) \\\\/\\\\/ remove acentos.*/, \\\\\".replace\\(/[\\\\\\\\\\\\\\\\u0300-\\\\\\\\\\\\\\\\u036f]/g, ''\\) // remove acentos \\(diacriticos combinados\\)\\\\\"\\);fs.writeFileSync\\(p,s\\);console.log\\('ok'\\)\")",
+      "Bash(node -e \"const s='Configuração & Operação'.normalize\\('NFD'\\).replace\\(/[̀-ͯ]/g,''\\).toLowerCase\\(\\).replace\\(/[^a-z0-9\\\\s-]/g,''\\).trim\\(\\).replace\\(/\\\\s+/g,'-'\\);console.log\\(s\\)\")",
+      "Bash(npx tailwindcss *)",
+      "Bash(node -e \"const fs=require\\('fs'\\);let db='\\(não definido\\)';for\\(const f of ['.env.local','.env']\\){try{const t=fs.readFileSync\\(f,'utf8'\\);const m=t.match\\(/^DATABASE_URL=\\(.*\\)$/m\\);if\\(m\\){db=m[1].startsWith\\('postgres'\\)||m[1].includes\\('postgres'\\)?'Postgres/Supabase':\\(m[1].includes\\('file:'\\)||m[1].includes\\('.db'\\)?'SQLite local':'outro'\\);console.log\\(f+' -> '+db\\);break}}catch\\(e\\){}}\")"
     ]
   }
 }
