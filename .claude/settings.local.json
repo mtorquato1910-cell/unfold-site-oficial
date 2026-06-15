@@ -187,7 +187,13 @@
       "Bash(node -e \"console.log\\(require\\('./node_modules/@payloadcms/storage-vercel-blob/package.json'\\).version\\)\")",
       "Bash(node -e \"try{const u=require\\('undici'\\);console.log\\('undici OK, version:', require\\('undici/package.json'\\).version, '| Agent:', typeof u.Agent\\)}catch\\(e\\){console.log\\('undici NAO disponivel:', e.message\\)}\")",
       "Bash(Get-ChildItem *)",
-      "Bash(node -e \"const sk=require\\('@tiptap/starter-kit/package.json'\\); console.log\\('starter-kit', sk.version\\); const fs=require\\('fs'\\); const idx=require.resolve\\('@tiptap/starter-kit'\\); const src=fs.readFileSync\\(idx,'utf8'\\); console.log\\('inclui Link?', /extension-link|name:\\\\s*[\\\\\"\\\\x27]link/.test\\(src\\)\\); console.log\\('inclui Underline?', /extension-underline|name:\\\\s*[\\\\\"\\\\x27]underline/.test\\(src\\)\\);\")"
+      "Bash(node -e \"const sk=require\\('@tiptap/starter-kit/package.json'\\); console.log\\('starter-kit', sk.version\\); const fs=require\\('fs'\\); const idx=require.resolve\\('@tiptap/starter-kit'\\); const src=fs.readFileSync\\(idx,'utf8'\\); console.log\\('inclui Link?', /extension-link|name:\\\\s*[\\\\\"\\\\x27]link/.test\\(src\\)\\); console.log\\('inclui Underline?', /extension-underline|name:\\\\s*[\\\\\"\\\\x27]underline/.test\\(src\\)\\);\")",
+      "Bash(vercel projects *)",
+      "Bash(vercel link *)",
+      "Bash(vercel ls *)",
+      "Bash(vercel inspect *)",
+      "Bash(vercel pull *)",
+      "Bash(vercel --prod --yes)"
     ]
   }
 }
