@@ -65,6 +65,9 @@ function mapCase(input: FlexibleData) {
     const s = String(imagem_destaque)
     if (/^\d+$/.test(s)) data.imagem_destaque = Number(s)
     else if (/^[a-f0-9-]{8,}$/i.test(s)) data.imagem_destaque = imagem_destaque
+  } else if (imagem_destaque === '') {
+    // Usuário removeu a imagem no painel → desvincula de fato (sem isto, a antiga permanecia).
+    data.imagem_destaque = null
   }
 
   // Result/metrics → array `results` (metrica/valor são required no schema, então

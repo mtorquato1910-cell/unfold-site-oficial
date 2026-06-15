@@ -212,7 +212,8 @@
       "Bash(node -e \"fetch\\('http://localhost:3000/api/health'\\).then\\(\\(\\)=>process.exit\\(0\\)\\).catch\\(\\(\\)=>process.exit\\(1\\)\\)\")",
       "Bash(break)",
       "Bash(grep -qiE \"Ready in|started server|Local:\" .dev-server.log)",
-      "Bash(awk '{print \"atrás de origin: \"$1\" | à frente de origin \\(não enviados\\): \"$2}')"
+      "Bash(awk '{print \"atrás de origin: \"$1\" | à frente de origin \\(não enviados\\): \"$2}')",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/sanitize-html/package.json'\\).version\\)\")"
     ]
   }
 }

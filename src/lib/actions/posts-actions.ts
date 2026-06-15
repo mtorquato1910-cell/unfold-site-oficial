@@ -108,6 +108,9 @@ function mapPost(input: FlexibleData) {
     const s = String(imagem_destaque)
     if (/^\d+$/.test(s)) data.imagem_destaque = Number(s)
     else if (/^[a-f0-9-]{8,}$/i.test(s)) data.imagem_destaque = imagem_destaque
+  } else if (imagem_destaque === '') {
+    // Usuário removeu a imagem no painel → desvincula de fato (sem isto, a antiga permanecia).
+    data.imagem_destaque = null
   }
 
   return data
@@ -121,6 +124,10 @@ export async function createPost(input: FlexibleData) {
 
     const payload = await getPayload({ config })
     const data = mapPost(input)
+    // `conteudo` (Lexical) é required no schema. Se o post foi criado só com o editor
+    // HTML vazio, garante um corpo mínimo para o save não quebrar com erro genérico
+    // (a fonte real do site é conteudo_html quando preenchido).
+    if (!data.conteudo) data.conteudo = plainToRichText(' ')
     const created = await payload.create({ collection: 'posts', data: data as any })
     revalidatePath('/admin/posts')
     revalidatePath('/blog')

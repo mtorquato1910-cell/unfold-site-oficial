@@ -44,7 +44,7 @@ export default async function PostReviewPage({
         title={`Revisar: ${post.titulo || '(sem título)'}`}
         description={`Submetido ${post.createdAt ? formatDate(post.createdAt) : ''}`}
         actions={
-          user.role === 'admin' && post.status === 'pending_review' ? (
+          (user.role === 'admin' || user.role === 'editor') && post.status === 'pending_review' ? (
             <ReviewActions postId={post.id} />
           ) : null
         }

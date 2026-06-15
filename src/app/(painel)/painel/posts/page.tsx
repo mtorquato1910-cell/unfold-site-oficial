@@ -14,7 +14,7 @@ export default async function PostsPage() {
     <PainelLayout user={user}>
       <PostsClient
         initialPosts={result.docs ?? []}
-        canApprove={user.role === 'admin'}
+        canApprove={user.role === 'admin' || user.role === 'editor'}
       />
     </PainelLayout>
   )

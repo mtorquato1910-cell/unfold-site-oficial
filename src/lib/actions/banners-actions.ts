@@ -34,6 +34,9 @@ function mapBanner(input: FlexibleData) {
 function revalidate() {
   revalidatePath('/admin/banners')
   revalidatePath('/blog')
+  // Banners aparecem DENTRO das páginas de post (/blog/[slug]) — revalidar só
+  // '/blog' (a lista) não purga os artigos. Invalida todo o segmento dinâmico.
+  revalidatePath('/blog/[slug]', 'page')
 }
 
 export async function createBanner(input: FlexibleData) {

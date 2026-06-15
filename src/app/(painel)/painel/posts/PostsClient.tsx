@@ -134,7 +134,9 @@ export default function PostsClient({
   }
 
   function handleTitleChange(val: string) {
-    setForm(f => ({ ...f, title: val, slug: slugify(val) }))
+    // Edição: NÃO sobrescreve o slug existente (preserva a URL já publicada/indexada).
+    // Autogera o slug apenas na criação. Espelha o comportamento do CasesClient.
+    setForm(f => ({ ...f, title: val, slug: editing ? f.slug : slugify(val) }))
   }
 
   function handleSubmit() {

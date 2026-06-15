@@ -271,7 +271,9 @@ export async function submitGuestPost(formData: FormData) {
 // ── Aprovação / Rejeição (admin) ────────────────────────────────
 
 export async function approvePost(postId: string) {
-  const me = await requireRole('admin')
+  // Todos os usuários do painel têm role 'editor' — exigir 'admin' deixava o fluxo
+  // editorial inutilizável (ninguém conseguia aprovar). Liberado para 'editor'.
+  const me = await requireRole('editor')
   const payload = await getPayload({ config })
 
   const post: any = await payload.update({
@@ -312,7 +314,7 @@ export async function approvePost(postId: string) {
 }
 
 export async function rejectPost(postId: string, reason: string) {
-  const me = await requireRole('admin')
+  const me = await requireRole('editor')
   if (!reason?.trim()) throw new Error('Informe um motivo para a rejeição.')
 
   const payload = await getPayload({ config })
