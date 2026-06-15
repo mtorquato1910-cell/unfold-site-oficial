@@ -200,7 +200,19 @@
       "Bash(node -e \"const fs=require\\('fs'\\);const p='src/lib/article-toc.ts';let s=fs.readFileSync\\(p,'utf8'\\);s=s.replace\\(/\\\\.replace\\\\\\(\\\\/\\\\[[^\\\\]]*\\\\]\\\\/g, ''\\\\\\) \\\\/\\\\/ remove acentos.*/, \\\\\".replace\\(/[\\\\\\\\\\\\\\\\u0300-\\\\\\\\\\\\\\\\u036f]/g, ''\\) // remove acentos \\(diacriticos combinados\\)\\\\\"\\);fs.writeFileSync\\(p,s\\);console.log\\('ok'\\)\")",
       "Bash(node -e \"const s='Configuração & Operação'.normalize\\('NFD'\\).replace\\(/[̀-ͯ]/g,''\\).toLowerCase\\(\\).replace\\(/[^a-z0-9\\\\s-]/g,''\\).trim\\(\\).replace\\(/\\\\s+/g,'-'\\);console.log\\(s\\)\")",
       "Bash(npx tailwindcss *)",
-      "Bash(node -e \"const fs=require\\('fs'\\);let db='\\(não definido\\)';for\\(const f of ['.env.local','.env']\\){try{const t=fs.readFileSync\\(f,'utf8'\\);const m=t.match\\(/^DATABASE_URL=\\(.*\\)$/m\\);if\\(m\\){db=m[1].startsWith\\('postgres'\\)||m[1].includes\\('postgres'\\)?'Postgres/Supabase':\\(m[1].includes\\('file:'\\)||m[1].includes\\('.db'\\)?'SQLite local':'outro'\\);console.log\\(f+' -> '+db\\);break}}catch\\(e\\){}}\")"
+      "Bash(node -e \"const fs=require\\('fs'\\);let db='\\(não definido\\)';for\\(const f of ['.env.local','.env']\\){try{const t=fs.readFileSync\\(f,'utf8'\\);const m=t.match\\(/^DATABASE_URL=\\(.*\\)$/m\\);if\\(m\\){db=m[1].startsWith\\('postgres'\\)||m[1].includes\\('postgres'\\)?'Postgres/Supabase':\\(m[1].includes\\('file:'\\)||m[1].includes\\('.db'\\)?'SQLite local':'outro'\\);console.log\\(f+' -> '+db\\);break}}catch\\(e\\){}}\")",
+      "Bash(node -e \"try{require.resolve\\('pg'\\);console.log\\('pg: disponível'\\)}catch\\(e\\){console.log\\('pg: NÃO disponível'\\)}\")",
+      "Bash(node scripts/_tmp-apply-banners.mjs)",
+      "Bash(node scripts/_tmp-seed-banners.mjs)",
+      "Bash(rm -f scripts/_tmp-apply-banners.mjs scripts/_tmp-seed-banners.mjs scripts/_tmp-smoke-test.ts _smoke-test.db)",
+      "Bash(ls scripts/_tmp*)",
+      "Bash(ls _smoke-test.db)",
+      "Bash(node -e \"import\\('dotenv'\\).then\\(d=>{d.config\\({path:'.env.local',override:true}\\);const pg=require\\('pg'\\);const c=new pg.Client\\({connectionString:process.env.DATABASE_URL,ssl:{rejectUnauthorized:false}}\\);c.connect\\(\\).then\\(\\(\\)=>c.query\\(\\\\`SELECT slug, titulo, \\(conteudo_html IS NOT NULL\\) AS tem_html FROM site.posts WHERE status='published' ORDER BY publicado_em DESC NULLS LAST LIMIT 5\\\\`\\)\\).then\\(r=>{console.log\\(JSON.stringify\\(r.rows,null,2\\)\\);return c.end\\(\\)}\\).catch\\(e=>{console.error\\(e.message\\);process.exit\\(1\\)}\\)}\\)\")",
+      "Bash(echo \"dev server iniciado em background \\(PID $!\\)\")",
+      "Bash(node -e \"fetch\\('http://localhost:3000/api/health'\\).then\\(\\(\\)=>process.exit\\(0\\)\\).catch\\(\\(\\)=>process.exit\\(1\\)\\)\")",
+      "Bash(break)",
+      "Bash(grep -qiE \"Ready in|started server|Local:\" .dev-server.log)",
+      "Bash(awk '{print \"atrás de origin: \"$1\" | à frente de origin \\(não enviados\\): \"$2}')"
     ]
   }
 }
