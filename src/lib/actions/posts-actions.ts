@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
+import { sanitizeRichHtml, htmlToPlainText } from '@/lib/html-sanitize'
 
 /**
  * Posts actions com mapping inglês → PT-BR.
@@ -47,7 +48,16 @@ function mapPost(input: FlexibleData) {
   const slug = input.slug ?? ''
   const resumo = input.resumo ?? input.excerpt ?? ''
   const conteudoPlain = input.content ?? input.conteudoText ?? null
-  const conteudoRT = input.conteudo ?? (conteudoPlain ? plainToRichText(conteudoPlain) : undefined)
+  // Editor rico (TipTap) → HTML. Quando presente, é a fonte usada no site.
+  const contentHtml = input.contentHtml ?? input.conteudo_html ?? null
+  const cleanHtml = contentHtml != null ? sanitizeRichHtml(contentHtml) : null
+  const conteudoRT =
+    input.conteudo ??
+    (conteudoPlain
+      ? plainToRichText(conteudoPlain)
+      : cleanHtml
+        ? plainToRichText(htmlToPlainText(cleanHtml) || ' ')
+        : undefined)
   const status = input.status ?? 'draft'
   const pilar = input.pilar ?? input.pillar ?? 'geral'
   const autor = input.autor ?? input.author ?? 'Equipe Unfold Growth'
@@ -80,6 +90,8 @@ function mapPost(input: FlexibleData) {
   // primeira vez que o status vira "published" — não setamos aqui para não resetar
   // a data a cada edição.
   if (conteudoRT) data.conteudo = conteudoRT
+  // Só sobrescreve o HTML quando o editor enviou algo (evita zerar em saves parciais).
+  if (cleanHtml != null) data.conteudo_html = cleanHtml
   if (tempo_leitura) data.tempo_leitura = tempo_leitura
   if (typeof categoria === 'string' && categoria) {
     // Se cliente enviou categoria como string (não ID), ignora — relação só aceita ID

@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowUpRight } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { Button } from '@/components/ui/button'
+import RichContent from '@/components/RichContent'
 
 function mediaUrl(field: any): string | null {
   if (field && typeof field === 'object') return field.url || field.sizes?.og?.url || null
@@ -151,28 +152,42 @@ export default async function CaseDetailPage({ params }: Props) {
       </section>
 
       {/* Desafio + Solução */}
-      {(c.challenge || c.solution) && (
+      {((c as any).challenge_html || c.challenge || (c as any).solution_html || c.solution) && (
         <section className="py-16 md:py-20 border-t border-border">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-              {c.challenge && (
+              {((c as any).challenge_html || c.challenge) && (
                 <div>
                   <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-4">
                     O desafio
                   </p>
-                  <p className="text-foreground/70 leading-relaxed text-base md:text-lg">
-                    {c.challenge}
-                  </p>
+                  {(c as any).challenge_html ? (
+                    <RichContent
+                      html={(c as any).challenge_html}
+                      className="prose prose-invert max-w-none text-foreground/70"
+                    />
+                  ) : (
+                    <p className="text-foreground/70 leading-relaxed text-base md:text-lg whitespace-pre-line">
+                      {c.challenge}
+                    </p>
+                  )}
                 </div>
               )}
-              {c.solution && (
+              {((c as any).solution_html || c.solution) && (
                 <div>
                   <p className="font-mono text-xs uppercase tracking-[0.2em] text-secondary mb-4">
                     A solução
                   </p>
-                  <p className="text-foreground/70 leading-relaxed text-base md:text-lg">
-                    {c.solution}
-                  </p>
+                  {(c as any).solution_html ? (
+                    <RichContent
+                      html={(c as any).solution_html}
+                      className="prose prose-invert max-w-none text-foreground/70"
+                    />
+                  ) : (
+                    <p className="text-foreground/70 leading-relaxed text-base md:text-lg whitespace-pre-line">
+                      {c.solution}
+                    </p>
+                  )}
                 </div>
               )}
             </div>

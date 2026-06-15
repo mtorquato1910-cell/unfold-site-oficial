@@ -55,6 +55,14 @@ export const Posts: CollectionConfig = {
     },
     { name: 'conteudo', type: 'richText', required: true },
     {
+      name: 'conteudo_html',
+      type: 'textarea',
+      admin: {
+        description:
+          'Conteúdo rico (HTML) gerado pelo editor do painel/formulário. Quando preenchido, é a fonte usada no site. Posts antigos sem este campo continuam usando "conteudo" (Lexical).',
+      },
+    },
+    {
       name: 'status',
       type: 'select',
       required: true,

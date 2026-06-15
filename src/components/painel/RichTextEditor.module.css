@@ -1,0 +1,156 @@
+.wrapper {
+  border: 1px solid hsl(158 92% 70% / 0.12);
+  border-radius: 0.6rem;
+  background: hsl(197 100% 10%);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 6px;
+  border-bottom: 1px solid hsl(158 92% 70% / 0.12);
+  background: hsl(197 100% 8%);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 7px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: hsl(0 0% 91% / 0.75);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.btn:hover {
+  background: hsl(158 92% 70% / 0.1);
+  color: hsl(0 0% 91%);
+}
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.active {
+  background: hsl(158 92% 70% / 0.16);
+  color: hsl(158 92% 70%);
+  border-color: hsl(158 92% 70% / 0.25);
+}
+
+.sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 4px 2px;
+  background: hsl(158 92% 70% / 0.12);
+}
+
+.content {
+  padding: 14px 16px;
+  max-height: 540px;
+  overflow-y: auto;
+}
+
+/* Área editável (TipTap) */
+.content :global(.ProseMirror) {
+  min-height: 220px;
+  outline: none;
+  color: hsl(0 0% 91%);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.content :global(.ProseMirror:focus) {
+  outline: none;
+}
+.content :global(.ProseMirror p.is-editor-empty:first-child::before) {
+  content: attr(data-placeholder);
+  float: left;
+  color: hsl(0 0% 91% / 0.35);
+  pointer-events: none;
+  height: 0;
+}
+.content :global(.ProseMirror h1) { font-size: 1.7em; font-weight: 700; margin: 0.7em 0 0.3em; }
+.content :global(.ProseMirror h2) { font-size: 1.4em; font-weight: 700; margin: 0.7em 0 0.3em; }
+.content :global(.ProseMirror h3) { font-size: 1.2em; font-weight: 600; margin: 0.6em 0 0.3em; }
+.content :global(.ProseMirror h4) { font-size: 1.05em; font-weight: 600; margin: 0.6em 0 0.3em; }
+.content :global(.ProseMirror p) { margin: 0.5em 0; }
+.content :global(.ProseMirror ul) { list-style: disc; padding-left: 1.4em; margin: 0.5em 0; }
+.content :global(.ProseMirror ol) { list-style: decimal; padding-left: 1.4em; margin: 0.5em 0; }
+.content :global(.ProseMirror blockquote) {
+  border-left: 3px solid hsl(158 92% 70% / 0.4);
+  padding-left: 1em;
+  margin: 0.7em 0;
+  color: hsl(0 0% 91% / 0.8);
+  font-style: italic;
+}
+.content :global(.ProseMirror a) { color: hsl(158 92% 70%); text-decoration: underline; }
+
+/* Figura (imagem + legenda) */
+.content :global(.tt-figure) { margin: 1em 0; }
+.content :global(.tt-figure img) {
+  max-width: 100%;
+  border-radius: 0.6rem;
+  display: block;
+}
+.content :global(.tt-figure figcaption) {
+  font-size: 12px;
+  color: hsl(0 0% 91% / 0.6);
+  margin-top: 6px;
+  outline: none;
+}
+.content :global(.tt-figure figcaption:empty::before) {
+  content: attr(data-placeholder);
+  color: hsl(0 0% 91% / 0.3);
+}
+
+/* Placeholder de vídeo do YouTube dentro do editor */
+.content :global(.tt-youtube) {
+  position: relative;
+  margin: 1em 0;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  max-width: 480px;
+}
+.content :global(.tt-youtube img) { width: 100%; display: block; filter: brightness(0.7); }
+.content :global(.tt-youtube-badge) {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.25);
+}
+.content :global(.ProseMirror .ProseMirror-selectednode) {
+  outline: 2px solid hsl(158 92% 70% / 0.6);
+}
+
+/* Tabelas */
+.content :global(.ProseMirror table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 13px;
+}
+.content :global(.ProseMirror th),
+.content :global(.ProseMirror td) {
+  border: 1px solid hsl(158 92% 70% / 0.2);
+  padding: 6px 9px;
+  vertical-align: top;
+}
+.content :global(.ProseMirror th) {
+  background: hsl(158 92% 70% / 0.08);
+  font-weight: 600;
+  text-align: left;
+}

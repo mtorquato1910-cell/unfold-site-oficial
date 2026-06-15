@@ -95,7 +95,15 @@ const Cases: CollectionConfig = {
       type: 'textarea',
       label: 'Desafio',
       admin: {
-        description: 'Contexto e problema que o cliente enfrentava',
+        description: 'Contexto e problema que o cliente enfrentava (texto puro / fallback)',
+      },
+    },
+    {
+      name: 'challenge_html',
+      type: 'textarea',
+      label: 'Desafio (rico)',
+      admin: {
+        description: 'Versão formatada do desafio (editor do painel). Quando preenchido, é usada no site.',
       },
     },
     {
@@ -103,7 +111,15 @@ const Cases: CollectionConfig = {
       type: 'textarea',
       label: 'Solução aplicada',
       admin: {
-        description: 'Como a Unfold estruturou a solução',
+        description: 'Como a Unfold estruturou a solução (texto puro / fallback)',
+      },
+    },
+    {
+      name: 'solution_html',
+      type: 'textarea',
+      label: 'Solução (rico)',
+      admin: {
+        description: 'Versão formatada da solução (editor do painel). Quando preenchido, é usada no site.',
       },
     },
     {

@@ -6,6 +6,7 @@ import { getDocument } from '@/lib/painel-api'
 import PainelLayout from '@/components/painel/PainelLayout'
 import { GlassCard, PageHeader, StatusBadge } from '@/components/painel/ui'
 import RichTextRenderer from '@/components/RichTextRenderer'
+import RichContent from '@/components/RichContent'
 import ReviewActions from './ReviewActions'
 
 function formatDate(d: string): string {
@@ -139,16 +140,23 @@ export default async function PostReviewPage({
               )}
             </div>
 
-            <div
-              className="prose prose-sm max-w-none mt-6"
-              style={{ color: 'hsl(0 0% 91% / 0.85)' }}
-            >
-              {post.conteudo ? (
-                <RichTextRenderer data={post.conteudo} />
-              ) : (
-                <p className="text-dim italic">Sem conteúdo (rich text)</p>
-              )}
-            </div>
+            {post.conteudo_html ? (
+              <RichContent
+                html={post.conteudo_html}
+                className="prose prose-sm max-w-none mt-6"
+              />
+            ) : (
+              <div
+                className="prose prose-sm max-w-none mt-6"
+                style={{ color: 'hsl(0 0% 91% / 0.85)' }}
+              >
+                {post.conteudo ? (
+                  <RichTextRenderer data={post.conteudo} />
+                ) : (
+                  <p className="text-dim italic">Sem conteúdo (rich text)</p>
+                )}
+              </div>
+            )}
           </GlassCard>
         </div>
       </div>

@@ -4,6 +4,8 @@ import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, X, MessageSquareQuote, Eye, EyeOff, Star } from 'lucide-react'
 import { PageHeader, GlassCard, EmptyState, Field, MintButton } from '@/components/painel/ui'
 import ImageInput from '@/components/painel/ImageInput'
+import RichTextEditor from '@/components/painel/RichTextEditor'
+import { plainToHtml } from '@/lib/rich-text'
 import {
   createTestimonial,
   updateTestimonial,
@@ -43,6 +45,7 @@ const EMPTY = {
   cargo: '',
   empresa: '',
   depoimento: '',
+  depoimentoHtml: '',
   vertical: '',
   avaliacao: 5,
   destaque: false,
@@ -85,6 +88,7 @@ export default function TestimonialsClient({
       cargo: t.cargo || '',
       empresa: t.empresa,
       depoimento: t.depoimento,
+      depoimentoHtml: (t as any).depoimento_html || plainToHtml(t.depoimento),
       vertical: t.vertical || '',
       avaliacao: t.avaliacao || 5,
       destaque: t.destaque,
@@ -331,13 +335,11 @@ export default function TestimonialsClient({
                 }}
               />
 
-              <Field label="Depoimento" hint="Recomendado: 80–180 caracteres">
-                <textarea
-                  rows={5}
-                  className="w-full px-3 py-2.5 rounded-lg text-[13px] resize-none input-mint"
-                  style={{ height: 'auto' }}
-                  value={form.depoimento}
-                  onChange={(e) => setForm((f) => ({ ...f, depoimento: e.target.value }))}
+              <Field label="Depoimento" hint="Recomendado: 80–180 caracteres. Negrito, itálico e link disponíveis.">
+                <RichTextEditor
+                  variant="lite"
+                  value={form.depoimentoHtml}
+                  onChange={(html) => setForm((f) => ({ ...f, depoimentoHtml: html }))}
                   placeholder="Texto do depoimento..."
                 />
               </Field>
@@ -432,7 +434,7 @@ export default function TestimonialsClient({
                   isPending ||
                   !form.nome.trim() ||
                   !form.empresa.trim() ||
-                  !form.depoimento.trim()
+                  form.depoimentoHtml.replace(/<[^>]+>/g, '').trim().length < 20
                 }
               >
                 {isPending ? 'Salvando...' : 'Salvar'}

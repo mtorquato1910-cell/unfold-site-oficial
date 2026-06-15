@@ -8,6 +8,7 @@ export type PublicTestimonial = {
   cargo: string
   empresa: string
   depoimento: string
+  depoimentoHtml: string | null
   vertical: string
   initials: string
   fotoUrl: string | null
@@ -44,6 +45,7 @@ async function fetchPublicTestimonials(): Promise<PublicTestimonial[]> {
       cargo: t.cargo || '',
       empresa: t.empresa || '',
       depoimento: t.depoimento || '',
+      depoimentoHtml: t.depoimento_html || null,
       vertical: t.vertical || '',
       initials: getInitials(t.nome || '?'),
       fotoUrl: mediaUrl(t.foto),

@@ -185,7 +185,9 @@
       "Bash(grep -A1 \"payload-config\" tsconfig.json)",
       "Bash(node -e \"const s=require\\('./package.json'\\).scripts; console.log\\(JSON.stringify\\(s,null,2\\)\\)\")",
       "Bash(node -e \"console.log\\(require\\('./node_modules/@payloadcms/storage-vercel-blob/package.json'\\).version\\)\")",
-      "Bash(node -e \"try{const u=require\\('undici'\\);console.log\\('undici OK, version:', require\\('undici/package.json'\\).version, '| Agent:', typeof u.Agent\\)}catch\\(e\\){console.log\\('undici NAO disponivel:', e.message\\)}\")"
+      "Bash(node -e \"try{const u=require\\('undici'\\);console.log\\('undici OK, version:', require\\('undici/package.json'\\).version, '| Agent:', typeof u.Agent\\)}catch\\(e\\){console.log\\('undici NAO disponivel:', e.message\\)}\")",
+      "Bash(Get-ChildItem *)",
+      "Bash(node -e \"const sk=require\\('@tiptap/starter-kit/package.json'\\); console.log\\('starter-kit', sk.version\\); const fs=require\\('fs'\\); const idx=require.resolve\\('@tiptap/starter-kit'\\); const src=fs.readFileSync\\(idx,'utf8'\\); console.log\\('inclui Link?', /extension-link|name:\\\\s*[\\\\\"\\\\x27]link/.test\\(src\\)\\); console.log\\('inclui Underline?', /extension-underline|name:\\\\s*[\\\\\"\\\\x27]underline/.test\\(src\\)\\);\")"
     ]
   }
 }

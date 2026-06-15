@@ -45,6 +45,14 @@ export const Testimonials: CollectionConfig = {
       admin: { description: 'Texto do depoimento. Recomendado: 80–180 caracteres para melhor exibição.' },
     },
     {
+      name: 'depoimento_html',
+      type: 'textarea',
+      label: 'Depoimento (formatado)',
+      admin: {
+        description: 'Versão com formatação básica (negrito/itálico/link) do editor. Quando preenchido, é usada no site.',
+      },
+    },
+    {
       name: 'foto',
       type: 'upload',
       relationTo: 'media',

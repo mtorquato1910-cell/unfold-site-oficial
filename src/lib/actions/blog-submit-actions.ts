@@ -7,6 +7,7 @@ import config from '@payload-config'
 import { requireRole, getSession, adminListUsers } from '@/lib/painel-auth'
 import { createNotification } from '@/lib/notifications'
 import { sendEmailTemplate } from '@/lib/email/send-template'
+import { sanitizeRichHtml, htmlToPlainText } from '@/lib/html-sanitize'
 
 function slugify(s: string) {
   return s
@@ -89,6 +90,11 @@ export async function submitGuestPost(formData: FormData) {
   const coverImage = formData.get('coverImage')
   const hasImage = coverImage instanceof File && coverImage.size > 0
 
+  // Editor rico → HTML (sanitizado, pois é input externo). Validações usam o texto puro.
+  const contentHtmlRaw = String(formData.get('contentHtml') || '')
+  const cleanHtml = contentHtmlRaw ? sanitizeRichHtml(contentHtmlRaw) : ''
+  const plainContent = cleanHtml ? htmlToPlainText(cleanHtml) : input.content
+
   // ── Validações ────────────────────────────────────────────────
   if (!input.consent) throw new Error('Você precisa aceitar os termos para enviar.')
   if (!input.authorName?.trim()) throw new Error('Nome obrigatório')
@@ -104,12 +110,14 @@ export async function submitGuestPost(formData: FormData) {
   if (input.summary.length > 200) {
     throw new Error('Resumo deve ter no máximo 200 caracteres')
   }
-  if (!input.content?.trim() || input.content.length < 200) {
+  if (!plainContent?.trim() || plainContent.length < 200) {
     throw new Error('Conteúdo precisa ter pelo menos 200 caracteres')
   }
 
-  // Honeypot/anti-spam: muitos URLs em poucos caracteres
-  const urlCount = (input.content.match(/https?:\/\//g) || []).length
+  // Honeypot/anti-spam: muitos links no conteúdo
+  const urlCount = cleanHtml
+    ? (cleanHtml.match(/<a\s/g) || []).length
+    : (input.content.match(/https?:\/\//g) || []).length
   if (urlCount > 5) throw new Error('Muitos links no conteúdo. Reduza para no máximo 5.')
 
   if (hasImage) {
@@ -181,7 +189,8 @@ export async function submitGuestPost(formData: FormData) {
       titulo: input.title,
       slug,
       resumo: input.summary,
-      conteudo: plainToRichText(input.content) as any,
+      conteudo: plainToRichText(plainContent) as any,
+      ...(cleanHtml ? { conteudo_html: cleanHtml } : {}),
       status: 'pending_review',
       pilar: input.pillar || 'geral',
       autor: input.authorName,

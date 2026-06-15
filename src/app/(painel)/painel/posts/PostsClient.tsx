@@ -4,6 +4,8 @@ import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, X, FileText, CheckCircle2, XCircle, ExternalLink } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field } from '@/components/painel/ui'
 import ImageInput from '@/components/painel/ImageInput'
+import RichTextEditor from '@/components/painel/RichTextEditor'
+import { lexicalToHtml } from '@/lib/rich-text'
 import { createPost, updatePost, deletePost } from '@/lib/actions/posts-actions'
 import { approvePost, rejectPost } from '@/lib/actions/blog-submit-actions'
 
@@ -17,6 +19,7 @@ const EMPTY_FORM = {
   slug: '',
   excerpt: '',
   content: '',
+  contentHtml: '',
   category: '',
   status: 'draft',
   tags: '',
@@ -106,14 +109,20 @@ export default function PostsClient({
     setEditing(post)
     const mediaId = post.imagem_destaque?.id ?? post.imagem_destaque ?? ''
     const mediaUrl = post.imagem_destaque?.url ?? post.cover_image ?? ''
+    const cat = post.categoria ?? post.category
+    const tagsArr = Array.isArray(post.tags)
+      ? post.tags.map((t: any) => (typeof t === 'object' ? t?.tag : t)).filter(Boolean)
+      : []
     setForm({
-      title: post.title ?? '',
+      title: post.titulo ?? post.title ?? '',
       slug: post.slug ?? '',
-      excerpt: post.excerpt ?? '',
+      excerpt: post.resumo ?? post.excerpt ?? '',
       content: '',
-      category: typeof post.category === 'object' ? (post.category?.name ?? '') : (post.category ?? ''),
+      // Pré-carrega o editor rico: usa o HTML salvo ou converte o Lexical antigo.
+      contentHtml: post.conteudo_html || lexicalToHtml(post.conteudo) || '',
+      category: typeof cat === 'object' ? (cat?.titulo ?? cat?.name ?? '') : (cat ?? ''),
       status: post.status ?? 'draft',
-      tags: Array.isArray(post.tags) ? post.tags.join(', ') : (post.tags ?? ''),
+      tags: tagsArr.join(', '),
       cover_image: mediaUrl,
       imagem_destaque: mediaId ? String(mediaId) : '',
       meta_title: post.meta_title ?? '',
@@ -432,18 +441,11 @@ export default function PostsClient({
 
               <Field
                 label="Conteúdo"
-                hint={
-                  editing
-                    ? 'Texto do artigo. Parágrafos separados por linha em branco. Ao salvar, substitui o corpo atual do post.'
-                    : 'Texto do artigo. Parágrafos separados por linha em branco.'
-                }
+                hint="Use a barra para títulos (H1–H4), negrito, listas, links, imagens com legenda, tabelas e vídeos do YouTube."
               >
-                <textarea
-                  rows={10}
-                  className="w-full px-3 py-2.5 rounded-lg text-[13px] resize-none"
-                  style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
-                  value={form.content}
-                  onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
+                <RichTextEditor
+                  value={form.contentHtml}
+                  onChange={(html) => setForm(f => ({ ...f, contentHtml: html }))}
                   placeholder="Escreva o corpo do artigo..."
                 />
               </Field>

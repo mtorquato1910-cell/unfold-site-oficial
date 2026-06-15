@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
+import { sanitizeRichHtml, htmlToPlainText } from '@/lib/html-sanitize'
 
 type FlexibleData = Record<string, any>
 
@@ -37,17 +38,25 @@ function mapCase(input: FlexibleData) {
   // para não falhar com "Slug obrigatório".
   const slug = (input.slug?.trim() ? input.slug.trim() : slugify(title)) || ''
 
+  // Editor rico → HTML para desafio/solução. Texto puro vira fallback nos campos antigos.
+  const challengeHtml = input.challengeHtml != null ? sanitizeRichHtml(input.challengeHtml) : null
+  const solutionHtml = input.solutionHtml != null ? sanitizeRichHtml(input.solutionHtml) : null
+
   const data: FlexibleData = {
     title,
     slug,
     client: input.client ?? input.cliente ?? input.company ?? input.empresa ?? '',
     vertical: input.vertical ?? input.sector ?? input.setor ?? undefined,
     tagline: input.tagline ?? input.subtitulo ?? undefined,
-    challenge: input.challenge ?? input.desafio ?? undefined,
-    solution: input.solution ?? input.solucao ?? undefined,
+    challenge:
+      input.challenge ?? (challengeHtml != null ? htmlToPlainText(challengeHtml) : input.desafio) ?? undefined,
+    solution:
+      input.solution ?? (solutionHtml != null ? htmlToPlainText(solutionHtml) : input.solucao) ?? undefined,
     destacar_na_home: input.destacar_na_home ?? input.featured ?? false,
     status: STATUS_MAP[input.status] ?? 'rascunho',
   }
+  if (challengeHtml != null) data.challenge_html = challengeHtml
+  if (solutionHtml != null) data.solution_html = solutionHtml
 
   // Imagem de destaque: ID de media. Postgres usa integer no relacionamento — coerce
   // string numérica p/ Number (string crua dava "field is invalid").

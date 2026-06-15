@@ -5,6 +5,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { CheckCircle2, Send, AlertCircle, ImagePlus, X } from 'lucide-react'
 import { submitGuestPost, type GuestPostInput } from '@/lib/actions/blog-submit-actions'
+import RichTextEditor from '@/components/painel/RichTextEditor'
+
+const plainLen = (html: string) =>
+  html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().length
 
 const PILLARS = [
   { value: 'geral', label: 'Geral' },
@@ -30,6 +34,7 @@ const ALLOWED_IMAGE_MIMES = ['image/jpeg', 'image/png']
 
 export default function ContribuirClient() {
   const [form, setForm] = useState<GuestPostInput>(EMPTY)
+  const [contentHtml, setContentHtml] = useState('')
   const [coverImage, setCoverImage] = useState<File | null>(null)
   const [coverPreview, setCoverPreview] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -72,6 +77,10 @@ export default function ContribuirClient() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    if (plainLen(contentHtml) < 200) {
+      setError('Conteúdo precisa ter pelo menos 200 caracteres.')
+      return
+    }
     startTransition(async () => {
       try {
         const fd = new FormData()
@@ -80,7 +89,7 @@ export default function ContribuirClient() {
         fd.append('authorCompany', form.authorCompany || '')
         fd.append('title', form.title)
         fd.append('summary', form.summary)
-        fd.append('content', form.content)
+        fd.append('contentHtml', contentHtml)
         fd.append('pillar', form.pillar || 'geral')
         fd.append('consent', form.consent ? 'true' : 'false')
         if (coverImage) fd.append('coverImage', coverImage)
@@ -265,17 +274,13 @@ export default function ContribuirClient() {
 
           <div>
             <label className="block text-sm font-medium mb-1.5">Conteúdo do post *</label>
-            <textarea
-              required
-              minLength={200}
-              rows={14}
-              value={form.content}
-              onChange={(e) => update('content', e.target.value)}
-              placeholder="Escreva o conteúdo completo. Use linhas em branco para separar parágrafos. Mínimo 200 caracteres."
-              className="w-full px-3 py-2.5 rounded-lg bg-background border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 resize-y font-mono text-sm leading-relaxed"
+            <RichTextEditor
+              value={contentHtml}
+              onChange={setContentHtml}
+              placeholder="Escreva o conteúdo completo. Use a barra para títulos, negrito, listas, links, imagens com legenda, tabelas e vídeos do YouTube. Mínimo 200 caracteres."
             />
             <p className="mt-1 text-xs text-foreground/50">
-              {form.content.length} caracteres · ~{Math.max(1, Math.round(form.content.split(/\s+/).length / 200))} min de leitura
+              {plainLen(contentHtml)} caracteres (mínimo 200)
             </p>
           </div>
         </fieldset>

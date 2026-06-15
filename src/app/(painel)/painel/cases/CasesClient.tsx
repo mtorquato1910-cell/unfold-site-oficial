@@ -4,6 +4,8 @@ import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, X, Star } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field, MintButton } from '@/components/painel/ui'
 import ImageInput from '@/components/painel/ImageInput'
+import RichTextEditor from '@/components/painel/RichTextEditor'
+import { plainToHtml } from '@/lib/rich-text'
 import { createCase, updateCase, deleteCase } from '@/lib/actions/cases-actions'
 
 type Case = Record<string, any>
@@ -27,7 +29,9 @@ const EMPTY_FORM = {
   company: '',
   vertical: '',
   challenge: '',
+  challengeHtml: '',
   solution: '',
+  solutionHtml: '',
   result: '',
   metrics: '',
   status: 'draft',
@@ -62,7 +66,9 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
       company: c.company ?? c.client ?? '',
       vertical: c.vertical ?? '',
       challenge: c.challenge ?? '',
+      challengeHtml: c.challenge_html || plainToHtml(c.challenge),
       solution: c.solution ?? '',
+      solutionHtml: c.solution_html || plainToHtml(c.solution),
       result: c.result ?? '',
       metrics: c.metrics ?? '',
       status: c.status ?? 'draft',
@@ -233,22 +239,18 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                 </Field>
               </div>
 
-              <Field label="Desafio">
-                <textarea
-                  rows={3}
-                  className="w-full px-3 py-2.5 rounded-lg text-[13px] resize-none input-mint"
-                  style={{ height: 'auto' }}
-                  value={form.challenge}
-                  onChange={e => setForm(f => ({ ...f, challenge: e.target.value }))}
+              <Field label="Desafio" hint="Títulos, listas, imagens, links e vídeos do YouTube disponíveis.">
+                <RichTextEditor
+                  value={form.challengeHtml}
+                  onChange={(html) => setForm(f => ({ ...f, challengeHtml: html }))}
+                  placeholder="Contexto e problema que o cliente enfrentava…"
                 />
               </Field>
-              <Field label="Solução">
-                <textarea
-                  rows={3}
-                  className="w-full px-3 py-2.5 rounded-lg text-[13px] resize-none input-mint"
-                  style={{ height: 'auto' }}
-                  value={form.solution}
-                  onChange={e => setForm(f => ({ ...f, solution: e.target.value }))}
+              <Field label="Solução" hint="Títulos, listas, imagens, links e vídeos do YouTube disponíveis.">
+                <RichTextEditor
+                  value={form.solutionHtml}
+                  onChange={(html) => setForm(f => ({ ...f, solutionHtml: html }))}
+                  placeholder="Como a Unfold estruturou a solução…"
                 />
               </Field>
               <Field label="Resultado">

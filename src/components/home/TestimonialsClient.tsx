@@ -39,7 +39,18 @@ export default function TestimonialsClient({ items, eyebrow, title }: Props) {
         )}
         <Reveal delay={80}>
           <blockquote className="font-sans text-2xl md:text-3xl lg:text-4xl leading-snug font-normal italic max-w-4xl">
-            &ldquo;{t.depoimento}&rdquo;
+            {t.depoimentoHtml ? (
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: `&ldquo;${t.depoimentoHtml
+                    .replace(/<\/p>\s*<p>/g, ' ')
+                    .replace(/<\/?p>/g, '')
+                    .trim()}&rdquo;`,
+                }}
+              />
+            ) : (
+              <>&ldquo;{t.depoimento}&rdquo;</>
+            )}
           </blockquote>
         </Reveal>
         <Reveal delay={160}>

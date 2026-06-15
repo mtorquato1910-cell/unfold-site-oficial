@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import RichTextRenderer from '@/components/RichTextRenderer'
+import RichContent from '@/components/RichContent'
 
 export const revalidate = 60
 
@@ -119,14 +120,21 @@ export default async function BlogPostPage({ params }: Props) {
           </figure>
         )}
 
-        {/* Conteúdo — RichText do Payload renderizado como HTML */}
-        <div className="prose prose-invert prose-lg max-w-none">
-          {(post as any).conteudo ? (
-            <RichTextRenderer data={(post as any).conteudo} />
-          ) : (
-            <p className="text-foreground/70 leading-relaxed">{post.resumo as string}</p>
-          )}
-        </div>
+        {/* Conteúdo — HTML do editor rico (novo) ou Lexical (posts antigos). */}
+        {(post as any).conteudo_html ? (
+          <RichContent
+            html={(post as any).conteudo_html}
+            className="prose prose-invert prose-lg max-w-none"
+          />
+        ) : (
+          <div className="prose prose-invert prose-lg max-w-none">
+            {(post as any).conteudo ? (
+              <RichTextRenderer data={(post as any).conteudo} />
+            ) : (
+              <p className="text-foreground/70 leading-relaxed">{post.resumo as string}</p>
+            )}
+          </div>
+        )}
 
         {/* CTA */}
         <div className="mt-16 rounded-2xl border border-border bg-card p-8 text-center">

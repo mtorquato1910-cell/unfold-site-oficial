@@ -4,12 +4,14 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
+import { sanitizeRichHtml, htmlToPlainText } from '@/lib/html-sanitize'
 
 export type TestimonialInput = {
   nome: string
   cargo?: string
   empresa: string
   depoimento: string
+  depoimentoHtml?: string
   vertical?: string
   avaliacao?: number
   destaque?: boolean
@@ -27,10 +29,18 @@ function mediaId(v?: string): string | number | undefined {
   return /^[a-f0-9-]{8,}$/i.test(v) ? v : undefined
 }
 
-function validate(data: TestimonialInput) {
+// Normaliza o depoimento: aceita HTML do editor lite ou texto puro.
+// Retorna { plain, html } — plain é a fonte required/validada; html é opcional.
+function normalizeDepoimento(data: TestimonialInput): { plain: string; html: string | null } {
+  const html = data.depoimentoHtml != null ? sanitizeRichHtml(data.depoimentoHtml) : null
+  const plain = html != null ? htmlToPlainText(html) : data.depoimento || ''
+  return { plain, html }
+}
+
+function validate(data: TestimonialInput, plain: string) {
   if (!data.nome?.trim()) throw new Error('Nome obrigatório')
   if (!data.empresa?.trim()) throw new Error('Empresa obrigatória')
-  if (!data.depoimento?.trim() || data.depoimento.length < 20) {
+  if (!plain?.trim() || plain.length < 20) {
     throw new Error('Depoimento precisa ter pelo menos 20 caracteres')
   }
 }
@@ -38,7 +48,8 @@ function validate(data: TestimonialInput) {
 export async function createTestimonial(data: TestimonialInput) {
   try {
     await requireRole('editor')
-    validate(data)
+    const { plain, html } = normalizeDepoimento(data)
+    validate(data, plain)
     const payload = await getPayload({ config })
     const created = await payload.create({
       collection: 'testimonials',
@@ -46,7 +57,8 @@ export async function createTestimonial(data: TestimonialInput) {
         nome: data.nome,
         cargo: data.cargo,
         empresa: data.empresa,
-        depoimento: data.depoimento,
+        depoimento: plain,
+        depoimento_html: html ?? undefined,
         vertical: data.vertical as any,
         avaliacao: data.avaliacao ?? 5,
         destaque: !!data.destaque,
@@ -69,7 +81,8 @@ export async function createTestimonial(data: TestimonialInput) {
 export async function updateTestimonial(id: string, data: TestimonialInput) {
   try {
     await requireRole('editor')
-    validate(data)
+    const { plain, html } = normalizeDepoimento(data)
+    validate(data, plain)
     const payload = await getPayload({ config })
     await payload.update({
       collection: 'testimonials',
@@ -78,7 +91,8 @@ export async function updateTestimonial(id: string, data: TestimonialInput) {
         nome: data.nome,
         cargo: data.cargo,
         empresa: data.empresa,
-        depoimento: data.depoimento,
+        depoimento: plain,
+        depoimento_html: html ?? undefined,
         vertical: data.vertical as any,
         avaliacao: data.avaliacao,
         destaque: data.destaque,
