@@ -193,7 +193,10 @@
       "Bash(vercel ls *)",
       "Bash(vercel inspect *)",
       "Bash(vercel pull *)",
-      "Bash(vercel --prod --yes)"
+      "Bash(vercel --prod --yes)",
+      "Bash(node -e \"const fs=require\\('fs'\\);const t=fs.readFileSync\\('.vercel/.env.production.local','utf8'\\);const has=/DATABASE_URL\\\\s*=/.test\\(t\\);console.log\\('DATABASE_URL presente:', has\\);const m=t.match\\(/DATABASE_URL\\\\s*=\\\\s*\\\\\"?\\(postgres[^\\\\\"\\\\n]+\\)/\\);console.log\\('Começa com postgres:', !!m\\); if\\(m\\){const u=new URL\\(m[1]\\);console.log\\('Host:', u.host\\);}\")",
+      "Bash(node -e \"const fs=require\\('fs'\\);const t=fs.readFileSync\\('.vercel/.env.production.local','utf8'\\);const keys=t.split\\('\\\\n'\\).map\\(l=>l.split\\('='\\)[0].trim\\(\\)\\).filter\\(Boolean\\);console.log\\(keys.filter\\(k=>/DATA|POSTGRES|SUPA|DB|URL/i.test\\(k\\)\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node scripts/ensure-html-columns.cjs)"
     ]
   }
 }
