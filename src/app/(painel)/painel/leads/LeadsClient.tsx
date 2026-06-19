@@ -47,6 +47,7 @@ export default function LeadsClient({ initialLeads }: { initialLeads: Lead[] }) 
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null)
   const [notes, setNotes] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
+  const [errorMsg, setErrorMsg] = useState('')
   const [isPending, startTransition] = useTransition()
 
   const filtered = filterStatus === 'all'
@@ -57,6 +58,7 @@ export default function LeadsClient({ initialLeads }: { initialLeads: Lead[] }) 
     setSelectedLead(lead)
     setNotes(lead.notes || '')
     setSuccessMsg('')
+    setErrorMsg('')
   }
 
   function closeDetail() {
@@ -66,32 +68,60 @@ export default function LeadsClient({ initialLeads }: { initialLeads: Lead[] }) 
 
   function showSuccess(msg: string) {
     setSuccessMsg(msg)
+    setErrorMsg('')
     setTimeout(() => setSuccessMsg(''), 3000)
   }
 
+  function showError(msg: string) {
+    setSuccessMsg('')
+    setErrorMsg(msg)
+    setTimeout(() => setErrorMsg(''), 5000)
+  }
+
+  function describeError(e: unknown): string {
+    const raw = e instanceof Error ? e.message : String(e)
+    if (raw.includes('FORBIDDEN')) return 'Você não tem permissão para esta ação.'
+    if (raw.includes('UNAUTHENTICATED')) return 'Sessão expirada. Faça login novamente.'
+    return 'Não foi possível completar a operação. Tente novamente.'
+  }
+
   function handleStatusChange(id: string, newStatus: string) {
+    const prevStatus = leads.find((l) => l.id === id)?.rd_sync_status
+    setLeads((prev) => prev.map((l) => l.id === id ? { ...l, rd_sync_status: newStatus } : l))
     startTransition(async () => {
-      await updateLeadStatus(id, newStatus)
-      setLeads((prev) => prev.map((l) => l.id === id ? { ...l, rd_sync_status: newStatus } : l))
+      try {
+        await updateLeadStatus(id, newStatus)
+      } catch (e) {
+        setLeads((prev) => prev.map((l) => l.id === id ? { ...l, rd_sync_status: prevStatus } : l))
+        showError(describeError(e))
+      }
     })
   }
 
   function handleSaveNotes() {
     if (!selectedLead) return
     startTransition(async () => {
-      await updateLeadNotes(selectedLead.id, notes)
-      setLeads((prev) => prev.map((l) => l.id === selectedLead.id ? { ...l, notes } : l))
-      setSelectedLead((prev) => prev ? { ...prev, notes } : prev)
-      showSuccess('Notas salvas!')
+      try {
+        await updateLeadNotes(selectedLead.id, notes)
+        setLeads((prev) => prev.map((l) => l.id === selectedLead.id ? { ...l, notes } : l))
+        setSelectedLead((prev) => prev ? { ...prev, notes } : prev)
+        showSuccess('Notas salvas!')
+      } catch (e) {
+        showError(describeError(e))
+      }
     })
   }
 
   function handleDelete(id: string) {
     if (!window.confirm('Remover este lead?')) return
     startTransition(async () => {
-      await deleteLead(id)
-      setLeads((prev) => prev.filter((l) => l.id !== id))
-      if (selectedLead?.id === id) closeDetail()
+      try {
+        await deleteLead(id)
+        setLeads((prev) => prev.filter((l) => l.id !== id))
+        if (selectedLead?.id === id) closeDetail()
+      } catch (e) {
+        showError(describeError(e))
+      }
     })
   }
 
@@ -114,6 +144,13 @@ export default function LeadsClient({ initialLeads }: { initialLeads: Lead[] }) 
           </select>
         }
       />
+
+      {errorMsg && (
+        <div className="mb-4 rounded-lg px-4 py-3 text-[13px]"
+             style={{ background: 'hsl(0 70% 50% / 0.12)', border: '1px solid hsl(0 70% 60% / 0.3)', color: 'hsl(0 80% 80%)' }}>
+          {errorMsg}
+        </div>
+      )}
 
       {filtered.length === 0 ? (
         <EmptyState title="Nenhum lead encontrado" description="Leads captados pelo formulário aparecerão aqui." icon={Users} />

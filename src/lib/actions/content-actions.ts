@@ -28,7 +28,7 @@ export async function updatePost(id: string, data: Record<string, any>) {
 }
 
 export async function deletePost(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const p = await payload()
   await p.delete({ collection: 'posts', id } as any)
   revalidatePath('/admin/posts')
@@ -56,7 +56,7 @@ export async function updateCase(id: string, data: Record<string, any>) {
 }
 
 export async function deleteCase(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const p = await payload()
   await p.delete({ collection: 'cases', id } as any)
   revalidatePath('/admin/cases')
@@ -82,7 +82,7 @@ export async function updateTestimonial(id: string, data: Record<string, any>) {
 }
 
 export async function deleteTestimonial(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const p = await payload()
   await p.delete({ collection: 'testimonials', id } as any)
   revalidatePath('/admin/testimonials')
@@ -107,7 +107,7 @@ export async function updateCategory(id: string, data: Record<string, any>) {
 }
 
 export async function deleteCategory(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const p = await payload()
   await p.delete({ collection: 'categories', id } as any)
   revalidatePath('/admin/categories')
@@ -132,7 +132,7 @@ export async function updateQuizQuestion(id: string, data: Record<string, any>) 
 }
 
 export async function deleteQuizQuestion(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const p = await payload()
   await p.delete({ collection: 'quiz-questions', id } as any)
   revalidatePath('/admin/quiz')
@@ -155,7 +155,7 @@ export async function updateInsight(id: string, data: Record<string, any>) {
 }
 
 export async function deleteInsight(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const p = await payload()
   await p.delete({ collection: 'insights-variations', id } as any)
   revalidatePath('/admin/insights')
@@ -163,21 +163,21 @@ export async function deleteInsight(id: string) {
 
 // ─── AI PROMPTS ──────────────────────────────────────────────────
 export async function createPrompt(data: Record<string, any>) {
-  await requireRole('admin')
+  await requireRole('editor')
   const p = await payload()
   await (p as any).create({ collection: 'ai-prompts', data })
   revalidatePath('/admin/prompts')
 }
 
 export async function updatePrompt(id: string, data: Record<string, any>) {
-  await requireRole('admin')
+  await requireRole('editor')
   const p = await payload()
   await (p as any).update({ collection: 'ai-prompts', id, data })
   revalidatePath('/admin/prompts')
 }
 
 export async function deletePrompt(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const p = await payload()
   await p.delete({ collection: 'ai-prompts', id } as any)
   revalidatePath('/admin/prompts')
@@ -199,7 +199,7 @@ export async function updateLeadNotes(id: string, notes: string) {
 }
 
 export async function deleteLead(id: string) {
-  await requireRole('admin')
+  await requireRole('editor')
   const p = await payload()
   await p.delete({ collection: 'leads', id } as any)
   revalidatePath('/admin/leads')
