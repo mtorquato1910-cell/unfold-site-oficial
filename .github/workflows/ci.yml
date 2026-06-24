@@ -22,6 +22,14 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
+      # O importMap do Payload é gerado (gitignored). Precisa existir ANTES do
+      # lint/typecheck, senão os imports de ../importMap não resolvem (TS2307).
+      - name: Generate Payload importMap
+        run: npx payload generate:importmap
+        env:
+          PAYLOAD_SECRET: ci-test-secret-not-production
+          DATABASE_URL: file:./ci-test.db
+
       - name: Lint
         run: npm run lint
 

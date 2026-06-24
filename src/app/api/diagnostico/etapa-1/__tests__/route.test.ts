@@ -6,7 +6,7 @@ const payloadFind = vi.fn()
 const payloadUpdate = vi.fn()
 const verifyTurnstileMock = vi.fn()
 const trackEventServerMock = vi.fn()
-const missingProductionEnvMock = vi.fn<[], string[]>()
+const missingProductionEnvMock = vi.fn<() => string[]>()
 
 vi.mock('payload', () => ({
   getPayload: vi.fn(async () => ({
@@ -112,7 +112,7 @@ describe('POST /api/diagnostico/etapa-1 — Sprint hotfix 2026-05-15', () => {
   it('Turnstile token ausente em prod com secret configurada → CAPTCHA_FAILED (I-5)', async () => {
     verifyTurnstileMock.mockResolvedValue({ ok: false, reason: 'token-missing' })
     const { POST } = await import('../route')
-    const { turnstile_token: _omit, ...bodyWithoutToken } = validBody as never
+    const { turnstile_token: _omit, ...bodyWithoutToken } = validBody as Record<string, unknown>
     const res = await POST(makeRequest(bodyWithoutToken))
     const json = await res.json()
     expect(res.status).toBe(400)
