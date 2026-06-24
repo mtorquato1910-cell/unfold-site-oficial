@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Space_Grotesk, Inter, IBM_Plex_Mono } from 'next/font/google'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
@@ -50,6 +50,16 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+}
+
+// Viewport estável e consistente em qualquer navegador/aparelho mobile.
+// initialScale=1 evita zoom inesperado; maximumScale=5 mantém acessibilidade
+// (não bloqueia o zoom do usuário); viewportFit=cover respeita o notch.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
 }
 
 export default function SiteLayout({

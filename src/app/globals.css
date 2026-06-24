@@ -86,11 +86,22 @@
     @apply border-border;
   }
 
+  /* Mobile hardening: impede que o Safari iOS reescale fontes ao rolar/rotacionar
+     (causa reflow e sobreposição) e mantém o viewport estável. */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     background-image:
       radial-gradient(1200px 600px at 80% -10%, hsl(218 94% 78% / 0.06), transparent 60%),
       radial-gradient(900px 500px at -10% 30%, hsl(158 92% 70% / 0.05), transparent 60%);
+    /* Contém qualquer vazamento horizontal (decorações/orbs que estouram a
+       largura) sem criar scroll lateral nem quebrar position: sticky. */
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   h1, h2, h3, .font-display {
@@ -138,27 +149,36 @@
      Elements start hidden. JS adds .revealed when they enter the viewport.
      prefers-reduced-motion: override removes transforms, keeps opacity fade.
   */
+  /* IMPORTANTE: will-change só enquanto o elemento ainda NÃO foi revelado.
+     Mantê-lo após a animação cria dezenas de camadas de composição GPU
+     permanentes que, em celulares, causam artefatos de repaint (texto
+     sobreposto) ao rolar. Ao revelar, devolvemos a camada ao navegador. */
   .reveal-hidden {
     opacity: 0;
     transform: translateY(36px) scale(0.96);
     transition:
       opacity 650ms cubic-bezier(0.16, 1, 0.3, 1),
       transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-hidden:not(.revealed) {
     will-change: opacity, transform;
   }
 
   .reveal-hidden.revealed {
     opacity: 1;
     transform: translateY(0) scale(1);
+    will-change: auto;
   }
 
   /* Fade-only variant (for items that already have positioning) */
   .reveal-fade {
     opacity: 0;
     transition: opacity 650ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-fade:not(.revealed) {
     will-change: opacity;
   }
-  .reveal-fade.revealed { opacity: 1; }
+  .reveal-fade.revealed { opacity: 1; will-change: auto; }
 
   /* Slide from left variant */
   .reveal-left {
@@ -167,11 +187,14 @@
     transition:
       opacity 650ms cubic-bezier(0.16, 1, 0.3, 1),
       transform 650ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-left:not(.revealed) {
     will-change: opacity, transform;
   }
   .reveal-left.revealed {
     opacity: 1;
     transform: translateX(0) scale(1);
+    will-change: auto;
   }
 
   @media (prefers-reduced-motion: reduce) {
