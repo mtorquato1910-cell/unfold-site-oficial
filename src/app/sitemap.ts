@@ -3,20 +3,25 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://unfoldgrowth.com.br'
-// Hotsite do Guia Eleições vive no subdomínio — entra no sitemap com a URL pública (item 13).
-const GUIA_URL = process.env.NEXT_PUBLIC_GUIA_URL || 'https://eleicoes.unfoldgrowth.com.br/featwork'
+
+// lastmod das páginas estáticas = quando o CONTEÚDO delas mudou (não a data do build).
+// Bump manual ao editar essas páginas — usar `new Date()` faria o Google reprocessar
+// tudo a cada deploy (desperdício de crawl budget).
+// NOTA: o hotsite `eleicoes.unfoldgrowth.com.br` é OUTRO host → tem sitemap PRÓPRIO
+// em `app/guia-seo/sitemap` (servido via middleware). Regra do protocolo de sitemap:
+// um sitemap só pode listar URLs do mesmo host onde ele é servido.
+const STATIC_LASTMOD = new Date('2026-07-01T00:00:00Z')
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
-    { url: BASE_URL, lastModified: new Date(), changeFrequency: 'weekly', priority: 1.0 },
-    { url: `${BASE_URL}/sobre`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${BASE_URL}/metodo`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${BASE_URL}/atuacao`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE_URL}/cases`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
-    { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
-    { url: `${BASE_URL}/diagnostico`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${BASE_URL}/ferramentas/calculadora-trafego`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
-    { url: GUIA_URL, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    { url: BASE_URL, lastModified: STATIC_LASTMOD, changeFrequency: 'weekly', priority: 1.0 },
+    { url: `${BASE_URL}/sobre`, lastModified: STATIC_LASTMOD, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE_URL}/metodo`, lastModified: STATIC_LASTMOD, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${BASE_URL}/atuacao`, lastModified: STATIC_LASTMOD, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${BASE_URL}/cases`, lastModified: STATIC_LASTMOD, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${BASE_URL}/blog`, lastModified: STATIC_LASTMOD, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${BASE_URL}/diagnostico`, lastModified: STATIC_LASTMOD, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${BASE_URL}/ferramentas/calculadora-trafego`, lastModified: STATIC_LASTMOD, changeFrequency: 'monthly', priority: 0.7 },
   ]
 
   // Cases dinâmicos

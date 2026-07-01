@@ -31,6 +31,7 @@ import MapaIcpResults from './src/collections/MapaIcpResults'
 import MapaIcpEvents from './src/collections/MapaIcpEvents'
 import Redirects from './src/collections/Redirects'
 import Banners from './src/collections/Banners'
+import TrackingEvents from './src/collections/TrackingEvents'
 import SiteSettings from './src/globals/SiteSettings'
 import HomeSettings from './src/globals/HomeSettings'
 
@@ -110,6 +111,8 @@ export default buildConfig({
     Redirects,
     // Banners internos do blog (ferramentas/diagnóstico/cases)
     Banners,
+    // Mapa de calor / jornada de leads (aba /admin/heatmap)
+    TrackingEvents,
   ],
   globals: [SiteSettings, HomeSettings],
   editor: lexicalEditor({}),

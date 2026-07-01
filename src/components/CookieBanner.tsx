@@ -29,6 +29,10 @@ export default function CookieBanner({ message }: { message?: string }) {
           ad_storage: 'denied',
         })
       }
+      // Avisa o tracker do mapa de calor para começar a coletar nesta sessão (LGPD).
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('unfold-consent-updated'))
+      }
     } catch { /* silencioso */ }
     setVisible(false)
   }

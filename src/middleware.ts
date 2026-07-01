@@ -18,6 +18,13 @@ function handleGuiaSubdomain(request: NextRequest): NextResponse | null {
   const isGuiaSubdomain = host === GUIA_HOST
 
   if (isGuiaSubdomain) {
+    // SEO próprio do subdomínio (regra do protocolo: um sitemap só lista URLs do mesmo host).
+    if (pathname === '/sitemap.xml') {
+      return NextResponse.rewrite(new URL('/guia-seo/sitemap', request.url))
+    }
+    if (pathname === '/robots.txt') {
+      return NextResponse.rewrite(new URL('/guia-seo/robots', request.url))
+    }
     if (pathname === '/') {
       return NextResponse.redirect(new URL('/featwork', request.url), 308)
     }
@@ -31,6 +38,15 @@ function handleGuiaSubdomain(request: NextRequest): NextResponse | null {
   // Previews (*.vercel.app) NÃO redirecionam — a rota interna fica acessível para teste.
   if (!isGuiaSubdomain && pathname === GUIA_INTERNAL && host.endsWith(PROD_APEX)) {
     return NextResponse.redirect(`https://${GUIA_HOST}/featwork`, 301)
+  }
+
+  // Host não-canônico (previews *.vercel.app) servindo a rota interna diretamente →
+  // noindex, para o Google não indexar conteúdo duplicado. O canônico é o subdomínio
+  // (que serve via /featwork e NÃO recebe este header).
+  if (!isGuiaSubdomain && pathname === GUIA_INTERNAL) {
+    const res = NextResponse.next()
+    res.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    return res
   }
 
   return null
@@ -128,5 +144,9 @@ export const config = {
     '/featwork',
     '/featwork/:path*',
     '/guia-eleicoes-2026',
+    // SEO por host: no subdomínio, sitemap/robots são reescritos para /guia-seo/*.
+    // No apex passam intactos (servidos por app/sitemap.ts e app/robots.ts).
+    '/sitemap.xml',
+    '/robots.txt',
   ],
 }

@@ -6,6 +6,7 @@ import CookieBannerWrapper from '@/components/CookieBannerWrapper'
 import { OrganizationSchema, WebSiteSchema } from '@/components/SchemaOrg'
 import PostHogScript from '@/components/analytics/PostHogScript'
 import GTMScript, { GTMNoScript } from '@/components/analytics/GTMScript'
+import SiteTracker from '@/components/analytics/SiteTracker'
 import '../globals.css'
 
 // S1.2 — Display tech: Space Grotesk (substituto Relicus)
@@ -50,6 +51,13 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  // Verificação do Google Search Console via meta tag.
+  // Opção A (sem código): verificar pelo GTM já instalado ou por registro DNS TXT.
+  // Opção B (esta): definir NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION no Vercel com o
+  // código que o GSC fornece — o Next injeta <meta name="google-site-verification">.
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  },
 }
 
 // Viewport estável e consistente em qualquer navegador/aparelho mobile.
@@ -77,6 +85,7 @@ export default function SiteLayout({
         <GTMNoScript />
         <GTMScript />
         <PostHogScript />
+        <SiteTracker />
         <OrganizationSchema />
         <WebSiteSchema />
         <Navbar />
