@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { STEPS, LOAD_MSGS } from '@/lib/mapa-icp/steps'
+import { normalizePhoneBR } from '@/lib/format/phone-mask'
 import type { Step } from '@/lib/mapa-icp/steps'
 import type { MapaIcpAIResult } from '@/lib/mapa-icp/types'
 import ResultadoMapa from '../_components/ResultadoMapa'
@@ -309,8 +310,13 @@ export default function MontarClient() {
       setErr('Preencha nome, e-mail válido, empresa, cargo e o consentimento.')
       return
     }
-    if (!/^\D*(\d\D*){10,11}$/.test(telefone.trim())) {
-      setErr('Informe um WhatsApp válido com DDD (10 ou 11 dígitos).')
+    const tel = normalizePhoneBR(telefone)
+    if (!tel.ok || !tel.isMobile) {
+      setErr(
+        tel.reason === 'suspeito'
+          ? 'Informe um número de WhatsApp real (não use números repetidos ou sequenciais).'
+          : 'Informe um WhatsApp válido com DDD (celular com 11 dígitos).',
+      )
       return
     }
     setErr('')

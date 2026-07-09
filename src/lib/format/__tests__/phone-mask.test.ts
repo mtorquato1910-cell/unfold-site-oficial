@@ -6,6 +6,7 @@ import {
   normalizePhoneBR,
   isValidPhoneBR,
   isValidMobileBR,
+  isSuspiciousPhoneBR,
   formatPhoneBR,
 } from '../phone-mask'
 
@@ -61,6 +62,34 @@ describe('normalizePhoneBR — inválidos', () => {
   it('rejeita comprimento fora de 10/11', () => {
     expect(normalizePhoneBR('119999').reason).toBe('comprimento')
     expect(normalizePhoneBR('').reason).toBe('vazio')
+  })
+})
+
+describe('normalizePhoneBR — números falsos (suspeitos)', () => {
+  it('rejeita todos os dígitos iguais (9999999999 / 11999999999)', () => {
+    expect(normalizePhoneBR('9999999999').reason).toBe('suspeito')
+    expect(normalizePhoneBR('11999999999').reason).toBe('suspeito')
+    // Rejeitado de qualquer forma (aqui pelo 3º dígito ≠ 9, antes da checagem de repetição).
+    expect(normalizePhoneBR('11111111111').ok).toBe(false)
+  })
+
+  it('rejeita sequência óbvia no corpo (crescente/decrescente)', () => {
+    expect(normalizePhoneBR('11987654321').reason).toBe('suspeito')
+    expect(normalizePhoneBR('11912345678').reason).toBe('suspeito')
+  })
+
+  it('rejeita fixo com dígitos todos iguais', () => {
+    expect(normalizePhoneBR('1133333333').reason).toBe('suspeito')
+  })
+
+  it('aceita celular real com dígitos variados', () => {
+    expect(normalizePhoneBR('11991234567').ok).toBe(true)
+    expect(normalizePhoneBR('11988887777').ok).toBe(true)
+  })
+
+  it('isSuspiciousPhoneBR opera sobre o número nacional', () => {
+    expect(isSuspiciousPhoneBR('11999999999')).toBe(true)
+    expect(isSuspiciousPhoneBR('11991234567')).toBe(false)
   })
 })
 

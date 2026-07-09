@@ -54,7 +54,41 @@ export interface NormalizedPhoneBR {
   /** `true` se for celular (após normalização do 9º dígito). */
   isMobile: boolean
   /** Código da razão da falha quando `ok` é `false`. */
-  reason?: 'vazio' | 'comprimento' | 'ddd' | 'numero'
+  reason?: 'vazio' | 'comprimento' | 'ddd' | 'numero' | 'suspeito'
+}
+
+/** `true` se `s` é uma sequência estritamente crescente ou decrescente (ex.: 12345678, 87654321). */
+function isStrictSequence(s: string): boolean {
+  if (s.length < 6) return false
+  let inc = true
+  let dec = true
+  for (let i = 1; i < s.length; i++) {
+    const diff = s.charCodeAt(i) - s.charCodeAt(i - 1)
+    if (diff !== 1) inc = false
+    if (diff !== -1) dec = false
+  }
+  return inc || dec
+}
+
+/**
+ * Detecta números claramente falsos que passam na validação de DDD/comprimento
+ * mas não são telefones reais: dígitos todos iguais (9999999999, 0000000000) ou
+ * sequências óbvias (912345678, 987654321). Opera sobre o número nacional
+ * canônico (com DDD, ex.: '11999999999').
+ */
+export function isSuspiciousPhoneBR(national: string): boolean {
+  const d = national.replace(/\D/g, '')
+  if (d.length < 10) return true
+  // Número inteiro repetido (ex.: 11111111111).
+  if (/^(\d)\1+$/.test(d)) return true
+  // Assinante = número sem DDD (8 díg. fixo, 9 díg. celular).
+  const subscriber = d.slice(2)
+  // Todos os dígitos do assinante iguais (ex.: 999999999, 000000000).
+  if (/^(\d)\1+$/.test(subscriber)) return true
+  // Sequência no corpo (celular: descarta o 9 inicial antes de checar).
+  const body = subscriber.length === 9 ? subscriber.slice(1) : subscriber
+  if (isStrictSequence(body)) return true
+  return false
 }
 
 const INVALID_PHONE: NormalizedPhoneBR = {
@@ -104,6 +138,7 @@ export function normalizePhoneBR(raw: string | undefined | null): NormalizedPhon
     if (first >= '2' && first <= '5') {
       // Telefone fixo — mantém 10 dígitos.
       const national = ddd + resto
+      if (isSuspiciousPhoneBR(national)) return { ...INVALID_PHONE, ddd, reason: 'suspeito' }
       return { ok: true, national, e164: '55' + national, ddd, isMobile: false }
     }
     // Celular sem o 9 inicial → insere o 9.
@@ -116,6 +151,7 @@ export function normalizePhoneBR(raw: string | undefined | null): NormalizedPhon
   }
 
   const national = ddd + resto
+  if (isSuspiciousPhoneBR(national)) return { ...INVALID_PHONE, ddd, reason: 'suspeito' }
   return { ok: true, national, e164: '55' + national, ddd, isMobile: true }
 }
 

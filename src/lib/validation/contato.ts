@@ -83,7 +83,9 @@ export async function validateContato(
         message:
           norm.reason === 'ddd'
             ? 'DDD inválido — confira os dois primeiros dígitos.'
-            : 'Número inválido — informe DDD + número.',
+            : norm.reason === 'suspeito'
+              ? 'Informe um número de WhatsApp real (não use números repetidos ou sequenciais).'
+              : 'Número inválido — informe DDD + número.',
       }
     } else if (mobileOnly && !norm.isMobile) {
       out.whatsapp = {
