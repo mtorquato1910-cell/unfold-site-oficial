@@ -50,7 +50,7 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
     // Valida e-mail (MX) e WhatsApp (Evolution) antes de liberar a calculadora.
     const [emailOk, phoneOk] = await Promise.all([
       checkEmail(data.email),
-      checkPhone(data.telefone ?? ''),
+      checkPhone(data.telefone ?? '', { requirePhone: true }),
     ])
     if (!emailOk || !phoneOk) return
     trackCalcEvent({
@@ -116,7 +116,6 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
       <Field
         id="telefone"
         label="WhatsApp"
-        optional
         error={errors.telefone?.message || phoneError || undefined}
       >
         <input

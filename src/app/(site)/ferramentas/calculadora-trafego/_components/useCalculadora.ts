@@ -85,7 +85,7 @@ function makeInitialState(): State {
   const premissas = premissasFromDefaults(defaults)
   return {
     etapa1Concluida: false,
-    etapa1: { nome: '', email: '', empresa: '', setor },
+    etapa1: { nome: '', email: '', empresa: '', telefone: '', setor },
     inputs: INPUTS_DEFAULTS,
     premissas,
     premissasDefaultRef: premissas,

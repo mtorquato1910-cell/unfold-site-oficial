@@ -24,7 +24,12 @@ export const mapaIcpSubmissaoSchema = z.object({
     email: z.string().email(),
     empresa: z.string().min(1).max(160),
     cargo: z.string().min(1).max(120),
-    telefone: z.string().max(40).optional().or(z.literal('')),
+    telefone: z
+      .string({ required_error: 'Informe seu WhatsApp com DDD' })
+      .trim()
+      .min(1, 'Informe seu WhatsApp com DDD')
+      .max(40)
+      .refine((v) => /^\D*(\d\D*){10,11}$/.test(v), 'Telefone deve ter 10 ou 11 dígitos'),
   }),
   consent: z.object({
     given: z.literal(true),

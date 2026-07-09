@@ -7,9 +7,20 @@ describe('schema Zod — Etapa 1', () => {
       nome: 'Marina Costa',
       email: 'marina@inova.com.br',
       empresa: 'Inova Sementes',
+      telefone: '(11) 98888-7777',
       setor: 'agro',
     })
     expect(r.success).toBe(true)
+  })
+
+  it('rejeita telefone ausente (obrigatório)', () => {
+    const r = etapa1Schema.safeParse({
+      nome: 'Marina Costa',
+      email: 'marina@inova.com.br',
+      empresa: 'Inova Sementes',
+      setor: 'agro',
+    })
+    expect(r.success).toBe(false)
   })
 
   it('rejeita email inválido', () => {
@@ -99,6 +110,7 @@ describe('schema Zod — Submissão completa', () => {
       nome: 'Marina Costa',
       email: 'marina@inova.com.br',
       empresa: 'Inova Sementes',
+      telefone: '(11) 98888-7777',
       setor: 'agro' as const,
     },
     inputs: {

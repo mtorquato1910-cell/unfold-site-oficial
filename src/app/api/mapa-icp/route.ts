@@ -83,8 +83,8 @@ export async function POST(req: NextRequest) {
   const { answers, capture, consent, utm } = parsed.data
   const a = answers as MapaIcpAnswers
 
-  // Validação reforçada de e-mail (MX/DNS); telefone opcional (fail-open).
-  const contato = await enforceContato({ email: capture.email, telefone: capture.telefone || undefined, requirePhone: false })
+  // Validação reforçada de e-mail (MX/DNS) + WhatsApp obrigatório (fail-open só p/ Evolution offline).
+  const contato = await enforceContato({ email: capture.email, telefone: capture.telefone || undefined, requirePhone: true })
   if (!contato.ok) {
     return NextResponse.json({ ok: false, error: 'contato_invalido', field: contato.field, message: contato.error }, { status: 400 })
   }

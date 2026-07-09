@@ -20,8 +20,11 @@ export default function NewsletterForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!email) return
-    // Valida e-mail (MX) e WhatsApp (Evolution) antes de enviar.
-    const [emailOk, phoneOk] = await Promise.all([checkEmail(email), checkPhone(telefone)])
+    // Valida e-mail (MX) e WhatsApp (Evolution) — telefone obrigatório — antes de enviar.
+    const [emailOk, phoneOk] = await Promise.all([
+      checkEmail(email),
+      checkPhone(telefone, { requirePhone: true }),
+    ])
     if (!emailOk || !phoneOk) {
       setState('idle')
       return
@@ -33,7 +36,7 @@ export default function NewsletterForm() {
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, telefone: telefone || undefined }),
+        body: JSON.stringify({ email, telefone }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok || !data.ok) {
@@ -81,7 +84,7 @@ export default function NewsletterForm() {
             type="submit"
             size="lg"
             className="h-12 group"
-            disabled={state === 'loading' || !email || checkingEmail || checkingPhone}
+            disabled={state === 'loading' || !email || !telefone || checkingEmail || checkingPhone}
           >
             {state === 'loading' ? 'Enviando...' : 'Assinar'}
             {state !== 'loading' && (
@@ -93,14 +96,15 @@ export default function NewsletterForm() {
           type="tel"
           inputMode="tel"
           name="telefone"
+          required
           autoComplete="tel-national"
           value={telefone}
           onChange={(e) => setTelefone(formatPhoneBR(e.target.value))}
-          onBlur={(e) => void checkPhone(e.target.value)}
+          onBlur={(e) => void checkPhone(e.target.value, { requirePhone: true })}
           disabled={state === 'loading'}
-          placeholder="WhatsApp (opcional) — (11) 99999-9999"
+          placeholder="WhatsApp — (11) 99999-9999"
           className="bg-card border-border h-11 text-sm"
-          aria-label="WhatsApp (opcional)"
+          aria-label="WhatsApp"
           aria-invalid={!!phoneError}
         />
       </form>

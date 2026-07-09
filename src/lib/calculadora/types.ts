@@ -30,8 +30,8 @@ export interface Etapa1 {
   email: string
   empresa: string
   setor: Setor
-  /** WhatsApp do lead (opcional, captado no form pra enriquecer o CRM). */
-  telefone?: string
+  /** WhatsApp do lead (obrigatório, captado no form pra enriquecer o CRM). */
+  telefone: string
 }
 
 /** Etapa 2 — 6 inputs do lead. */

@@ -21,11 +21,11 @@ const schema = z.object({
   email: z.string().email(),
   empresa: z.string().min(2),
   telefone: z
-    .string()
+    .string({ required_error: 'Informe seu WhatsApp com DDD' })
     .trim()
-    .optional()
+    .min(1, 'Informe seu WhatsApp com DDD')
     .refine(
-      (v) => !v || /^\D*(\d\D*){10,11}$/.test(v),
+      (v) => /^\D*(\d\D*){10,11}$/.test(v),
       'Telefone deve ter 10 ou 11 dígitos',
     ),
   cargo: z.enum(['ceo', 'diretor', 'gerente', 'analista', 'outro']),
@@ -127,11 +127,11 @@ export async function POST(req: NextRequest) {
     const data_inicio = parsed.data.data_inicio || new Date().toISOString()
 
     // Validação reforçada: e-mail (MX/DNS) + WhatsApp (Evolution) + 9º dígito.
-    // Telefone opcional aqui; fail-open p/ não barrar conversão.
+    // Telefone (WhatsApp) obrigatório; fail-open só p/ checagem Evolution offline.
     const contato = await enforceContato({
       email,
       telefone: parsed.data.telefone,
-      requirePhone: false,
+      requirePhone: true,
     })
     if (!contato.ok) {
       return jsonResponse(

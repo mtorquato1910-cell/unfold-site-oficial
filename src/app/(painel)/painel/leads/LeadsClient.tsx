@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Eye, Trash2, Users, Mail, Building2 } from 'lucide-react'
+import { Eye, Trash2, Users, Mail, Building2, MessageCircle } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field, MintButton } from '@/components/painel/ui'
 import { updateLeadStatus, updateLeadNotes, deleteLead } from '@/lib/actions/content-actions'
 
@@ -11,10 +11,40 @@ type Lead = {
   email?: string
   empresa?: string
   cargo?: string
+  telefone?: string
   origem?: string
   rd_sync_status?: string
   notes?: string
   createdAt?: string
+}
+
+/** Monta o link wa.me a partir do telefone gravado (nacional, com 9). */
+function waHref(telefone?: string): string | null {
+  if (!telefone) return null
+  const digits = telefone.replace(/\D/g, '')
+  if (digits.length < 10) return null
+  const e164 = digits.startsWith('55') ? digits : `55${digits}`
+  return `https://wa.me/${e164}`
+}
+
+/** Exibe o telefone como link de WhatsApp quando presente. */
+function PhoneCell({ telefone }: { telefone?: string }) {
+  const href = waHref(telefone)
+  if (!telefone) return <span style={{ color: 'hsl(0 0% 91% / 0.35)' }}>—</span>
+  if (!href) return <span style={{ color: 'hsl(0 0% 91% / 0.7)' }}>{telefone}</span>
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1.5 hover:underline"
+      style={{ color: 'hsl(158 92% 70%)' }}
+      title="Abrir no WhatsApp"
+    >
+      <MessageCircle className="h-3.5 w-3.5 shrink-0" />
+      {telefone}
+    </a>
+  )
 }
 
 const STATUS_OPTIONS = [
@@ -160,7 +190,7 @@ export default function LeadsClient({ initialLeads }: { initialLeads: Lead[] }) 
             <table className="w-full text-[13px]">
               <thead>
                 <tr style={{ borderBottom: '1px solid hsl(158 92% 70% / 0.1)' }}>
-                  {['Lead', 'Email', 'Empresa', 'Cargo', 'Origem', 'Status CRM', 'Data', ''].map((h) => (
+                  {['Lead', 'Email', 'Telefone', 'Empresa', 'Cargo', 'Origem', 'Status CRM', 'Data', ''].map((h) => (
                     <th key={h} className="px-4 py-3 text-left font-mono text-[10px] uppercase tracking-[0.18em]"
                         style={{ color: 'hsl(0 0% 91% / 0.42)' }}>{h}</th>
                   ))}
@@ -176,6 +206,7 @@ export default function LeadsClient({ initialLeads }: { initialLeads: Lead[] }) 
                       </div>
                     </td>
                     <td className="px-4 py-3 text-[12px]" style={{ color: 'hsl(0 0% 91% / 0.7)' }}>{lead.email || '—'}</td>
+                    <td className="px-4 py-3 text-[12px]"><PhoneCell telefone={lead.telefone} /></td>
                     <td className="px-4 py-3 text-[12px]" style={{ color: 'hsl(0 0% 91% / 0.7)' }}>{lead.empresa || '—'}</td>
                     <td className="px-4 py-3 text-[12px]" style={{ color: 'hsl(0 0% 91% / 0.6)' }}>{lead.cargo || '—'}</td>
                     <td className="px-4 py-3">
@@ -242,6 +273,11 @@ export default function LeadsClient({ initialLeads }: { initialLeads: Lead[] }) 
                   <span style={{ color: 'hsl(0 0% 91% / 0.85)' }}>{value}</span>
                 </div>
               ))}
+              <div className="flex gap-3">
+                <span className="font-mono text-[10px] uppercase tracking-[0.15em] w-24 shrink-0 pt-0.5"
+                      style={{ color: 'hsl(0 0% 91% / 0.42)' }}>Telefone</span>
+                <PhoneCell telefone={selectedLead.telefone} />
+              </div>
             </div>
             <Field label="Notas internas">
               <textarea

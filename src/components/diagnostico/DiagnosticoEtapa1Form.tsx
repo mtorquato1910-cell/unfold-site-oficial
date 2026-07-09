@@ -17,11 +17,11 @@ const schema = z.object({
   email: z.string().email('E-mail inválido'),
   empresa: z.string().min(2, 'Nome da empresa obrigatório'),
   telefone: z
-    .string()
+    .string({ required_error: 'Informe seu WhatsApp com DDD' })
     .trim()
-    .optional()
+    .min(1, 'Informe seu WhatsApp com DDD')
     .refine(
-      (v) => !v || /^\D*(\d\D*){10,11}$/.test(v),
+      (v) => /^\D*(\d\D*){10,11}$/.test(v),
       'Telefone deve ter 10 ou 11 dígitos',
     ),
   cargo: z.enum(['ceo', 'diretor', 'gerente', 'analista', 'outro'], {
@@ -106,7 +106,7 @@ export default function DiagnosticoEtapa1Form() {
     // Valida e-mail (MX) e WhatsApp (Evolution) antes de prosseguir.
     const [emailOk, phoneOk] = await Promise.all([
       checkEmail(data.email),
-      checkPhone(data.telefone ?? ''),
+      checkPhone(data.telefone ?? '', { requirePhone: true }),
     ])
     if (!emailOk || !phoneOk) return
     const requestId =
@@ -186,7 +186,7 @@ export default function DiagnosticoEtapa1Form() {
               className="input-field"
             />
           </Field>
-          <Field label="WhatsApp" optional error={errors.telefone?.message || phoneError || undefined}>
+          <Field label="WhatsApp" error={errors.telefone?.message || phoneError || undefined}>
             <input
               {...register('telefone')}
               type="tel"

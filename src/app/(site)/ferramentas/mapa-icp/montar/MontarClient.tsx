@@ -261,7 +261,7 @@ export default function MontarClient() {
             email: capture.email.trim(),
             empresa: capture.empresa.trim(),
             cargo: capture.cargo.trim(),
-            ...(capture.telefone.trim() ? { telefone: capture.telefone.trim() } : {}),
+            telefone: capture.telefone.trim(),
           },
           consent: { given: true, policyVersion: 'v1' },
           utm,
@@ -298,7 +298,7 @@ export default function MontarClient() {
   }, [hydrated])
 
   const submitCapture = () => {
-    const { nome, email, empresa, cargo } = capture
+    const { nome, email, empresa, cargo, telefone } = capture
     if (
       !nome.trim() ||
       !empresa.trim() ||
@@ -307,6 +307,10 @@ export default function MontarClient() {
       !consentGiven
     ) {
       setErr('Preencha nome, e-mail válido, empresa, cargo e o consentimento.')
+      return
+    }
+    if (!/^\D*(\d\D*){10,11}$/.test(telefone.trim())) {
+      setErr('Informe um WhatsApp válido com DDD (10 ou 11 dígitos).')
       return
     }
     setErr('')
@@ -609,9 +613,7 @@ function CaptureScreen({
         </div>
       </div>
       <div className={styles.field}>
-        <label htmlFor="c_tel">
-          Telefone <span className={styles.optNote}>(opcional)</span>
-        </label>
+        <label htmlFor="c_tel">WhatsApp</label>
         <input id="c_tel" className={styles.input} type="tel" placeholder="(00) 00000-0000" value={capture.telefone} onChange={upd('telefone')} autoComplete="tel" />
       </div>
 

@@ -40,8 +40,8 @@ export async function POST(req: Request) {
     if (!email) {
       return NextResponse.json({ ok: false, error: 'Email inválido' }, { status: 400 })
     }
-    // Validação reforçada: e-mail (MX/DNS) + WhatsApp (Evolution) + normalização do 9º dígito.
-    const contato = await enforceContato({ email, telefone, requirePhone: false })
+    // Validação reforçada: e-mail (MX/DNS) + WhatsApp (Evolution) obrigatório + normalização do 9º dígito.
+    const contato = await enforceContato({ email, telefone, requirePhone: true })
     if (!contato.ok) {
       return NextResponse.json(
         { ok: false, error: contato.error || 'Dados inválidos' },

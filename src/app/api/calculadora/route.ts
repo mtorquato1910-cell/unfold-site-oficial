@@ -82,11 +82,11 @@ export async function POST(req: NextRequest) {
   const d = parsed.data
 
   // ── Validação reforçada de contato (e-mail MX/DNS + WhatsApp Evolution) ───
-  // Telefone opcional; fail-open p/ não barrar conversão. Normaliza o 9º dígito.
+  // Telefone (WhatsApp) obrigatório; fail-open só p/ checagem Evolution offline. Normaliza o 9º dígito.
   const contato = await enforceContato({
     email: d.etapa1.email,
     telefone: d.etapa1.telefone,
-    requirePhone: false,
+    requirePhone: true,
   })
   if (!contato.ok) {
     return NextResponse.json(
