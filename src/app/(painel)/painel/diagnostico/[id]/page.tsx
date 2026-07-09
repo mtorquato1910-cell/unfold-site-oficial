@@ -3,11 +3,12 @@ import Link from 'next/link'
 import { ArrowLeft, ExternalLink, Mail } from 'lucide-react'
 
 import { getSession } from '@/lib/painel-auth'
-import { getDocument } from '@/lib/painel-api'
+import { getDocument, getCollection } from '@/lib/painel-api'
 import PainelLayout from '@/components/painel/PainelLayout'
 import { GlassCard, PageHeader } from '@/components/painel/ui'
 import { LABEL_EIXO, LABEL_FAIXA, LABEL_FAIXA_FIT } from '@/lib/scoring/textos'
 import type { FaixaFit, FaixaMaturidade } from '@/lib/scoring/types'
+import { rotularEtapa1, rotularQuiz, type PerguntaQuiz } from '@/lib/diagnostico/respostas'
 
 import DiagnosticoDetailActions from './DiagnosticoDetailActions'
 
@@ -61,6 +62,15 @@ export default async function DiagnosticoDetailPage({
 
   const doc = (await getDocument('diagnostico-results', id)) as Record<string, unknown> | null
   if (!doc) notFound()
+
+  // Catálogo de perguntas para rotular as respostas cruas (letra → texto).
+  const { docs: perguntasDocs } = await getCollection('quiz-questions', {
+    limit: 12,
+    sort: 'ordem',
+  })
+  const perguntas = perguntasDocs as unknown as PerguntaQuiz[]
+  const respostasEtapa1 = rotularEtapa1(doc.respostas_etapa1_raw)
+  const respostasQuiz = rotularQuiz(doc.respostas_raw, perguntas)
 
   const leadEmail = String(doc.lead_email || '—')
   const scoreTotal = Number(doc.score_total ?? 0)
@@ -249,6 +259,60 @@ export default async function DiagnosticoDetailPage({
               value={doc.notificado_at ? formatDate(doc.notificado_at as string) : 'Não'}
             />
           </dl>
+        </GlassCard>
+
+        {/* Respostas do lead — Etapa 1 + Questionário completo */}
+        <GlassCard className="lg:col-span-4">
+          <h3 className="font-display text-[15px] font-medium mb-4">Respostas do lead</h3>
+
+          {respostasEtapa1.length > 0 && (
+            <div className="mb-6">
+              <p className="text-[10px] font-mono uppercase tracking-wider text-[hsl(158_92%_70%_/_0.8)] mb-3">
+                Etapa 1 — Contexto
+              </p>
+              <dl className="grid grid-cols-2 gap-4 text-[12px] sm:grid-cols-4">
+                {respostasEtapa1.map((r) => (
+                  <Item key={r.label} label={r.label} value={r.value} />
+                ))}
+              </dl>
+            </div>
+          )}
+
+          <p className="text-[10px] font-mono uppercase tracking-wider text-[hsl(158_92%_70%_/_0.8)] mb-3">
+            Etapa 2 — Questionário ({respostasQuiz.length} perguntas)
+          </p>
+          {respostasQuiz.length === 0 ? (
+            <p className="text-[12px] text-[hsl(0_0%_91%_/_0.45)]">
+              Respostas não disponíveis para este resultado.
+            </p>
+          ) : (
+            <ol className="space-y-4">
+              {respostasQuiz.map((q) => (
+                <li
+                  key={q.ordem}
+                  className="border-l-2 border-[hsl(158_92%_70%_/_0.25)] pl-4"
+                >
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <span className="font-mono text-[10px] text-[hsl(158_92%_70%)]">
+                      Q{q.ordem}
+                    </span>
+                    {q.pilar && (
+                      <span className="font-mono text-[9px] uppercase tracking-wider text-[hsl(0_0%_91%_/_0.4)]">
+                        {q.pilar}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[12px] text-[hsl(0_0%_91%_/_0.7)] mb-1">{q.pergunta}</p>
+                  <p className="text-[13px] text-[hsl(0_0%_91%)]">
+                    <span className="font-mono text-[11px] text-[hsl(158_92%_70%)] mr-1.5">
+                      {q.letra || '—'}.
+                    </span>
+                    {q.texto}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          )}
         </GlassCard>
       </div>
     </PainelLayout>

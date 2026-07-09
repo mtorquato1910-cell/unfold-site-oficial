@@ -44,6 +44,9 @@ export interface RDDiagnosticoPayload {
   padroes_exibidos: CodigoInsight[]
   caminhos_exibidos: CodigoCaminho[]
 
+  // Respostas completas consolidadas (Etapa 1 + Q1–Q12) — campo único no RD.
+  respostas_consolidadas?: string
+
   // Metadados
   url_resultado: string
   concluido_em: string // ISO timestamp
@@ -84,6 +87,7 @@ function montarCustomFields(p: RDDiagnosticoPayload): Record<string, string | nu
     cf_score_de_fit: p.score_fit,
     cf_faixa_de_fit: fitLabel,
     cf_padroes_acionados: p.padroes_acionados.join(', '),
+    cf_respostas_diagnostico: p.respostas_consolidadas || undefined,
     cf_url_do_resultado_diagnostico: p.url_resultado,
     cf_diagnostico_concluido_em: p.concluido_em,
   }

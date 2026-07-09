@@ -35,10 +35,23 @@ type MapaIcpResult = {
   modelo?: string
   nDecisores?: string
   maturidadeIcp?: string
+  vende?: string
+  transformacao?: string
+  melhoresClientes?: string
+  motivosFechamento?: string[] | string
+  clienteRuim?: string
+  areasComite?: string[] | string
+  vetoOwner?: string
+  objecaoPrincipal?: string[] | string
   aiResult?: AiResult
   resultHash?: string
   createdAt?: string
   [key: string]: any
+}
+
+function formatValue(v?: string[] | string | null): string {
+  if (Array.isArray(v)) return v.length ? v.join(', ') : '—'
+  return v && String(v).trim() ? String(v) : '—'
 }
 
 const FIT_BADGE: Record<string, { label: string; style: React.CSSProperties }> = {
@@ -224,6 +237,38 @@ export default function MapaIcpClient({ initialResults }: { initialResults: Mapa
                   </span>
                 </div>
               ))}
+            </div>
+
+            {/* Respostas do lead — questionário completo */}
+            <div
+              className="rounded-xl p-4 mb-6"
+              style={{ background: 'hsl(0 0% 100% / 0.03)', border: '1px solid hsl(0 0% 100% / 0.08)' }}
+            >
+              <SectionLabel>Respostas do lead</SectionLabel>
+              <div className="space-y-3">
+                {[
+                  { label: 'O que vende', value: selected.vende },
+                  { label: 'Transformação', value: selected.transformacao },
+                  { label: 'Melhores clientes', value: selected.melhoresClientes },
+                  { label: 'Por que fecham', value: formatValue(selected.motivosFechamento) },
+                  { label: 'Cliente que não vale', value: selected.clienteRuim },
+                  { label: 'Áreas do comitê', value: formatValue(selected.areasComite) },
+                  { label: 'Poder de veto', value: selected.vetoOwner },
+                  { label: 'Objeção / perda', value: formatValue(selected.objecaoPrincipal) },
+                ].map(({ label, value }) => (
+                  <div key={label}>
+                    <span
+                      className="block font-mono text-[9px] uppercase tracking-[0.18em] mb-1"
+                      style={{ color: 'hsl(0 0% 91% / 0.42)' }}
+                    >
+                      {label}
+                    </span>
+                    <span className="text-[13px] leading-relaxed" style={{ color: 'hsl(0 0% 91% / 0.85)' }}>
+                      {formatValue(value as string)}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Mapa gerado pela IA */}

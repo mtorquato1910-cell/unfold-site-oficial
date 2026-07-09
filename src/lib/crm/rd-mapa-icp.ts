@@ -30,6 +30,13 @@ export interface RDMapaIcpPayload {
   objecao_principal: string[]
   maturidade_icp: string
 
+  // Respostas abertas / qualitativas (consolidadas num campo único no RD)
+  vende?: string
+  transformacao?: string
+  melhores_clientes?: string
+  motivos_fechamento?: string[]
+  cliente_ruim?: string
+
   // Resultado interno (scoring)
   fit_score: number
   fit_tier: string
@@ -50,6 +57,18 @@ function modoAtual(): 'rd-station' | 'mock' {
   return process.env.CRM_MODE === 'rd-station' ? 'rd-station' : 'mock'
 }
 
+/** Consolida as respostas abertas do Radar num único campo de texto. */
+function montarRespostasAbertas(p: RDMapaIcpPayload): string | undefined {
+  const linhas: string[] = []
+  if (p.vende) linhas.push(`O que vende: ${p.vende}`)
+  if (p.transformacao) linhas.push(`Transformação: ${p.transformacao}`)
+  if (p.melhores_clientes) linhas.push(`Melhores clientes: ${p.melhores_clientes}`)
+  if (p.motivos_fechamento && p.motivos_fechamento.length)
+    linhas.push(`Por que fecham: ${p.motivos_fechamento.join(', ')}`)
+  if (p.cliente_ruim) linhas.push(`Cliente que não vale: ${p.cliente_ruim}`)
+  return linhas.length ? linhas.join('\n') : undefined
+}
+
 function montarCustomFields(p: RDMapaIcpPayload): Record<string, string | number | undefined> {
   return {
     cf_caminho_do_lead: 'Radar de Comitê',
@@ -61,6 +80,7 @@ function montarCustomFields(p: RDMapaIcpPayload): Record<string, string | number
     cf_mapa_veto: p.veto_owner,
     cf_mapa_objecao: p.objecao_principal.join(', '),
     cf_mapa_maturidade: p.maturidade_icp,
+    cf_mapa_respostas_abertas: montarRespostasAbertas(p),
     cf_mapa_fit_score: Math.round(p.fit_score),
     cf_mapa_fit_tier: p.fit_tier,
     cf_mapa_url_resultado: p.url_resultado,

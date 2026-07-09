@@ -3,6 +3,7 @@ import { randomBytes } from 'crypto'
 import { sendEmail } from '../lib/email/adapter'
 import { templateResultadoDiagnosticoV2 } from '../lib/email/templates/resultado-diagnostico-v2'
 import { syncDiagnosticoToRD } from '../lib/crm/rd-station'
+import { montarRespostasConsolidadas, type PerguntaQuiz } from '../lib/diagnostico/respostas'
 import { notifyGabriel } from '../lib/notifications/gabriel'
 import type { CodigoCaminho, CodigoInsight, FaixaFit, FaixaMaturidade } from '../lib/scoring/types'
 
@@ -64,6 +65,26 @@ export const DiagnosticoResults: CollectionConfig = {
         // ── 2. Sincronizar com RD Station (modo mock por padrão) ────────
         if (hash) {
           try {
+            // Monta o texto consolidado das respostas (Etapa 1 + Q1–Q12) para o
+            // campo único `cf_respostas_diagnostico`. Falha graciosamente se o
+            // catálogo de perguntas não estiver disponível.
+            let respostasConsolidadas: string | undefined
+            try {
+              const { docs: perguntas } = await req.payload.find({
+                collection: 'quiz-questions',
+                sort: 'ordem',
+                limit: 12,
+                depth: 0,
+              })
+              respostasConsolidadas = montarRespostasConsolidadas(
+                doc.respostas_raw,
+                doc.respostas_etapa1_raw,
+                perguntas as unknown as PerguntaQuiz[],
+              )
+            } catch {
+              /* segue sem o campo consolidado */
+            }
+
             // Busca dados completos do Lead vinculado para enriquecer o payload RD.
             let leadData: {
               nome?: string
@@ -137,6 +158,7 @@ export const DiagnosticoResults: CollectionConfig = {
               caminhos_exibidos: Array.isArray(doc.caminhos_exibidos)
                 ? (doc.caminhos_exibidos as CodigoCaminho[])
                 : [],
+              respostas_consolidadas: respostasConsolidadas,
               url_resultado: `/diagnostico/r/${hash}`,
               concluido_em: new Date().toISOString(),
             })
