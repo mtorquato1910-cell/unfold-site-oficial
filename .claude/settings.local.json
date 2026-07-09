@@ -218,7 +218,14 @@
       "Bash(ls src/components/CookieBanner*)",
       "Bash(grep -rl \"consent\\\\|cookie\" src/components/CookieBanner* src/components/analytics/)",
       "Bash(git commit *)",
-      "Bash(node -e \"const u=require\\('fs'\\).readFileSync\\('.env.local','utf8'\\).split\\('\\\\n'\\).find\\(l=>l.startsWith\\('DATABASE_URL='\\)\\);if\\(!u\\){console.log\\('vazio'\\);process.exit\\(\\)}const v=u.slice\\('DATABASE_URL='.length\\).replace\\(/^[\\\\\"']|[\\\\\"']$/g,''\\);try{const p=new URL\\(v\\);console.log\\('host:',p.hostname\\);console.log\\('db:',p.pathname.slice\\(1\\)\\);console.log\\('preenchido:',v.length>20\\)}catch\\(e\\){console.log\\('parse fail, len=',v.length\\)}\")"
+      "Bash(node -e \"const u=require\\('fs'\\).readFileSync\\('.env.local','utf8'\\).split\\('\\\\n'\\).find\\(l=>l.startsWith\\('DATABASE_URL='\\)\\);if\\(!u\\){console.log\\('vazio'\\);process.exit\\(\\)}const v=u.slice\\('DATABASE_URL='.length\\).replace\\(/^[\\\\\"']|[\\\\\"']$/g,''\\);try{const p=new URL\\(v\\);console.log\\('host:',p.hostname\\);console.log\\('db:',p.pathname.slice\\(1\\)\\);console.log\\('preenchido:',v.length>20\\)}catch\\(e\\){console.log\\('parse fail, len=',v.length\\)}\")",
+      "Bash(Select-Object Name)",
+      "Bash(Select-String -Pattern \"respostas|mapa-icp|diagnostico|rd-station|rd-mapa\")",
+      "Bash(Select-Object -First 40)",
+      "PowerShell(npx tsc --noEmit; if \\($?\\) { \"TYPECHECK OK\" } else { \"TYPECHECK FALHOU\" })",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "PowerShell($env:CI=\"true\"; npx vitest run 2>&1 | Select-Object -Last 45)",
+      "PowerShell(git add *)"
     ]
   }
 }
