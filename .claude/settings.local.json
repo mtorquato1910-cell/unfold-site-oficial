@@ -229,7 +229,9 @@
       "Bash(grep -rl \"DATABASE_URI\\\\|DATABASE_URL\\\\|POSTGRES\" .env*)",
       "Bash(ls src/payload.config.ts)",
       "Bash(grep -rn \"s3Storage\\\\|SUPABASE_S3\\\\|storage-s3\\\\|@payloadcms/storage\" src/payload.config.ts)",
-      "Bash(grep -iE \"^tsx$|^ts-node\")"
+      "Bash(grep -iE \"^tsx$|^ts-node\")",
+      "Bash(rm -f _diag3.mts _diag3-out.txt _diag3b-out.txt)",
+      "Bash(git pull *)"
     ]
   }
 }
