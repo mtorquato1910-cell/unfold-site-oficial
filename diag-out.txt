@@ -1,0 +1,7 @@
+◇ injected env (33) from .env.local // tip: ⌘ suppress logs { quiet: true }
+[⣷] Pulling schema from database...
+[2K[1G[✓] Pulling schema from database...
+[?25l
+Is imagem_destaque_id column in posts table created or renamed from another column?
+❯ + imagem_destaque_id                   create column
+  ~ imagem_destaque › imagem_destaque_id rename column

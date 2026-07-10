@@ -154,6 +154,7 @@ export default function PostsClient({
             return
           }
           setPosts(prev => prev.map(p => p.id === editing.id ? { ...p, ...data } : p))
+          if (res.warning) window.alert(res.warning)
         } else {
           const res: any = await createPost(data)
           if (!res?.ok) {
@@ -162,6 +163,7 @@ export default function PostsClient({
           }
           // Re-fetch simple: just prepend optimistically
           setPosts(prev => [{ id: res.id, ...data, createdAt: new Date().toISOString() }, ...prev])
+          if (res.warning) window.alert(res.warning)
         }
         setOpen(false)
       } catch (err: any) {

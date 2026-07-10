@@ -80,10 +80,31 @@ export async function uploadMedia(formData: FormData) {
       file: { data: buffer, mimetype: file.type, name: file.name, size: file.size },
       data: { alt },
     })
+    // Guarda contra "id fantasma": se o storage remoto reverter a transação, o create
+    // pode devolver um doc cujo id não persistiu. Confirmar a existência aqui faz o
+    // erro aparecer no upload (recuperável) em vez de ao salvar o post (perde o texto).
+    if (!(await mediaPersisted(payload, doc?.id))) {
+      return {
+        ok: false,
+        error:
+          'A imagem não foi salva no armazenamento. Verifique a configuração de storage (SUPABASE_S3_*/Blob) e tente novamente.',
+      }
+    }
     return { ok: true, id: String(doc.id), url: doc.url || doc.sizes?.card?.url || '' }
   } catch (e: any) {
     console.error('[uploadMedia]', e)
     return { ok: false, error: e?.message || 'Falha no upload' }
+  }
+}
+
+// Confirma que um registro de media realmente existe (não foi revertido).
+async function mediaPersisted(payload: any, id: unknown): Promise<boolean> {
+  if (id == null) return false
+  try {
+    const doc = await payload.findByID({ collection: 'media', id: id as any, depth: 0 })
+    return Boolean(doc?.id)
+  } catch {
+    return false
   }
 }
 
@@ -102,6 +123,13 @@ export async function uploadMediaFromUrl(url: string) {
       file: { data: buffer, mimetype: type, name, size: buffer.length },
       data: { alt: name },
     })
+    if (!(await mediaPersisted(payload, doc?.id))) {
+      return {
+        ok: false,
+        error:
+          'A imagem não foi salva no armazenamento. Verifique a configuração de storage (SUPABASE_S3_*/Blob) e tente novamente.',
+      }
+    }
     return { ok: true, id: String(doc.id), url: doc.url || '' }
   } catch (e: any) {
     console.error('[uploadMediaFromUrl]', e)
