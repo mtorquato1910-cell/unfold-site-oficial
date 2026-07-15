@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export interface HeatPoint {
   gx: number
@@ -38,48 +38,92 @@ export interface HeatmapFilters {
   path: string
   device: 'desktop' | 'tablet' | 'mobile'
   mode: string
-  from: string
-  to: string
+  days: number
 }
 
 interface State {
   data: HeatmapResponse | null
   loading: boolean
   error: string | null
+  refreshing: boolean
+  lastUpdated: number | null
 }
 
-export function useHeatmapData(filters: HeatmapFilters): State {
-  const [state, setState] = useState<State>({ data: null, loading: true, error: null })
+// Intervalo padrão do auto-refresh (silencioso). O mapa se atualiza sozinho
+// enquanto a aba está visível; muda-se via prop.
+const DEFAULT_REFRESH_MS = 20000
 
-  useEffect(() => {
-    let cancelled = false
-    setState((s) => ({ ...s, loading: true, error: null }))
+export function useHeatmapData(filters: HeatmapFilters, refreshMs = DEFAULT_REFRESH_MS) {
+  const [state, setState] = useState<State>({
+    data: null,
+    loading: true,
+    error: null,
+    refreshing: false,
+    lastUpdated: null,
+  })
 
+  // Sempre lê os filtros mais recentes sem recriar o loop de polling.
+  const filtersRef = useRef(filters)
+  filtersRef.current = filters
+  const inFlight = useRef(false)
+
+  const load = useCallback((silent: boolean) => {
+    if (inFlight.current) return
+    inFlight.current = true
+    const f = filtersRef.current
+    const now = Date.now()
+    // A janela avança até AGORA a cada carga → novos eventos entram no mapa.
     const qs = new URLSearchParams({
-      path: filters.path,
-      device: filters.device,
-      mode: filters.mode,
-      from: filters.from,
-      to: filters.to,
+      path: f.path,
+      device: f.device,
+      mode: f.mode,
+      from: new Date(now - f.days * 24 * 60 * 60 * 1000).toISOString(),
+      to: new Date(now).toISOString(),
     })
 
-    fetch(`/api/heatmap/points?${qs.toString()}`, { cache: 'no-store' })
+    setState((s) => ({
+      ...s,
+      loading: silent ? s.loading : true,
+      refreshing: silent,
+      error: silent ? s.error : null,
+    }))
+
+    return fetch(`/api/heatmap/points?${qs.toString()}`, { cache: 'no-store' })
       .then(async (r) => {
         if (!r.ok) throw new Error(r.status === 401 ? 'Sessão expirada' : `Erro ${r.status}`)
         return (await r.json()) as HeatmapResponse
       })
       .then((data) => {
-        if (!cancelled) setState({ data, loading: false, error: null })
+        setState({ data, loading: false, error: null, refreshing: false, lastUpdated: Date.now() })
       })
       .catch((e: unknown) => {
-        if (!cancelled)
-          setState({ data: null, loading: false, error: e instanceof Error ? e.message : 'Falha' })
+        // Num refresh silencioso, mantém os dados/erro anteriores (não pisca).
+        setState((s) => ({
+          ...s,
+          loading: false,
+          refreshing: false,
+          error: silent ? s.error : e instanceof Error ? e.message : 'Falha',
+        }))
       })
+      .finally(() => {
+        inFlight.current = false
+      })
+  }, [])
 
-    return () => {
-      cancelled = true
-    }
-  }, [filters.path, filters.device, filters.mode, filters.from, filters.to])
+  // Carga visível quando um filtro muda.
+  useEffect(() => {
+    load(false)
+  }, [filters.path, filters.device, filters.mode, filters.days, load])
 
-  return state
+  // Polling silencioso — só enquanto a aba está visível (economiza recursos).
+  useEffect(() => {
+    if (!refreshMs) return
+    const id = window.setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return
+      load(true)
+    }, refreshMs)
+    return () => window.clearInterval(id)
+  }, [refreshMs, load])
+
+  return { ...state, refresh: () => load(false) }
 }

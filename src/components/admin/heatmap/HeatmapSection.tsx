@@ -8,15 +8,33 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Flame, AlertTriangle } from 'lucide-react'
+import { Flame, AlertTriangle, RefreshCw } from 'lucide-react'
 import { GlassCard } from '@/components/painel/ui'
 import HeatmapToolbar, { type HeatMode } from './HeatmapToolbar'
 import HeatmapBackground, { type Device, type BackgroundInfo } from './HeatmapBackground'
 import HeatmapCanvas from './HeatmapCanvas'
 import ScrollDepthOverlay from './ScrollDepthOverlay'
-import { useHeatmapData, type HeatmapFilters } from './useHeatmapData'
+import { useHeatmapData, type HeatmapFilters, type HeatPage } from './useHeatmapData'
+import { KNOWN_PAGES } from '@/lib/heatmap/known-pages'
 
 const LOW_SAMPLE = 20
+
+/** União das rotas conhecidas do site com as que já têm eventos (RPC). */
+function mergePages(rpcPages: HeatPage[] = [], currentPath: string): HeatPage[] {
+  const map = new Map<string, number>()
+  for (const p of KNOWN_PAGES) map.set(p, 0)
+  for (const p of rpcPages) map.set(p.page_path, p.events)
+  if (!map.has(currentPath)) map.set(currentPath, 0)
+  return Array.from(map.entries())
+    .map(([page_path, events]) => ({ page_path, events }))
+    .sort((a, b) => b.events - a.events || a.page_path.localeCompare(b.page_path))
+}
+
+/** Horário da última atualização (HH:MM:SS). */
+function timeLabel(ts: number | null): string {
+  if (!ts) return ''
+  return new Date(ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+}
 
 export default function HeatmapSection({ initialPath = '/' }: { initialPath?: string }) {
   const [path, setPath] = useState(initialPath)
@@ -29,17 +47,10 @@ export default function HeatmapSection({ initialPath = '/' }: { initialPath?: st
   const [anchorRate, setAnchorRate] = useState<number | null>(null)
   const autoPicked = useRef(false)
 
-  // Janela de tempo estável enquanto `days` não muda.
-  const { from, to } = useMemo(() => {
-    const now = Date.now()
-    return {
-      to: new Date(now).toISOString(),
-      from: new Date(now - days * 24 * 60 * 60 * 1000).toISOString(),
-    }
-  }, [days])
+  const filters: HeatmapFilters = { path, device, mode, days }
+  const { data, loading, error, refreshing, lastUpdated, refresh } = useHeatmapData(filters)
 
-  const filters: HeatmapFilters = { path, device, mode, from, to }
-  const { data, loading, error } = useHeatmapData(filters)
+  const mergedPages = useMemo(() => mergePages(data?.pages, path), [data?.pages, path])
 
   // Auto-seleciona a página mais visitada na primeira carga (se '/' não tiver dados).
   useEffect(() => {
@@ -90,20 +101,39 @@ export default function HeatmapSection({ initialPath = '/' }: { initialPath?: st
 
   return (
     <GlassCard className="mt-8">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-4 flex-wrap">
         <Flame className="h-4 w-4 text-mint" strokeWidth={1.75} />
         <h3 className="font-display text-[15px] font-semibold text-fg">
           Mapa de calor visual — cliques e movimento sobre a página
         </h3>
-        {anchorRate !== null && (
-          <span className="ml-auto font-mono text-[10px] text-dim">
-            {Math.round(anchorRate * 100)}% dos pontos ancorados ao layout atual
+        <div className="ml-auto flex items-center gap-3">
+          {anchorRate !== null && (
+            <span className="font-mono text-[10px] text-dim hidden sm:inline">
+              {Math.round(anchorRate * 100)}% ancorados ao layout
+            </span>
+          )}
+          {/* Indicador "ao vivo" + última atualização + refresh manual */}
+          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] text-dim" title="O mapa se atualiza automaticamente">
+            <span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ background: 'hsl(158 92% 70%)', boxShadow: '0 0 6px hsl(158 92% 70%)' }}
+            />
+            ao vivo{lastUpdated ? ` · ${timeLabel(lastUpdated)}` : ''}
           </span>
-        )}
+          <button
+            onClick={refresh}
+            disabled={loading || refreshing}
+            title="Atualizar agora"
+            className="rounded-lg p-1.5"
+            style={{ background: 'hsl(0 0% 100% / 0.05)', border: '1px solid hsl(0 0% 100% / 0.1)', color: 'hsl(0 0% 91% / 0.7)' }}
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
       </div>
 
       <HeatmapToolbar
-        pages={data?.pages ?? []}
+        pages={mergedPages}
         path={path}
         onPath={changePath}
         device={device}

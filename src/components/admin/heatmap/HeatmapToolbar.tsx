@@ -89,7 +89,7 @@ export default function HeatmapToolbar(props: Props) {
             {pages.length === 0 && <option value={path}>{path}</option>}
             {pages.map((p) => (
               <option key={p.page_path} value={p.page_path}>
-                {(p.page_path || '/') + `  (${p.events})`}
+                {(p.page_path || '/') + (p.events > 0 ? `  (${p.events})` : '')}
               </option>
             ))}
           </select>
