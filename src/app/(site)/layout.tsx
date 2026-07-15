@@ -6,7 +6,9 @@ import CookieBannerWrapper from '@/components/CookieBannerWrapper'
 import { OrganizationSchema, WebSiteSchema } from '@/components/SchemaOrg'
 import PostHogScript from '@/components/analytics/PostHogScript'
 import GTMScript, { GTMNoScript } from '@/components/analytics/GTMScript'
+import RDStationScript from '@/components/analytics/RDStationScript'
 import SiteTracker from '@/components/analytics/SiteTracker'
+import HeatmapPreviewGuard from '@/components/HeatmapPreviewGuard'
 import '../globals.css'
 
 // S1.2 — Display tech: Space Grotesk (substituto Relicus)
@@ -85,7 +87,9 @@ export default function SiteLayout({
         <GTMNoScript />
         <GTMScript />
         <PostHogScript />
+        <RDStationScript />
         <SiteTracker />
+        <HeatmapPreviewGuard />
         <OrganizationSchema />
         <WebSiteSchema />
         <Navbar />

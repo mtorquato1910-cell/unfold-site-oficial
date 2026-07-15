@@ -3,6 +3,7 @@ import { syncPendingLeadsToRD } from '@/lib/jobs/sync-leads-rd'
 import { notifyHighScoreLeads } from '@/lib/jobs/notify-high-score-leads'
 import { purgeExpiredCalculadora } from '@/lib/jobs/retention-purge'
 import { processarNutricaoPosCalculadora } from '@/lib/jobs/calc-nutricao'
+import { purgeOldHeatmapEvents } from '@/lib/heatmap/db'
 
 /**
  * Cron multiplexador — Vercel Cron chama 1x/dia.
@@ -54,6 +55,13 @@ export async function GET(req: NextRequest) {
     results.calcNutricao = await processarNutricaoPosCalculadora()
   } catch (err: any) {
     results.calcNutricao = { error: err?.message || 'unknown' }
+  }
+
+  // Job 5: expurgo LGPD do mapa de calor (>180 dias)
+  try {
+    results.heatmapPurge = await purgeOldHeatmapEvents(180)
+  } catch (err: any) {
+    results.heatmapPurge = { error: err?.message || 'unknown' }
   }
 
   const durationMs = Date.now() - started

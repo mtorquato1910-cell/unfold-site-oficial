@@ -58,19 +58,29 @@ const nextConfig: NextConfig = {
     ]
   },
   async headers() {
+    // Headers de segurança comuns a todas as respostas (o X-Frame-Options varia abaixo).
+    const common = [
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+      // HSTS Fase 2 (30d). NÃO adicionar preload nem includeSubDomains até a Fase 3.
+      { key: 'Strict-Transport-Security', value: `max-age=${HSTS_MAX_AGE}` },
+      // Promove qualquer recurso http:// para https:// no nível do browser.
+      { key: 'Content-Security-Policy', value: 'upgrade-insecure-requests' },
+    ]
     return [
       {
+        // Prévia do mapa de calor (?heatmap=1): o painel embute a página num
+        // iframe same-origin. SAMEORIGIN permite só o nosso domínio — nada externo.
         source: '/(.*)',
-        headers: [
-          { key: 'X-Frame-Options', value: 'DENY' },
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-          // HSTS Fase 2 (30d). NÃO adicionar preload nem includeSubDomains até a Fase 3.
-          { key: 'Strict-Transport-Security', value: `max-age=${HSTS_MAX_AGE}` },
-          // Promove qualquer recurso http:// para https:// no nível do browser.
-          { key: 'Content-Security-Policy', value: 'upgrade-insecure-requests' },
-        ],
+        has: [{ type: 'query', key: 'heatmap', value: '1' }],
+        headers: [{ key: 'X-Frame-Options', value: 'SAMEORIGIN' }, ...common],
+      },
+      {
+        // Demais requests (heatmap ausente ou ≠ 1): bloqueia qualquer framing (clickjacking).
+        source: '/(.*)',
+        missing: [{ type: 'query', key: 'heatmap', value: '1' }],
+        headers: [{ key: 'X-Frame-Options', value: 'DENY' }, ...common],
       },
     ]
   },

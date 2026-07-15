@@ -15,10 +15,7 @@ export default async function HeatmapPage() {
 
   return (
     <PainelLayout user={user}>
-      <HeatmapClient
-        data={data}
-        posthogUrl={process.env.NEXT_PUBLIC_POSTHOG_HEATMAP_URL || null}
-      />
+      <HeatmapClient data={data} />
     </PainelLayout>
   )
 }

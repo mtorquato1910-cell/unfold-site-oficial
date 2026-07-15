@@ -285,3 +285,18 @@
   }
   .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
 }
+
+/* ── Modo prévia do mapa de calor (?heatmap=1, dentro do iframe do painel) ──
+   Layout estável para o overlay: sem animações/transições, sem banner de
+   cookies, sem scroll suave. Puramente visual — não afeta o site normal. */
+.heatmap-preview *,
+.heatmap-preview *::before,
+.heatmap-preview *::after {
+  animation-play-state: paused !important;
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+.heatmap-preview [aria-label="Banner de cookies"] {
+  display: none !important;
+}

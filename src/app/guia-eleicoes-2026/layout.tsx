@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, Inter, JetBrains_Mono, Fraunces } from 'next/font/google'
 import GTMScript, { GTMNoScript } from '@/components/analytics/GTMScript'
+import RDStationScript from '@/components/analytics/RDStationScript'
 import '../globals.css'
 import './_content/guia.css'
 import './_content/guia-responsive.css'
@@ -89,6 +90,7 @@ export default function GuiaLayout({ children }: { children: React.ReactNode }) 
       <body className="guia-editorial">
         <GTMNoScript />
         <GTMScript />
+        <RDStationScript />
         {children}
       </body>
     </html>

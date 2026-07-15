@@ -9,8 +9,9 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts'
-import { Flame, Eye, Users, MousePointerClick, UserCheck, ArrowRight, ExternalLink } from 'lucide-react'
+import { Flame, Eye, Users, MousePointerClick, UserCheck, ArrowRight } from 'lucide-react'
 import { PageHeader, StatCard, GlassCard, EmptyState } from '@/components/painel/ui'
+import HeatmapSection from '@/components/admin/heatmap/HeatmapSection'
 
 // Tipos espelhados de painel-api (definidos inline p/ não puxar código server no bundle client).
 interface Journey {
@@ -43,10 +44,8 @@ function fmtDate(iso: string) {
 
 export default function HeatmapClient({
   data,
-  posthogUrl,
 }: {
   data: HeatmapData
-  posthogUrl: string | null
 }) {
   const maxPage = Math.max(1, ...data.topPages.map((p) => p.views))
   const maxClick = Math.max(1, ...data.topClicks.map((c) => c.count))
@@ -56,7 +55,7 @@ export default function HeatmapClient({
       <PageHeader
         eyebrow="Analytics · últimos 14 dias"
         title="Mapa de Calor"
-        description="Por onde leads e visitantes passam no site — jornada por ID (sem nome), páginas mais vistas e cliques. O overlay visual de cliques fica no PostHog."
+        description="Por onde leads e visitantes passam no site — jornada por ID (sem nome), páginas mais vistas e cliques, com o overlay visual de calor sobre cada página."
       />
 
       {/* KPIs */}
@@ -197,37 +196,8 @@ export default function HeatmapClient({
         </>
       )}
 
-      {/* Overlay visual (PostHog) */}
-      <GlassCard>
-        <div className="flex items-center gap-2 mb-4">
-          <Flame className="h-4 w-4 text-mint" strokeWidth={1.75} />
-          <h3 className="font-display text-[15px] font-semibold text-fg">Mapa de calor visual (cliques sobre a página)</h3>
-        </div>
-        {posthogUrl ? (
-          <div className="rounded-xl overflow-hidden" style={{ border: '1px solid hsl(158 92% 70% / 0.15)' }}>
-            <iframe src={posthogUrl} style={{ width: '100%', height: 640, border: 0 }} title="PostHog Heatmap" allowFullScreen />
-          </div>
-        ) : (
-          <div className="text-[13px] text-dim-2 leading-relaxed space-y-3">
-            <p>
-              O overlay de cliques pixel-a-pixel (manchas quentes/frias sobre cada página) é
-              gerado pelo <strong className="text-fg">PostHog</strong>, que já está capturando os dados.
-            </p>
-            <ol className="list-decimal list-inside space-y-1 text-dim-2">
-              <li>Acesse o PostHog → <em>Heatmaps / Toolbar</em> para ver o overlay ao vivo em qualquer página.</li>
-              <li>Para embutir um dashboard aqui: crie um <em>shared dashboard</em> no PostHog e defina a env <code className="text-mint">NEXT_PUBLIC_POSTHOG_HEATMAP_URL</code> no Vercel com a URL de embed.</li>
-            </ol>
-            <a
-              href="https://app.posthog.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-mint text-[13px] font-medium hover:underline"
-            >
-              Abrir PostHog <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          </div>
-        )}
-      </GlassCard>
+      {/* Overlay visual nativo (tipo Clarity/Hotjar) — abaixo do relatório */}
+      <HeatmapSection initialPath={data.topPages[0]?.path || '/'} />
     </div>
   )
 }

@@ -231,7 +231,13 @@
       "Bash(grep -rn \"s3Storage\\\\|SUPABASE_S3\\\\|storage-s3\\\\|@payloadcms/storage\" src/payload.config.ts)",
       "Bash(grep -iE \"^tsx$|^ts-node\")",
       "Bash(rm -f _diag3.mts _diag3-out.txt _diag3b-out.txt)",
-      "Bash(git pull *)"
+      "Bash(git pull *)",
+      "PowerShell(cd \"C:\\\\Users\\\\mathe\\\\OneDrive\\\\Área de Trabalho\\\\Site unfold\\\\unfold-site-oficial\"; Get-ChildItem -Path \"src/app/api\" -Recurse -Include \"route.ts\" | Where-Object { Select-String -Path $_.FullName -Pattern \"track|analytics\" -Quiet } | Select-Object -ExpandProperty FullName)",
+      "PowerShell(npx tsc --noEmit 2>&1 | Select-String -Pattern \"RDStation\",\"analytics\",\"site.layout\",\"guia-eleicoes\" ; \"exit=$LASTEXITCODE\")",
+      "Bash(node -e \"const p=require\\('./package.json'\\); const d={...p.dependencies,...p.devDependencies}; console.log\\('simpleheat:',d.simpleheat||'NAO'\\); console.log\\('heatmap.js:',d['heatmap.js']||'NAO'\\); console.log\\('html2canvas:',d.html2canvas||'NAO'\\); console.log\\('db adapter:', d['@payloadcms/db-postgres']||'NAO'\\); console.log\\('next:',d.next\\)\")",
+      "PowerShell(npx tsc --noEmit 2>&1 | Select-String -Pattern \"heatmap\",\"analytics\",\"HeatmapPreviewGuard\",\"simpleheat\",\"painel-api\",\"site-tracker\" ; \"exit=$LASTEXITCODE\")",
+      "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 40 ; \"exit=$LASTEXITCODE\")",
+      "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 30 ; \"exit=$LASTEXITCODE\")"
     ]
   }
 }
