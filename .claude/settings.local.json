@@ -250,7 +250,11 @@
       "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' show --stat --oneline 01d0b12)",
       "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' ls-remote origin -h refs/heads/main)",
       "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' rev-parse HEAD)",
-      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' show 01d0b12:next.config.ts)"
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' show 01d0b12:next.config.ts)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' status --short)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' add src/components/admin/heatmap/HeatmapSection.tsx src/components/admin/heatmap/HeatmapToolbar.tsx src/components/admin/heatmap/useHeatmapData.ts src/lib/heatmap/known-pages.ts)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' commit -m 'feat\\(heatmap\\): seletor com todas as paginas + auto-refresh *)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' push origin main)"
     ]
   }
 }
