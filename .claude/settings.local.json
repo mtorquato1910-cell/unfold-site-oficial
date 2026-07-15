@@ -237,7 +237,20 @@
       "Bash(node -e \"const p=require\\('./package.json'\\); const d={...p.dependencies,...p.devDependencies}; console.log\\('simpleheat:',d.simpleheat||'NAO'\\); console.log\\('heatmap.js:',d['heatmap.js']||'NAO'\\); console.log\\('html2canvas:',d.html2canvas||'NAO'\\); console.log\\('db adapter:', d['@payloadcms/db-postgres']||'NAO'\\); console.log\\('next:',d.next\\)\")",
       "PowerShell(npx tsc --noEmit 2>&1 | Select-String -Pattern \"heatmap\",\"analytics\",\"HeatmapPreviewGuard\",\"simpleheat\",\"painel-api\",\"site-tracker\" ; \"exit=$LASTEXITCODE\")",
       "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 40 ; \"exit=$LASTEXITCODE\")",
-      "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 30 ; \"exit=$LASTEXITCODE\")"
+      "PowerShell(npx tsc --noEmit 2>&1 | Select-Object -First 30 ; \"exit=$LASTEXITCODE\")",
+      "Bash(git -C \"c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial\" status --short)",
+      "Bash(git -C \"c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial\" status)",
+      "Bash(git -C \"c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial\" check-ignore -v src/lib/heatmap/tracker.ts src/components/admin/heatmap/HeatmapSection.tsx)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' config --get status.showUntrackedFiles)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' status --short --untracked-files=all)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' rev-parse --show-toplevel)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' log --oneline -8)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' log --oneline -3 -- src/lib/heatmap/tracker.ts)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' rev-list --left-right --count origin/main...HEAD)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' show --stat --oneline 01d0b12)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' ls-remote origin -h refs/heads/main)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' rev-parse HEAD)",
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' show 01d0b12:next.config.ts)"
     ]
   }
 }
