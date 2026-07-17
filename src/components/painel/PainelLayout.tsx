@@ -8,7 +8,7 @@ import {
   LayoutDashboard, FileText, Briefcase, MessageSquareQuote,
   FolderTree, Image as ImageIcon, Users, ClipboardList,
   HelpCircle, Sparkles as SparklesIcon, Radar, Megaphone,
-  Settings, UserCog, Activity, LogOut, Search, Command, ChevronRight, Flame,
+  Settings, UserCog, Activity, LogOut, Search, Command, ChevronRight, Flame, Type,
 } from 'lucide-react'
 import BellDropdown from './BellDropdown'
 
@@ -26,6 +26,7 @@ const sections: Section[] = [
       { to: '/admin/posts', label: 'Posts / Blog', icon: FileText },
       { to: '/admin/cases', label: 'Cases', icon: Briefcase },
       { to: '/admin/testimonials', label: 'Depoimentos', icon: MessageSquareQuote },
+      { to: '/admin/textos', label: 'Textos', icon: Type },
       { to: '/admin/banners', label: 'Banners', icon: Megaphone },
       { to: '/admin/faqs', label: 'FAQs', icon: HelpCircle },
       { to: '/admin/categories', label: 'Categorias', icon: FolderTree },

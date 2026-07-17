@@ -5,6 +5,8 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { Button } from '@/components/ui/button'
+import { getSiteTexts } from '@/lib/site-texts'
+import { renderHighlight } from '@/lib/render-highlight'
 
 function mediaUrl(field: any): string | null {
   if (field && typeof field === 'object') return field.url || field.sizes?.card?.url || null
@@ -81,6 +83,7 @@ const VERTICAL_LABELS: Record<string, string> = {
 }
 
 export default async function CasesPage() {
+  const { cases: casesText } = await getSiteTexts()
   let cases: any[] = []
   try {
     const payload = await getPayload({ config: configPromise })
@@ -115,15 +118,13 @@ export default async function CasesPage() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
-              Resultados comprovados
+              {casesText.eyebrow}
             </p>
             <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
-              Cases de crescimento{' '}
-              <span className="text-secondary">estruturado.</span>
+              {renderHighlight(casesText.title)}
             </h1>
             <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
-              Cada case é a prova do método UGS aplicado a uma operação real — com diagnóstico,
-              estrutura e resultado mensurável.
+              {casesText.subtitle}
             </p>
           </div>
         </div>

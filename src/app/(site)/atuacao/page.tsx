@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { ArrowUpRight, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AtuacaoTabs } from '@/components/atuacao/AtuacaoTabs'
+import { getSiteTexts } from '@/lib/site-texts'
+import { renderHighlight } from '@/lib/render-highlight'
 
 export const metadata: Metadata = {
   title: 'Atuação',
@@ -10,7 +12,8 @@ export const metadata: Metadata = {
     'A Unfold Growth atua em verticais de vendas complexas: Construção Civil, Agronegócio, Tecnologia, Automotivo, Indústrias e Serviços. Conheça nossa abordagem por segmento.',
 }
 
-export default function AtuacaoPage() {
+export default async function AtuacaoPage() {
+  const { atuacao } = await getSiteTexts()
   return (
     <>
       {/* Hero */}
@@ -31,14 +34,13 @@ export default function AtuacaoPage() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
-              Atuação
+              {atuacao.eyebrow}
             </p>
             <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
-              Verticais onde o UGS opera.
+              {renderHighlight(atuacao.title)}
             </h1>
             <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
-              Cada setor tem suas próprias dinâmicas de compra, vocabulário e gargalos. Aplicamos
-              o Unfold Growth System com micro-ângulos específicos por vertical.
+              {atuacao.subtitle}
             </p>
           </div>
         </div>

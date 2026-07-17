@@ -59,7 +59,29 @@ const funil: [string, string, string][] = [
 const metricasImportam = ['CPM por segmento', 'Frequência semanal por base', 'View-through rate em vídeo', 'Custo por contato qualificado', 'Crescimento de base own (e-mail/WA opt-in)', 'Sentimento qualitativo em comentários', 'Taxa de resposta em DM/WA', 'Cobertura geográfica por região-alvo']
 const metricasEnganam = ['Curtidas totais', 'Seguidores brutos', 'Compartilhamentos sem contexto', 'Impressões agregadas', 'Visualizações de 3s', "CPM 'mais barato' fora do segmento", 'Engajamento de fora da circunscrição', 'Picos virais sem retenção']
 
-function GuiaContent() {
+export type GuiaHero = { eyebrow: string; title: string; subtitle: string }
+
+/** Renderiza o título do hero convertendo {{primary}}…{{/primary}} no <em> mint. */
+function renderGuiaTitle(title: string): React.ReactNode {
+  const parts: React.ReactNode[] = []
+  const regex = /\{\{primary\}\}([\s\S]+?)\{\{\/primary\}\}/g
+  let last = 0
+  let match: RegExpExecArray | null
+  let i = 0
+  while ((match = regex.exec(title)) !== null) {
+    if (match.index > last) parts.push(title.slice(last, match.index))
+    parts.push(
+      <em key={i++} className="italic" style={{ color: 'var(--mint-deep)' }}>
+        {match[1]}
+      </em>,
+    )
+    last = match.index + match[0].length
+  }
+  if (last < title.length) parts.push(title.slice(last))
+  return parts.length > 0 ? parts : title
+}
+
+function GuiaContent({ hero }: { hero: GuiaHero }) {
   const downloadHero = useDownloadGuia('hero')
   const downloadConvite = useDownloadGuia('convite_final')
   const share = useShareGuia()
@@ -87,15 +109,15 @@ function GuiaContent() {
           <Orb className="w-full" />
         </motion.div>
         <div className="container-edit pt-16 md:pt-28 pb-20 md:pb-32 relative z-[1]">
-          <Reveal><Eyebrow>ESTUDO · ELEIÇÕES 2026 · UNFOLD ✕ FEAT.WORK</Eyebrow></Reveal>
+          <Reveal><Eyebrow>{hero.eyebrow}</Eyebrow></Reveal>
           <Reveal delay={0.1}>
             <h1 className="mt-6 font-serif max-w-4xl" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', lineHeight: 1.02, letterSpacing: '-0.02em', color: 'var(--ink)' }}>
-              Guia de anúncios digitais para as <em className="italic" style={{ color: 'var(--mint-deep)' }}>Eleições de 2026</em>.
+              {renderGuiaTitle(hero.title)}
             </h1>
           </Reveal>
           <Reveal delay={0.2}>
             <p className="mt-8 max-w-2xl text-xl" style={{ color: 'var(--ink-body)' }}>
-              Regras, plataformas, riscos e oportunidades da operação política online.
+              {hero.subtitle}
             </p>
           </Reveal>
           <Reveal delay={0.3}>
@@ -558,11 +580,11 @@ function GuiaContent() {
   )
 }
 
-export function GuiaEditorial() {
+export function GuiaEditorial({ hero }: { hero: GuiaHero }) {
   return (
     <MotionConfig reducedMotion="user">
       <EditorialGate>
-        <GuiaContent />
+        <GuiaContent hero={hero} />
       </EditorialGate>
     </MotionConfig>
   )

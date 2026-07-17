@@ -5,6 +5,7 @@ import * as migration_20260615_180000_banners_table from './20260615_180000_bann
 import * as migration_20260701_120000_tracking_events from './20260701_120000_tracking_events';
 import * as migration_20260710_140000_fix_locked_docs_tracking_events from './20260710_140000_fix_locked_docs_tracking_events';
 import * as migration_20260715_120000_heatmap_events from './20260715_120000_heatmap_events';
+import * as migration_20260717_120000_site_texts_global from './20260717_120000_site_texts_global';
 
 export const migrations = [
   {
@@ -41,5 +42,10 @@ export const migrations = [
     up: migration_20260715_120000_heatmap_events.up,
     down: migration_20260715_120000_heatmap_events.down,
     name: '20260715_120000_heatmap_events'
+  },
+  {
+    up: migration_20260717_120000_site_texts_global.up,
+    down: migration_20260717_120000_site_texts_global.down,
+    name: '20260717_120000_site_texts_global'
   },
 ];

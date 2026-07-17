@@ -4,6 +4,8 @@ import { ArrowUpRight, Award, Target, Eye, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BrazilMap } from '@/components/about/BrazilMap'
 import FAQList from '@/components/FAQList'
+import { getSiteTexts } from '@/lib/site-texts'
+import { renderHighlight } from '@/lib/render-highlight'
 
 export const metadata: Metadata = {
   title: 'Sobre | Unfold Growth',
@@ -44,7 +46,8 @@ const CERTIFICATIONS = [
   'LinkedIn Marketing Solutions',
 ]
 
-export default function SobrePage() {
+export default async function SobrePage() {
+  const { sobre } = await getSiteTexts()
   return (
     <main>
       {/* 1. Hero */}
@@ -66,16 +69,13 @@ export default function SobrePage() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
-              Sobre a Unfold Growth
+              {sobre.eyebrow}
             </p>
             <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
-              Crescimento organizado,{' '}
-              <span className="text-primary">resultado previsível.</span>
+              {renderHighlight(sobre.title)}
             </h1>
             <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
-              Somos uma consultoria especializada em estruturar sistemas de crescimento para
-              empresas com vendas complexas — conectando marketing, vendas, CRM e automação
-              em uma operação integrada e orientada a resultado.
+              {sobre.subtitle}
             </p>
           </div>
         </div>

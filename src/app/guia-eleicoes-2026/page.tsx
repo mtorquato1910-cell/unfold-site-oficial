@@ -1,4 +1,5 @@
 import { GuiaEditorial } from './_components/editorial/GuiaEditorial'
+import { getSiteTexts } from '@/lib/site-texts'
 import './_styles/editorial.css'
 
 /**
@@ -27,14 +28,15 @@ const ARTICLE_LD = {
   publisher: { '@type': 'Organization', name: 'Unfold × Feat.Work' },
 }
 
-export default function GuiaEleicoes2026Page() {
+export default async function GuiaEleicoes2026Page() {
+  const { guia } = await getSiteTexts()
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(ARTICLE_LD) }}
       />
-      <GuiaEditorial />
+      <GuiaEditorial hero={guia} />
     </>
   )
 }

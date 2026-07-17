@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { ArrowUpRight, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { UGSDiagram } from '@/components/metodo/UGSDiagram'
+import { getSiteTexts } from '@/lib/site-texts'
+import { renderHighlight } from '@/lib/render-highlight'
 
 export const metadata: Metadata = {
   title: 'O Método UGS',
@@ -84,7 +86,8 @@ const DIFFERENTIALS = [
   },
 ]
 
-export default function MetodoPage() {
+export default async function MetodoPage() {
+  const { metodo } = await getSiteTexts()
   return (
     <>
       {/* Hero */}
@@ -105,14 +108,13 @@ export default function MetodoPage() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
-              Método Unfold
+              {metodo.eyebrow}
             </p>
             <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl lg:text-7xl leading-[1.05]">
-              O Unfold Growth System.
+              {renderHighlight(metodo.title)}
             </h1>
             <p className="mt-7 text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed">
-              Um framework de crescimento estruturado para operações com vendas complexas.
-              Quatro pilares, uma lógica integrada.
+              {metodo.subtitle}
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-3">
               <Button asChild size="lg" className="h-12 px-6 group">

@@ -34,6 +34,7 @@ import Banners from './src/collections/Banners'
 import TrackingEvents from './src/collections/TrackingEvents'
 import SiteSettings from './src/globals/SiteSettings'
 import HomeSettings from './src/globals/HomeSettings'
+import SiteTexts from './src/globals/SiteTexts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -114,7 +115,7 @@ export default buildConfig({
     // Mapa de calor / jornada de leads (aba /admin/heatmap)
     TrackingEvents,
   ],
-  globals: [SiteSettings, HomeSettings],
+  globals: [SiteSettings, HomeSettings, SiteTexts],
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || 'dev-secret-CHANGE-IN-PRODUCTION',
   sharp,

@@ -4,6 +4,8 @@ import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import { getSiteTexts } from '@/lib/site-texts'
+import { renderHighlight } from '@/lib/render-highlight'
 
 function mediaUrl(field: any): string | null {
   if (field && typeof field === 'object') return field.url || field.sizes?.card?.url || null
@@ -43,6 +45,7 @@ async function getPosts(): Promise<any[]> {
 
 export default async function BlogPage() {
   const posts = await getPosts()
+  const { blog } = await getSiteTexts()
 
   return (
     <main>
@@ -62,14 +65,12 @@ export default async function BlogPage() {
         <div className="absolute inset-x-0 bottom-0 h-32 -z-10 bg-gradient-to-b from-transparent to-background pointer-events-none" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">Blog</p>
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">{blog.eyebrow}</p>
             <h1 className="font-display font-bold tracking-tight text-5xl md:text-6xl leading-[1.05]">
-              Conteúdo técnico sobre{' '}
-              <span className="text-secondary">crescimento estruturado.</span>
+              {renderHighlight(blog.title)}
             </h1>
             <p className="mt-6 text-lg text-foreground/70 max-w-xl leading-relaxed">
-              Diagnóstico, estrutura e operação — os três pilares do método UGS em forma de
-              conhecimento aplicado.
+              {blog.subtitle}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link

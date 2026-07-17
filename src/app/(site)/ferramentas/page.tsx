@@ -1,6 +1,8 @@
 import { ArrowRight, Calculator, ClipboardList, Radar } from 'lucide-react'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { getSiteTexts } from '@/lib/site-texts'
+import { renderHighlight } from '@/lib/render-highlight'
 
 export const metadata: Metadata = {
   title: 'Ferramentas Gratuitas — Unfold Growth',
@@ -41,7 +43,8 @@ const TOOLS = [
   },
 ]
 
-export default function FerramentasPage() {
+export default async function FerramentasPage() {
+  const { ferramentas } = await getSiteTexts()
   return (
     <main className="min-h-screen bg-background text-foreground">
       <section className="relative isolate overflow-hidden pt-32 pb-24 md:pt-40 md:pb-28">
@@ -61,15 +64,13 @@ export default function FerramentasPage() {
         <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
           <div className="max-w-2xl">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-6">
-              Ferramentas gratuitas
+              {ferramentas.eyebrow}
             </p>
             <h1 className="font-display font-bold tracking-tight text-4xl md:text-5xl lg:text-6xl leading-[1.05]">
-              Ferramentas para diagnosticar e{' '}
-              <span className="text-primary">escalar sua operação.</span>
+              {renderHighlight(ferramentas.title)}
             </h1>
             <p className="mt-7 text-lg md:text-xl text-foreground/70 max-w-xl leading-relaxed">
-              Projeções e diagnósticos práticos para entender onde sua operação de crescimento
-              está e o que está travando — sem compromisso.
+              {ferramentas.subtitle}
             </p>
           </div>
         </div>
