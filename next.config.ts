@@ -53,7 +53,7 @@ const nextConfig: NextConfig = {
       { source: '/agencia', destination: '/', permanent: true },
       { source: '/servicos', destination: '/atuacao', permanent: true },
       { source: '/portfolio', destination: '/cases', permanent: true },
-      { source: '/contato', destination: '/diagnostico', permanent: true },
+      // /contato agora é uma página própria (formulário de contato) — redirect legado removido.
       { source: '/blog/trafego-pago', destination: '/ferramentas/calculadora-trafego', permanent: true },
     ]
   },
