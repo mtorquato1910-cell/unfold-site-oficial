@@ -256,7 +256,8 @@
       "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' commit -m 'feat\\(heatmap\\): seletor com todas as paginas + auto-refresh *)",
       "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' push origin main)",
       "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' add src/app/globals.css)",
-      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' commit -m 'feat\\(whatsapp\\): estilizar botao flutuante do RD com icone e halo do site *)"
+      "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' commit -m 'feat\\(whatsapp\\): estilizar botao flutuante do RD com icone e halo do site *)",
+      "Bash(git grep *)"
     ]
   }
 }
