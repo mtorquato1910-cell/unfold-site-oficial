@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contato — Unfold Growth</title>
+<style>
+  :root{
+    --navy:#052330;
+    --navy-2:#0A2F3D;
+    --mint:#2DF5C0;
+    --mint-soft:rgba(45,245,192,.12);
+    --texto:#EAF6F3;
+    --texto-dim:#8FA9AE;
+    --borda:rgba(255,255,255,.10);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(900px 500px at 85% -10%, rgba(45,245,192,.10), transparent 60%),
+      radial-gradient(700px 500px at 0% 110%, rgba(45,245,192,.06), transparent 55%),
+      var(--navy);
+    color:var(--texto);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  header{
+    padding:26px 40px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  header .mark{width:40px;height:40px;display:block;flex:none}
+  .brand{
+    display:flex;
+    align-items:center;
+    font-weight:900;
+    font-size:30px;
+    letter-spacing:1px;
+    color:#fff;
+    line-height:1;
+  }
+  .brand .o{
+    width:.86em;height:.86em;
+    margin:0 .01em;
+    display:inline-block;
+    vertical-align:middle;
+    transform:translateY(.02em);
+  }
+  main{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px 20px 70px;
+  }
+  .card{
+    width:100%;
+    max-width:500px;
+    background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+    border:1px solid var(--borda);
+    border-radius:22px;
+    padding:46px 44px;
+    box-shadow:0 30px 80px rgba(0,0,0,.35);
+    backdrop-filter:blur(6px);
+  }
+  .eyebrow{
+    display:inline-block;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-size:11px;
+    font-weight:700;
+    color:var(--mint);
+    background:var(--mint-soft);
+    padding:6px 12px;
+    border-radius:999px;
+    margin-bottom:18px;
+  }
+  h1{
+    font-size:29px;
+    font-weight:800;
+    line-height:1.22;
+    margin-bottom:14px;
+  }
+  .sub{
+    color:var(--texto-dim);
+    font-size:15px;
+    line-height:1.55;
+    margin-bottom:32px;
+  }
+  .sub strong{color:var(--texto);font-weight:600}
+  .field{margin-bottom:18px}
+  label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:8px;
+    color:var(--texto);
+  }
+  input{
+    width:100%;
+    padding:14px 16px;
+    font-size:15px;
+    font-family:inherit;
+    color:var(--texto);
+    border:1px solid var(--borda);
+    border-radius:12px;
+    background:rgba(0,0,0,.20);
+    transition:border-color .2s,box-shadow .2s;
+  }
+  input::placeholder{color:#5E7A80}
+  input:focus{
+    outline:none;
+    border-color:var(--mint);
+    box-shadow:0 0 0 3px var(--mint-soft);
+  }
+  button{
+    width:100%;
+    margin-top:12px;
+    padding:16px;
+    font-size:15px;
+    font-weight:800;
+    font-family:inherit;
+    color:var(--navy);
+    background:var(--mint);
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    letter-spacing:.3px;
+    transition:filter .2s,transform .1s;
+  }
+  button:hover{filter:brightness(1.06)}
+  button:active{transform:translateY(1px)}
+  .privacy{
+    margin-top:18px;
+    font-size:12.5px;
+    line-height:1.5;
+    color:var(--texto-dim);
+    text-align:center;
+  }
+  .ok{
+    display:none;
+    text-align:center;
+    padding:12px 0;
+  }
+  .ok .ic{
+    width:56px;height:56px;border-radius:50%;
+    background:var(--mint-soft);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 18px;
+    color:var(--mint);font-size:26px;font-weight:700;
+  }
+  .ok strong{display:block;font-size:20px;margin-bottom:8px}
+  .ok p{color:var(--texto-dim);font-size:15px;line-height:1.55}
+  footer{
+    text-align:center;
+    padding:22px;
+    font-size:12px;
+    color:var(--texto-dim);
+  }
+</style>
+</head>
+<body>
+  <header>
+    <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="50" fill="#2DF5C0"/>
+      <circle cx="50" cy="50" r="27" fill="#052330"/>
+      <rect x="34" y="34" width="32" height="32" rx="11" transform="rotate(45 50 50)" fill="#2DF5C0"/>
+    </svg>
+    <span class="brand" aria-label="Unfold">UNF<svg class="o" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#2DF5C0"/><circle cx="50" cy="50" r="27" fill="#052330"/><rect x="34" y="34" width="32" height="32" rx="11" transform="rotate(45 50 50)" fill="#2DF5C0"/></svg>LD</span>
+  </header>
+
+  <main>
+    <div class="card">
+      <form id="form">
+        <span class="eyebrow">Fale com a Unfold</span>
+        <h1>Vamos conversar sobre o seu crescimento</h1>
+        <p class="sub">Somos a <strong>Unfold Growth</strong> — estruturamos sistemas de crescimento que conectam marketing, vendas, CRM e automação. Deixe seus dados e nosso time entra em contato com você.</p>
+
+        <div class="field">
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required>
+        </div>
+
+        <div class="field">
+          <label for="telefone">Telefone</label>
+          <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" required>
+        </div>
+
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" placeholder="voce@empresa.com" required>
+        </div>
+
+        <button type="submit">Enviar</button>
+
+        <p class="privacy">Seus dados serão utilizados exclusivamente para que a Unfold entre em contato com você. Não compartilhamos suas informações com terceiros.</p>
+      </form>
+
+      <div class="ok" id="ok">
+        <div class="ic">✓</div>
+        <strong>Recebido!</strong>
+        <p>Obrigado pelo contato. Nosso time da Unfold retornará em breve.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>© 2026 Unfold Growth — unfoldgrowth.com.br</footer>
+
+  <script>
+    document.getElementById('form').addEventListener('submit', function(e){
+      e.preventDefault();
+      this.style.display='none';
+      document.getElementById('ok').style.display='block';
+    });
+  </script>
+</body>
+</html>
