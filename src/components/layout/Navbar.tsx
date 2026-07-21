@@ -91,10 +91,10 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3 shrink-0">
-          {/* CTA primário — mint (Brief: CTA único primário = Diagnóstico) */}
+          {/* CTA primário — mint (leva ao formulário de Contato) */}
           <Button asChild variant="default" size="sm" className="hidden md:inline-flex group">
-            <Link href="/diagnostico">
-              Solicite um Diagnóstico
+            <Link href="/contato">
+              Contato
               <ArrowUpRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </Button>
@@ -151,8 +151,8 @@ export function Navbar() {
           </nav>
 
           <Button asChild className="mt-8 w-full">
-            <Link href="/diagnostico" onClick={() => setOpen(false)}>
-              Solicite um Diagnóstico
+            <Link href="/contato" onClick={() => setOpen(false)}>
+              Contato
             </Link>
           </Button>
         </div>

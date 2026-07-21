@@ -22,7 +22,7 @@ export const Leads: CollectionConfig = {
         // Sem esta guarda, o hook genérico dispararia uma 2ª conversão `lead_capturado`
         // junto da conversão dedicada → dupla conversão no RD. 'calculadora' incluída
         // porque tinha o mesmo bug latente.
-        const ORIGENS_COM_SYNC_PROPRIA = ['calculadora', 'guia-eleicoes']
+        const ORIGENS_COM_SYNC_PROPRIA = ['calculadora', 'guia-eleicoes', 'contato']
         if (ORIGENS_COM_SYNC_PROPRIA.includes(doc.origem)) return doc
         const caminhoMap: Record<string, 'Diagnóstico' | 'Calculadora' | 'Newsletter' | undefined> = {
           diagnostico: 'Diagnóstico',
