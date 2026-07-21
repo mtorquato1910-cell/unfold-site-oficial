@@ -62,7 +62,7 @@ export default function ContatoForm() {
 
   if (success) {
     return (
-      <div className="rounded-2xl border border-border bg-card p-8 md:p-10 text-center">
+      <div className="rounded-[22px] border border-border bg-card/70 backdrop-blur-sm p-8 md:p-11 text-center shadow-[0_30px_80px_-24px_hsl(195_100%_4%/0.7)]">
         <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-primary/12 text-primary">
           <Check className="h-7 w-7" />
         </div>
@@ -75,15 +75,15 @@ export default function ContatoForm() {
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-8 md:p-10">
+    <div className="rounded-[22px] border border-border bg-card/70 backdrop-blur-sm p-8 md:p-11 shadow-[0_30px_80px_-24px_hsl(195_100%_4%/0.7)]">
       <div className="mb-8">
-        <p className="font-mono text-xs uppercase tracking-[0.15em] text-primary mb-3">
+        <span className="inline-flex items-center rounded-full bg-primary/12 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
           Fale com a Unfold
-        </p>
-        <h2 className="font-display font-bold text-2xl md:text-3xl leading-tight">
+        </span>
+        <h2 className="font-display font-bold text-2xl md:text-[29px] leading-[1.22] mt-4">
           Vamos conversar sobre o seu crescimento
         </h2>
-        <p className="text-foreground/60 text-sm mt-3 leading-relaxed">
+        <p className="text-foreground/60 text-[15px] mt-3.5 leading-relaxed">
           Somos a <span className="text-foreground/90 font-medium">Unfold Growth</span> —
           estruturamos sistemas de crescimento que conectam marketing, vendas, CRM e automação.
           Deixe seus dados e nosso time entra em contato com você.
