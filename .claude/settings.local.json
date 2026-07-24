@@ -264,7 +264,10 @@
       "Bash(ls src/payload.config.*)",
       "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\)\")",
       "PowerShell(git config *)",
-      "PowerShell(git push *)"
+      "PowerShell(git push *)",
+      "Bash(node _tmp_update_hero.cjs)",
+      "Bash(rm -f _tmp_update_hero.cjs)",
+      "Bash(ls _tmp_update_hero.cjs)"
     ]
   }
 }
