@@ -262,7 +262,9 @@
       "PowerShell(npx tsc --noEmit -p tsconfig.json; if \\($?\\) { \"TYPECHECK OK\" })",
       "PowerShell(npm run *)",
       "Bash(ls src/payload.config.*)",
-      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\)\")"
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\)\")",
+      "PowerShell(git config *)",
+      "PowerShell(git push *)"
     ]
   }
 }
