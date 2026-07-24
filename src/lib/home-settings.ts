@@ -90,9 +90,9 @@ const DEFAULTS: HomeSettingsData = {
   hero_title: 'Organizamos crescimento digital em operações com vendas complexas.',
   hero_subtitle:
     'Estruturamos sistemas de crescimento que conectam marketing, vendas, CRM e automação em uma lógica integrada, previsível e orientada a resultado comercial.',
-  hero_cta_primary_label: 'Solicite um Diagnóstico',
+  hero_cta_primary_label: 'Solicite um orçamento',
   hero_cta_primary_href: '/diagnostico',
-  hero_cta_secondary_label: 'Conhecer o método',
+  hero_cta_secondary_label: 'Diagnóstico de growth gratuito',
   hero_cta_secondary_href: '/metodo',
   hero_video_url: null,
   hero_image_url: null,
@@ -205,7 +205,7 @@ const DEFAULTS: HomeSettingsData = {
   final_cta_title: 'Você já tem marketing e vendas. Falta o sistema que conecta tudo.',
   final_cta_description:
     'Solicite um diagnóstico gratuito. Em até 24h alguém da equipe entra em contato com uma análise inicial da sua operação de crescimento.',
-  final_cta_button_label: 'Solicite um Diagnóstico',
+  final_cta_button_label: 'Solicite um orçamento',
   final_cta_button_href: '/diagnostico',
 }
 

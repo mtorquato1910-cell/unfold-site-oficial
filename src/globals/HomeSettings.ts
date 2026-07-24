@@ -51,7 +51,7 @@ const HomeSettings: GlobalConfig = {
                   name: 'hero_cta_primary_label',
                   type: 'text',
                   label: 'CTA primário — texto',
-                  defaultValue: 'Solicite um Diagnóstico',
+                  defaultValue: 'Solicite um orçamento',
                   admin: { width: '50%' },
                 },
                 {
@@ -70,7 +70,7 @@ const HomeSettings: GlobalConfig = {
                   name: 'hero_cta_secondary_label',
                   type: 'text',
                   label: 'CTA secundário — texto',
-                  defaultValue: 'Conhecer o método',
+                  defaultValue: 'Diagnóstico de growth gratuito',
                   admin: { width: '50%' },
                 },
                 {
@@ -240,7 +240,7 @@ const HomeSettings: GlobalConfig = {
                   name: 'final_cta_button_label',
                   type: 'text',
                   label: 'Botão — texto',
-                  defaultValue: 'Solicite um Diagnóstico',
+                  defaultValue: 'Solicite um orçamento',
                   admin: { width: '50%' },
                 },
                 {

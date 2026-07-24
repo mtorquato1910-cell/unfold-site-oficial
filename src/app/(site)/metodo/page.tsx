@@ -325,7 +325,7 @@ export default async function MetodoPage() {
             <div className="lg:col-span-4 lg:flex lg:justify-end">
               <Button asChild size="lg" className="h-14 px-7 text-base group">
                 <Link href="/diagnostico">
-                  Solicite um Diagnóstico
+                  Solicite um orçamento
                   <ArrowUpRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </Link>
               </Button>

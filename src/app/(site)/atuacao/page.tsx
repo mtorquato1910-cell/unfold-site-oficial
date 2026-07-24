@@ -138,7 +138,7 @@ export default async function AtuacaoPage() {
                 className="h-14 px-7 text-base group bg-[#001E29] text-[#6DF9C6] hover:bg-[#001E29]/90"
               >
                 <Link href="/diagnostico">
-                  Solicite um Diagnóstico
+                  Solicite um orçamento
                   <ArrowUpRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </Link>
               </Button>

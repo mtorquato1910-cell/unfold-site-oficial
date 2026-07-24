@@ -94,7 +94,7 @@ export function Navbar() {
           {/* CTA primário — mint (leva ao formulário de Contato) */}
           <Button asChild variant="default" size="sm" className="hidden md:inline-flex group">
             <Link href="/contato">
-              Contato
+              Solicite um orçamento
               <ArrowUpRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </Button>
@@ -152,7 +152,7 @@ export function Navbar() {
 
           <Button asChild className="mt-8 w-full">
             <Link href="/contato" onClick={() => setOpen(false)}>
-              Contato
+              Solicite um orçamento
             </Link>
           </Button>
         </div>
