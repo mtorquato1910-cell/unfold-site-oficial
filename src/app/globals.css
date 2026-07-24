@@ -286,6 +286,31 @@
   .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
 }
 
+/* ── "Folha" de leitura de artigo do blog (branco gelo + texto preto) ───────
+   Redefine os design tokens APENAS dentro do artigo aberto: fundo branco gelo,
+   texto preto, sobre o fundo escuro do site. Header, meta, CTA, bordas, cards
+   internos e banners herdam esses tokens e ficam coerentes no claro.
+   Escopo local — não afeta o restante do site (que segue no tema escuro). */
+.article-reading {
+  --background: 210 33% 98%;          /* branco gelo ~ #F7F9FB */
+  --foreground: 0 0% 9%;              /* preto suave ~ #171717 */
+  --surface: 210 24% 96%;
+  --surface-foreground: 0 0% 9%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 9%;
+  --muted: 210 22% 94%;
+  --muted-foreground: 215 14% 34%;
+  --border: 214 20% 88%;
+  --input: 214 20% 88%;
+  --primary: 158 74% 33%;             /* mint escurecido p/ contraste no claro */
+  --primary-foreground: 0 0% 100%;
+  --accent: 158 74% 33%;
+  --accent-foreground: 0 0% 100%;
+  --ring: 158 74% 33%;
+}
+
 /* ── Modo prévia do mapa de calor (?heatmap=1, dentro do iframe do painel) ──
    Layout estável para o overlay: sem animações/transições, sem banner de
    cookies, sem scroll suave. Puramente visual — não afeta o site normal. */

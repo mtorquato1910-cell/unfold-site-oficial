@@ -13,6 +13,25 @@ import { addHeadingIds } from '@/lib/article-toc'
 
 export const revalidate = 60
 
+// Tipografia do conteúdo dentro da folha branco gelo: texto preto sobre branco.
+// Mapeia as variáveis do plugin @tailwindcss/typography para os tokens claros
+// definidos em `.article-reading` (globals.css), no lugar do antigo prose-invert.
+const PROSE_CLASS =
+  'prose prose-lg max-w-none ' +
+  '[--tw-prose-body:hsl(var(--foreground)/0.92)] ' +
+  '[--tw-prose-headings:hsl(var(--foreground))] ' +
+  '[--tw-prose-bold:hsl(var(--foreground))] ' +
+  '[--tw-prose-links:hsl(var(--primary))] ' +
+  '[--tw-prose-quotes:hsl(var(--foreground)/0.75)] ' +
+  '[--tw-prose-quote-borders:hsl(var(--border))] ' +
+  '[--tw-prose-bullets:hsl(var(--foreground)/0.45)] ' +
+  '[--tw-prose-counters:hsl(var(--foreground)/0.6)] ' +
+  '[--tw-prose-hr:hsl(var(--border))] ' +
+  '[--tw-prose-captions:hsl(var(--foreground)/0.6)] ' +
+  '[--tw-prose-code:hsl(var(--foreground))] ' +
+  '[--tw-prose-th-borders:hsl(var(--border))] ' +
+  '[--tw-prose-td-borders:hsl(var(--border))]'
+
 // Extrai a URL da mídia (campo upload populado com depth>=1).
 function mediaUrl(field: any): string | null {
   if (field && typeof field === 'object') return field.url || field.sizes?.og?.url || null
@@ -109,7 +128,9 @@ export default async function BlogPostPage({ params }: Props) {
 
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14">
           {/* ───── Coluna principal ───── */}
-          <article className="min-w-0 max-w-3xl">
+          {/* .article-reading = folha de leitura branco gelo + texto preto
+              (tokens redefinidos localmente; ver globals.css). */}
+          <article className="article-reading min-w-0 max-w-3xl rounded-3xl border border-border bg-background text-foreground shadow-xl shadow-black/20 px-5 py-8 sm:px-8 md:px-12 md:py-14">
             {/* Header */}
             <header className="mb-10">
               {post.pilar && (
@@ -158,9 +179,9 @@ export default async function BlogPostPage({ params }: Props) {
 
             {/* Conteúdo — HTML do editor rico (novo) ou Lexical (posts antigos). */}
             {post.conteudo_html ? (
-              <RichContent html={contentHtml} className="prose prose-invert prose-lg max-w-none" />
+              <RichContent html={contentHtml} className={PROSE_CLASS} />
             ) : (
-              <div className="prose prose-invert prose-lg max-w-none">
+              <div className={PROSE_CLASS}>
                 {post.conteudo ? (
                   <RichTextRenderer data={post.conteudo} />
                 ) : (
@@ -179,7 +200,7 @@ export default async function BlogPostPage({ params }: Props) {
             )}
 
             {/* CTA */}
-            <div className="mt-16 rounded-2xl border border-border bg-card p-8 text-center">
+            <div className="mt-16 rounded-2xl border border-border bg-muted p-8 text-center">
               <p className="font-mono text-xs uppercase tracking-widest text-primary mb-3">
                 Próximo passo
               </p>

@@ -167,6 +167,11 @@ export default buildConfig({
         // 23 tabelas (e-commerce) em `public.*` que conflitam com Payload
         // (descoberto 2026-05-15). Todas as collections do site ficam em `site.*`.
         schemaName: 'site',
+        // Schema é gerenciado por migrations (build de produção roda
+        // scripts/vercel-build.sh). Desligar o push evita o auto-sync
+        // interativo do dev, que travava o servidor num prompt de "DATA LOSS"
+        // (ex.: apagar heatmap_events) e derrubava as queries → páginas em timeout.
+        push: false,
         pool: {
           connectionString: process.env.DATABASE_URL as string,
           // Serverless (Vercel): limitar pool evita esgotamento de conexões.

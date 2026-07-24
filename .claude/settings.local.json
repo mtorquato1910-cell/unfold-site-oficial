@@ -257,7 +257,12 @@
       "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' push origin main)",
       "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' add src/app/globals.css)",
       "Bash(git -C 'c:/Users/mathe/OneDrive/Área de Trabalho/Site unfold/unfold-site-oficial' commit -m 'feat\\(whatsapp\\): estilizar botao flutuante do RD com icone e halo do site *)",
-      "Bash(git grep *)"
+      "Bash(git grep *)",
+      "Bash(Select-Object -First 30)",
+      "PowerShell(npx tsc --noEmit -p tsconfig.json; if \\($?\\) { \"TYPECHECK OK\" })",
+      "PowerShell(npm run *)",
+      "Bash(ls src/payload.config.*)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\)\")"
     ]
   }
 }
