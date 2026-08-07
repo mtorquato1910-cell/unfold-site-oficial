@@ -30,12 +30,14 @@ export default function RichTextEditor({
   variant = 'full',
   placeholder = 'Escreva o conteúdo…',
   compact = false,
+  autoFocus = false,
 }: {
   value: string
   onChange: (html: string) => void
   variant?: Variant
   placeholder?: string
   compact?: boolean
+  autoFocus?: boolean
 }) {
   const [uploading, setUploading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
@@ -45,6 +47,7 @@ export default function RichTextEditor({
 
   const editor = useEditor({
     immediatelyRender: false,
+    autofocus: autoFocus ? 'end' : false,
     extensions: [
       StarterKit.configure({ heading: { levels: [1, 2, 3, 4] } }),
       Underline,

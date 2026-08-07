@@ -231,3 +231,28 @@
   text-align: center;
   padding: 4px 0;
 }
+
+/* Prévia leve de bloco de texto (evita montar 1 editor rico por bloco de uma vez;
+   o editor só "acorda" ao clicar). Some o congelamento em artigos longos. */
+.textPreview {
+  min-height: 40px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: hsl(197 100% 11%);
+  border: 1px solid hsl(158 92% 70% / 0.14);
+  color: hsl(0 0% 91%);
+  font-size: 14px;
+  line-height: 1.55;
+  cursor: text;
+  outline: none;
+  transition: border-color 0.12s ease;
+}
+.textPreview:hover,
+.textPreview:focus {
+  border-color: hsl(158 92% 70% / 0.4);
+}
+.textPreview > :first-child { margin-top: 0; }
+.textPreview > :last-child { margin-bottom: 0; }
+.previewPlaceholder {
+  color: hsl(0 0% 91% / 0.4);
+}

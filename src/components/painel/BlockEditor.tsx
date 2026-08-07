@@ -217,13 +217,7 @@ export default function BlockEditor({
           </div>
 
           {b.type === 'texto' && (
-            <RichTextEditor
-              variant="text"
-              compact
-              value={b.html}
-              onChange={(html) => patch(b.id, { html })}
-              placeholder="Escreva o texto…"
-            />
+            <LazyText html={b.html} onChange={(html) => patch(b.id, { html })} />
           )}
 
           {b.type === 'titulo' && (
@@ -283,6 +277,52 @@ export default function BlockEditor({
           <TableIcon className="h-3.5 w-3.5" /> Tabela
         </button>
       </div>
+    </div>
+  )
+}
+
+/**
+ * Bloco de texto com montagem preguiçosa do editor rico.
+ *
+ * PROBLEMA: montar um RichTextEditor (TipTap/ProseMirror) por bloco de uma vez
+ * trava a thread principal por segundos em artigos longos (10-18 blocos) →
+ * modal "congela" sem erro no console, especialmente em máquinas lentas.
+ *
+ * SOLUÇÃO: enquanto o bloco não é focado, mostra só uma prévia HTML leve.
+ * O editor pesado só monta quando o usuário clica para editar aquele bloco —
+ * então no máximo 1 (ou poucos) editores existem ao mesmo tempo.
+ */
+function LazyText({ html, onChange }: { html: string; onChange: (html: string) => void }) {
+  const [active, setActive] = useState(false)
+
+  if (active) {
+    return (
+      <RichTextEditor
+        variant="text"
+        compact
+        autoFocus
+        value={html}
+        onChange={onChange}
+        placeholder="Escreva o texto…"
+      />
+    )
+  }
+
+  const hasContent = !!html && html.replace(/<[^>]*>/g, '').trim().length > 0
+  return (
+    <div
+      role="textbox"
+      tabIndex={0}
+      className={styles.textPreview}
+      onMouseDown={() => setActive(true)}
+      onFocus={() => setActive(true)}
+      title="Clique para editar"
+    >
+      {hasContent ? (
+        <div dangerouslySetInnerHTML={{ __html: html }} />
+      ) : (
+        <span className={styles.previewPlaceholder}>Escreva o texto…</span>
+      )}
     </div>
   )
 }

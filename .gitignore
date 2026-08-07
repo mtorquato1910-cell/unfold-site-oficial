@@ -63,3 +63,6 @@ public/media/*
 
 # Material de origem do esboço Lovable do redesign do guia (já portado para src/app/guia-eleicoes-2026)
 campaign-bloom-studio-main/
+
+# Config local do Claude Code (arquivo vivo, contem permissoes/segredos locais) - nunca versionar
+.claude/settings.local.json
