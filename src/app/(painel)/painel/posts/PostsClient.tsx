@@ -256,7 +256,14 @@ export default function PostsClient({
         </div>
       )}
 
-      {filteredPosts.length === 0 ? (
+      {/*
+        Enquanto um modal está aberto, NÃO renderizamos a lista/tabela de posts.
+        Motivo: com ~34 posts, manter a tabela montada atrás do modal congela a
+        renderização (GPU/compositing) por segundos — sem erro no console. O modal
+        cobre a tela inteira com fundo sólido, então esconder a lista é invisível
+        para o usuário. Isso deixa a aba "Publicados" tão leve quanto uma vazia.
+      */}
+      {open || rejectingId ? null : filteredPosts.length === 0 ? (
         <EmptyState
           title="Nenhum post ainda"
           description="Crie o primeiro artigo para o blog da Unfold."
