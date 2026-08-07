@@ -387,15 +387,25 @@ export default function PostsClient({
       )}
 
       {/* Modal */}
+      {/*
+        IMPORTANTE: sem backdrop-filter/blur aqui.
+        O blur força o navegador a recompor TODA a página atrás do modal; com a lista
+        de 34 posts (página alta) isso congela a GPU por segundos (tela travada, sem
+        erro no console). Fundo sólido opaco resolve e fica visualmente idêntico.
+      */}
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'hsl(194 100% 4% / 0.8)', backdropFilter: 'blur(4px)' }}
+          style={{ background: 'hsl(194 100% 4% / 0.92)' }}
           onClick={e => { if (e.target === e.currentTarget) setOpen(false) }}
         >
           <div
-            className="glass rounded-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-            style={{ borderColor: 'hsl(158 92% 70% / 0.15)' }}
+            className="rounded-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+            style={{
+              background: 'hsl(197 100% 9%)',
+              border: '1px solid hsl(158 92% 70% / 0.15)',
+              boxShadow: '0 20px 60px -15px hsl(197 100% 3% / 0.85)',
+            }}
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
@@ -564,14 +574,18 @@ export default function PostsClient({
       {rejectingId && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'hsl(194 100% 4% / 0.8)', backdropFilter: 'blur(4px)' }}
+          style={{ background: 'hsl(194 100% 4% / 0.92)' }}
           onClick={(e) => {
             if (e.target === e.currentTarget) setRejectingId(null)
           }}
         >
           <div
-            className="glass rounded-2xl p-6 w-full max-w-md"
-            style={{ borderColor: 'hsl(158 92% 70% / 0.15)' }}
+            className="rounded-2xl p-6 w-full max-w-md"
+            style={{
+              background: 'hsl(197 100% 9%)',
+              border: '1px solid hsl(158 92% 70% / 0.15)',
+              boxShadow: '0 20px 60px -15px hsl(197 100% 3% / 0.85)',
+            }}
           >
             <h3 className="font-display text-[18px] font-semibold mb-3 text-fg">Rejeitar submissão</h3>
             <p className="text-[13px] text-dim-2 mb-4">
