@@ -18,6 +18,7 @@ import { promises as dns } from 'node:dns'
 export type EmailCheckReason =
   | 'sintaxe'
   | 'descartavel'
+  | 'exemplo'
   | 'dominio_inexistente'
   | 'sem_mx'
 
@@ -42,6 +43,25 @@ const DISPOSABLE_DOMAINS = new Set<string>([
   'mailnesia.com', 'mohmal.com', 'emailondeck.com', 'mintemail.com',
   'spamgourmet.com', 'tempr.email', 'mytemp.email', 'moakt.com',
 ])
+
+/**
+ * Domínios de "exemplo/teste" que têm DNS/MX real (logo passariam no lookup),
+ * mas nunca são um contato de verdade. Ex.: `giulia@teste.com.br`.
+ */
+const PLACEHOLDER_DOMAINS = new Set<string>([
+  'teste.com', 'teste.com.br', 'testes.com', 'testes.com.br', 'test.com', 'test.com.br',
+  'exemplo.com', 'exemplo.com.br', 'example.com', 'example.org', 'example.net',
+  'asdf.com', 'aaaa.com', 'abc.com',
+])
+
+/** TLDs reservados por RFC 2606 — jamais existem na internet pública. */
+const RESERVED_TLDS = ['.test', '.example', '.invalid', '.localhost']
+
+/** `true` se o domínio é claramente de exemplo/teste (não um contato real). */
+function isPlaceholderDomain(domain: string): boolean {
+  if (PLACEHOLDER_DOMAINS.has(domain)) return true
+  return RESERVED_TLDS.some((tld) => domain === tld.slice(1) || domain.endsWith(tld))
+}
 
 // Cache em memória do resultado do MX por domínio (TTL curto).
 const MX_TTL_MS = 10 * 60 * 1000 // 10 min
@@ -112,6 +132,10 @@ export async function verifyEmailDeliverable(
     return { ok: false, email, reason: 'descartavel' }
   }
 
+  if (isPlaceholderDomain(domain)) {
+    return { ok: false, email, reason: 'exemplo' }
+  }
+
   const hasMx = await domainHasMx(domain, opts.timeoutMs ?? 3000)
 
   if (hasMx === false) {
@@ -131,6 +155,8 @@ export function emailReasonMessage(reason: EmailCheckReason): string {
       return 'E-mail inválido — verifique o formato.'
     case 'descartavel':
       return 'Use um e-mail permanente — endereços temporários não são aceitos.'
+    case 'exemplo':
+      return 'Use um e-mail real — endereços de teste/exemplo não são aceitos.'
     case 'dominio_inexistente':
     case 'sem_mx':
       return 'O domínio do e-mail não existe ou não recebe mensagens. Confira se digitou corretamente.'

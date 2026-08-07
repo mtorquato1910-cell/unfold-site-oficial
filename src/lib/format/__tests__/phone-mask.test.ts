@@ -82,6 +82,14 @@ describe('normalizePhoneBR — números falsos (suspeitos)', () => {
     expect(normalizePhoneBR('1133333333').reason).toBe('suspeito')
   })
 
+  it('rejeita celular cujo corpo (após o 9) é todo repetido (ex.: 82 9 0000-0000)', () => {
+    // Caso real do lead falso: 82900000000 — corpo 00000000.
+    expect(normalizePhoneBR('82900000000').reason).toBe('suspeito')
+    expect(normalizePhoneBR('11900000000').reason).toBe('suspeito')
+    expect(normalizePhoneBR('11911111111').reason).toBe('suspeito')
+    expect(isSuspiciousPhoneBR('82900000000')).toBe(true)
+  })
+
   it('aceita celular real com dígitos variados', () => {
     expect(normalizePhoneBR('11991234567').ok).toBe(true)
     expect(normalizePhoneBR('11988887777').ok).toBe(true)

@@ -32,10 +32,17 @@ vi.mock('@/lib/env', () => ({
 vi.mock('@/lib/observability/logger', () => ({
   logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }))
+// Contato validado à parte (email-mx e whatsapp têm seus próprios testes).
+// Mockar aqui torna a rota determinística (sem DNS/Evolution reais).
+const enforceContatoMock = vi.fn()
+vi.mock('@/lib/validation/enforce-contato', () => ({
+  enforceContato: (...args: unknown[]) => enforceContatoMock(...args),
+}))
 
 const validBody = {
   nome: 'Marina Costa',
   email: 'marina@inova.com.br',
+  telefone: '11999998888',
   empresa: 'Inova Sementes',
   cargo: 'ceo' as const,
   setor: 'agro' as const,
@@ -61,6 +68,7 @@ beforeEach(() => {
   payloadCreate.mockResolvedValue({ id: 'lead_123' })
   payloadUpdate.mockResolvedValue({ id: 'lead_123' })
   verifyTurnstileMock.mockResolvedValue({ ok: true })
+  enforceContatoMock.mockResolvedValue({ ok: true, telefone: '11999998888', e164: '5511999998888' })
   missingProductionEnvMock.mockReturnValue([])
   process.env.PAYLOAD_SECRET = 'a'.repeat(32)
   process.env.TURNSTILE_SECRET_KEY = 'test-secret'

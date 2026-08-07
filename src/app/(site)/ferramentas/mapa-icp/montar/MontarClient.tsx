@@ -293,12 +293,14 @@ export default function MontarClient() {
 
   // ── envio da captura (gate) ───────────────────────────────────────────────────
   const [consentGiven, setConsentGiven] = useState(false)
+  const [verifying, setVerifying] = useState(false)
   useEffect(() => {
     // mantém o consent local sincronizado em re-hidratação (sempre exige reconfirmar)
     setConsentGiven(false)
   }, [hydrated])
 
-  const submitCapture = () => {
+  const submitCapture = async () => {
+    if (verifying) return
     const { nome, email, empresa, cargo, telefone } = capture
     if (
       !nome.trim() ||
@@ -319,7 +321,36 @@ export default function MontarClient() {
       )
       return
     }
+    // Checagem real de existência: e-mail (MX/DNS) + WhatsApp (Evolution API).
+    // O servidor revalida no /api/mapa-icp; isto antecipa o feedback ao usuário.
     setErr('')
+    setVerifying(true)
+    try {
+      const res = await fetch('/api/validate-contato', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), telefone, requirePhone: true, mobileOnly: true }),
+      })
+      if (res.ok) {
+        const data = (await res.json().catch(() => null)) as {
+          email?: { ok: boolean; message?: string }
+          whatsapp?: { ok: boolean; message?: string }
+        } | null
+        if (data?.email && data.email.ok === false) {
+          setErr(data.email.message || 'E-mail inválido — confira o endereço.')
+          setVerifying(false)
+          return
+        }
+        if (data?.whatsapp && data.whatsapp.ok === false) {
+          setErr(data.whatsapp.message || 'WhatsApp inválido — confira o número.')
+          setVerifying(false)
+          return
+        }
+      }
+    } catch {
+      // Best-effort: falha de rede na checagem não bloqueia (o servidor revalida no envio).
+    }
+    setVerifying(false)
     dataLayerPush({ event: 'lead_capture', tool: 'mapa-icp' })
     void submit()
   }
@@ -407,6 +438,7 @@ export default function MontarClient() {
               if (err) setErr('')
             }}
             err={err}
+            busy={verifying}
             onBack={goBack}
             onSubmit={submitCapture}
           />
@@ -579,6 +611,7 @@ function CaptureScreen({
   consentGiven,
   setConsentGiven,
   err,
+  busy,
   onBack,
   onSubmit,
 }: {
@@ -588,6 +621,7 @@ function CaptureScreen({
   consentGiven: boolean
   setConsentGiven: (v: boolean) => void
   err: string
+  busy: boolean
   onBack: () => void
   onSubmit: () => void
 }) {
@@ -641,11 +675,11 @@ function CaptureScreen({
       )}
 
       <div className={styles.navBtns}>
-        <button type="button" className={`${styles.btn} ${styles.btnGhost}`} onClick={onBack}>
+        <button type="button" className={`${styles.btn} ${styles.btnGhost}`} onClick={onBack} disabled={busy}>
           Voltar
         </button>
-        <button type="button" className={styles.btn} onClick={onSubmit}>
-          Gerar meu mapa <Arrow />
+        <button type="button" className={styles.btn} onClick={onSubmit} disabled={busy} aria-busy={busy}>
+          {busy ? 'Verificando...' : <>Gerar meu mapa <Arrow /></>}
         </button>
       </div>
     </div>

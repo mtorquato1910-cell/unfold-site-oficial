@@ -46,6 +46,23 @@ describe('verifyEmailDeliverable — descartáveis', () => {
   })
 })
 
+describe('verifyEmailDeliverable — exemplo/teste', () => {
+  it('reprova domínio de teste com MX real (ex.: teste.com.br) sem consultar DNS', async () => {
+    // Caso real do lead falso: giulia@teste.com.br passava porque o domínio tem MX.
+    const r = await verifyEmailDeliverable('giulia@teste.com.br')
+    expect(r.ok).toBe(false)
+    expect(r.reason).toBe('exemplo')
+    expect(resolveMx).not.toHaveBeenCalled()
+  })
+
+  it('reprova example.com e TLDs reservados (.test/.invalid)', async () => {
+    expect((await verifyEmailDeliverable('a@example.com')).reason).toBe('exemplo')
+    expect((await verifyEmailDeliverable('a@qualquer.test')).reason).toBe('exemplo')
+    expect((await verifyEmailDeliverable('a@foo.invalid')).reason).toBe('exemplo')
+    expect(resolveMx).not.toHaveBeenCalled()
+  })
+})
+
 describe('verifyEmailDeliverable — MX/DNS', () => {
   it('aprova quando há registros MX', async () => {
     resolveMx.mockResolvedValue([{ exchange: 'aspmx.l.google.com', priority: 1 }])

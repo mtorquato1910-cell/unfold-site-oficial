@@ -85,8 +85,12 @@ export function isSuspiciousPhoneBR(national: string): boolean {
   const subscriber = d.slice(2)
   // Todos os dígitos do assinante iguais (ex.: 999999999, 000000000).
   if (/^(\d)\1+$/.test(subscriber)) return true
-  // Sequência no corpo (celular: descarta o 9 inicial antes de checar).
+  // Corpo = assinante sem o 9 inicial do celular (8 díg. tanto p/ fixo quanto celular).
   const body = subscriber.length === 9 ? subscriber.slice(1) : subscriber
+  // Corpo todo-repetido (ex.: 82 9 0000-0000 → corpo 00000000; 11 9 1111-1111).
+  // O `9` inicial do celular mascarava esse caso na checagem do assinante inteiro.
+  if (/^(\d)\1+$/.test(body)) return true
+  // Sequência óbvia no corpo (crescente/decrescente).
   if (isStrictSequence(body)) return true
   return false
 }

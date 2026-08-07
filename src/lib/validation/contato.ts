@@ -4,7 +4,7 @@
  * Combina:
  *  - verifyEmailDeliverable (sintaxe + MX/DNS, fail-open)
  *  - normalizePhoneBR (DDD + regra do 9º dígito)
- *  - verifyWhatsappExists (Evolution API, fail-open)
+ *  - verifyPhoneLookup (Twilio Lookup v2, fail-open)
  *
  * Usado tanto pelo endpoint onBlur (/api/validate-contato) quanto pelos endpoints
  * de submissão (newsletter, diagnóstico, calculadora, guia-eleições) — fonte única.
@@ -16,10 +16,10 @@ import {
   type EmailCheckResult,
 } from './email-mx'
 import {
-  verifyWhatsappExists,
-  whatsappReasonMessage,
-  type WhatsappCheckResult,
-} from './whatsapp'
+  verifyPhoneLookup,
+  phoneLookupReasonMessage,
+  type PhoneLookupResult,
+} from './phone-lookup'
 import { normalizePhoneBR } from '@/lib/format/phone-mask'
 
 export interface FieldResult {
@@ -93,16 +93,16 @@ export async function validateContato(
         message: 'Informe um celular com WhatsApp (não um telefone fixo).',
       }
     } else {
-      // Formato válido — checa existência no WhatsApp (fail-open).
+      // Formato válido — confirma que o número existe/é celular via Twilio (fail-open).
       tasks.push(
-        verifyWhatsappExists(norm.e164).then((r: WhatsappCheckResult) => {
+        verifyPhoneLookup(norm.e164).then((r: PhoneLookupResult) => {
           out.whatsapp = r.ok
             ? { ok: true, normalized: norm.national, e164: norm.e164 }
             : {
                 ok: false,
                 normalized: norm.national,
                 e164: norm.e164,
-                message: r.reason ? whatsappReasonMessage(r.reason) : 'WhatsApp inválido.',
+                message: r.reason ? phoneLookupReasonMessage(r.reason) : 'Número inválido.',
               }
         }),
       )
