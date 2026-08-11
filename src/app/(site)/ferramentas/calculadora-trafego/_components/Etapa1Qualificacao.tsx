@@ -149,7 +149,7 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
         Acessar a Calculadora <ArrowRight className="h-4 w-4" />
       </Button>
 
-      <p className="text-[11px] text-foreground/45 leading-relaxed pt-1">
+      <p className="text-[11px] text-foreground/75 leading-relaxed pt-1">
         Ao continuar você concorda em receber o resultado por e-mail. Nenhuma informação é
         compartilhada com terceiros — consulte nossa{' '}
         <a href="/politica-de-privacidade" className="underline hover:text-primary">
@@ -178,7 +178,7 @@ function Field({
     <div>
       <label htmlFor={id} className="text-sm font-medium text-foreground/80 block mb-1.5">
         {label}
-        {optional && <span className="text-foreground/45 font-normal"> (opcional)</span>}
+        {optional && <span className="text-foreground/75 font-normal"> (opcional)</span>}
       </label>
       {children}
       {error && (

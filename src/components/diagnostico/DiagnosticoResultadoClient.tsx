@@ -109,7 +109,7 @@ export default function DiagnosticoResultadoClient({
 
       {/* Score total */}
       <div className="rounded-2xl border border-border bg-card p-8 mb-6 text-center">
-        <p className="font-mono text-xs uppercase tracking-widest text-foreground/40 mb-2">
+        <p className="font-mono text-xs uppercase tracking-widest text-foreground/70 mb-2">
           Score geral de maturidade
         </p>
         <p className={`font-display font-bold text-7xl ${config.color}`}>
@@ -125,7 +125,7 @@ export default function DiagnosticoResultadoClient({
           const mCfg = MATURIDADE_CONFIG[nivel]
           return (
             <div key={pilar} className={`rounded-xl border p-3 text-center ${mCfg.bg}`}>
-              <p className="font-mono text-[10px] uppercase tracking-wider text-foreground/50 mb-1">
+              <p className="font-mono text-[10px] uppercase tracking-wider text-foreground/75 mb-1">
                 {PILAR_LABELS[pilar]}
               </p>
               <p className={`text-xs font-semibold ${mCfg.color}`}>
@@ -141,7 +141,7 @@ export default function DiagnosticoResultadoClient({
       <div className="grid md:grid-cols-2 gap-6 mb-6">
         {/* Radar */}
         <div className="rounded-2xl border border-border bg-card p-6">
-          <p className="font-mono text-xs uppercase tracking-widest text-foreground/40 mb-4">
+          <p className="font-mono text-xs uppercase tracking-widest text-foreground/70 mb-4">
             Maturidade por pilar
           </p>
           <div className="h-52">
@@ -175,7 +175,7 @@ export default function DiagnosticoResultadoClient({
 
         {/* Scores individuais */}
         <div className="rounded-2xl border border-border bg-card p-6 flex flex-col justify-between">
-          <p className="font-mono text-xs uppercase tracking-widest text-foreground/40 mb-4">
+          <p className="font-mono text-xs uppercase tracking-widest text-foreground/70 mb-4">
             Breakdown por pilar
           </p>
           {pilarScores.map(({ pilar, score }) => (
@@ -218,7 +218,7 @@ export default function DiagnosticoResultadoClient({
 
       {/* CTA */}
       <div className="text-center">
-        <p className="text-foreground/60 text-sm mb-4">
+        <p className="text-foreground/80 text-sm mb-4">
           Quer aprofundar esse diagnóstico com um especialista UGS?
         </p>
         <Button asChild size="lg" className="h-12 px-8 text-base group">

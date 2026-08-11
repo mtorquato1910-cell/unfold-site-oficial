@@ -29,14 +29,14 @@ export default function LGPDPage() {
         ].map((d) => (
           <div key={d.titulo} className="rounded-xl border border-border bg-card p-5">
             <h3 className="font-medium text-foreground mb-1">{d.titulo}</h3>
-            <p className="text-sm text-foreground/60">{d.desc}</p>
+            <p className="text-sm text-foreground/80">{d.desc}</p>
           </div>
         ))}
       </div>
 
       <div className="rounded-2xl border border-primary/20 bg-primary/5 p-8 text-center">
         <h2 className="font-display font-bold text-xl mb-3">Exercer um direito</h2>
-        <p className="text-foreground/60 text-sm mb-6">
+        <p className="text-foreground/80 text-sm mb-6">
           Envie sua solicitação para nosso DPO. Responderemos em até 15 dias úteis.
         </p>
         <Button asChild>
@@ -46,7 +46,7 @@ export default function LGPDPage() {
         </Button>
       </div>
 
-      <p className="text-xs text-foreground/40 mt-8 text-center">
+      <p className="text-xs text-foreground/70 mt-8 text-center">
         Leia também nossa{' '}
         <Link href="/politica-de-privacidade" className="text-primary hover:underline">
           Política de Privacidade completa

@@ -145,7 +145,7 @@ export function Navbar() {
                   <span className="font-mono text-xs text-primary mr-3">0{i + 1}</span>
                   {item.label}
                 </span>
-                <ArrowUpRight className="h-4 w-4 text-foreground/40" />
+                <ArrowUpRight className="h-4 w-4 text-foreground/70" />
               </Link>
             ))}
           </nav>

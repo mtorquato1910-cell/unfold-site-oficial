@@ -17,7 +17,7 @@ export default async function TermosPage() {
     <main className="max-w-3xl mx-auto px-6 lg:px-8 pt-32 pb-24 md:pt-40">
       <h1 className="font-display font-bold text-3xl md:text-4xl mb-8">Termos de Uso</h1>
       <div className="prose prose-invert prose-sm max-w-none space-y-6 text-foreground/70">
-        <p className="text-sm text-foreground/40">Última atualização: {new Date().toLocaleDateString('pt-BR')}</p>
+        <p className="text-sm text-foreground/70">Última atualização: {new Date().toLocaleDateString('pt-BR')}</p>
         {legal.termos_de_uso ? (
           <RichTextRenderer data={legal.termos_de_uso} />
         ) : (
@@ -60,7 +60,7 @@ function FallbackTermos() {
           <h2 className="font-display font-bold text-xl text-foreground mb-3">6. Foro</h2>
           <p>Fica eleito o foro da Comarca de São Paulo/SP para dirimir controvérsias oriundas destes termos.</p>
         </section>
-        <p className="text-xs text-foreground/40 italic">
+        <p className="text-xs text-foreground/70 italic">
           Você pode editar este texto pelo painel admin (Configurações avançadas Payload &gt; Site Settings &gt; aba Legal).
         </p>
     </>

@@ -26,7 +26,7 @@ const PILAR_CONFIG: Record<string, { label: string; color: string }> = {
   diagnosticar: { label: 'Diagnosticar', color: 'text-primary border-primary/20 bg-primary/5' },
   estruturar: { label: 'Estruturar', color: 'text-secondary border-secondary/20 bg-secondary/5' },
   operar: { label: 'Operar', color: 'text-[hsl(250_64%_70%)] border-[hsl(250_64%_70%/0.2)] bg-[hsl(250_64%_70%/0.05)]' },
-  geral: { label: 'Geral', color: 'text-foreground/60 border-border bg-card/50' },
+  geral: { label: 'Geral', color: 'text-foreground/80 border-border bg-card/50' },
 }
 
 async function getPosts(): Promise<any[]> {
@@ -80,7 +80,7 @@ export default async function BlogPage() {
               >
                 Contribuir com um artigo →
               </Link>
-              <span className="text-xs text-foreground/50 font-mono">
+              <span className="text-xs text-foreground/75 font-mono">
                 Revisado pela liderança Unfold antes de publicar
               </span>
             </div>
@@ -92,7 +92,7 @@ export default async function BlogPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {posts.length === 0 ? (
             <div className="text-center py-20">
-              <p className="font-mono text-sm text-foreground/40">Posts em breve.</p>
+              <p className="font-mono text-sm text-foreground/70">Posts em breve.</p>
               <p className="text-xs text-foreground/30 mt-2">
                 Execute <code className="font-mono bg-card px-1 rounded">/api/seed/blog</code> para popular os posts de exemplo.
               </p>
@@ -128,7 +128,7 @@ export default async function BlogPage() {
                     <h2 className="font-display font-bold text-lg leading-snug mb-3 group-hover:text-primary transition-colors flex-1">
                       {post.titulo as string}
                     </h2>
-                    <p className="text-sm text-foreground/60 leading-relaxed line-clamp-3 mb-4">
+                    <p className="text-sm text-foreground/80 leading-relaxed line-clamp-3 mb-4">
                       {post.resumo as string}
                     </p>
                     <div className="flex items-center gap-3 text-xs text-foreground/30 mt-auto pt-4 border-t border-border/50">

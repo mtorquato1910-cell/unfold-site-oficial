@@ -182,7 +182,7 @@ export default async function MetodoPage() {
                     <p className="text-base text-foreground/70 leading-relaxed">{p.desc}</p>
                   </div>
                   <div className="md:col-span-7">
-                    <p className="font-mono text-xs uppercase tracking-[0.15em] text-foreground/50 mb-4">
+                    <p className="font-mono text-xs uppercase tracking-[0.15em] text-foreground/75 mb-4">
                       Entregáveis
                     </p>
                     <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
@@ -302,7 +302,7 @@ export default async function MetodoPage() {
               <div key={s.step} className="rounded-xl border border-border bg-card/40 p-6 hover:border-primary/30 transition-colors">
                 <span className="font-mono text-3xl font-bold text-primary/30">{s.step}</span>
                 <h3 className="font-display font-bold text-xl mt-3 mb-2">{s.label}</h3>
-                <p className="text-sm text-foreground/65 leading-relaxed">{s.desc}</p>
+                <p className="text-sm text-foreground/85 leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>

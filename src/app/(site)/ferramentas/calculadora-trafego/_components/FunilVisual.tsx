@@ -116,7 +116,7 @@ function FunnelRow({
           <div>
             <p className="text-sm font-medium text-foreground/85">{label}</p>
             {premissaLabel && (
-              <p className="text-[10px] text-foreground/45 font-mono mt-0.5">{premissaLabel}</p>
+              <p className="text-[10px] text-foreground/75 font-mono mt-0.5">{premissaLabel}</p>
             )}
           </div>
           <p className="font-mono font-semibold tabular-nums text-foreground/95">{valor}</p>
@@ -170,11 +170,11 @@ function FunnelLeaf({
               : 'border-border bg-card/70'
           }`}
         >
-          <p className="text-[10px] uppercase tracking-wider font-mono text-foreground/55 mb-1">
+          <p className="text-[10px] uppercase tracking-wider font-mono text-foreground/80 mb-1">
             {label}
           </p>
           <p className="font-mono font-semibold text-lg tabular-nums">{valor}</p>
-          <p className="text-[11px] text-foreground/55 mt-1">
+          <p className="text-[11px] text-foreground/80 mt-1">
             {subLabel}: <span className="text-foreground/80 font-medium">{subValor}</span>
           </p>
         </div>

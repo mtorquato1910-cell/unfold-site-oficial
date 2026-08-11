@@ -105,7 +105,7 @@ export default async function CaseDetailPage({ params }: Props) {
           {/* Back */}
           <Link
             href="/cases"
-            className="inline-flex items-center gap-2 text-sm text-foreground/50 hover:text-primary transition-colors mb-10"
+            className="inline-flex items-center gap-2 text-sm text-foreground/75 hover:text-primary transition-colors mb-10"
           >
             <ArrowLeft className="h-4 w-4" />
             Todos os cases
@@ -117,7 +117,7 @@ export default async function CaseDetailPage({ params }: Props) {
             </span>
           </div>
 
-          <p className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-3">
+          <p className="font-mono text-xs text-foreground/70 uppercase tracking-widest mb-3">
             {c.client}
           </p>
           <h1 className="font-display font-bold tracking-tight text-4xl md:text-5xl lg:text-6xl leading-[1.05] max-w-4xl">
@@ -129,7 +129,7 @@ export default async function CaseDetailPage({ params }: Props) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 max-w-2xl">
               {highlights.map((h) => (
                 <div key={h.label} className="rounded-xl border border-border bg-card p-4">
-                  <p className="font-mono text-[10px] uppercase text-foreground/45">{h.label}</p>
+                  <p className="font-mono text-[10px] uppercase text-foreground/75">{h.label}</p>
                   <p className="font-mono text-xl font-semibold text-primary mt-1">{h.value}</p>
                 </div>
               ))}
@@ -223,7 +223,7 @@ export default async function CaseDetailPage({ params }: Props) {
                   {p.acoes && p.acoes.length > 0 && (
                     <ul className="space-y-2">
                       {p.acoes.map((a, j) => (
-                        <li key={j} className="flex items-start gap-2 text-sm text-foreground/65">
+                        <li key={j} className="flex items-start gap-2 text-sm text-foreground/85">
                           <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-current shrink-0" />
                           {a.acao}
                         </li>
@@ -250,10 +250,10 @@ export default async function CaseDetailPage({ params }: Props) {
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {results.map((r, i) => (
                 <div key={i} className="rounded-2xl border border-border bg-card p-6">
-                  <p className="font-mono text-xs text-foreground/45 uppercase mb-2">{r.metrica}</p>
+                  <p className="font-mono text-xs text-foreground/75 uppercase mb-2">{r.metrica}</p>
                   <p className="font-display font-bold text-2xl text-primary mb-1">{r.valor}</p>
                   {r.contexto && (
-                    <p className="text-foreground/50 text-xs leading-relaxed">{r.contexto}</p>
+                    <p className="text-foreground/75 text-xs leading-relaxed">{r.contexto}</p>
                   )}
                 </div>
               ))}
@@ -271,7 +271,7 @@ export default async function CaseDetailPage({ params }: Props) {
           <h2 className="font-display font-bold tracking-tight text-4xl md:text-5xl leading-tight max-w-2xl mx-auto">
             Quer resultados como esses na sua operação?
           </h2>
-          <p className="mt-5 text-foreground/65 text-lg max-w-xl mx-auto">
+          <p className="mt-5 text-foreground/85 text-lg max-w-xl mx-auto">
             O Diagnóstico UGS identifica os gargalos do seu sistema e entrega um plano de ação
             personalizado em menos de 20 minutos.
           </p>

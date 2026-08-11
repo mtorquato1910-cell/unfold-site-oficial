@@ -137,7 +137,7 @@ export default async function CasesPage() {
           {cases.length === 0 ? (
             <div>
               <div className="mb-10 flex items-center gap-3">
-                <span className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/40">
+                <span className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/70">
                   Em construção
                 </span>
                 <span className="flex-1 h-px bg-border" />
@@ -162,12 +162,12 @@ export default async function CasesPage() {
                         {c.vertical}
                       </span>
                     </div>
-                    <p className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-2">{c.client}</p>
+                    <p className="font-mono text-xs text-foreground/70 uppercase tracking-widest mb-2">{c.client}</p>
                     <h2 className="font-display font-bold text-xl md:text-2xl leading-snug mb-4">{c.tagline}</h2>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
                       {c.highlights.map((h) => (
                         <div key={h.label} className="rounded-lg border border-border bg-background/40 p-3">
-                          <p className="font-mono text-[10px] uppercase text-foreground/45 leading-tight">{h.label}</p>
+                          <p className="font-mono text-[10px] uppercase text-foreground/75 leading-tight">{h.label}</p>
                           <p className="font-mono text-base font-semibold text-primary mt-1">{h.value}</p>
                         </div>
                       ))}
@@ -210,7 +210,7 @@ export default async function CasesPage() {
                   </div>
 
                   {/* Client name */}
-                  <p className="font-mono text-xs text-foreground/40 uppercase tracking-widest mb-2">
+                  <p className="font-mono text-xs text-foreground/70 uppercase tracking-widest mb-2">
                     {c.client}
                   </p>
 
@@ -229,7 +229,7 @@ export default async function CasesPage() {
                             key={h.label}
                             className="rounded-lg border border-border bg-background/40 p-3"
                           >
-                            <p className="font-mono text-[10px] uppercase text-foreground/45 leading-tight">
+                            <p className="font-mono text-[10px] uppercase text-foreground/75 leading-tight">
                               {h.label}
                             </p>
                             <p className="font-mono text-base font-semibold text-primary mt-1">
@@ -241,7 +241,7 @@ export default async function CasesPage() {
                   )}
 
                   {/* CTA inline */}
-                  <div className="mt-6 flex items-center gap-2 text-sm font-medium text-foreground/50 group-hover:text-primary transition-colors">
+                  <div className="mt-6 flex items-center gap-2 text-sm font-medium text-foreground/75 group-hover:text-primary transition-colors">
                     Ver case completo
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </div>

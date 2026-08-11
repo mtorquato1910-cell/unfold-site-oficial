@@ -21,7 +21,7 @@ export default async function PoliticaPrivacidadePage() {
         Política de Privacidade
       </h1>
       <div className="prose prose-invert prose-sm max-w-none space-y-6 text-foreground/70">
-        <p className="text-sm text-foreground/40">
+        <p className="text-sm text-foreground/70">
           Última atualização: {new Date().toLocaleDateString('pt-BR')}
         </p>
 
@@ -67,7 +67,7 @@ export default async function PoliticaPrivacidadePage() {
                 </a>
               </p>
             </section>
-            <p className="text-xs text-foreground/40 italic">
+            <p className="text-xs text-foreground/70 italic">
               Você pode editar este texto pelo painel admin em{' '}
               <strong>Configurações &gt; Configurações avançadas (Payload)</strong>, campo{' '}
               <strong>Política de Privacidade</strong>.

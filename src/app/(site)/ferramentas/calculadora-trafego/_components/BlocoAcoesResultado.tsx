@@ -113,7 +113,7 @@ export default function BlocoAcoesResultado({ token, persistirAntes }: Props) {
                 <h3 id="share-titulo" className="font-display font-bold text-lg mb-1">
                   Compartilhar por e-mail
                 </h3>
-                <p className="text-xs text-foreground/55">
+                <p className="text-xs text-foreground/80">
                   Enviaremos um link para o resultado salvo.
                 </p>
               </div>
@@ -121,7 +121,7 @@ export default function BlocoAcoesResultado({ token, persistirAntes }: Props) {
                 type="button"
                 onClick={() => setShareOpen(false)}
                 aria-label="Fechar"
-                className="text-foreground/55 hover:text-foreground"
+                className="text-foreground/80 hover:text-foreground"
               >
                 <X className="h-4 w-4" />
               </button>

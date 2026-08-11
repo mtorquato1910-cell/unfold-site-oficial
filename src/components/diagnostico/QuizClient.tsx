@@ -73,7 +73,7 @@ export default function QuizClient({ token, perguntas }: { token: string; pergun
           <h2 className="font-display font-bold text-2xl mb-4">
             As perguntas ainda não foram configuradas
           </h2>
-          <p className="text-foreground/60 text-sm">
+          <p className="text-foreground/80 text-sm">
             Execute o seed em <code className="font-mono text-xs bg-card px-1 py-0.5 rounded">/api/seed/diagnostico</code> para popular as 12 perguntas oficiais.
           </p>
         </div>
@@ -185,7 +185,7 @@ export default function QuizClient({ token, perguntas }: { token: string; pergun
       {/* Progresso X/12 */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
-          <span className="font-mono text-xs text-foreground/40 uppercase tracking-widest">
+          <span className="font-mono text-xs text-foreground/70 uppercase tracking-widest">
             Pergunta {currentIdx + 1} de {total}
           </span>
           <span className={`font-mono text-xs px-2 py-0.5 rounded-full border ${pilarColor}`}>

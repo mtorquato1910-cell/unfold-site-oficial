@@ -114,7 +114,7 @@ export default function NewsletterForm() {
           {emailError || phoneError || errorMsg}
         </p>
       )}
-      <p className="mt-2 text-[11px] text-foreground/40">
+      <p className="mt-2 text-[11px] text-foreground/70">
         Sem spam. Cancele quando quiser.
       </p>
     </div>

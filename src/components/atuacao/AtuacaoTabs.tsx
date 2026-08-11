@@ -151,7 +151,7 @@ export function AtuacaoTabs() {
                 'px-5 py-3 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap',
                 active === v.id
                   ? 'border-primary text-primary'
-                  : 'border-transparent text-foreground/60 hover:text-foreground'
+                  : 'border-transparent text-foreground/80 hover:text-foreground'
               )}
             >
               {v.label}
@@ -180,7 +180,7 @@ export function AtuacaoTabs() {
 
           <div className="lg:col-span-7 grid sm:grid-cols-2 gap-5">
             <div className="rounded-xl border border-border bg-card/40 p-6">
-              <p className="font-mono text-xs uppercase tracking-[0.15em] text-foreground/50 mb-4">
+              <p className="font-mono text-xs uppercase tracking-[0.15em] text-foreground/75 mb-4">
                 Dores típicas
               </p>
               <ul className="space-y-2.5">

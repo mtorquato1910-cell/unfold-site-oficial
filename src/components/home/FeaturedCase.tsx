@@ -40,7 +40,7 @@ export async function FeaturedCase() {
                   <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
                   <span className="h-2.5 w-2.5 rounded-full bg-foreground/15" />
                 </div>
-                <span className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest">
+                <span className="font-mono text-[10px] text-foreground/70 uppercase tracking-widest">
                   DASHBOARD · RESULTADOS
                 </span>
               </div>
@@ -49,7 +49,7 @@ export async function FeaturedCase() {
                 <div className="grid grid-cols-3 gap-3">
                   {highlights.slice(0, 3).map((h) => (
                     <div key={h.label} className="rounded-lg border border-border bg-background/40 p-3">
-                      <p className="font-mono text-[10px] uppercase text-foreground/45">{h.label}</p>
+                      <p className="font-mono text-[10px] uppercase text-foreground/75">{h.label}</p>
                       <p className="font-mono text-xl font-semibold text-primary mt-1">{h.value}</p>
                     </div>
                   ))}
@@ -73,7 +73,7 @@ export async function FeaturedCase() {
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-4">
               Case de sucesso
             </p>
-            <p className="font-display font-bold text-xl tracking-tight text-foreground/60 mb-3 uppercase">
+            <p className="font-display font-bold text-xl tracking-tight text-foreground/80 mb-3 uppercase">
               {c.client}
             </p>
             <h3 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">

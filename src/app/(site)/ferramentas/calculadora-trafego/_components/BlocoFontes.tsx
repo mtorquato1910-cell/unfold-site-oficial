@@ -39,10 +39,10 @@ const FONTES: { titulo: string; descricao: string }[] = [
 export default function BlocoFontes() {
   return (
     <section className="border-t border-border/40 pt-6 mt-4">
-      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/45 mb-3">
+      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/75 mb-3">
         Sobre os benchmarks
       </p>
-      <p className="text-[12px] text-foreground/55 leading-relaxed max-w-2xl mb-4">
+      <p className="text-[12px] text-foreground/80 leading-relaxed max-w-2xl mb-4">
         Os benchmarks usados nesta calculadora foram extraídos de fontes públicas, com janela de
         2023 a 2026. Cada premissa é editável — caso sua operação tenha dados próprios, você pode
         ajustar para refletir sua realidade.
@@ -51,11 +51,11 @@ export default function BlocoFontes() {
         {FONTES.map((f) => (
           <li key={f.titulo} className="text-[12px]">
             <span className="font-medium text-foreground/75">{f.titulo}</span>
-            <span className="text-foreground/45"> — {f.descricao}</span>
+            <span className="text-foreground/75"> — {f.descricao}</span>
           </li>
         ))}
       </ul>
-      <p className="text-[11px] text-foreground/40 font-mono">
+      <p className="text-[11px] text-foreground/70 font-mono">
         Base de benchmarks {BENCHMARKS_VERSAO} — atualizada em {BENCHMARKS_ATUALIZADO_EM}.
       </p>
     </section>

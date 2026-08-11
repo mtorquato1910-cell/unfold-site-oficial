@@ -150,7 +150,7 @@ export default function DiagnosticoEtapa1Form() {
       <div className="mb-8">
         <p className="font-mono text-xs uppercase tracking-[0.15em] text-primary mb-2">Etapa 1 de 2</p>
         <h2 className="font-display font-bold text-2xl">Dados da sua empresa</h2>
-        <p className="text-foreground/60 text-sm mt-2 leading-relaxed">
+        <p className="text-foreground/80 text-sm mt-2 leading-relaxed">
           Para começar, precisamos entender o contexto da sua operação. Leva menos de 1 minuto.
         </p>
       </div>
@@ -301,7 +301,7 @@ function Field({
     <div className="space-y-1.5">
       <label className="text-sm font-medium text-foreground/80">
         {label}
-        {optional && <span className="text-foreground/45 font-normal"> (opcional)</span>}
+        {optional && <span className="text-foreground/75 font-normal"> (opcional)</span>}
       </label>
       {children}
       {error && <p className="text-destructive text-xs">{error}</p>}

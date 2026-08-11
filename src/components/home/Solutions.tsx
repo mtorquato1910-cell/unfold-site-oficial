@@ -27,7 +27,7 @@ export async function Solutions() {
                 <article className="group p-7 rounded-xl border border-border bg-card/40 hover:bg-card hover:border-primary/40 transition-all h-full">
                   <Icon className="h-7 w-7 text-primary mb-6" strokeWidth={1.6} />
                   <h3 className="font-sans font-semibold text-lg mb-2">{item.title}</h3>
-                  <p className="text-sm text-foreground/65 leading-relaxed">{item.desc}</p>
+                  <p className="text-sm text-foreground/85 leading-relaxed">{item.desc}</p>
                 </article>
               </Reveal>
             )

@@ -73,8 +73,8 @@ export async function Insights() {
                   <h3 className="font-sans font-semibold text-lg leading-snug mb-3 group-hover:text-primary transition-colors">
                     {p.titulo}
                   </h3>
-                  <p className="text-sm text-foreground/65 leading-relaxed flex-1">{p.resumo}</p>
-                  <p className="text-xs text-foreground/45 mt-5">
+                  <p className="text-sm text-foreground/85 leading-relaxed flex-1">{p.resumo}</p>
+                  <p className="text-xs text-foreground/75 mt-5">
                     Por {p.autor}
                     {p.publicado_em ? ` · ${formatDate(p.publicado_em)}` : ''}
                   </p>

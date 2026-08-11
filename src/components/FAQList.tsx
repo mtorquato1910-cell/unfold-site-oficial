@@ -68,7 +68,7 @@ export default async function FAQList({
                 {faq.question}
               </span>
               <span
-                className="shrink-0 mt-1 grid place-items-center h-6 w-6 rounded-full border border-border text-foreground/60 group-open:bg-primary group-open:text-background group-open:border-primary transition-colors"
+                className="shrink-0 mt-1 grid place-items-center h-6 w-6 rounded-full border border-border text-foreground/80 group-open:bg-primary group-open:text-background group-open:border-primary transition-colors"
                 aria-hidden
               >
                 <svg

@@ -62,26 +62,26 @@ export default function DiagnosticoResultadoV2({ primeiroNome, diag, hash, calen
 
       {/* ─────── Bloco 2 — Score consolidado + faixa ─────── */}
       <section>
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/40 mb-3">
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/70 mb-3">
           Score consolidado
         </p>
         <div className="flex items-baseline gap-3 mb-3">
           <span className="font-display font-bold text-6xl md:text-7xl tabular-nums">
             {diag.score_consolidado}
           </span>
-          <span className="font-display text-2xl md:text-3xl text-foreground/40">/ 100</span>
+          <span className="font-display text-2xl md:text-3xl text-foreground/70">/ 100</span>
         </div>
         <p className="font-display font-bold text-2xl mb-2">
           {LABEL_FAIXA[diag.faixa_consolidada]}
         </p>
-        <p className="text-foreground/65 leading-relaxed max-w-xl">
+        <p className="text-foreground/85 leading-relaxed max-w-xl">
           {FRASE_FAIXA_CONSOLIDADA[diag.faixa_consolidada]}
         </p>
       </section>
 
       {/* ─────── Bloco 3 — Gráfico aranha + leitura por eixo ─────── */}
       <section>
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/40 mb-6">
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/70 mb-6">
           Sua maturidade por eixo
         </p>
         <div className="rounded-2xl border border-border bg-card/40 p-4 md:p-6 mb-6">
@@ -115,7 +115,7 @@ export default function DiagnosticoResultadoV2({ primeiroNome, diag, hash, calen
 
       {/* ─────── Bloco 4 — Três insights ─────── */}
       <section>
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/40 mb-6">
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/70 mb-6">
           O que mais aparece nas suas respostas
         </p>
         <div className="space-y-5">
@@ -127,7 +127,7 @@ export default function DiagnosticoResultadoV2({ primeiroNome, diag, hash, calen
 
       {/* ─────── Bloco 5 — Três caminhos ─────── */}
       <section>
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/40 mb-6">
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/70 mb-6">
           Caminhos de melhoria
         </p>
         <div className="space-y-5">
@@ -149,7 +149,7 @@ export default function DiagnosticoResultadoV2({ primeiroNome, diag, hash, calen
           <p className="font-display font-bold text-lg mb-2">
             Receba conteúdos exclusivos sobre como estruturar operações de crescimento
           </p>
-          <p className="text-foreground/60 text-sm mb-4">
+          <p className="text-foreground/80 text-sm mb-4">
             Sequência curta com cases reais de vendas complexas no Brasil.
           </p>
           <form
@@ -171,7 +171,7 @@ export default function DiagnosticoResultadoV2({ primeiroNome, diag, hash, calen
           </form>
         </div>
 
-        <p className="text-foreground/40 text-xs">
+        <p className="text-foreground/70 text-xs">
           Este diagnóstico foi gerado pelo método Unfold Growth System (UGS).
         </p>
       </footer>

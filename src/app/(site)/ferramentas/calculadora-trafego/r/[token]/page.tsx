@@ -112,13 +112,13 @@ export default async function ResultadoSalvoPage({ params }: PageProps) {
     <main className="min-h-screen">
       <section className="pt-28 pb-8 md:pt-32 md:pb-10">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/45 mb-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/75 mb-3">
             Resultado salvo · Calculadora de Performance
           </p>
           <h1 className="font-display font-bold tracking-tight text-3xl md:text-4xl max-w-3xl">
             {doc.empresa}
           </h1>
-          <p className="mt-2 text-sm text-foreground/55">
+          <p className="mt-2 text-sm text-foreground/80">
             Gerado em {new Date(doc.createdAt).toLocaleDateString('pt-BR', { dateStyle: 'long' })} · Setor: {setorLabel}
           </p>
         </div>
@@ -151,7 +151,7 @@ export default async function ResultadoSalvoPage({ params }: PageProps) {
               <p className="text-sm text-foreground/85 font-medium leading-relaxed mb-2">
                 {overrideTexto.manchete}
               </p>
-              <p className="text-[13px] text-foreground/65 leading-relaxed">
+              <p className="text-[13px] text-foreground/85 leading-relaxed">
                 {overrideTexto.corpo}
               </p>
             </article>
@@ -171,12 +171,12 @@ export default async function ResultadoSalvoPage({ params }: PageProps) {
             >
               Fazer o Diagnóstico de Growth →
             </a>
-            <p className="mt-3 text-[12px] text-foreground/55">
+            <p className="mt-3 text-[12px] text-foreground/80">
               Diagnóstico completo de 5 min · Gratuito
             </p>
           </section>
 
-          <p className="text-[11px] text-foreground/40 text-center">
+          <p className="text-[11px] text-foreground/70 text-center">
             Este link é privado. Não compartilhe publicamente.
           </p>
         </div>

@@ -37,7 +37,7 @@ export default function BlocoInputs({ hook }: Props) {
         <h2 id="calc-inputs-titulo" className="font-display font-bold text-lg mb-1">
           Sua operação
         </h2>
-        <p className="text-xs text-foreground/55">
+        <p className="text-xs text-foreground/80">
           Ajuste qualquer campo e veja o impacto no resultado em tempo real.
         </p>
       </header>
@@ -210,7 +210,7 @@ function Field({
       <label htmlFor={id} className="text-sm font-medium text-foreground/85 block mb-1">
         {label}
       </label>
-      {helper && <p className="text-[11px] text-foreground/50 leading-relaxed mb-2">{helper}</p>}
+      {helper && <p className="text-[11px] text-foreground/75 leading-relaxed mb-2">{helper}</p>}
       {children}
     </div>
   )

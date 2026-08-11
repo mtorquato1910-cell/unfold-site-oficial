@@ -89,7 +89,7 @@ export default async function SobrePage() {
             {STATS.map((s) => (
               <div key={s.label} className="rounded-xl border border-border bg-card/40 p-6">
                 <p className="font-display font-bold text-xl md:text-2xl text-primary mb-1">{s.value}</p>
-                <p className="text-sm text-foreground/55">{s.label}</p>
+                <p className="text-sm text-foreground/80">{s.label}</p>
               </div>
             ))}
           </div>
@@ -145,7 +145,7 @@ export default async function SobrePage() {
               <div key={v.title} className="rounded-2xl border border-border bg-card p-8">
                 <v.icon className="h-8 w-8 text-primary mb-5" strokeWidth={1.5} />
                 <h3 className="font-display font-bold text-lg mb-3">{v.title}</h3>
-                <p className="text-foreground/65 leading-relaxed text-sm">{v.desc}</p>
+                <p className="text-foreground/85 leading-relaxed text-sm">{v.desc}</p>
               </div>
             ))}
           </div>
@@ -191,7 +191,7 @@ export default async function SobrePage() {
               <h2 className="font-display font-bold tracking-tight text-3xl md:text-4xl leading-tight mb-6">
                 De Maceió e São Paulo para todo o Brasil.
               </h2>
-              <p className="text-foreground/65 leading-relaxed mb-8">
+              <p className="text-foreground/85 leading-relaxed mb-8">
                 Atendemos presencialmente e 100% remoto. Operações ativas em 10 estados, com
                 escritórios em Maceió (AL) e São Paulo (SP).
               </p>
@@ -210,7 +210,7 @@ export default async function SobrePage() {
               <div className="relative rounded-2xl border border-border bg-card/30 p-6 md:p-8">
                 <div className="absolute inset-0 rounded-2xl bg-[radial-gradient(ellipse_at_center,hsl(158_92%_70%/0.04),transparent_70%)]" />
                 <BrazilMap className="w-full max-w-lg mx-auto relative z-10" />
-                <div className="absolute bottom-5 right-5 flex items-center gap-4 text-[10px] font-mono text-foreground/40">
+                <div className="absolute bottom-5 right-5 flex items-center gap-4 text-[10px] font-mono text-foreground/70">
                   <span className="flex items-center gap-1.5">
                     <span className="inline-block h-2 w-2 rounded-sm bg-primary/80" />
                     Atuação Unfold
@@ -235,7 +235,7 @@ export default async function SobrePage() {
           <h2 className="font-display font-bold tracking-tight text-4xl md:text-5xl lg:text-6xl leading-[1.05] max-w-3xl mx-auto">
             Vamos organizar o crescimento da sua operação?
           </h2>
-          <p className="mt-6 text-lg text-foreground/65 max-w-xl mx-auto leading-relaxed">
+          <p className="mt-6 text-lg text-foreground/85 max-w-xl mx-auto leading-relaxed">
             O Diagnóstico UGS mapeia os gargalos do seu sistema de geração de demanda e entrega um
             plano de ação personalizado — em menos de 20 minutos.
           </p>

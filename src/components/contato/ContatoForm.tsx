@@ -83,7 +83,7 @@ export default function ContatoForm() {
         <h1 className="font-display font-bold text-2xl md:text-[29px] leading-[1.22] mt-4">
           Vamos conversar sobre o seu crescimento
         </h1>
-        <p className="text-foreground/60 text-[15px] mt-3.5 leading-relaxed">
+        <p className="text-foreground/80 text-[15px] mt-3.5 leading-relaxed">
           Somos a <span className="text-foreground/90 font-medium">Unfold Growth</span> —
           estruturamos sistemas de crescimento que conectam marketing, vendas, CRM e automação.
           Deixe seus dados e nosso time entra em contato com você.
@@ -148,7 +148,7 @@ export default function ContatoForm() {
           )}
         </Button>
 
-        <p className="text-xs text-foreground/50 text-center leading-relaxed pt-1">
+        <p className="text-xs text-foreground/75 text-center leading-relaxed pt-1">
           Seus dados serão utilizados exclusivamente para que a Unfold entre em contato com você.
           Não compartilhamos suas informações com terceiros.
         </p>

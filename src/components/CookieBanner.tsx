@@ -59,7 +59,7 @@ export default function CookieBanner({ message }: { message?: string }) {
     >
       <button
         onClick={decline}
-        className="absolute top-3 right-3 text-foreground/40 hover:text-foreground transition-colors"
+        className="absolute top-3 right-3 text-foreground/70 hover:text-foreground transition-colors"
         aria-label="Fechar banner de cookies"
       >
         <X className="h-4 w-4" />

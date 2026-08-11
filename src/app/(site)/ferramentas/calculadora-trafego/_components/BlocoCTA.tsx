@@ -79,7 +79,7 @@ export default function BlocoCTA({ token, etapa1, inputs, onAntesDoClique }: Pro
           Fazer o Diagnóstico de Growth <ArrowRight className="h-4 w-4" />
         </Link>
       </Button>
-      <p className="mt-3 text-[12px] text-foreground/55">
+      <p className="mt-3 text-[12px] text-foreground/80">
         Diagnóstico completo de 5 min · Gratuito
       </p>
     </section>

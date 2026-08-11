@@ -143,14 +143,14 @@ const BlocoPremissas = forwardRef<BlocoPremissasHandle, Props>(function BlocoPre
               <span className="ml-2 inline-flex h-1.5 w-1.5 rounded-full bg-primary align-middle" aria-label="Premissas editadas" />
             )}
           </h2>
-          <p className="text-[11px] text-foreground/50">
+          <p className="text-[11px] text-foreground/75">
             Os defaults vêm da nossa base de benchmarks. Edite com dados próprios se preferir.
           </p>
         </div>
         {aberto ? (
-          <ChevronUp className="h-4 w-4 text-foreground/60" />
+          <ChevronUp className="h-4 w-4 text-foreground/80" />
         ) : (
-          <ChevronDown className="h-4 w-4 text-foreground/60" />
+          <ChevronDown className="h-4 w-4 text-foreground/80" />
         )}
       </button>
 
@@ -187,7 +187,7 @@ const BlocoPremissas = forwardRef<BlocoPremissasHandle, Props>(function BlocoPre
                             Confiança: {CONFIANCA_LABEL[confianca]}
                           </p>
                           <p className="text-foreground/70">{meta.helper}</p>
-                          <p className="text-foreground/50 mt-1.5 italic">
+                          <p className="text-foreground/75 mt-1.5 italic">
                             Edite o valor se sua operação tem dados próprios.
                           </p>
                         </TooltipContent>
@@ -198,7 +198,7 @@ const BlocoPremissas = forwardRef<BlocoPremissasHandle, Props>(function BlocoPre
                         </span>
                       )}
                     </div>
-                    <p className="text-[10px] text-foreground/45 leading-snug mb-1.5">
+                    <p className="text-[10px] text-foreground/75 leading-snug mb-1.5">
                       {meta.helper}
                     </p>
                   </div>
@@ -219,7 +219,7 @@ const BlocoPremissas = forwardRef<BlocoPremissasHandle, Props>(function BlocoPre
                       }}
                     />
                     {meta.sufixo && (
-                      <span className="text-[11px] text-foreground/55 font-mono w-9">
+                      <span className="text-[11px] text-foreground/80 font-mono w-9">
                         {meta.sufixo}
                       </span>
                     )}
@@ -233,7 +233,7 @@ const BlocoPremissas = forwardRef<BlocoPremissasHandle, Props>(function BlocoPre
             <button
               type="button"
               onClick={resetPremissas}
-              className="inline-flex items-center gap-1.5 text-[11px] text-foreground/60 hover:text-primary transition-colors"
+              className="inline-flex items-center gap-1.5 text-[11px] text-foreground/80 hover:text-primary transition-colors"
             >
               <RotateCcw className="h-3 w-3" />
               Resetar premissas para defaults do setor

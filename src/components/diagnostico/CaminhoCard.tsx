@@ -26,13 +26,13 @@ export default function CaminhoCard({ codigo, posicao }: Props) {
 
       <div className="space-y-4 text-sm">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-foreground/40 mb-1.5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-foreground/70 mb-1.5">
             A alavanca
           </p>
           <p className="text-foreground/80 leading-relaxed">{texto.alavanca}</p>
         </div>
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-foreground/40 mb-1.5">
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-foreground/70 mb-1.5">
             Por que é prioritário para você
           </p>
           <p className="text-foreground/80 leading-relaxed">{texto.por_que_para_voce}</p>

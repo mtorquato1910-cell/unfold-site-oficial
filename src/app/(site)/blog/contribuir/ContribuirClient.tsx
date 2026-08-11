@@ -141,7 +141,7 @@ export default function ContribuirClient() {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Autor */}
         <fieldset className="space-y-4 p-6 rounded-xl border border-border/50 bg-surface/30">
-          <legend className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/60 px-2">
+          <legend className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/80 px-2">
             Sobre você
           </legend>
           <div className="grid gap-4 md:grid-cols-2">
@@ -179,7 +179,7 @@ export default function ContribuirClient() {
 
         {/* Conteúdo */}
         <fieldset className="space-y-4 p-6 rounded-xl border border-border/50 bg-surface/30">
-          <legend className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/60 px-2">
+          <legend className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/80 px-2">
             Sobre o post
           </legend>
 
@@ -195,7 +195,7 @@ export default function ContribuirClient() {
               placeholder="Ex: Como estruturar um funil de vendas B2B previsível"
               className="w-full h-11 px-3 rounded-lg bg-background border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
-            <p className="mt-1 text-xs text-foreground/50">{form.title.length} / 120 caracteres</p>
+            <p className="mt-1 text-xs text-foreground/75">{form.title.length} / 120 caracteres</p>
           </div>
 
           <div>
@@ -210,7 +210,7 @@ export default function ContribuirClient() {
               placeholder="Frase curta que aparece nos cards do blog"
               className="w-full px-3 py-2.5 rounded-lg bg-background border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
             />
-            <p className="mt-1 text-xs text-foreground/50">{form.summary.length} / 200 caracteres</p>
+            <p className="mt-1 text-xs text-foreground/75">{form.summary.length} / 200 caracteres</p>
           </div>
 
           <div>
@@ -252,15 +252,15 @@ export default function ContribuirClient() {
                 >
                   <X className="h-3.5 w-3.5" /> Remover
                 </button>
-                <p className="px-3 py-2 text-xs text-foreground/60 bg-surface/50 truncate">
+                <p className="px-3 py-2 text-xs text-foreground/80 bg-surface/50 truncate">
                   {coverImage?.name} · {((coverImage?.size || 0) / 1024).toFixed(0)} KB
                 </p>
               </div>
             ) : (
               <label className="flex flex-col items-center justify-center gap-2 w-full py-8 px-4 rounded-lg border-2 border-dashed border-border hover:border-primary/50 bg-background/50 cursor-pointer transition-colors">
-                <ImagePlus className="h-6 w-6 text-foreground/50" />
+                <ImagePlus className="h-6 w-6 text-foreground/75" />
                 <span className="text-sm text-foreground/70">Clique para anexar uma imagem</span>
-                <span className="text-xs text-foreground/45">JPG ou PNG · até 5MB</span>
+                <span className="text-xs text-foreground/75">JPG ou PNG · até 5MB</span>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -275,7 +275,7 @@ export default function ContribuirClient() {
           <div>
             <label className="block text-sm font-medium mb-1.5">Conteúdo do post *</label>
             <BlockEditor value={contentHtml} onChange={setContentHtml} />
-            <p className="mt-1 text-xs text-foreground/50">
+            <p className="mt-1 text-xs text-foreground/75">
               Monte o artigo em blocos (texto, título, imagem, vídeo, tabela) com “+ Adicionar conteúdo”. {plainLen(contentHtml)} caracteres (mínimo 200)
             </p>
           </div>
@@ -317,7 +317,7 @@ export default function ContribuirClient() {
           {isPending ? 'Enviando...' : 'Enviar para revisão'}
         </button>
 
-        <p className="text-xs text-foreground/50 text-center">
+        <p className="text-xs text-foreground/75 text-center">
           Conteúdos aceitos: vendas complexas B2B, CRM, growth técnico, método UGS · Tempo médio de revisão: até 5 dias úteis · Limite: 3 submissões por hora
         </p>
       </form>

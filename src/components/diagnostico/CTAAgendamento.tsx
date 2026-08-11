@@ -43,11 +43,11 @@ export default function CTAAgendamento({ faixa, calendlyUrl, contactEmail }: Pro
       <h2 className="font-display font-bold text-2xl md:text-3xl leading-tight mb-3">
         {cta.headline}
       </h2>
-      <p className="text-foreground/65 leading-relaxed mb-6 max-w-xl">
+      <p className="text-foreground/85 leading-relaxed mb-6 max-w-xl">
         {cta.microcopy}
       </p>
 
-      <div className="flex items-center gap-3 text-sm text-foreground/50 mb-6">
+      <div className="flex items-center gap-3 text-sm text-foreground/75 mb-6">
         <Clock className="h-4 w-4" />
         <span>{cta.slot_minutos} minutos</span>
       </div>
@@ -76,8 +76,8 @@ export default function CTAAgendamento({ faixa, calendlyUrl, contactEmail }: Pro
         </a>
       ) : (
         <div className="rounded-xl border border-dashed border-border bg-background/40 p-6 text-center">
-          <Calendar className="h-5 w-5 text-foreground/40 mx-auto mb-2" />
-          <p className="text-sm text-foreground/55">
+          <Calendar className="h-5 w-5 text-foreground/70 mx-auto mb-2" />
+          <p className="text-sm text-foreground/80">
             Calendário em configuração.
             <br className="hidden sm:block" />
             Use o link enviado no e-mail ou aguarde nosso contato em até 24h.

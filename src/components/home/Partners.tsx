@@ -56,7 +56,7 @@ export async function Partners() {
         </div>
         {settings.partners_footer_text && (
           <Reveal delay={360}>
-            <p className="text-center text-sm italic text-foreground/65 max-w-xl mx-auto">
+            <p className="text-center text-sm italic text-foreground/85 max-w-xl mx-auto">
               {settings.partners_footer_text}
             </p>
           </Reveal>

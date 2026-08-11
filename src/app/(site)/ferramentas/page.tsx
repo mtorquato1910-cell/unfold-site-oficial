@@ -120,7 +120,7 @@ export default async function FerramentasPage() {
                     <h2 className="font-display font-bold text-2xl md:text-3xl mb-4">
                       {tool.title}
                     </h2>
-                    <p className="text-foreground/65 leading-relaxed">{tool.desc}</p>
+                    <p className="text-foreground/85 leading-relaxed">{tool.desc}</p>
                   </div>
                   <div className="mt-10 flex items-center gap-2 font-medium text-sm">
                     <span className={tool.accent}>{tool.cta}</span>

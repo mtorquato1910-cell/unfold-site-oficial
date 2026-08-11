@@ -144,7 +144,7 @@ export default function HeroClient({ settings }: { settings: HomeSettingsData })
         {/* Stats */}
         {settings.stats.length > 0 && (
           <div
-            className="mt-16 pt-8 border-t border-foreground/10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-foreground/60"
+            className="mt-16 pt-8 border-t border-foreground/10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-foreground/80"
             style={{ animation: 'reveal-in 0.58s cubic-bezier(0.16,1,0.3,1) 540ms forwards', opacity: 0 }}
           >
             {settings.stats.map((stat, i) => (

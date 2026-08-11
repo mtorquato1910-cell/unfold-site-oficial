@@ -62,7 +62,7 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
 
   return (
     <nav aria-label="Índice do artigo" className="text-sm">
-      <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-foreground/40 mb-3">
+      <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-foreground/70 mb-3">
         Navegue pelo índice
       </p>
 
@@ -87,7 +87,7 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
                   it.level === 3 ? 'pl-6 text-[13px]' : 'pl-4',
                   isActive
                     ? 'border-primary text-primary font-medium'
-                    : 'border-transparent text-foreground/55 hover:text-foreground/90',
+                    : 'border-transparent text-foreground/80 hover:text-foreground/90',
                 ].join(' ')}
               >
                 {it.text}

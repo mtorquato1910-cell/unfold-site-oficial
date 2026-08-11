@@ -69,7 +69,7 @@ function TokenInvalido() {
         <h1 className="font-display font-bold text-2xl mb-3">
           Este link expirou ou não está mais ativo.
         </h1>
-        <p className="text-foreground/60 text-sm mb-8 leading-relaxed">
+        <p className="text-foreground/80 text-sm mb-8 leading-relaxed">
           Os links antigos do diagnóstico foram migrados para um novo formato. Se você fez o
           diagnóstico recentemente, procure no e-mail pelo link mais novo. Caso contrário, refaça
           em menos de 5 minutos.

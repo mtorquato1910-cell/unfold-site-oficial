@@ -62,7 +62,7 @@ export default async function AtuacaoPage() {
                 Não achou seu segmento de mercado?{' '}
                 <span className="text-primary">Você pode ser nosso primeiro case de sucesso.</span>
               </h2>
-              <p className="text-foreground/65 leading-relaxed max-w-2xl">
+              <p className="text-foreground/85 leading-relaxed max-w-2xl">
                 Possuímos cases validados em cada um dos segmentos citados, mas eles não nasceram
                 prontos. Faça como nossos clientes e se transforme no nosso próximo case de
                 crescimento em vendas complexas.

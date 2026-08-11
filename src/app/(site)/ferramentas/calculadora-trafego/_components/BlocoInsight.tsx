@@ -66,7 +66,7 @@ export default function BlocoInsight({ selecao, ready }: Props) {
           <p className="text-sm text-foreground/85 font-medium leading-relaxed mb-2">
             {override.manchete}
           </p>
-          <p className="text-[13px] text-foreground/65 leading-relaxed">{override.corpo}</p>
+          <p className="text-[13px] text-foreground/85 leading-relaxed">{override.corpo}</p>
         </article>
       )}
     </section>

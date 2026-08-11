@@ -184,7 +184,7 @@ export default async function BlogPostPage({ params }: Props) {
         {/* Back */}
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-sm text-foreground/50 hover:text-primary transition-colors mb-12"
+          className="inline-flex items-center gap-2 text-sm text-foreground/75 hover:text-primary transition-colors mb-12"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Voltar ao blog
         </Link>
@@ -204,8 +204,8 @@ export default async function BlogPostPage({ params }: Props) {
               <h1 className="font-display font-bold text-3xl md:text-4xl lg:text-5xl leading-[1.1] mt-3 mb-5">
                 {post.titulo as string}
               </h1>
-              <p className="text-lg text-foreground/60 leading-relaxed mb-6">{post.resumo as string}</p>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-foreground/40 border-t border-border pt-6">
+              <p className="text-lg text-foreground/80 leading-relaxed mb-6">{post.resumo as string}</p>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-foreground/70 border-t border-border pt-6">
                 <span>{post.autor as string}</span>
                 {post.tempo_leitura && <span>· {post.tempo_leitura as number} min de leitura</span>}
                 {post.publicado_em && (

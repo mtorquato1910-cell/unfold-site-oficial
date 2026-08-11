@@ -87,7 +87,7 @@ export default function PrivacidadePage() {
           até 15 dias úteis.
         </p>
 
-        <p className="text-sm text-foreground/55 border-t border-border pt-6 mt-12">
+        <p className="text-sm text-foreground/80 border-t border-border pt-6 mt-12">
           Última atualização: maio de 2026. Esta página complementa nossa{' '}
           <a href="/politica-de-privacidade">Política de Privacidade</a> aplicada a todo o site.
         </p>

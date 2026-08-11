@@ -31,7 +31,7 @@ All colors MUST be HSL.
     --tertiary-foreground: 0 0% 91%;
 
     --muted: 195 50% 14%;
-    --muted-foreground: 200 15% 65%;
+    --muted-foreground: 200 12% 82%;      /* clareado p/ legibilidade (era 65%) */
 
     --accent: 158 92% 70%;
     --accent-foreground: 195 100% 8%;

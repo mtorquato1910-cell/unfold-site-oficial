@@ -53,7 +53,7 @@ export default function ToolBanner({ banner }: { banner: BannerData }) {
           </p>
         )}
         {banner.descricao && (
-          <p className="mt-2 text-sm leading-relaxed text-foreground/55">{banner.descricao}</p>
+          <p className="mt-2 text-sm leading-relaxed text-foreground/80">{banner.descricao}</p>
         )}
         <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
           {banner.cta_label || 'Saiba mais'}

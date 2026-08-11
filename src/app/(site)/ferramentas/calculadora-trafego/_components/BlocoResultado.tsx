@@ -49,7 +49,7 @@ export default function BlocoResultado({ hook, onEditarPremissa }: Props) {
   if (!inputsValidos) {
     return (
       <div className="rounded-2xl border border-dashed border-border bg-card/30 p-6 text-center">
-        <p className="text-sm text-foreground/55">
+        <p className="text-sm text-foreground/80">
           Ajuste os inputs ao lado para ver o resultado em tempo real.
         </p>
       </div>

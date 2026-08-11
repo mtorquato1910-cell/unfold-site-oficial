@@ -76,14 +76,14 @@ function ROICard({ label, roi, roiTarget, subLabel, subValue }: ROICardProps) {
       aria-live="polite"
       aria-atomic="true"
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/55 mb-2">
+      <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/80 mb-2">
         {label}
       </p>
       <p className={`font-display font-bold text-4xl md:text-5xl tabular-nums ${numCor}`}>
         {fmtROI(roi)}
       </p>
-      <p className="mt-3 text-xs text-foreground/55">
-        <span className="text-foreground/40">{subLabel}:</span>{' '}
+      <p className="mt-3 text-xs text-foreground/80">
+        <span className="text-foreground/70">{subLabel}:</span>{' '}
         <span className="text-foreground/80 font-medium">{subValue}</span>
       </p>
     </div>

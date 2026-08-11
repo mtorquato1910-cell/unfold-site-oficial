@@ -24,7 +24,7 @@ export default function InsightCard({ codigo, posicao }: Props) {
         </h3>
       </div>
       <p className="text-foreground/85 font-medium mb-3 leading-snug">{texto.resumo}</p>
-      <p className="text-foreground/65 text-sm leading-relaxed">{texto.corpo}</p>
+      <p className="text-foreground/85 text-sm leading-relaxed">{texto.corpo}</p>
     </article>
   )
 }
