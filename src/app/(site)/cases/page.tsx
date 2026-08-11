@@ -14,9 +14,10 @@ function mediaUrl(field: any): string | null {
 }
 
 export const metadata: Metadata = {
-  title: 'Cases | Unfold Growth',
+  title: 'Cases',
   description:
     'Conheça os resultados que a Unfold Growth já entregou — cases reais de crescimento estruturado em vendas complexas.',
+  alternates: { canonical: '/cases' },
 }
 
 // Rede de segurança: reconstrói a cada 60s além do revalidatePath ao publicar.

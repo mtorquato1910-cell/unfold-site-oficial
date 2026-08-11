@@ -8,9 +8,10 @@ import { getSiteTexts } from '@/lib/site-texts'
 import { renderHighlight } from '@/lib/render-highlight'
 
 export const metadata: Metadata = {
-  title: 'Sobre | Unfold Growth',
+  title: 'Sobre',
   description:
     'Conheça a Unfold Growth — organizamos crescimento digital em operações com vendas complexas por meio do método UGS.',
+  alternates: { canonical: '/sobre' },
 }
 
 const VALUES = [

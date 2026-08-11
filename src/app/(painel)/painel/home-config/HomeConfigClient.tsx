@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { Save, Sparkles, BarChart3, Building2, Plus, Trash2, ExternalLink } from 'lucide-react'
 import { PageHeader, GlassCard, Field, MintButton } from '@/components/painel/ui'
+import ImageInput from '@/components/painel/ImageInput'
 import {
   updateHomeSettings,
   type HomeSettingsInput,
@@ -19,6 +20,8 @@ type FormState = {
   hero_cta_secondary_label: string
   hero_cta_secondary_href: string
   hero_video_url: string
+  hero_image: string
+  hero_image_url: string
   stats: HomeStatInput[]
   stats_extra_text: string
   client_logos_title: string
@@ -58,7 +61,10 @@ export default function HomeConfigClient({ initial }: { initial: FormState }) {
     setSuccess(null)
     startTransition(async () => {
       try {
-        await updateHomeSettings(form as HomeSettingsInput)
+        // hero_image_url é só para o preview; o que persiste é o hero_image (id).
+        const payload = { ...form }
+        delete (payload as any).hero_image_url
+        await updateHomeSettings(payload as HomeSettingsInput)
         setSuccess('Salvo. Mudanças refletem na home em até 1 minuto.')
         setTimeout(() => setSuccess(null), 4000)
       } catch (err: any) {
@@ -172,12 +178,24 @@ export default function HomeConfigClient({ initial }: { initial: FormState }) {
                 />
               </Field>
             </div>
-            <Field label="URL do vídeo de fundo (mp4)" hint="Deixe vazio para usar o padrão">
+            <Field label="URL do vídeo de fundo (mp4)" hint="Deixe vazio para usar só a imagem abaixo">
               <input
                 className="input-mint"
                 value={form.hero_video_url}
                 onChange={(e) => update('hero_video_url', e.target.value)}
                 placeholder="https://..."
+              />
+            </Field>
+            <Field
+              label="Imagem do hero (topo da home)"
+              hint="Aparece antes do vídeo carregar — e sozinha quando não há vídeo. Recomendado 1600×900."
+            >
+              <ImageInput
+                label="Imagem do hero"
+                value={form.hero_image ? { id: form.hero_image, url: form.hero_image_url } : null}
+                onChange={(v) =>
+                  setForm((f) => ({ ...f, hero_image: v?.id || '', hero_image_url: v?.url || '' }))
+                }
               />
             </Field>
           </div>

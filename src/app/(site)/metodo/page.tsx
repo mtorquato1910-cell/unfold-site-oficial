@@ -7,9 +7,10 @@ import { getSiteTexts } from '@/lib/site-texts'
 import { renderHighlight } from '@/lib/render-highlight'
 
 export const metadata: Metadata = {
-  title: 'O Método UGS',
+  title: 'Método UGS: sistema de crescimento B2B',
   description:
     'O Unfold Growth System — um sistema de crescimento para operações com vendas complexas, composto por 4 pilares: Diagnosticar, Estruturar, Operar e Evoluir.',
+  alternates: { canonical: '/metodo' },
 }
 
 const PILLARS = [

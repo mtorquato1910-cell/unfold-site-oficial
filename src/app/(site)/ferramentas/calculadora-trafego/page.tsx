@@ -1,10 +1,43 @@
 import type { Metadata } from 'next'
 import CalculadoraShell from './_components/CalculadoraShell'
+import ConversaoContent, { type ConversaoSecao } from '@/components/site/ConversaoContent'
+
+const SECOES: ConversaoSecao[] = [
+  {
+    titulo: 'O que ela calcula',
+    blocos: [
+      { tipo: 'p', texto: 'Você informa investimento, ticket médio e as suas conversões. Ela projeta a cadeia inteira:' },
+      { tipo: 'lista', itens: ['Quantos cliques o investimento compra', 'Quantos leads isso gera', 'Quantas oportunidades avançam', 'Quantos clientes fecham', 'Quanto isso vira em receita'] },
+    ],
+  },
+  {
+    titulo: 'O que muda em relação às outras',
+    blocos: [
+      { tipo: 'p', texto: 'A maioria das calculadoras projeta lead e para por aí, como se lead fosse resultado.' },
+      { tipo: 'p', texto: 'Esta segue até o contrato. Em venda complexa, o custo se acumula a cada etapa: o mesmo investimento passa a ser dividido por um número cada vez menor de sobreviventes. É essa conta que mostra se o dinheiro se paga.' },
+    ],
+  },
+  {
+    titulo: 'Três decisões que ela resolve',
+    blocos: [
+      { tipo: 'lista', itens: ['Quanto investir para atingir uma meta de faturamento', 'Se a meta é alcançável com o orçamento que existe', 'Qual conversão melhorar para o número fechar sem aumentar a verba'] },
+    ],
+  },
+  {
+    titulo: 'O que você recebe',
+    blocos: [
+      { tipo: 'p', texto: 'A projeção na tela e uma cópia por e-mail, com os números do seu cenário e a referência do seu setor.' },
+      { tipo: 'p', texto: 'Se algum indicador seu estiver muito longe da referência, é ali que está o gargalo.' },
+      { tipo: 'p', texto: 'Gratuita, sem compromisso comercial. Os dados servem para enviar o resultado e não vão para terceiros.' },
+    ],
+  },
+]
 
 export const metadata: Metadata = {
-  title: 'Calculadora de Performance | Unfold Growth',
+  title: 'Calculadora de Performance',
   description:
     'Descubra quanto seu investimento em mídia paga pode realmente retornar — com premissas honestas para vendas complexas B2B.',
+  alternates: { canonical: '/ferramentas/calculadora-trafego' },
 }
 
 export default function CalculadoraTráfegoPage() {
@@ -26,11 +59,13 @@ export default function CalculadoraTráfegoPage() {
         </div>
       </section>
 
-      <section className="pb-24">
+      <section className="pb-16">
         <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <CalculadoraShell />
         </div>
       </section>
+
+      <ConversaoContent secoes={SECOES} />
     </main>
   )
 }

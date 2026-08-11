@@ -3,11 +3,32 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getSiteTexts } from '@/lib/site-texts'
 import { renderHighlight } from '@/lib/render-highlight'
+import { canonical } from '@/lib/seo/canonical'
+import ConversaoContent, { type ConversaoSecao } from '@/components/site/ConversaoContent'
+
+const SECOES: ConversaoSecao[] = [
+  {
+    titulo: 'Por que essas premissas e não outras',
+    blocos: [
+      { tipo: 'p', texto: 'As três foram construídas a partir do método UGS e das operações que estruturamos.' },
+      { tipo: 'p', texto: 'Isso significa premissas de venda complexa: ticket alto, ciclo longo e decisão coletiva. Não são calculadoras genéricas adaptadas de outro mercado.' },
+    ],
+  },
+  {
+    titulo: 'Como elas se complementam',
+    blocos: [
+      { tipo: 'p', texto: 'Se a sua venda envolve mais de uma pessoa decidindo e leva semanas para fechar, use as três em sequência:' },
+      { tipo: 'lista', itens: ['A calculadora dimensiona o topo', 'O diagnóstico mostra onde a estrutura falha', 'O radar organiza a conversa com quem decide'] },
+      { tipo: 'p', texto: 'Os resultados chegam por e-mail e são seus. Não compartilhamos com terceiros.' },
+    ],
+  },
+]
 
 export const metadata: Metadata = {
-  title: 'Ferramentas Gratuitas — Unfold Growth',
+  title: 'Ferramentas Gratuitas de Growth',
   description:
     'Ferramentas gratuitas para diagnosticar e escalar sua operação de crescimento. Calculadora de tráfego e diagnóstico de growth sem compromisso.',
+  ...canonical('/ferramentas'),
 }
 
 const TOOLS = [
@@ -112,6 +133,7 @@ export default async function FerramentasPage() {
         </div>
       </section>
 
+      <ConversaoContent secoes={SECOES} />
     </main>
   )
 }

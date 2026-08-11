@@ -31,7 +31,7 @@ export async function Partners() {
                 />
               </div>
             ) : (
-              <span className="font-sans font-bold text-sm tracking-wide text-foreground/50 hover:text-foreground/80 transition-colors">
+              <span className="font-sans font-bold text-sm tracking-wide text-foreground/75 hover:text-foreground/90 transition-colors">
                 {p.name}
               </span>
             )
@@ -56,7 +56,7 @@ export async function Partners() {
         </div>
         {settings.partners_footer_text && (
           <Reveal delay={360}>
-            <p className="text-center text-sm italic text-foreground/40 max-w-xl mx-auto">
+            <p className="text-center text-sm italic text-foreground/65 max-w-xl mx-auto">
               {settings.partners_footer_text}
             </p>
           </Reveal>

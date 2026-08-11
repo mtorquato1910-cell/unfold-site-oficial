@@ -7,9 +7,10 @@ import { getSiteTexts } from '@/lib/site-texts'
 import { renderHighlight } from '@/lib/render-highlight'
 
 export const metadata: Metadata = {
-  title: 'Atuação',
+  title: 'Atuação: setores de vendas complexas',
   description:
-    'A Unfold Growth atua em verticais de vendas complexas: Construção Civil, Agronegócio, Tecnologia, Automotivo, Indústrias e Serviços. Conheça nossa abordagem por segmento.',
+    'A Unfold atua onde a venda é complexa: construção civil, agronegócio, tecnologia, automotivo, indústria e serviços. Conheça a abordagem por segmento.',
+  alternates: { canonical: '/atuacao' },
 }
 
 export default async function AtuacaoPage() {

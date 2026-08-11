@@ -66,6 +66,42 @@ export function ArticleSchema({ title, description, url, datePublished, dateModi
   return <JsonLd data={schema} />
 }
 
+/** Trilha de navegação (item 1.4) — ajuda buscadores/IA a situarem a página. */
+export function BreadcrumbSchema({ items }: { items: { name: string; url: string }[] }) {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: it.name,
+      item: `${BASE_URL}${it.url}`,
+    })),
+  }
+  return <JsonLd data={schema} />
+}
+
+/**
+ * FAQPage (item 1.4) — marca pares pergunta/resposta para citação por IA
+ * (ChatGPT, Claude, Perplexity, modo IA do Google) e Bing/Copilot.
+ * Só emite quando há itens válidos, e o mesmo conteúdo é renderizado VISÍVEL
+ * na página (regra do Google: nada de marcação oculta).
+ */
+export function FAQSchema({ items }: { items: { pergunta: string; resposta: string }[] }) {
+  const valid = (items || []).filter((q) => q?.pergunta?.trim() && q?.resposta?.trim())
+  if (valid.length === 0) return null
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: valid.map((q) => ({
+      '@type': 'Question',
+      name: q.pergunta.trim(),
+      acceptedAnswer: { '@type': 'Answer', text: q.resposta.trim() },
+    })),
+  }
+  return <JsonLd data={schema} />
+}
+
 function JsonLd({ data }: { data: Record<string, unknown> }) {
   return (
     <script

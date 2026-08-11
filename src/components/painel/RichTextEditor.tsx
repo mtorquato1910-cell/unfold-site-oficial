@@ -20,9 +20,20 @@ import { extractYouTubeId } from '@/lib/rich-text'
 import { uploadMedia } from '@/lib/actions/media-actions'
 import styles from './RichTextEditor.module.css'
 
-// full: tudo (legado). text: parágrafo rico SEM títulos nem mídia (bloco de texto do
-// BlockEditor). lite: só negrito/itálico/sublinhado/link (depoimentos).
-type Variant = 'full' | 'lite' | 'text'
+/** Lê as dimensões naturais de uma imagem já hospedada (para width/height — CLS). */
+function imageDimensions(url: string): Promise<{ w: number; h: number } | null> {
+  return new Promise((resolve) => {
+    const img = new window.Image()
+    img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight })
+    img.onerror = () => resolve(null)
+    img.src = url
+  })
+}
+
+// full: tudo (legado, cases). article: editor de texto corrido do post — H2–H6 SEM
+// H1, tabela, imagem com alt obrigatório, YouTube (item 1.3). text: parágrafo rico
+// SEM títulos nem mídia (bloco legado). lite: negrito/itálico/sublinhado/link (depoimentos).
+type Variant = 'full' | 'lite' | 'text' | 'article'
 
 export default function RichTextEditor({
   value,
@@ -43,17 +54,20 @@ export default function RichTextEditor({
   const fileRef = useRef<HTMLInputElement>(null)
   const lastEmitted = useRef(value)
   const full = variant === 'full'
-  const showBlocks = variant === 'full' || variant === 'text' // listas e citação
+  const article = variant === 'article' // texto corrido do post: H2–H6, sem H1
+  const rich = full || article // mídia: imagem, tabela, YouTube
+  const showBlocks = full || article || variant === 'text' // listas e citação
+  const headingLevels = article ? [2, 3, 4, 5, 6] : [1, 2, 3, 4]
 
   const editor = useEditor({
     immediatelyRender: false,
     autofocus: autoFocus ? 'end' : false,
     extensions: [
-      StarterKit.configure({ heading: { levels: [1, 2, 3, 4] } }),
+      StarterKit.configure({ heading: { levels: headingLevels as any } }),
       Underline,
       Link.configure({ openOnClick: false, autolink: true, HTMLAttributes: { rel: 'noopener noreferrer' } }),
       Placeholder.configure({ placeholder }),
-      ...(full
+      ...(rich
         ? [
             Figure,
             YoutubeEmbed,
@@ -99,7 +113,17 @@ export default function RichTextEditor({
         fd.append('file', toSend)
         const res: any = await uploadMedia(fd)
         if (res?.ok && res.url) {
-          editor.chain().focus().setFigure({ src: res.url, alt: '' }).run()
+          // Alt obrigatório (item 1.6): imagem sem descrição não é inserida.
+          const alt = window
+            .prompt('Descreva a imagem em uma frase (obrigatório para SEO e acessibilidade):', '')
+            ?.trim()
+          if (!alt) {
+            alert('A imagem não foi inserida: a descrição (alt) é obrigatória.')
+            return
+          }
+          // Dimensão automática (item 1.8): reserva espaço e evita salto de layout (CLS).
+          const dims = await imageDimensions(res.url)
+          editor.chain().focus().setFigure({ src: res.url, alt, width: dims?.w, height: dims?.h }).run()
         } else {
           alert(res?.error || 'Falha no upload da imagem')
         }
@@ -155,11 +179,11 @@ export default function RichTextEditor({
         <Btn icon={<UnderlineIcon className="h-4 w-4" />} title="Sublinhado"
           active={editor.isActive('underline')} onClick={() => editor.chain().focus().toggleUnderline().run()} />
 
-        {full && (
+        {(full || article) && (
           <>
             <span className={styles.sep} />
-            {[1, 2, 3, 4].map((lvl) => (
-              <Btn key={lvl} label={`H${lvl}`} title={`Título ${lvl}`}
+            {headingLevels.map((lvl) => (
+              <Btn key={lvl} label={`H${lvl}`} title={`Título ${lvl} (H${lvl})`}
                 active={editor.isActive('heading', { level: lvl })}
                 onClick={() => editor.chain().focus().toggleHeading({ level: lvl as any }).run()} />
             ))}
@@ -181,7 +205,7 @@ export default function RichTextEditor({
         <span className={styles.sep} />
         <Btn icon={<Link2 className="h-4 w-4" />} title="Link" active={editor.isActive('link')} onClick={addLink} />
 
-        {full && (
+        {rich && (
           <>
             <Btn
               icon={uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4" />}
@@ -190,6 +214,8 @@ export default function RichTextEditor({
             <Btn icon={<Youtube className="h-4 w-4" />} title="Vídeo do YouTube" onClick={addYoutube} />
             <Btn icon={<TableIcon className="h-4 w-4" />} title="Inserir tabela"
               onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} />
+            <Btn label="—" title="Linha divisória"
+              onClick={() => editor.chain().focus().setHorizontalRule().run()} />
           </>
         )}
 

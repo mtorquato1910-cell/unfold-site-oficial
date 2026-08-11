@@ -32,6 +32,11 @@ export default function CookieBanner({ message }: { message?: string }) {
       // Avisa o tracker do mapa de calor para começar a coletar nesta sessão (LGPD).
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new Event('unfold-consent-updated'))
+        // Sinaliza o consentimento ao GTM — usar como acionador (Custom Event
+        // "unfold_consent_granted") para disparar o Pixel do Facebook só após o aceite.
+        const w = window as unknown as { dataLayer?: unknown[] }
+        w.dataLayer = w.dataLayer || []
+        w.dataLayer.push({ event: 'unfold_consent_granted' })
       }
     } catch { /* silencioso */ }
     setVisible(false)

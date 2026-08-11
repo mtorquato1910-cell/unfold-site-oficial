@@ -29,7 +29,7 @@ export async function ClientLogos() {
                 />
               </div>
             ) : (
-              <span className="font-display font-bold text-sm md:text-base tracking-tight text-center text-foreground/30 hover:text-foreground/60 transition-colors">
+              <span className="font-display font-bold text-sm md:text-base tracking-tight text-center text-foreground/70 hover:text-foreground/90 transition-colors">
                 {client.nome}
               </span>
             )

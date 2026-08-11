@@ -70,6 +70,12 @@ const nextConfig: NextConfig = {
     ]
     return [
       {
+        // Cache longo para estáticos de /public (imagens, vídeo, fontes) — item 2.3.
+        // /_next/static já é imutável pela Vercel; aqui cobrimos os assets de /public.
+        source: '/:path*.:ext(jpg|jpeg|png|gif|webp|avif|svg|ico|mp4|webm|woff|woff2|ttf|otf)',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
         // Prévia do mapa de calor (?heatmap=1): o painel embute a página num
         // iframe same-origin. SAMEORIGIN permite só o nosso domínio — nada externo.
         source: '/(.*)',

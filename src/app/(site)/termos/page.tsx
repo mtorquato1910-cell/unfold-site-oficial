@@ -3,8 +3,9 @@ import { getLegalContent } from '@/lib/legal-pages'
 import RichTextRenderer from '@/components/RichTextRenderer'
 
 export const metadata: Metadata = {
-  title: 'Termos de Uso | Unfold Growth',
+  title: 'Termos de Uso',
   description: 'Termos e condições de uso dos serviços e plataformas da Unfold Growth.',
+  alternates: { canonical: '/termos' },
 }
 
 export const revalidate = 60

@@ -20,6 +20,8 @@ export default async function HomeConfigPage() {
     hero_cta_secondary_label: settings?.hero_cta_secondary_label ?? '',
     hero_cta_secondary_href: settings?.hero_cta_secondary_href ?? '',
     hero_video_url: settings?.hero_video_url ?? '',
+    hero_image: settings?.hero_image?.id ? String(settings.hero_image.id) : '',
+    hero_image_url: settings?.hero_image?.url ?? '',
     stats: Array.isArray(settings?.stats)
       ? settings.stats.map((s: any) => ({
           prefix: s.prefix || '',

@@ -80,9 +80,9 @@ export default function ContatoForm() {
         <span className="inline-flex items-center rounded-full bg-primary/12 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
           Fale com a Unfold
         </span>
-        <h2 className="font-display font-bold text-2xl md:text-[29px] leading-[1.22] mt-4">
+        <h1 className="font-display font-bold text-2xl md:text-[29px] leading-[1.22] mt-4">
           Vamos conversar sobre o seu crescimento
-        </h2>
+        </h1>
         <p className="text-foreground/60 text-[15px] mt-3.5 leading-relaxed">
           Somos a <span className="text-foreground/90 font-medium">Unfold Growth</span> —
           estruturamos sistemas de crescimento que conectam marketing, vendas, CRM e automação.

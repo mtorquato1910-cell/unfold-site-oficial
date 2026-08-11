@@ -4,13 +4,104 @@ import { useState, useTransition } from 'react'
 import { Plus, Pencil, Trash2, X, FileText, CheckCircle2, XCircle, ExternalLink } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field } from '@/components/painel/ui'
 import ImageInput from '@/components/painel/ImageInput'
-import BlockEditor from '@/components/painel/BlockEditor'
+import RichTextEditor from '@/components/painel/RichTextEditor'
 import { lexicalToHtml } from '@/lib/rich-text'
 import { createPost, updatePost, deletePost } from '@/lib/actions/posts-actions'
 import { approvePost, rejectPost } from '@/lib/actions/blog-submit-actions'
 
 const slugify = (s: string) =>
   s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+
+/** Contador de caracteres com alerta ao passar do ideal (item 1.5). */
+function CharCount({ value, max }: { value: string; max: number }) {
+  const len = (value || '').length
+  const over = len > max
+  return (
+    <span
+      className="mt-1 block text-right font-mono text-[10px]"
+      style={{ color: over ? 'hsl(0 70% 72%)' : 'hsl(0 0% 91% / 0.4)' }}
+    >
+      {len}/{max}
+      {over ? ' \u2014 acima do ideal' : ''}
+    </span>
+  )
+}
+
+/** Pr\u00e9via de como o artigo aparece no resultado de busca do Google (estilo WordPress). */
+function SerpPreview({ title, slug, desc }: { title: string; slug: string; desc: string }) {
+  const url = `unfoldgrowth.com.br \u203a blog \u203a ${slug || 'seu-artigo'}`
+  const t = (title || 'T\u00edtulo do artigo').slice(0, 60)
+  const d = (desc || 'Resumo de busca do artigo\u2026').slice(0, 160)
+  return (
+    <div className="rounded-lg p-3" style={{ background: 'hsl(0 0% 100% / 0.03)', border: '1px solid hsl(0 0% 100% / 0.06)' }}>
+      <p className="font-mono text-[9px] uppercase tracking-[0.18em] mb-2" style={{ color: 'hsl(0 0% 91% / 0.35)' }}>
+        Pr\u00e9via no Google
+      </p>
+      <p className="text-[12px]" style={{ color: 'hsl(140 40% 62%)' }}>{url}</p>
+      <p className="text-[15px] leading-snug" style={{ color: 'hsl(214 90% 74%)' }}>{t}</p>
+      <p className="text-[12px] leading-snug mt-0.5" style={{ color: 'hsl(0 0% 91% / 0.55)' }}>{d}</p>
+    </div>
+  )
+}
+
+type FaqItem = { pergunta: string; resposta: string }
+
+/** Editor de perguntas frequentes (item 1.4): add/remover/reordenar pares Q&A. */
+function FaqEditor({ value, onChange }: { value: FaqItem[]; onChange: (v: FaqItem[]) => void }) {
+  const items = value || []
+  const fieldStyle = { background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' } as const
+  const set = (i: number, patch: Partial<FaqItem>) =>
+    onChange(items.map((it, idx) => (idx === i ? { ...it, ...patch } : it)))
+  const add = () => onChange([...items, { pergunta: '', resposta: '' }])
+  const remove = (i: number) => onChange(items.filter((_, idx) => idx !== i))
+  const move = (i: number, dir: -1 | 1) => {
+    const j = i + dir
+    if (j < 0 || j >= items.length) return
+    const next = [...items]
+    ;[next[i], next[j]] = [next[j], next[i]]
+    onChange(next)
+  }
+  return (
+    <div className="space-y-3">
+      {items.length === 0 && (
+        <p className="text-[12px]" style={{ color: 'hsl(0 0% 91% / 0.4)' }}>Nenhuma pergunta ainda.</p>
+      )}
+      {items.map((it, i) => (
+        <div key={i} className="rounded-lg p-3" style={{ background: 'hsl(0 0% 100% / 0.03)', border: '1px solid hsl(0 0% 100% / 0.06)' }}>
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-mono text-[10px]" style={{ color: 'hsl(0 0% 91% / 0.4)' }}>#{i + 1}</span>
+            <div className="flex gap-1">
+              <button type="button" onClick={() => move(i, -1)} disabled={i === 0} className="px-1.5 text-[13px]" style={{ color: 'hsl(0 0% 91% / 0.6)' }}>↑</button>
+              <button type="button" onClick={() => move(i, 1)} disabled={i === items.length - 1} className="px-1.5 text-[13px]" style={{ color: 'hsl(0 0% 91% / 0.6)' }}>↓</button>
+              <button type="button" onClick={() => remove(i)} className="px-1.5 text-[12px]" style={{ color: 'hsl(0 70% 72%)' }}>remover</button>
+            </div>
+          </div>
+          <input className="w-full h-9 px-3 rounded-lg text-[13px] mb-2" style={fieldStyle} value={it.pergunta} onChange={(e) => set(i, { pergunta: e.target.value })} placeholder="Pergunta (como a pessoa perguntaria)" />
+          <textarea rows={2} className="w-full px-3 py-2 rounded-lg text-[13px] resize-none" style={fieldStyle} value={it.resposta} onChange={(e) => set(i, { resposta: e.target.value })} placeholder="Resposta completa já nas primeiras 40 palavras" />
+        </div>
+      ))}
+      <button type="button" onClick={add} className="text-[12px] px-3 py-1.5 rounded-lg" style={{ background: 'hsl(158 92% 70% / 0.12)', color: 'hsl(158 92% 70%)' }}>+ Adicionar pergunta</button>
+    </div>
+  )
+}
+
+/** Avisos de qualidade antes de publicar (item 1.3 — validação). */
+function validateArticle(html: string, faq: FaqItem[]): string[] {
+  const warns: string[] = []
+  const h = html || ''
+  const words = h.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(Boolean).length
+  if (words > 800 && !/<h2[\s>]/i.test(h)) warns.push('Mais de 800 palavras e nenhum Título 2 (H2). Adicione capítulos.')
+  if ((h.match(/<h1[\s>]/gi) || []).length > 0) warns.push('Há Título 1 (H1) no corpo — o H1 é só o título do post. Use H2 em diante.')
+  const levels = [...h.matchAll(/<h([2-6])[\s>]/gi)].map((m) => Number(m[1]))
+  for (let i = 1; i < levels.length; i++) {
+    if (levels[i] - levels[i - 1] > 1) { warns.push('A hierarquia de títulos pula um nível (ex.: H2 → H4). Desça um nível por vez.'); break }
+  }
+  if ([...h.matchAll(/<img\b[^>]*>/gi)].some((m) => !/\balt="[^"]+"/i.test(m[0]))) warns.push('Há imagem sem descrição (alt).')
+  const f = (faq || []).filter((q) => q.pergunta?.trim() && q.resposta?.trim())
+  if (f.length > 0 && f.length < 3) warns.push('A seção de FAQ tem menos de 3 perguntas — o ideal é 3 a 8.')
+  if (f.length > 8) warns.push('A seção de FAQ tem mais de 8 perguntas — o ideal é 3 a 8.')
+  return warns
+}
 
 type Post = Record<string, any>
 
@@ -27,6 +118,7 @@ const EMPTY_FORM = {
   imagem_destaque: '',
   meta_title: '',
   meta_description: '',
+  faq: [] as FaqItem[],
   destaque_home: false,
 }
 
@@ -127,6 +219,7 @@ export default function PostsClient({
       imagem_destaque: mediaId ? String(mediaId) : '',
       meta_title: post.meta_title ?? '',
       meta_description: post.meta_description ?? '',
+      faq: Array.isArray(post.faq) ? post.faq : [],
       destaque_home: !!post.destaque_home,
     })
     setCoverUrl(mediaUrl)
@@ -143,6 +236,13 @@ export default function PostsClient({
     const data = {
       ...form,
       tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+    }
+    // Validação de qualidade ao publicar (item 1.3): avisa, não bloqueia.
+    if (form.status === 'published') {
+      const warns = validateArticle(form.contentHtml, form.faq)
+      if (warns.length && !window.confirm(`Avisos de qualidade:\n\n- ${warns.join('\n- ')}\n\nPublicar mesmo assim?`)) {
+        return
+      }
     }
     setError(null)
     startTransition(async () => {
@@ -462,11 +562,13 @@ export default function PostsClient({
 
               <Field
                 label="Conteúdo"
-                hint="Monte o artigo em blocos: clique em “+ Adicionar conteúdo” e vá empilhando texto, títulos, imagens, vídeos do YouTube e tabelas na ordem que quiser."
+                hint="Escreva o artigo de ponta a ponta. Use a barra para Título 2–6 (H2–H6), listas, tabela, imagem (com descrição), vídeo e link. O H1 é o título do post, aplicado automaticamente — não use no corpo."
               >
-                <BlockEditor
+                <RichTextEditor
+                  variant="article"
                   value={form.contentHtml}
                   onChange={(html) => setForm(f => ({ ...f, contentHtml: html }))}
+                  placeholder="Escreva o artigo…"
                 />
               </Field>
 
@@ -528,30 +630,45 @@ export default function PostsClient({
                 }}
               />
 
-              {/* SEO */}
+              {/* Cabeçalho de busca (SEO) — item 1.3/1.5: campos próprios de busca,
+                  separados do resumo do card, com contador e prévia do Google. */}
               <div className="pt-2" style={{ borderTop: '1px solid hsl(0 0% 100% / 0.06)' }}>
-                <p className="font-mono text-[9px] uppercase tracking-[0.22em] mb-3" style={{ color: 'hsl(158 92% 70% / 0.7)' }}>SEO</p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.22em] mb-3" style={{ color: 'hsl(158 92% 70% / 0.7)' }}>Cabeçalho de busca (SEO)</p>
                 <div className="space-y-4">
-                  <Field label="Meta Title">
+                  <Field label="Título de busca" hint="Vazio = usa o título do post. Ideal até 60 caracteres.">
                     <input
                       className="w-full h-10 px-3 rounded-lg text-[13px]"
                       style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
                       value={form.meta_title}
                       onChange={e => setForm(f => ({ ...f, meta_title: e.target.value }))}
-                      placeholder="Título para SEO"
+                      placeholder="Como aparece no título do Google"
                     />
+                    <CharCount value={form.meta_title || form.title} max={60} />
                   </Field>
-                  <Field label="Meta Description">
+                  <Field label="Resumo de busca" hint="Texto abaixo do título no Google — separado do resumo do card.">
                     <textarea
                       rows={2}
                       className="w-full px-3 py-2.5 rounded-lg text-[13px] resize-none"
                       style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
                       value={form.meta_description}
                       onChange={e => setForm(f => ({ ...f, meta_description: e.target.value }))}
-                      placeholder="Descrição para mecanismos de busca..."
+                      placeholder="Como aparece o resumo no Google"
                     />
+                    <CharCount value={form.meta_description || form.excerpt} max={155} />
                   </Field>
+                  <SerpPreview
+                    title={form.meta_title || form.title}
+                    slug={form.slug}
+                    desc={form.meta_description || form.excerpt}
+                  />
                 </div>
+              </div>
+
+              {/* Perguntas frequentes (item 1.4) */}
+              <div className="pt-2" style={{ borderTop: '1px solid hsl(0 0% 100% / 0.06)' }}>
+                <p className="font-mono text-[9px] uppercase tracking-[0.22em] mb-1" style={{ color: 'hsl(158 92% 70% / 0.7)' }}>Perguntas frequentes</p>
+                <p className="text-[11px] mb-3" style={{ color: 'hsl(0 0% 91% / 0.4)' }}>3 a 8 perguntas. Geram a seção no artigo + a marcação para IA e Bing.</p>
+                <FaqEditor value={form.faq} onChange={(faq) => setForm(f => ({ ...f, faq }))} />
               </div>
             </div>
 

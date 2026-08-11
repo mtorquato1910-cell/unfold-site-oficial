@@ -13,8 +13,9 @@ function mediaUrl(field: any): string | null {
 }
 
 export const metadata: Metadata = {
-  title: 'Blog | Unfold Growth',
+  title: 'Blog',
   description: 'Conteúdo técnico sobre geração de demanda B2B, vendas complexas e o método UGS.',
+  alternates: { canonical: '/blog' },
 }
 
 // Rede de segurança: além do revalidatePath disparado ao publicar, a página

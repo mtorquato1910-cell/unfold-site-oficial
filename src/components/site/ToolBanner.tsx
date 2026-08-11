@@ -46,9 +46,11 @@ export default function ToolBanner({ banner }: { banner: BannerData }) {
           </span>
         )}
         {banner.titulo && (
-          <h3 className="mt-1.5 font-display text-base font-bold leading-snug text-foreground">
+          /* Não é heading: banner é moldura fora do artigo (item 1.3), fora da
+             hierarquia de títulos. Visual idêntico. */
+          <p className="mt-1.5 font-display text-base font-bold leading-snug text-foreground">
             {banner.titulo}
-          </h3>
+          </p>
         )}
         {banner.descricao && (
           <p className="mt-2 text-sm leading-relaxed text-foreground/55">{banner.descricao}</p>

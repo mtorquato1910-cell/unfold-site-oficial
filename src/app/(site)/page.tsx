@@ -12,6 +12,8 @@ import { FinalCTA } from '@/components/home/FinalCTA'
 
 export const revalidate = 60
 
+export const metadata = { alternates: { canonical: '/' } }
+
 export default async function HomePage() {
   return (
     <>

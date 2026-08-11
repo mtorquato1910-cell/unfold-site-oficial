@@ -53,17 +53,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       where: { slug: { equals: slug } },
     })
     const c = docs[0]
-    if (!c) return { title: 'Case não encontrado | Unfold Growth' }
+    if (!c) return { title: 'Case não encontrado' }
     const og = mediaUrl(c.imagem_destaque)
     return {
-      title: `${c.title} | Cases | Unfold Growth`,
+      title: `${c.title} | Cases`,
       description: c.tagline || c.title,
+      alternates: { canonical: `/cases/${slug}` },
       openGraph: og
         ? { title: c.title as string, description: (c.tagline || c.title) as string, images: [{ url: og }] }
         : undefined,
     }
   } catch {
-    return { title: 'Cases | Unfold Growth' }
+    return { title: 'Cases' }
   }
 }
 

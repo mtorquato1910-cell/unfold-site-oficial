@@ -11,7 +11,13 @@ import { Node, mergeAttributes } from '@tiptap/core'
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     figure: {
-      setFigure: (attrs: { src: string; alt?: string; caption?: string }) => ReturnType
+      setFigure: (attrs: {
+        src: string
+        alt?: string
+        caption?: string
+        width?: number
+        height?: number
+      }) => ReturnType
     }
     youtubeEmbed: {
       setYoutube: (attrs: { videoId: string }) => ReturnType
@@ -30,6 +36,8 @@ export const Figure = Node.create({
     return {
       src: { default: null },
       alt: { default: '' },
+      width: { default: null },
+      height: { default: null },
     }
   },
 
@@ -41,19 +49,23 @@ export const Figure = Node.create({
         getAttrs: (el) => {
           const img = (el as HTMLElement).querySelector('img')
           if (!img) return false
-          return { src: img.getAttribute('src'), alt: img.getAttribute('alt') || '' }
+          return {
+            src: img.getAttribute('src'),
+            alt: img.getAttribute('alt') || '',
+            width: img.getAttribute('width'),
+            height: img.getAttribute('height'),
+          }
         },
       },
     ]
   },
 
   renderHTML({ HTMLAttributes }) {
-    return [
-      'figure',
-      {},
-      ['img', mergeAttributes({ src: HTMLAttributes.src, alt: HTMLAttributes.alt })],
-      ['figcaption', 0],
-    ]
+    // width/height reservam espaço no layout e evitam salto (CLS) — item 1.8.
+    const imgAttrs: Record<string, any> = { src: HTMLAttributes.src, alt: HTMLAttributes.alt }
+    if (HTMLAttributes.width) imgAttrs.width = HTMLAttributes.width
+    if (HTMLAttributes.height) imgAttrs.height = HTMLAttributes.height
+    return ['figure', {}, ['img', mergeAttributes(imgAttrs)], ['figcaption', 0]]
   },
 
   addNodeView() {
@@ -64,6 +76,8 @@ export const Figure = Node.create({
       const img = document.createElement('img')
       img.src = node.attrs.src || ''
       img.alt = node.attrs.alt || ''
+      if (node.attrs.width) img.setAttribute('width', String(node.attrs.width))
+      if (node.attrs.height) img.setAttribute('height', String(node.attrs.height))
       img.contentEditable = 'false'
       img.draggable = false
 
@@ -83,7 +97,12 @@ export const Figure = Node.create({
           chain()
             .insertContent({
               type: this.name,
-              attrs: { src: attrs.src, alt: attrs.alt || '' },
+              attrs: {
+                src: attrs.src,
+                alt: attrs.alt || '',
+                width: attrs.width ?? null,
+                height: attrs.height ?? null,
+              },
               content: attrs.caption ? [{ type: 'text', text: attrs.caption }] : [],
             })
             .run(),

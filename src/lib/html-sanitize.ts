@@ -25,7 +25,7 @@ const OPTIONS: sanitizeHtml.IOptions = {
   ],
   allowedAttributes: {
     a: ['href', 'target', 'rel'],
-    img: ['src', 'alt', 'title'],
+    img: ['src', 'alt', 'title', 'width', 'height'],
     div: ['data-youtube'],
     th: ['colspan', 'rowspan'],
     td: ['colspan', 'rowspan'],
@@ -37,10 +37,16 @@ const OPTIONS: sanitizeHtml.IOptions = {
   exclusiveFilter: (frame) =>
     frame.tag === 'div' && !YT_ID.test(frame.attribs['data-youtube'] || ''),
   transformTags: {
-    // Links externos sempre abrem em nova aba e sem vazar referrer/opener.
+    // Links de terceiros abrem em nova aba e sem vazar referrer/opener, com
+    // nofollow. Link do PRÓPRIO domínio (relativo OU absoluto) é interno: não
+    // recebe nofollow nem target=_blank — senão anula a força passada entre as
+    // páginas do site (item 1.2 da auditoria). "Externo" = protocolo http(s)
+    // apontando para fora de *.unfoldgrowth.com.br.
     a: (tagName, attribs) => {
       const href = attribs.href || ''
-      const external = /^https?:\/\//i.test(href)
+      const isAbsolute = /^https?:\/\//i.test(href)
+      const isOwnDomain = /^https?:\/\/([a-z0-9-]+\.)*unfoldgrowth\.com\.br([/?#]|$)/i.test(href)
+      const external = isAbsolute && !isOwnDomain
       return {
         tagName: 'a',
         attribs: external

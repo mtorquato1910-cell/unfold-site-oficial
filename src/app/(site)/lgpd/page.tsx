@@ -3,8 +3,10 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
-  title: 'LGPD — Seus Direitos | Unfold Growth',
-  description: 'Exercite seus direitos de proteção de dados conforme a LGPD.',
+  title: 'LGPD: seus direitos',
+  description:
+    'Exercite seus direitos de proteção de dados conforme a LGPD: acesso, correção, portabilidade e exclusão. Saiba como solicitar e qual o prazo de resposta.',
+  alternates: { canonical: '/lgpd' },
 }
 
 export default function LGPDPage() {

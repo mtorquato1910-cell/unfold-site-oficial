@@ -1,11 +1,44 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import ContatoForm from '@/components/contato/ContatoForm'
+import { canonical } from '@/lib/seo/canonical'
+import ConversaoContent, { type ConversaoSecao } from '@/components/site/ConversaoContent'
+
+const SECOES: ConversaoSecao[] = [
+  {
+    titulo: 'Como é a primeira conversa',
+    blocos: [
+      { tipo: 'p', texto: 'O objetivo é entender o seu cenário, não apresentar proposta.' },
+      { tipo: 'p', texto: 'Queremos saber como a demanda chega hoje, onde a operação trava, o que já foi tentado e o que está em jogo no próximo trimestre. A partir daí dizemos com franqueza se conseguimos ajudar.' },
+    ],
+  },
+  {
+    titulo: 'O que fazemos',
+    blocos: [
+      { tipo: 'p', texto: 'A Unfold é uma assessoria de growth para empresas com venda complexa. Estruturamos a operação que liga marketing, vendas, CRM e automação em uma lógica só.' },
+      { tipo: 'p', texto: 'Atendemos construção civil e incorporação, agronegócio, tecnologia, automotivo, indústria e serviços B2B. O que esses setores têm em comum é o formato da venda: ticket alto, ciclo de semanas ou meses e mais de uma pessoa decidindo.' },
+    ],
+  },
+  {
+    titulo: 'Quer chegar com material na mão?',
+    blocos: [
+      { tipo: 'p', texto: 'O Diagnóstico de Growth leva menos de 5 minutos e devolve uma leitura dos seus gargalos. A conversa rende mais quando já existe ponto de partida.' },
+    ],
+  },
+  {
+    titulo: 'Onde estamos',
+    blocos: [
+      { tipo: 'p', texto: 'Maceió, Alagoas. Atendemos em todo o Brasil, presencial ou remoto.' },
+      { tipo: 'p', texto: 'Contato direto: tecnologia@unfoldgrowth.com.br' },
+    ],
+  },
+]
 
 export const metadata: Metadata = {
-  title: 'Contato | Unfold Growth',
+  title: 'Contato',
   description:
-    'Fale com a Unfold Growth. Estruturamos sistemas de crescimento que conectam marketing, vendas, CRM e automação. Deixe seus dados e nosso time entra em contato.',
+    'Fale com a Unfold. Estruturamos sistemas de crescimento que conectam marketing, vendas, CRM e automação. Deixe seus dados e o time retorna.',
+  ...canonical('/contato'),
 }
 
 /** Lockup da marca (ícone + wordmark UNF[o]LD) — mesmo padrão da navbar, centralizado. */
@@ -49,6 +82,8 @@ export default function ContatoPage() {
           <ContatoForm />
         </div>
       </section>
+
+      <ConversaoContent secoes={SECOES} />
     </main>
   )
 }

@@ -25,7 +25,15 @@ const Media: CollectionConfig = {
       name: 'alt',
       type: 'text',
       label: 'Texto alternativo (SEO)',
-      admin: { description: 'Descreva a imagem para acessibilidade e SEO' },
+      admin: { description: 'Descreva a imagem para acessibilidade e SEO (obrigatório)' },
+      // Obrigatório só no create (item 1.6): novas imagens exigem descrição;
+      // docs legados sem alt continuam editáveis sem travar. Não altera schema.
+      validate: (value: unknown, { operation }: { operation?: string }) => {
+        if (operation === 'create' && (!value || !String(value).trim())) {
+          return 'A descrição (alt) é obrigatória ao enviar uma imagem.'
+        }
+        return true
+      },
     },
     {
       name: 'caption',

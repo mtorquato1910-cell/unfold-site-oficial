@@ -131,6 +131,21 @@ function mapPost(input: FlexibleData) {
     data.imagem_destaque = null
   }
 
+  // SEO / resumo de busca (item 1.5). Persistidos separados do resumo do card.
+  // Antes eram coletados no form e descartados (não existiam no schema nem aqui).
+  if (input.meta_title !== undefined) data.meta_title = input.meta_title || null
+  if (input.meta_description !== undefined) data.meta_description = input.meta_description || null
+
+  // FAQ (item 1.4): array de { pergunta, resposta }. Só guarda itens preenchidos.
+  if (input.faq !== undefined) {
+    const arr = Array.isArray(input.faq)
+      ? input.faq
+          .filter((q: any) => (q?.pergunta ?? '').trim() && (q?.resposta ?? '').trim())
+          .map((q: any) => ({ pergunta: String(q.pergunta).trim(), resposta: String(q.resposta).trim() }))
+      : []
+    data.faq = arr.length ? arr : null
+  }
+
   return data
 }
 
@@ -172,6 +187,29 @@ export async function updatePost(id: string, input: FlexibleData) {
     await requireRole('editor')
     const payload = await getPayload({ config })
     const data = mapPost(input)
+    // Slug de post PUBLICADO alterado → cria redirect 301 do antigo p/ o novo (item 1.3).
+    // overrideAccess porque a collection `redirects` exige super-admin no create e o
+    // editor não tem esse papel. Falha aqui (loop/duplicado) não bloqueia o save do post.
+    try {
+      const before: any = await payload.findByID({ collection: 'posts', id, depth: 0 })
+      const oldSlug = before?.slug as string | undefined
+      const newSlug = data.slug as string | undefined
+      if (oldSlug && newSlug && oldSlug !== newSlug && before?.status === 'published') {
+        await payload.create({
+          collection: 'redirects',
+          data: {
+            fromPath: `/blog/${oldSlug}`,
+            toPath: `/blog/${newSlug}`,
+            type: '301',
+            enabled: true,
+            note: `Automático: slug do post ${id} alterado`,
+          },
+          overrideAccess: true,
+        })
+      }
+    } catch (e: any) {
+      console.warn('[updatePost] redirect de slug não criado:', e?.message)
+    }
     // Mesma blindagem do createPost: id de imagem inexistente violaria a FK e
     // rejeitaria o UPDATE inteiro. `null` (remoção explícita da capa) é preservado.
     let imagemWarning: string | undefined

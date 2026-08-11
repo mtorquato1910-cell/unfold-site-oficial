@@ -17,9 +17,11 @@ function slugify(text: string): string {
     .trim()
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
-    .slice(0, 60)
     .replace(/^-+|-+$/g, '')
-  return base || 'secao'
+  // Corta em ~60 chars sem partir palavra: recua até a última fronteira de hífen
+  // (item 1.8 — âncora saía cortada no meio da palavra).
+  const cut = base.length > 60 ? base.slice(0, 60).replace(/-[^-]*$/, '') : base
+  return cut.replace(/^-+|-+$/g, '') || 'secao'
 }
 
 export function addHeadingIds(html: string | null | undefined): {
@@ -32,9 +34,9 @@ export function addHeadingIds(html: string | null | undefined): {
   const used = new Set<string>()
 
   const out = html.replace(
-    /<(h[23])([^>]*)>([\s\S]*?)<\/\1>/gi,
+    /<(h[2-6])([^>]*)>([\s\S]*?)<\/\1>/gi,
     (match, tag: string, attrs: string, inner: string) => {
-      const level = tag.toLowerCase() === 'h2' ? 2 : 3
+      const level = parseInt(tag[1], 10)
       const text = inner
         .replace(/<[^>]+>/g, '') // tira tags internas (strong, em…)
         .replace(/&nbsp;/gi, ' ')
@@ -52,7 +54,8 @@ export function addHeadingIds(html: string | null | undefined): {
       used.add(id)
 
       const attrsNoId = attrs.replace(/\s*id="[^"]*"/i, '')
-      toc.push({ id, text, level: level as 2 | 3 })
+      // Ancora todos os níveis (H2–H6) para links/FAQ; o índice lista só H2/H3.
+      if (level === 2 || level === 3) toc.push({ id, text, level: level as 2 | 3 })
       return `<${tag}${attrsNoId} id="${id}">${inner}</${tag}>`
     },
   )

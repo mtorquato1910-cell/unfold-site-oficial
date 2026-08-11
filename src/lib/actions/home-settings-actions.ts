@@ -21,6 +21,7 @@ export type HomeSettingsInput = {
   hero_cta_secondary_label?: string
   hero_cta_secondary_href?: string
   hero_video_url?: string
+  hero_image?: string | number | null
   stats?: HomeStatInput[]
   stats_extra_text?: string
   client_logos_title?: string
@@ -43,6 +44,13 @@ export async function updateHomeSettings(data: HomeSettingsInput) {
   }
   if (data.stats && data.stats.length > 6) {
     throw new Error('Máximo de 6 stats')
+  }
+
+  // Imagem do hero: o painel envia o id como string; o Postgres espera integer
+  // (ou UUID). Vazio = desvincula (null).
+  if (data.hero_image !== undefined) {
+    const s = String(data.hero_image ?? '').trim()
+    ;(data as any).hero_image = !s ? null : /^\d+$/.test(s) ? Number(s) : s
   }
 
   const payload = await getPayload({ config })

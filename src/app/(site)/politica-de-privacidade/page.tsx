@@ -3,8 +3,10 @@ import { getLegalContent } from '@/lib/legal-pages'
 import RichTextRenderer from '@/components/RichTextRenderer'
 
 export const metadata: Metadata = {
-  title: 'Política de Privacidade | Unfold Growth',
-  description: 'Como a Unfold Growth coleta, usa e protege seus dados pessoais.',
+  title: 'Política de Privacidade',
+  description:
+    'Como a Unfold Growth coleta, usa, armazena e protege seus dados pessoais, quais cookies utilizamos e como exercer seus direitos a qualquer momento.',
+  alternates: { canonical: '/politica-de-privacidade' },
 }
 
 export const revalidate = 60

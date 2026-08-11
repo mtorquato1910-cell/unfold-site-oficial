@@ -21,7 +21,7 @@ import styles from './BlockEditor.module.css'
 
 type Block =
   | { id: string; type: 'texto'; html: string }
-  | { id: string; type: 'titulo'; level: 2 | 3 | 4; text: string }
+  | { id: string; type: 'titulo'; level: 2 | 3 | 4 | 5 | 6; text: string }
   | { id: string; type: 'imagem'; src: string; alt: string; caption: string }
   | { id: string; type: 'video'; videoId: string }
   | { id: string; type: 'tabela'; cells: string[][] }
@@ -105,7 +105,7 @@ function parseHtmlToBlocks(html: string): Block[] {
     const tag = el.tagName.toLowerCase()
     if (/^h[1-6]$/.test(tag)) {
       flush()
-      const lvl = Math.min(4, Math.max(2, parseInt(tag[1], 10))) as 2 | 3 | 4
+      const lvl = Math.min(6, Math.max(2, parseInt(tag[1], 10))) as 2 | 3 | 4 | 5 | 6
       blocks.push({ id: newId(), type: 'titulo', level: lvl, text: el.textContent || '' })
     } else if (tag === 'figure') {
       flush()
@@ -225,11 +225,13 @@ export default function BlockEditor({
               <select
                 className={styles.levelSelect}
                 value={b.level}
-                onChange={(e) => patch(b.id, { level: Number(e.target.value) as 2 | 3 | 4 })}
+                onChange={(e) => patch(b.id, { level: Number(e.target.value) as 2 | 3 | 4 | 5 | 6 })}
               >
-                <option value={2}>Título (grande)</option>
-                <option value={3}>Subtítulo (médio)</option>
-                <option value={4}>Tópico (pequeno)</option>
+                <option value={2}>Título 2 (H2)</option>
+                <option value={3}>Título 3 (H3)</option>
+                <option value={4}>Título 4 (H4)</option>
+                <option value={5}>Título 5 (H5)</option>
+                <option value={6}>Título 6 (H6)</option>
               </select>
               <input
                 className={styles.input}

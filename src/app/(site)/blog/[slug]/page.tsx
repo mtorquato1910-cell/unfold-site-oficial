@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft } from 'lucide-react'
@@ -10,6 +10,7 @@ import RichContent from '@/components/RichContent'
 import TableOfContents from '@/components/site/TableOfContents'
 import ToolBanner, { type BannerData } from '@/components/site/ToolBanner'
 import { addHeadingIds } from '@/lib/article-toc'
+import { ArticleSchema, BreadcrumbSchema, FAQSchema } from '@/components/SchemaOrg'
 
 export const revalidate = 60
 
@@ -54,23 +55,46 @@ export async function generateStaticParams() {
   }
 }
 
+/** Slug curto e estável para a âncora de cada pergunta do FAQ (id citável). */
+function slugFaq(text: string, i: number): string {
+  const s = (text || '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 50)
+    .replace(/-[^-]*$/, '')
+  return s || `${i + 1}`
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { slug } = await params
     const payload = await getPayload({ config: configPromise })
     const { docs } = await payload.find({ collection: 'posts', where: { slug: { equals: slug } } })
     const post = docs[0]
-    if (!post) return { title: 'Post não encontrado | Unfold Growth' }
+    if (!post) return { title: 'Post não encontrado' }
     const og = mediaUrl(post.imagem_destaque)
+    // Resumo de busca (item 1.5): campo próprio, com fallback para o resumo do card.
+    // Cast: os tipos gerados do Payload são regenerados no build; acesso pontual aqui.
+    const searchTitle = ((post as any).meta_title as string)?.trim()
+    const searchDesc = ((post as any).meta_description as string)?.trim() || (post.resumo as string)
     return {
-      title: `${post.titulo as string} | Blog | Unfold Growth`,
-      description: post.resumo as string,
+      // meta_title, quando preenchido, é o título de busca completo (≤60, sem sufixo
+      // de marca) — por isso `absolute`. Vazio: usa o título + template do layout.
+      title: searchTitle ? { absolute: searchTitle } : `${post.titulo as string} | Blog`,
+      description: searchDesc,
+      alternates: { canonical: `/blog/${slug}` },
       openGraph: og
-        ? { title: post.titulo as string, description: post.resumo as string, images: [{ url: og }] }
+        ? { title: post.titulo as string, description: searchDesc, images: [{ url: og }] }
         : undefined,
     }
   } catch {
-    return { title: 'Blog | Unfold Growth' }
+    return { title: 'Blog' }
   }
 }
 
@@ -103,7 +127,24 @@ export default async function BlogPostPage({ params }: Props) {
     // DB indisponível
   }
 
-  if (!post) notFound()
+  if (!post) {
+    // Slug trocado? Redireciona 308 (permanente) para o novo endereço (item 1.3).
+    // permanentRedirect fica FORA do try — lança NEXT_REDIRECT, que não pode ser pego.
+    let redirectTo: string | undefined
+    try {
+      const payload = await getPayload({ config: configPromise })
+      const { docs } = await payload.find({
+        collection: 'redirects',
+        where: { and: [{ fromPath: { equals: `/blog/${slug}` } }, { enabled: { equals: true } }] },
+        limit: 1,
+      })
+      redirectTo = (docs[0]?.toPath as string) || undefined
+    } catch {
+      // sem coleção/registro de redirect — segue para 404
+    }
+    if (redirectTo) permanentRedirect(redirectTo)
+    notFound()
+  }
 
   const imgUrl = mediaUrl(post.imagem_destaque)
 
@@ -112,11 +153,33 @@ export default async function BlogPostPage({ params }: Props) {
     ? addHeadingIds(post.conteudo_html as string)
     : { html: '', toc: [] }
 
+  // Perguntas frequentes (item 1.4): itens válidos geram seção visível + FAQPage.
+  const faqItems: { pergunta: string; resposta: string }[] = Array.isArray((post as any).faq)
+    ? (post as any).faq.filter((q: any) => q?.pergunta?.trim() && q?.resposta?.trim())
+    : []
+
   const sidebarBanner = banners[0]
   const mobileBanners = banners.slice(0, 2)
 
   return (
     <main className="min-h-screen">
+      {/* Dados estruturados (item 1.4): Article + trilha de navegação + FAQ (se houver). */}
+      <ArticleSchema
+        title={(post.titulo as string) || ''}
+        description={((post as any).meta_description as string)?.trim() || (post.resumo as string) || ''}
+        url={`/blog/${slug}`}
+        datePublished={(post.publicado_em as string) || (post as any).createdAt || ''}
+        dateModified={(post as any).updatedAt || undefined}
+        author={post.autor as string}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: 'Início', url: '/' },
+          { name: 'Blog', url: '/blog' },
+          { name: (post.titulo as string) || 'Artigo', url: `/blog/${slug}` },
+        ]}
+      />
+      <FAQSchema items={faqItems} />
       <div className="max-w-6xl mx-auto px-6 lg:px-8 pt-32 pb-24 md:pt-40">
         {/* Back */}
         <Link
@@ -190,6 +253,25 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             )}
 
+            {/* Perguntas frequentes (item 1.4) — visível na página e citável por IA. */}
+            {faqItems.length > 0 && (
+              <section className="faq mt-16" aria-labelledby="faq-titulo">
+                <h2 id="faq-titulo" className="font-display font-bold text-2xl mb-6">
+                  Perguntas frequentes
+                </h2>
+                <div className="space-y-6">
+                  {faqItems.map((q, i) => (
+                    <div key={i} className="faq-item">
+                      <h3 id={`faq-${i + 1}-${slugFaq(q.pergunta, i)}`} className="font-display font-semibold text-lg mb-2">
+                        {q.pergunta}
+                      </h3>
+                      <p className="text-foreground/70 leading-relaxed">{q.resposta}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {/* Banners — versão mobile (após o conteúdo, em telas menores) */}
             {mobileBanners.length > 0 && (
               <div className="lg:hidden mt-12 space-y-5">
@@ -204,9 +286,11 @@ export default async function BlogPostPage({ params }: Props) {
               <p className="font-mono text-xs uppercase tracking-widest text-primary mb-3">
                 Próximo passo
               </p>
-              <h2 className="font-display font-bold text-xl mb-4">
+              {/* Não é heading: é moldura fora do artigo (item 1.3). Mantido visual,
+                  fora da hierarquia H1–H6 do conteúdo. */}
+              <p className="font-display font-bold text-xl mb-4">
                 Aplique esse conhecimento na sua operação
-              </h2>
+              </p>
               <Link
                 href="/diagnostico"
                 className="inline-flex items-center gap-2 bg-primary text-primary-foreground rounded-lg px-6 py-3 text-sm font-medium hover:bg-primary/90 transition-colors"

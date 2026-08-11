@@ -86,6 +86,41 @@ export const Posts: CollectionConfig = {
     },
     { name: 'tags', type: 'array', fields: [{ name: 'tag', type: 'text' }] },
 
+    // ── SEO / Busca (item 1.5 — cabeçalho de publicação) ──────────
+    // "Resumo de busca" é SEPARADO do `resumo` (que é o texto do card do blog).
+    // Quando vazios, o site usa o título/resumo do post como fallback.
+    {
+      name: 'meta_title',
+      type: 'text',
+      label: 'Título de busca (SEO)',
+      admin: {
+        description:
+          'Título exibido no resultado do Google. Vazio = usa o título do post. Ideal até 60 caracteres.',
+      },
+    },
+    {
+      name: 'meta_description',
+      type: 'textarea',
+      label: 'Resumo de busca (SEO)',
+      admin: {
+        description:
+          'Texto exibido abaixo do título no Google — separado do resumo do card. Ideal até 155 caracteres.',
+      },
+    },
+
+    // ── Perguntas frequentes (item 1.4) ───────────────────────────
+    // JSON (array de { pergunta, resposta }). Gera a seção visível + o
+    // FAQPage (JSON-LD) no site. Editado no painel custom (/painel/posts).
+    {
+      name: 'faq',
+      type: 'json',
+      label: 'Perguntas frequentes (FAQ)',
+      admin: {
+        description:
+          'Pares pergunta/resposta (3–8). Gera a seção visível no artigo + a marcação FAQPage para citação por IA/Bing.',
+      },
+    },
+
     // ── Destaque na Home ──────────────────────────────────────────
     {
       name: 'destaque_home',

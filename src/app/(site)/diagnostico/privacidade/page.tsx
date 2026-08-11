@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Privacidade do Diagnóstico | Unfold Growth',
+  title: 'Privacidade do Diagnóstico',
   description:
     'Como tratamos os dados que você compartilha ao fazer o Diagnóstico de Growth — finalidades, base legal, retenção e como exercer seus direitos.',
+  alternates: { canonical: '/diagnostico/privacidade' },
 }
 
 export default function PrivacidadePage() {

@@ -69,8 +69,8 @@ export async function Footer() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-14 grid gap-10 md:grid-cols-2 lg:grid-cols-4">
         <div>
           <UnfoldLogo />
-          <p className="mt-4 text-sm text-foreground/65 max-w-xs leading-relaxed">{s.tagline}</p>
-          <div className="mt-6 space-y-1.5 text-sm text-foreground/60">
+          <p className="mt-4 text-sm text-foreground/70 max-w-xs leading-relaxed">{s.tagline}</p>
+          <div className="mt-6 space-y-1.5 text-sm text-foreground/75">
             <p>{s.cidade}</p>
             {s.email_contato && (
               <a
@@ -110,7 +110,7 @@ export async function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="h-9 w-9 grid place-items-center rounded-full border border-border text-foreground/60 hover:text-primary hover:border-primary/50 transition-colors"
+                  className="h-9 w-9 grid place-items-center rounded-full border border-border text-foreground/75 hover:text-primary hover:border-primary/50 transition-colors"
                 >
                   <Icon className="h-4 w-4" />
                 </a>
@@ -121,7 +121,7 @@ export async function Footer() {
 
         {COLS.map((col) => (
           <div key={col.title}>
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/50 mb-4">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-foreground/70 mb-4">
               {col.title}
             </p>
             <ul className="space-y-3">
@@ -142,7 +142,7 @@ export async function Footer() {
 
       {/* Barra inferior */}
       <div className="border-t border-border">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-foreground/50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-foreground/70">
           <p className="font-mono">
             © {year} {s.site_name}
             {s.cnpj ? ` · CNPJ ${s.cnpj}` : ''}
