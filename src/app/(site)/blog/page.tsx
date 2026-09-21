@@ -36,7 +36,9 @@ async function getPosts(): Promise<any[]> {
       collection: 'posts',
       where: { status: { equals: 'published' } },
       sort: '-publicado_em',
-      limit: 30,
+      // 30 deixava os posts mais antigos sem NENHUM link interno (órfãos p/ o
+      // Googlebot). Hoje são 36 artigos; 100 cobre o crescimento previsto.
+      limit: 100,
     })
     return docs
   } catch {

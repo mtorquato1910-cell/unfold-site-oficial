@@ -309,6 +309,7 @@ export async function approvePost(postId: string) {
 
   revalidatePath('/admin/posts')
   revalidatePath('/blog')
+  revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
   revalidatePath(`/blog/${post.slug}`)
   return { ok: true }
 }

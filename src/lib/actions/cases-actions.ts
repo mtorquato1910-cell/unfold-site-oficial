@@ -109,6 +109,7 @@ export async function createCase(input: FlexibleData) {
     const created = await payload.create({ collection: 'cases', data: data as any })
     revalidatePath('/admin/cases')
     revalidatePath('/cases')
+    revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
     revalidatePath('/')
     return { ok: true, id: created.id }
   } catch (e: any) {
@@ -125,6 +126,7 @@ export async function updateCase(id: string, input: FlexibleData) {
     const updated: any = await payload.update({ collection: 'cases', id, data: data as any })
     revalidatePath('/admin/cases')
     revalidatePath('/cases')
+    revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
     revalidatePath('/')
     if (updated?.slug) revalidatePath(`/cases/${updated.slug}`)
     return { ok: true }
@@ -140,6 +142,7 @@ export async function deleteCase(id: string) {
   await payload.delete({ collection: 'cases', id })
   revalidatePath('/admin/cases')
   revalidatePath('/cases')
+  revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
   revalidatePath('/')
   return { ok: true }
 }

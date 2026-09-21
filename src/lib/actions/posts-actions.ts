@@ -172,6 +172,7 @@ export async function createPost(input: FlexibleData) {
     const created = await payload.create({ collection: 'posts', data: data as any })
     revalidatePath('/admin/posts')
     revalidatePath('/blog')
+    revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
     revalidatePath('/') // home (seção Insights)
     revalidateTag('posts')
     revalidateTag('home-insights')
@@ -221,6 +222,7 @@ export async function updatePost(id: string, input: FlexibleData) {
     const updated: any = await payload.update({ collection: 'posts', id, data: data as any })
     revalidatePath('/admin/posts')
     revalidatePath('/blog')
+    revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
     revalidatePath('/') // home (seção Insights)
     revalidateTag('posts')
     revalidateTag('home-insights')
@@ -238,5 +240,6 @@ export async function deletePost(id: string) {
   await payload.delete({ collection: 'posts', id })
   revalidatePath('/admin/posts')
   revalidatePath('/blog')
+  revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
   return { ok: true }
 }
