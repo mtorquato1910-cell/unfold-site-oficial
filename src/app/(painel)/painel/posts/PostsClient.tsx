@@ -253,7 +253,10 @@ export default function PostsClient({
             setError(res?.error || 'Falha ao salvar')
             return
           }
-          setPosts(prev => prev.map(p => p.id === editing.id ? { ...p, ...data } : p))
+          // Usa o documento salvo (campos PT-BR: conteudo_html, titulo…). Mesclar `data`
+          // (chaves do form: contentHtml, title…) deixava o conteudo_html antigo na lista
+          // e, ao reabrir o post sem recarregar, o editor mostrava o texto velho/vazio.
+          setPosts(prev => prev.map(p => p.id === editing.id ? { ...p, ...(res.doc ?? data) } : p))
           if (res.warning) window.alert(res.warning)
         } else {
           const res: any = await createPost(data)
@@ -262,7 +265,7 @@ export default function PostsClient({
             return
           }
           // Re-fetch simple: just prepend optimistically
-          setPosts(prev => [{ id: res.id, ...data, createdAt: new Date().toISOString() }, ...prev])
+          setPosts(prev => [res.doc ?? { id: res.id, ...data, conteudo_html: data.contentHtml, createdAt: new Date().toISOString() }, ...prev])
           if (res.warning) window.alert(res.warning)
         }
         setOpen(false)
@@ -273,7 +276,7 @@ export default function PostsClient({
   }
 
   function handleDelete(post: Post) {
-    if (!window.confirm(`Deletar post "${post.title}"?`)) return
+    if (!window.confirm(`Deletar post "${post.titulo || post.title}"?`)) return
     startTransition(async () => {
       await deletePost(post.id)
       setPosts(prev => prev.filter(p => p.id !== post.id))

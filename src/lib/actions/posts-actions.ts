@@ -176,7 +176,7 @@ export async function createPost(input: FlexibleData) {
     revalidatePath('/') // home (seção Insights)
     revalidateTag('posts')
     revalidateTag('home-insights')
-    return { ok: true, id: created.id, warning: imagemWarning }
+    return { ok: true, id: created.id, doc: created, warning: imagemWarning }
   } catch (e: any) {
     console.error('[createPost]', e)
     return { ok: false, error: e?.message || 'Falha ao salvar' }
@@ -227,7 +227,7 @@ export async function updatePost(id: string, input: FlexibleData) {
     revalidateTag('posts')
     revalidateTag('home-insights')
     if (updated?.slug) revalidatePath(`/blog/${updated.slug}`)
-    return { ok: true, warning: imagemWarning }
+    return { ok: true, doc: updated, warning: imagemWarning }
   } catch (e: any) {
     console.error('[updatePost]', e)
     return { ok: false, error: e?.message || 'Falha ao salvar' }
