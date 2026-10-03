@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { formatPhoneBR } from '@/lib/format/phone-mask'
 import { useContatoCheck } from '@/lib/validation/use-contato-check'
+import { useBotGuard } from '@/lib/security/use-bot-guard'
 
 type State = 'idle' | 'loading' | 'success' | 'error'
 
@@ -16,6 +17,7 @@ export default function NewsletterForm() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const { emailError, phoneError, checkingEmail, checkingPhone, checkEmail, checkPhone } =
     useContatoCheck()
+  const botGuard = useBotGuard()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -33,10 +35,11 @@ export default function NewsletterForm() {
     setErrorMsg(null)
 
     try {
+      const guard = await botGuard.collect()
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, telefone }),
+        body: JSON.stringify({ email, telefone, ...guard }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok || !data.ok) {
@@ -107,6 +110,7 @@ export default function NewsletterForm() {
           aria-label="WhatsApp"
           aria-invalid={!!phoneError}
         />
+        {botGuard.element}
       </form>
       {(emailError || phoneError || (state === 'error' && errorMsg)) && (
         <p className="mt-2 flex items-center gap-1.5 text-xs text-destructive">

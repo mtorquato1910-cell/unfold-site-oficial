@@ -16,7 +16,8 @@ export const MapaIcpResults: CollectionConfig = {
   },
   access: {
     read: ({ req }) => Boolean(req.user),
-    create: () => true, // criado pelo endpoint público
+    // Só via Local API (server-side, overrideAccess). REST pública do Payload fechada: bots criavam leads direto em /api/<collection>.
+    create: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),
     delete: ({ req }) => Boolean(req.user),
   },

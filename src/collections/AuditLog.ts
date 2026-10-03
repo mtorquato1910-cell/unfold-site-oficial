@@ -8,7 +8,8 @@ export const AuditLog: CollectionConfig = {
     group: 'Sistema',
   },
   access: {
-    create: () => true,
+    // Só via Local API (server-side, overrideAccess). REST pública do Payload fechada: bots criavam leads direto em /api/<collection>.
+    create: ({ req }) => Boolean(req.user),
     read: ({ req }) => req.user?.role === 'super-admin',
     update: () => false,
     delete: () => false,

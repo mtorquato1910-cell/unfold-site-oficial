@@ -21,7 +21,8 @@ export const TrackingEvents: CollectionConfig = {
   },
   access: {
     read: ({ req }) => Boolean(req.user),
-    create: () => true, // criação aberta — vem da route /api/track com validação própria
+    // Só via Local API (server-side, overrideAccess). REST pública do Payload fechada: bots criavam leads direto em /api/<collection>.
+    create: ({ req }) => Boolean(req.user),
     update: () => false,
     delete: ({ req }) => req.user?.role === 'super-admin',
   },

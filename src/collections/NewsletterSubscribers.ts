@@ -15,7 +15,8 @@ export const NewsletterSubscribers: CollectionConfig = {
   },
   access: {
     // Cadastro pelo público (form do site) — handled na API com validação
-    create: () => true,
+    // Só via Local API (server-side, overrideAccess). REST pública do Payload fechada: bots criavam leads direto em /api/<collection>.
+    create: ({ req }) => Boolean(req.user),
     // Leitura/edição/delete só para admins logados
     read: ({ req }) => Boolean(req.user),
     update: ({ req }) => Boolean(req.user),

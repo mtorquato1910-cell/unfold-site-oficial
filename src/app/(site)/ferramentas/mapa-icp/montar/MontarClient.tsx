@@ -14,6 +14,7 @@ import { normalizePhoneBR } from '@/lib/format/phone-mask'
 import type { Step } from '@/lib/mapa-icp/steps'
 import type { MapaIcpAIResult } from '@/lib/mapa-icp/types'
 import ResultadoMapa from '../_components/ResultadoMapa'
+import { useBotGuard } from '@/lib/security/use-bot-guard'
 import styles from './montar.module.css'
 
 // ── tipos locais ─────────────────────────────────────────────────────────────
@@ -248,10 +249,15 @@ export default function MontarClient() {
   }, [answers])
 
   // ── envio (POST), com retry seguro ────────────────────────────────────────────
+  // Anti-bot: widget fica montado na raiz (sobrevive às trocas de fase) e cada
+  // envio/retry consome um token Turnstile novo.
+  const botGuard = useBotGuard()
+  const collectGuard = botGuard.collect
   const submit = useCallback(async () => {
     setPhase('processing')
     setErr('')
     try {
+      const guard = await collectGuard()
       const res = await fetch('/api/mapa-icp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -266,6 +272,7 @@ export default function MontarClient() {
           },
           consent: { given: true, policyVersion: 'v1' },
           utm,
+          ...guard,
         }),
       })
       const data = (await res.json()) as
@@ -289,7 +296,7 @@ export default function MontarClient() {
       setErr('Falha de conexão. Verifique sua internet e tente de novo.')
       setPhase('error')
     }
-  }, [buildAnswers, capture, utm])
+  }, [buildAnswers, capture, utm, collectGuard])
 
   // ── envio da captura (gate) ───────────────────────────────────────────────────
   const [consentGiven, setConsentGiven] = useState(false)
@@ -443,6 +450,7 @@ export default function MontarClient() {
             onSubmit={submitCapture}
           />
         )}
+        {phase !== 'result' && botGuard.element}
       </div>
     </div>
   )

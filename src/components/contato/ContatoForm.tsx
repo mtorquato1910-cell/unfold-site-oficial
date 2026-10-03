@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Loader2, Check } from 'lucide-react'
 import { formatPhoneBR } from '@/lib/format/phone-mask'
 import { useContatoCheck } from '@/lib/validation/use-contato-check'
+import { useBotGuard } from '@/lib/security/use-bot-guard'
 
 const schema = z.object({
   nome: z.string().min(3, 'Informe seu nome completo'),
@@ -26,6 +27,7 @@ export default function ContatoForm() {
   const [success, setSuccess] = useState(false)
   const { emailError, phoneError, checkingEmail, checkingPhone, checkEmail, checkPhone } =
     useContatoCheck()
+  const botGuard = useBotGuard()
 
   const {
     register,
@@ -45,10 +47,11 @@ export default function ContatoForm() {
     ])
     if (!emailOk || !phoneOk) return
     try {
+      const guard = await botGuard.collect()
       const res = await fetch('/api/contato', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, ...guard }),
       })
       const json = await res.json().catch(() => ({}))
       if (!res.ok) {
@@ -122,6 +125,8 @@ export default function ContatoForm() {
             className="input-field"
           />
         </Field>
+
+        {botGuard.element}
 
         {serverError && (
           <p className="text-destructive text-sm bg-destructive/10 rounded-lg px-4 py-3">

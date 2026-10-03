@@ -8,10 +8,11 @@ export const Notifications: CollectionConfig = {
     group: 'Sistema',
   },
   access: {
-    read: () => true,
-    create: () => true,
-    update: () => true,
-    delete: () => true,
+    read: ({ req }) => Boolean(req.user),
+    // Só via Local API (server-side, overrideAccess). REST pública do Payload fechada: bots criavam leads direto em /api/<collection>.
+    create: ({ req }) => Boolean(req.user),
+    update: ({ req }) => Boolean(req.user),
+    delete: ({ req }) => Boolean(req.user),
   },
   fields: [
     {

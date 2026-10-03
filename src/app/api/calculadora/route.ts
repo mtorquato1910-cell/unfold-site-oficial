@@ -24,6 +24,7 @@ import { calcLeadScore } from '@/lib/calculadora/score'
 import { publicResultUrl } from '@/lib/calculadora-server/public-url'
 import { syncCalculadoraToRD } from '@/lib/crm/rd-calculadora'
 import { enforceContato } from '@/lib/validation/enforce-contato'
+import { checkBotGuard, pickBotGuardFields } from '@/lib/security/bot-guard'
 import { trackCalcEventServer } from '@/lib/analytics/calculadora-events-server'
 import type {
   CalculadoraInputs,
@@ -80,6 +81,32 @@ export async function POST(req: NextRequest) {
     )
   }
   const d = parsed.data
+
+  // ── Anti-bot (honeypot + tempo mínimo + Turnstile) ───────────────────────
+  // Obrigatório na criação. Reenvio do mesmo token pelo mesmo e-mail dispensa
+  // (o POST que criou o registro já passou pelo Turnstile, que é de uso único).
+  let jaVerificado = false
+  try {
+    const payload = await getPayload({ config: configPromise })
+    const prev = await payload.find({
+      collection: 'calculadora-results',
+      where: { calc_url_resultado: { equals: d.token } },
+      limit: 1,
+      depth: 0,
+    })
+    const prevEmail = (prev.docs[0] as { email?: string } | undefined)?.email
+    jaVerificado = !!prevEmail && prevEmail === d.etapa1.email.toLowerCase().trim()
+  } catch {}
+  if (!jaVerificado) {
+    const guard = await checkBotGuard(pickBotGuardFields(raw), ip, 'calculadora')
+    if (!guard.ok) {
+      if (guard.silent) return NextResponse.json({ ok: true, token: d.token })
+      return NextResponse.json(
+        { ok: false, error: 'captcha_failed', message: 'Verificação anti-spam falhou. Recarregue a página e tente novamente.' },
+        { status: 403 },
+      )
+    }
+  }
 
   // ── Validação reforçada de contato (e-mail MX/DNS + WhatsApp Evolution) ───
   // Telefone (WhatsApp) obrigatório; fail-open só p/ checagem Evolution offline. Normaliza o 9º dígito.

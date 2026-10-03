@@ -13,6 +13,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDeferredValue } from 'react'
+import type { ReactNode } from 'react'
+import { useBotGuard } from '@/lib/security/use-bot-guard'
 import {
   calcularDefaults,
 } from '@/lib/calculadora/benchmarks'
@@ -122,6 +124,8 @@ export interface UseCalculadora {
   resetPremissas: () => void
   /** Persiste o snapshot atual via POST /api/calculadora (idempotente por token). */
   persistir: () => Promise<{ ok: boolean; tampered?: boolean } | null>
+  /** Honeypot + widget Turnstile — o shell renderiza para o persistir() ter token. */
+  botGuardElement: ReactNode
 }
 
 export function useCalculadora(): UseCalculadora {
@@ -275,6 +279,12 @@ export function useCalculadora(): UseCalculadora {
     [],
   )
 
+  // Anti-bot: o 1º POST de cada token exige Turnstile; reenvios do mesmo token
+  // (ex.: persistirAntes do PDF) são dispensados pelo server, então não esperam token.
+  const botGuard = useBotGuard()
+  const collectGuard = botGuard.collect
+  const tokenVerificadoRef = useRef<string | null>(null)
+
   // Persistir snapshot atual via API. Idempotente: mesmo token reposta = update.
   const persistir = useCallback(async (): Promise<{ ok: boolean; tampered?: boolean } | null> => {
     if (!state.etapa1Concluida) return null
@@ -295,6 +305,7 @@ export function useCalculadora(): UseCalculadora {
         resultado,
         insight: { principal: insight.principal, override_ie: insight.override_ie },
         consent: { given: true as const, policyVersion: 'v1.0' },
+        ...(await collectGuard(tokenVerificadoRef.current === state.token ? 0 : undefined)),
       }
       const res = await fetch('/api/calculadora', {
         method: 'POST',
@@ -306,6 +317,7 @@ export function useCalculadora(): UseCalculadora {
         ok?: boolean
         tampered?: boolean
       }
+      if (json.ok) tokenVerificadoRef.current = state.token
       return { ok: Boolean(json.ok), tampered: json.tampered }
     } catch {
       return { ok: false }
@@ -320,6 +332,7 @@ export function useCalculadora(): UseCalculadora {
     resultado,
     insight.principal,
     insight.override_ie,
+    collectGuard,
   ])
 
   const resetPremissas = useCallback(() => {
@@ -357,6 +370,7 @@ export function useCalculadora(): UseCalculadora {
     setPremissa,
     resetPremissas,
     persistir,
+    botGuardElement: botGuard.element,
   }
 }
 

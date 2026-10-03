@@ -14,6 +14,7 @@ import configPromise from '@payload-config'
 import { z } from 'zod'
 import { enforceContato } from '@/lib/validation/enforce-contato'
 import { syncContact } from '@/lib/crm/adapter'
+import { checkBotGuard, pickBotGuardFields } from '@/lib/security/bot-guard'
 
 const schema = z.object({
   nome: z.string().trim().min(3, 'Informe seu nome completo'),
@@ -54,6 +55,16 @@ export async function POST(req: NextRequest) {
     raw = await req.json()
   } catch {
     return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 })
+  }
+
+  // Anti-bot (honeypot + tempo mínimo + Turnstile) antes de qualquer gravação/sync RD.
+  const guard = await checkBotGuard(pickBotGuardFields(raw), ip, 'contato')
+  if (!guard.ok) {
+    if (guard.silent) return NextResponse.json({ ok: true })
+    return NextResponse.json(
+      { ok: false, error: 'captcha_failed', message: 'Verificação anti-spam falhou. Recarregue a página e tente novamente.' },
+      { status: 403 },
+    )
   }
 
   const parsed = schema.safeParse(raw)

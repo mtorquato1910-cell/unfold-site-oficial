@@ -12,6 +12,7 @@ import { mapaIcpSubmissaoSchema } from '@/lib/mapa-icp/schema'
 import { scoreFit } from '@/lib/mapa-icp/scoring'
 import { generateMapa } from '@/lib/mapa-icp/generate'
 import { enforceContato } from '@/lib/validation/enforce-contato'
+import { checkBotGuard, pickBotGuardFields } from '@/lib/security/bot-guard'
 import { syncMapaIcpToRD } from '@/lib/crm/rd-mapa-icp'
 import { sendEmail } from '@/lib/email/adapter'
 import type { MapaIcpAnswers } from '@/lib/mapa-icp/types'
@@ -75,6 +76,14 @@ export async function POST(req: NextRequest) {
 
   let raw: unknown
   try { raw = await req.json() } catch { return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 }) }
+
+  // Anti-bot antes da validação de contato e da chamada de IA (custo) + sync RD.
+  const guard = await checkBotGuard(pickBotGuardFields(raw), ip, 'mapa-icp')
+  if (!guard.ok) {
+    // Silent: bot recebe erro genérico (não há resultado plausível para simular).
+    if (guard.silent) return NextResponse.json({ ok: false, error: 'unavailable', message: 'Não conseguimos gerar seu mapa agora. Tente de novo em instantes.' }, { status: 503 })
+    return NextResponse.json({ ok: false, error: 'captcha_failed', message: 'Verificação anti-spam falhou. Recarregue a página e tente novamente.' }, { status: 403 })
+  }
 
   const parsed = mapaIcpSubmissaoSchema.safeParse(raw)
   if (!parsed.success) {

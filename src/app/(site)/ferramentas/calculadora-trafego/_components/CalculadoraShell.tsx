@@ -38,6 +38,7 @@ export default function CalculadoraShell() {
             defaultValues={hook.etapa1}
             onConcluir={hook.concluirEtapa1}
           />
+          {hook.botGuardElement}
         </div>
       </div>
     )
@@ -56,6 +57,7 @@ export default function CalculadoraShell() {
           {hook.inputsValidos && (
             <BlocoAcoesResultado token={hook.token} persistirAntes={hook.persistir} />
           )}
+          {hook.botGuardElement}
         </div>
       </div>
 

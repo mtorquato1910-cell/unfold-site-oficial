@@ -17,7 +17,8 @@ export const DiagnosticoEvents: CollectionConfig = {
   },
   access: {
     read: ({ req }) => Boolean(req.user),
-    create: () => true, // criação aberta — chamadas vêm de routes/cron com validação própria
+    // Só via Local API (server-side, overrideAccess). REST pública do Payload fechada: bots criavam leads direto em /api/<collection>.
+    create: ({ req }) => Boolean(req.user),
     update: ({ req }) => req.user?.role === 'super-admin',
     delete: ({ req }) => req.user?.role === 'super-admin',
   },

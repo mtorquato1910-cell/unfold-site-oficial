@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { syncContact } from '@/lib/crm/adapter'
 import { enforceContato } from '@/lib/validation/enforce-contato'
+import { checkBotGuard, pickBotGuardFields, type BotGuardFields } from '@/lib/security/bot-guard'
 
 // Rate limit simples por IP (memória, suficiente para form de newsletter)
 const submissions = new Map<string, number[]>()
@@ -25,13 +26,16 @@ export async function POST(req: Request) {
     const ct = req.headers.get('content-type') || ''
     let email = ''
     let telefone: string | undefined
+    let guardFields: BotGuardFields = {}
     if (ct.includes('application/json')) {
       const body = await req.json().catch(() => ({}))
+      guardFields = pickBotGuardFields(body)
       email = String(body.email || '').trim().toLowerCase()
       const telRaw = String(body.telefone || '').trim()
       if (telRaw) telefone = telRaw
     } else {
       const fd = await req.formData()
+      guardFields = pickBotGuardFields(Object.fromEntries(fd.entries()))
       email = String(fd.get('email') || '').trim().toLowerCase()
       const telRaw = String(fd.get('telefone') || '').trim()
       if (telRaw) telefone = telRaw
@@ -39,6 +43,21 @@ export async function POST(req: Request) {
 
     if (!email) {
       return NextResponse.json({ ok: false, error: 'Email inválido' }, { status: 400 })
+    }
+
+    const ip =
+      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      req.headers.get('x-real-ip') ||
+      'unknown'
+
+    // Anti-bot (honeypot + tempo mínimo + Turnstile) antes de qualquer gravação/sync RD.
+    const guard = await checkBotGuard(guardFields, ip, 'newsletter')
+    if (!guard.ok) {
+      if (guard.silent) return NextResponse.json({ ok: true })
+      return NextResponse.json(
+        { ok: false, error: 'Verificação anti-spam falhou. Recarregue a página e tente novamente.' },
+        { status: 403 },
+      )
     }
     // Validação reforçada: e-mail (MX/DNS) + WhatsApp (Evolution) obrigatório + normalização do 9º dígito.
     const contato = await enforceContato({ email, telefone, requirePhone: true })
@@ -51,10 +70,6 @@ export async function POST(req: Request) {
     // A partir daqui, grava o telefone já normalizado (com 9) no banco e no RD.
     if (telefone) telefone = contato.telefone
 
-    const ip =
-      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-      req.headers.get('x-real-ip') ||
-      'unknown'
     if (!checkRateLimit(ip)) {
       return NextResponse.json(
         { ok: false, error: 'Muitas tentativas. Tente novamente em 1h.' },
