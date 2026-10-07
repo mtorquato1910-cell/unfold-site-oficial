@@ -1,0 +1,185 @@
+out. 7, 2026
+SEO Sementes: Passos iniciais - Transcrição
+00:00:00
+
+matheus torquarto: eu já vou usar isso aí para mexer no SEOlá. Eu não, eu não olhei o site que você me mandou, mas a gente pode falar sobre ele também. Desde fica na reunião o
+Matheus Ferraz: Qual site que eu te mandei? Não lembro.
+matheus torquarto: doad lá é o payload CMS ali.
+Matheus Ferraz: Ah, né? Tá pr tranquilo. Só tô terminando esse esse documento aqui. já começa.
+matheus torquarto: Tur
+Matheus Ferraz: aqui, ó. Basicamente o que a gente tem que ter em mente, eh, algumas ferramentas que a gente pode utilizar nessa nessa implementação do site, principalmente o contexto inicial de indexação e rastreamento. Então, por exemplo, como primeira etapa importante é o homologação, tipo do robots ptxt e assim como o que garante, por exemplo, o que vai ser visualizado e o que não vai ser visualizado com aquele follow e no follow. Para além disso, a questão da do robot TXT, a gente tem a a questão dos metaobots, né, que é essa questão de seguir e não seguir o conteúdo que a gente vai permitir que o usuário veja ou não.
+
+
+00:06:36
+
+Matheus Ferraz: Então, por exemplo, aqui no fold, a gente tem que o site ele tá todo habilitado para para pros usuários verem, no caso, né? e desabilitado algumas páginas como admin, diagnóstico etapa 2 e diagnóstico resultado. O site map tá organizado, assim como o ADM do site. Então, a primeira etapa da gente organizar um um site e mapeá-lo pro Google é o Robox. E assim como o XML dele tem que tá totalmente estruturado, com todas as páginas eh sendo localizáveis em um em um catálogo único. Basicamente o XML é um catálogo para essas páginas. Então todas elas precisam estar mapeadas. Isso já está sendo feito no folding, mas é extremamente importante que a gente aplique, porque é a partir do XML e do Robots que o que o Google começa a indexar. Para além disso, o canônico, o canônic ao domínio mesmo, só que cada domínio precisa ter o seu canônico bem bem estabelecido. Aqui, por exemplo, eu tô usando uma extensão. Ai, não dá para mostrar a extensão do saco. Deixa eu ver se eu altero a pera aí.
+
+
+00:08:40
+
+Matheus Ferraz: Para de par para de compartilhar. Compartilhar. Tela inteira. Aqui, por exemplo, o cada página tem o seu canônico. Sei que tá acontecendo isso hoje. É a página de de referência, no caso. Então, tipo, cada página precisa est com isso bem mapeado, assim como tá e meta descrição, que aí é parte de conteúdo, né? eh mais com um conteúdo mais enxuto pro pro Google visualizar. Então o canônico ele é ele é muito importante e precisa est de como parte indexável. R Direct 301. No no S técnico, eu vi que algumas slugs foram mudadas e o redirect não tá sendo redimensionado. Que que é isso? É quando uma página, quando a gente alterou uma URL antiga e não atualizou essa URL antiga, no caso vai vir para uma página 404. E aí a gente precisa fazer um redirect da página antiga pra página nova. O, para além disso, HTP, https todos os sites precisam estar mapeados com https. Eh, deixa eu ver aqui. Acho que dá, dá para ver pelo site map, como a gente pode ver aqui no fold, todos estão com a dats, então tá, tá tudo OK, mas é primordial que isso aconteça.
+
+
+00:10:51
+
+Matheus Ferraz: Aí se não tiver tem que redirecionar o TPP e o www. Enfim, tem a barra também que às vezes que às vezes impacta, mas é bem pouquinho. Uma coisa que tá acontecendo, que a gente precisa mudar também para um fold, eh, essa parte do 404, lembra daquelas páginas, né, que eu falei para você que tem que estão erradas. No caso, a gente fez alguma atualização dessas páginas, mas essas páginas hoje elas elas estão com redirecionamento errado e estão dando 404.
+matheus torquarto: Uhum.
+Matheus Ferraz: Aí aqui vai uma orientação.
+matheus torquarto: É, esse documento que você criou tá bem completinho.
+Matheus Ferraz: É mais para explicar um pouquinho para você.
+matheus torquarto: Uhum.
+Matheus Ferraz: T Aqui, por exemplo, esse redirect tá errado. Esse previsível não é para ir para CR SD. Acho que só é isso. Tá errado aqui de de redirecionamento. Não é para redirecionar para SDR. O o resto tá OK. CRM tirar um pedrado. E aí o que que a gente tem que fazer? redirecionar para uma página que existe.
+
+
+00:12:51
+
+Matheus Ferraz: Então, a gente em algum momento a gente atualizou esse slug e e esse slug hoje tá tá quebrada e ela precisa de redirecionamento. O Google tá mapeando ela, mas não tá indo para lugar nenhum. Para além disso, o interessante seria a gente configurar essas páginas de de 404 com uma interação eh um redirecionamento. Essa página essa página não existe não, não existe, mas você pode conferir outras páginas. Eh, mas você pode conferir o nosso blog. Veja o nosso blog. algum algum texto de de 404 em todas as páginas de 404 que redirecione eh para página de busca, para para blog, enfim. Eh, eu acho que esse documento já vai te ajudar bastante na na entrega inicial do do
+matheus torquarto: Mhm.
+Matheus Ferraz: site. Aqui eu não mapei as e as overviews, tá? no nessa parte de de SEO técnico antigo mesmo,
+matheus torquarto: Угуm.
+Matheus Ferraz: o que é importante a gente inserir nesse documento, por exemplo, eh checklist de a overview também. Eu vou eu vou tá inserindo te e te enviando.
+
+
+00:14:33
+
+Matheus Ferraz: Eh, aqui quebrados. Vamos ver se aqui aqui não tá quebrado, Mas esse aqui tá é esse esses links aqui tão quebrados. Aí tem que orientar a sua IA para substituir os esses links quebrados por esses
+matheus torquarto: O
+Matheus Ferraz: eh por novos ou retirar esses esses quebrados. Pode até só retirar para ficar mais fácil.
+matheus torquarto: tá beleza. Beleza. Sem problema.
+Matheus Ferraz: Esse é esse set aqui eu já atualizei, tá? Tá como não indexado, mas eu solicitei indexação a com relação ao site downfold, tem que editar isso aqui dentro dos dentro dos artigos. eh colocar content update e eh traço wet,
+matheus torquarto: Угу.
+Matheus Ferraz: que é como se fosse uma atualização. A gente teve uma atualização geral nos artigos em nesse nessa data aqui, 7/08/2026. E aí eles nesses posts, tipo, por mais que por mais que eu edite, o que tá o que tá contabilizando na na edição,
+matheus torquarto: Угу.
+Matheus Ferraz: eh, é a versão antiga, não a nova. Então, atualizei, mas o o Google não tá mapeando o o que eu atualizei nas otimizações, tá atualizando a edição antiga, então tem que alterar isso aqui é uma construção do site.
+
+
+00:16:47
+
+Matheus Ferraz: Como eu te falei, no WordPress, isso aqui é atualizado de acordo com os plugins. Como a gente não tá utilizando WordPress,
+matheus torquarto: Угуm.
+Matheus Ferraz: a gente precisa fazer essa essa essa parte mais
+matheus torquarto: atualizлизаци.
+Matheus Ferraz: manual,
+matheus torquarto: Угуm.
+Matheus Ferraz: pelo menos a princípio, né? Depois a gente deixa um pouco mais automatizado, mas aqui tem essas indicações de mode, por exemplo, eh aquele ponto da velocidade também do vídeo que eu tinha destacado. Eh, precisa baixar o o vídeo com com uma versão menor ou atualizar com com print. Mas algo que na experiência do usuário o vídeo em 4K tá pesando, tanto no mobile quanto da o vídeo da Esse aqui,
+matheus torquarto: C'est Mas você fala o Hero, né?
+Matheus Ferraz: esse aqui,
+matheus torquarto: Hero. Sim.
+Matheus Ferraz: isso ele tá em 4K,
+matheus torquarto: Tá.
+Matheus Ferraz: então tipo ele tá tá demorando na na rapidez no site e impactando no usuário.
+matheus torquarto: Tá.
+Matheus Ferraz: nesse vídeo é que talvez fez um print do desse vídeo, deixar ele estático mesmo, mas por ele tá em 4K, tá impactando.
+
+
+00:18:09
+
+matheus torquarto: Tá. OK.
+Matheus Ferraz: Eh, acho que assim, dos pontos do SEO, do SEO técnico, a gente tem que ficar ligado só nesse estudo inicial de Robot, site map, eh, raceamento de esse conceito de página quebrada. Hum, deixa eu ver que eu posso mais. É, eu acho que é basicamente isso aí. Eu vou adicionar essa parte do do IA overview para pra gente pra gente estruturar aí. O que seria interessante, eh, o que seria interessante é a gente dar uma estudada nesse payload. Vê o que tem de diferente na construção da na tua construção e código dos sites e e como aplicar isso.
+matheus torquarto: Угуm.
+Matheus Ferraz: Então, tipo, no payload mesmo, no blog da conversion que eu te mandei, que eu te mandei ontem, ele tem até atualizado isso. Eh, conteúdo backend no mesmo projeto aqui. Dá pra gente rodar no na cloud e verificar o que que dá para implementar dentro da estrutura que você que você faz nas construções do site, sabe? com esse link específico, acho que já dá pra gente mapear pelo menos o superficial assim e ver o que dá para implementar tanto para um folge quanto para esse site da site de sementes.
+
+
+00:20:55
+
+matheus torquarto: Uhum. Beleza. Você você me mandou esse documento já. Yeah.
+Matheus Ferraz: Tô tô encaminhando. Mandei aqui o link do payload para vocês dar uma olhada. Acho que dá para fazer uma conversa com a Cloud e verificar, né? Para além disso.
+matheus torquarto: Ah, não. Payload. Aquele negócio do payload, eu tenho aquele o do primeiro já tenho.
+Matheus Ferraz: Ah, já tem, né?
+matheus torquarto: M.
+Matheus Ferraz: Tá para alengisson. Deixa eu ver.
+matheus torquarto: Угу.
+Matheus Ferraz: É, eu vou adicionar o essa parte da IA nesse nesse documento para gente verificar certinho. Eh, vou tem que verificar também cada link para eu acho que os links quebrados primeiro o novo site. novo site, eu vou adicionar a questão da da IA overview para ver o que o que que dá para implementar dentro da estrutura técnica. Eh, aí o o downfold é mais consertar esses links. Tem os posts todos aí, tem os links quebrados, mas eu acho que o prioritário é esse last mode aqui. ele precisa tá tá atualizado na para que a gente não fique voltando nisso, porque são ao todo foram 25 posts em L mojo do dia 7/08 e aí por mais que eu atualize esses posts não estão sendo atualizados,
+
+
+00:22:50
+
+matheus torquarto: ele, mas tá com aquele problema lá ainda de
+Matheus Ferraz: não é outro problema? Tipo,
+matheus torquarto: Atela.
+Matheus Ferraz: é um pagamento de de edição que o Google ele está identificando a versão antiga, não a nova. Então são são 20 25 posts ao todo. Então, por exemplo, eu fiz as atualizações, mas pelo que parece as atualizações que eu fiz, as otimizações, elas não estão sendo mapeadas. O que o que o Google tá entregando ainda são as versões antigas.
+matheus torquarto: Mhm. Угуm.
+Matheus Ferraz: Então a gente precisa atualizar essa essa parte content eh com a data real da última edição. Aí se não souber coloca a data da publicação. Então, por exemplo, tem post de de SDR, eh, CRM de vendas, que eu que eu atualizei, mas o, o, o Google não voltou com isso. Mas é isso, eu vou fazer o documento, os dois documentos. pro site geral da site geral de sementes e também o as atualizações da da Unfold. Mas basicamente o que eu percebi da downfold é porque as atualizações que a gente vinha fazendo tão estavam OK assim, né?
+
+
+00:24:20
+
+Matheus Ferraz: Mas aí na na prática quando a gente vai deu e tals, a gente só tem um artigo ranqueando.
+matheus torquarto: Tá beleza.
+Matheus Ferraz: A gente precisa
+matheus torquarto: Eu vou eu vou eu vou eu vou fazer todas as alterações. A gente vai vendo se ele vai melhorar, como é que vai seguir aí talvez ele traga outras considerações também, né? Tipo, depois que a gente mexer
+Matheus Ferraz: sim. É, as atualizações que eu fiz hoje no GSC foram que, tipo, tinha alguns set maps a mais dentro do GSC. Eu retirei e solicitei indexação de de sete posts que não estavam indexados. E aí essa parte tá tá mais tranquila, mas a gente hoje, tipo, o L mode é o mais prioritário para além do dos links quebrados. Então, tipo, ah,
+matheus torquarto: M.
+Matheus Ferraz: se tem link quebrado, por exemplo, nos artigos, pode tirar o link dos artigos também. Vocês já já tinha acrescentado bastante link,
+matheus torquarto: Угуm.
+Matheus Ferraz: pode tipo retirar retirar esses esses links assim. Aí tem post editar e os links quebrados do site.
+
+
+00:25:39
+
+Matheus Ferraz: Tem os RLS do link dos links quebrados. Aí para além disso tem as os redirecionamentos. Geralmente o WordPress ele é, por exemplo, o o Redirect, tudo é plugin, né? Então, tipo,
+matheus torquarto: Угу.
+Matheus Ferraz: o redirect, o eu fiz recentemente um redirect na na UFM, aí eu tive que instalar um plugin de redirect para um ORL e paraa nova, porque também não pode ter mais de uma ORL parecida, porque senão o Google fica colidindo, fica entregando os dois artigos, aí não entrega nada com nada. E aí esse RCK geralmente também é feito para isso e também para para link quebrado, que é nesse caso, por exemplo, a gente atualizou, mas é isso, tipo, se a gente atualizou e não tá não tá sendo atualizado, já indica que tem alguns problemas pra gente considerar. Então é bom a gente aplicar também em em sementes assim. Então, tipo, é muito é muito isso mesmo. Eu vou fazer os o as melhorias nos documentos e e já te entrego tanto o checklist do novo site quanto pro pro downfold.
+
+
+00:27:05
+
+matheus torquarto: Fechou. Beleza. Eh, manda para mim esse documento que você fez e a transcrição vai chegar também. Eu já vou começar a fazer aqui agora.
+Matheus Ferraz: Beleza? Para além disso, o payload, né, que a gente tem que que a gente tem que dar uma estudada e e verificar como é que tá sendo aplicado no no na conversion,
+matheus torquarto: Tá bom. Fechou pelo do site mesmo,
+Matheus Ferraz: tá?
+matheus torquarto: né?
+Matheus Ferraz: M.
+matheus torquarto: M.
+Matheus Ferraz: é do o site payload CMS para ver se tem como a gente pegar em sites desse desse site e fazer e mapear na mesma na mesma condição da da um fold de novos clientes.
+matheus torquarto: Assim, o o payload eu fiz o eu baixei aqui o aquele ele dá para baixar um arquivo daquilo ali. Eu também vou tentar indexar ali para ver como é que fica. Угуm.
+Matheus Ferraz: É mais para é é mais para entender a estrutura assim, só que como eles já falam, tipo, o SEO do payload ele não é automático, então a gente precisa ficar atualizando e entender o mínimo de código para isso.
+
+
+00:28:13
+
+Matheus Ferraz: Não, não, não é o automático como WordPress,
+matheus torquarto: Так.
+Matheus Ferraz: mas é uma estrutura que eles estão usando e e vale a pena a gente mapear e e verificar,
+matheus torquarto: M.
+Matheus Ferraz: porque se o se a nossa estrutura é de código e não é o WordPress, a gente precisa ter esse mapeamento estruturado assim para utilizar na nossa operação também. Eh, então tá, vou fazer o as melhorias no checklist do do S técnico novo site, que eu preciso verificar também se tem alguma indicação de a
+matheus torquarto: Uhum.
+Matheus Ferraz: de a overview com o GSC. Aí, a partir disso dá pra gente fazer uma construção,
+matheus torquarto: Mas é esse esse documento que você me mostrou aqui, né?
+Matheus Ferraz: é o documento de de overview do do dos novos sites, né?
+matheus torquarto: Não,
+Matheus Ferraz: Esse da,
+matheus torquarto: esse que você me mostrou agora já tá pronto, né?
+Matheus Ferraz: hum, o do checklist, não, checklist. Eu vou adicionar essa parte do I da IA.
+matheus torquarto: Ah, tá beleza.
+Matheus Ferraz: O que o que eu o que tá pronto é o é o downfold.
+
+
+00:29:26
+
+matheus torquarto: Não é o do É o que eu preciso que tá dos do Vou mexer só no site do downfold agora. você me manda o documento de referente, dá um fold mesmo que você criou, que você me mostrou aí que daí eu já faço as as começo alterações agora aqui já eu já vou ter quase tudo.
+Matheus Ferraz: Tá.
+matheus torquarto: Aí me manda esse documento aí do checklist que você me mandou,
+Matheus Ferraz: Tá um desc
+matheus torquarto: que você me apresentou, downfold aí pros outros sites, semende, etc. E daí a gente segue essa mesma linha ali.
+Matheus Ferraz: do dos oito sites eu montei esse checklist, né? Eu só, como eu tô te falando,
+matheus torquarto: É, gente.
+Matheus Ferraz: eu só vou adicionar essa parte do do da IA overview, ver se tem alguma consideração do do GSC sobre isso, pra gente conseguir rankear em a o site todo como sim,
+matheus torquarto: Uhum.
+Matheus Ferraz: para ser otimizado para para resposta em.
+matheus torquarto: Tá, mas esse documento que você mandou agora, tá tudo certo, então?
+Matheus Ferraz: É, esse é d um fug, tá tudo certo.
+matheus torquarto: Beleza, fechou.
+Matheus Ferraz: Aí agora eu só vou mexer no checklist. Assim que eu que eu montar essa essa auditória, eu te mando do dos sites.
+matheus torquarto: Tá? Se eu tiver alguma dúvida ou questionamento, eu te mando no Whats ali.
+Matheus Ferraz: Oi.
+matheus torquarto: Se eu tiver alguma dúvida ou questionamento, eu te mando no Whats ali.
+Matheus Ferraz: Tá não, tranquilo. Mas é isso, que era tudo que eu tinha que para te apresentar hoje.
+matheus torquarto: Fechou. Beleza,
+Matheus Ferraz: Tá. Falou, tô quatro. Bom trabalho,
+matheus torquarto: fechou. Valeu para você também.
+
+
+A transcrição foi encerrada após 00:31:11
+
+Esta transcrição editável foi gerada por computador e pode conter erros. As pessoas também podem alterar o texto depois que ele for criado.
