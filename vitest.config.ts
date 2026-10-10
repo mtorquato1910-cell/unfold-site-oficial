@@ -14,6 +14,9 @@ export default defineConfig({
   resolve: {
     alias: [{ find: /^@\//, replacement: path.resolve(__dirname, 'src') + '/' }],
   },
+  // JSX com o runtime automático (como no Next) — permite testar componentes .tsx
+  // com renderToString sem `import React` em cada arquivo.
+  esbuild: { jsx: 'automatic' },
   test: {
     exclude: [
       ...configDefaults.exclude,

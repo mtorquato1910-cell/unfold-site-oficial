@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
+import { withSeo } from '@/lib/seo/canonical'
 import { getLegalContent } from '@/lib/legal-pages'
 import RichTextRenderer from '@/components/RichTextRenderer'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/politica-de-privacidade', {
   title: 'Política de Privacidade',
   description:
     'Como a Unfold Growth coleta, usa, armazena e protege seus dados pessoais, quais cookies utilizamos e como exercer seus direitos a qualquer momento.',
-  alternates: { canonical: '/politica-de-privacidade' },
-}
+}, { noindex: true })
 
 export const revalidate = 60
 

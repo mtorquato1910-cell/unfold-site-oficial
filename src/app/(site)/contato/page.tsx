@@ -1,10 +1,36 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import ContatoForm from '@/components/contato/ContatoForm'
-import { canonical } from '@/lib/seo/canonical'
+import { withSeo } from '@/lib/seo/canonical'
 import ConversaoContent, { type ConversaoSecao } from '@/components/site/ConversaoContent'
+import { getPublicSiteSettings, type PublicSiteSettings } from '@/lib/site-settings'
+import { COMPANY, telHref, whatsappHref } from '@/lib/company'
 
-const SECOES: ConversaoSecao[] = [
+/**
+ * "Onde estamos" usa os mesmos dados do rodapé e do schema Organization (global
+ * site-settings, editável em /painel/site-config) — S06 seo-tecnico-2026-10.
+ */
+function secoes(s: PublicSiteSettings): ConversaoSecao[] {
+  const contato: { label: string; href?: string; externo?: boolean }[] = [
+    { label: s.email_contato, href: `mailto:${s.email_contato}` },
+  ]
+  if (s.telefone) contato.push({ label: `${s.telefone} (telefone)`, href: telHref(s.telefone) })
+  if (s.whatsapp) contato.push({ label: 'Falar no WhatsApp', href: whatsappHref(s.whatsapp), externo: true })
+  if (s.endereco) contato.push({ label: s.endereco })
+  contato.push({ label: COMPANY.hours.label })
+  return [
+    ...SECOES_FIXAS,
+    {
+      titulo: 'Onde estamos',
+      blocos: [
+        { tipo: 'p', texto: 'Maceió, Alagoas. Atendemos em todo o Brasil, presencial ou remoto.' },
+        { tipo: 'links', itens: contato },
+      ],
+    },
+  ]
+}
+
+const SECOES_FIXAS: ConversaoSecao[] = [
   {
     titulo: 'Como é a primeira conversa',
     blocos: [
@@ -25,21 +51,13 @@ const SECOES: ConversaoSecao[] = [
       { tipo: 'p', texto: 'O Diagnóstico de Growth leva menos de 5 minutos e devolve uma leitura dos seus gargalos. A conversa rende mais quando já existe ponto de partida.' },
     ],
   },
-  {
-    titulo: 'Onde estamos',
-    blocos: [
-      { tipo: 'p', texto: 'Maceió, Alagoas. Atendemos em todo o Brasil, presencial ou remoto.' },
-      { tipo: 'p', texto: 'Contato direto: tecnologia@unfoldgrowth.com.br' },
-    ],
-  },
 ]
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/contato', {
   title: 'Contato',
   description:
     'Fale com a Unfold. Estruturamos sistemas de crescimento que conectam marketing, vendas, CRM e automação. Deixe seus dados e o time retorna.',
-  ...canonical('/contato'),
-}
+})
 
 /** Lockup da marca (ícone + wordmark UNF[o]LD) — mesmo padrão da navbar, centralizado. */
 function BrandLockup() {
@@ -69,7 +87,8 @@ function BrandLockup() {
   )
 }
 
-export default function ContatoPage() {
+export default async function ContatoPage() {
+  const settings = await getPublicSiteSettings()
   return (
     <main className="min-h-screen">
       <section className="relative isolate overflow-hidden pt-32 pb-24 md:pt-36 md:pb-28">
@@ -83,7 +102,7 @@ export default function ContatoPage() {
         </div>
       </section>
 
-      <ConversaoContent secoes={SECOES} />
+      <ConversaoContent secoes={secoes(settings)} />
     </main>
   )
 }

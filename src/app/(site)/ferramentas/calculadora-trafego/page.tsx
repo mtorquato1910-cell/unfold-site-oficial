@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { withSeo } from '@/lib/seo/canonical'
 import CalculadoraShell from './_components/CalculadoraShell'
 import ConversaoContent, { type ConversaoSecao } from '@/components/site/ConversaoContent'
 
@@ -33,12 +34,11 @@ const SECOES: ConversaoSecao[] = [
   },
 ]
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/ferramentas/calculadora-trafego', {
   title: 'Calculadora de Performance',
   description:
     'Descubra quanto seu investimento em mídia paga pode realmente retornar — com premissas honestas para vendas complexas B2B.',
-  alternates: { canonical: '/ferramentas/calculadora-trafego' },
-}
+})
 
 export default function CalculadoraTráfegoPage() {
   return (

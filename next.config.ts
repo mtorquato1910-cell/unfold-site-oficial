@@ -1,11 +1,16 @@
 import { withPayload } from '@payloadcms/next/withPayload'
 import type { NextConfig } from 'next'
+import { LEGACY_REDIRECTS } from './src/lib/legacy-redirects'
 
 // HSTS em deploy gradual (Bug 3).
-// Fase 1: max-age=300 (5min). Fase 2 (ATUAL, 2026-06-05): max-age=2592000 (30d),
-// ainda SEM includeSubDomains/preload — reversível. Fase 3 (follow-up, após estável):
-// max-age=63072000; includeSubDomains; preload.
-const HSTS_MAX_AGE = '2592000'
+// Fase 1: max-age=300 (5min). Fase 2 (2026-06-05): max-age=2592000 (30d).
+// Fase 3a (ATUAL, 2026-10-10, S04 seo-tecnico-2026-10 / Plano de Ação do Ferraz):
+// max-age de 1 ano no apex (que é sempre HTTPS — sem risco).
+// Fase 3b (pendente, OPS): `includeSubDomains` — SÓ depois de exportar a zona DNS
+// completa e confirmar HTTPS em TODOS os subdomínios (CNAMEs de clique de e-mail do
+// RD/Google e landing pages servidas só em http deixariam de abrir por 1 ano).
+// `preload` NÃO ativado (difícil de desfazer) — avaliação futura.
+const HSTS_VALUE = 'max-age=31536000'
 
 const nextConfig: NextConfig = {
   // Inclui o PDF privado (fora de /public) no bundle do endpoint que o serve.
@@ -49,12 +54,8 @@ const nextConfig: NextConfig = {
         destination: 'https://unfoldgrowth.com.br/:path*',
         permanent: true,
       },
-      // Redirects 301 de URLs legados (Lighthouse / antigos)
-      { source: '/agencia', destination: '/', permanent: true },
-      { source: '/servicos', destination: '/atuacao', permanent: true },
-      { source: '/portfolio', destination: '/cases', permanent: true },
-      // /contato agora é uma página própria (formulário de contato) — redirect legado removido.
-      { source: '/blog/trafego-pago', destination: '/ferramentas/calculadora-trafego', permanent: true },
+      // Redirects permanentes de URLs antigas (legados + Anexo B do plano de SEO).
+      ...LEGACY_REDIRECTS,
     ]
   },
   async headers() {
@@ -63,8 +64,8 @@ const nextConfig: NextConfig = {
       { key: 'X-Content-Type-Options', value: 'nosniff' },
       { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
       { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-      // HSTS Fase 2 (30d). NÃO adicionar preload nem includeSubDomains até a Fase 3.
-      { key: 'Strict-Transport-Security', value: `max-age=${HSTS_MAX_AGE}` },
+      // HSTS Fase 3a (1 ano, apex). Ver comentário no topo do arquivo.
+      { key: 'Strict-Transport-Security', value: HSTS_VALUE },
       // Promove qualquer recurso http:// para https:// no nível do browser.
       { key: 'Content-Security-Policy', value: 'upgrade-insecure-requests' },
     ]

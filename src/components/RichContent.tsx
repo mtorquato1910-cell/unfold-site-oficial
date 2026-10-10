@@ -1,4 +1,5 @@
 import YouTubeEmbed from './site/YouTubeEmbed'
+import { lazyContentImages } from '@/lib/content-images'
 
 /**
  * Renderiza o HTML produzido pelo editor rico (já sanitizado na escrita).
@@ -30,7 +31,8 @@ export default function RichContent({
         const isYt = part.startsWith('<div')
         const m = isYt ? part.match(ID_RE) : null
         if (m) return <YouTubeEmbed key={i} id={m[1]} />
-        return <div key={i} dangerouslySetInnerHTML={{ __html: part }} />
+        // Imagens do corpo com lazy load + decoding async (S08 — Checklist SEO M04).
+        return <div key={i} dangerouslySetInnerHTML={{ __html: lazyContentImages(part) }} />
       })}
     </div>
   )

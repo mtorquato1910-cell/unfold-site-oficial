@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
+import { withSeo } from '@/lib/seo/canonical'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/lgpd', {
   title: 'LGPD: seus direitos',
   description:
     'Exercite seus direitos de proteção de dados conforme a LGPD: acesso, correção, portabilidade e exclusão. Saiba como solicitar e qual o prazo de resposta.',
-  alternates: { canonical: '/lgpd' },
-}
+}, { noindex: true })
 
 export default function LGPDPage() {
   return (

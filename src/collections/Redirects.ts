@@ -1,7 +1,13 @@
 import type { CollectionConfig } from 'payload'
 
 /**
- * Redirects 301/302 servidos via middleware.ts (cache 60s).
+ * Redirects 301/302 cadastrados pelo painel.
+ *
+ * ATENÇÃO (corrigido em 2026-10-10, S02 seo-tecnico-2026-10): esta collection NÃO é
+ * servida pelo middleware. Hoje ela só é consultada em `app/(site)/blog/[slug]/page.tsx`,
+ * quando um post não é encontrado → vale apenas para origens `/blog/<slug>`. Os
+ * registros são criados automaticamente quando o slug de um post publicado muda
+ * (`updatePost`). Redirects de outras rotas ficam em `src/lib/legacy-redirects.ts`.
  * Detecção de loops/chains feita no save (S10 AC11).
  */
 export const Redirects: CollectionConfig = {

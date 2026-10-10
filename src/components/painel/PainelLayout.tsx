@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { logoutAction } from '@/app/(painel)/painel/login/actions'
 import {
   LayoutDashboard, FileText, Briefcase, MessageSquareQuote,
-  FolderTree, Image as ImageIcon, Users, ClipboardList,
+  FolderTree, Image as ImageIcon, Users, ClipboardList, UserRound,
   HelpCircle, Sparkles as SparklesIcon, Radar, Megaphone,
   Settings, UserCog, Activity, LogOut, Search, Command, ChevronRight, Flame, Type,
 } from 'lucide-react'
@@ -30,6 +30,7 @@ const sections: Section[] = [
       { to: '/admin/banners', label: 'Banners', icon: Megaphone },
       { to: '/admin/faqs', label: 'FAQs', icon: HelpCircle },
       { to: '/admin/categories', label: 'Categorias', icon: FolderTree },
+      { to: '/admin/autores', label: 'Autores', icon: UserRound },
       { to: '/admin/media', label: 'Mídia', icon: ImageIcon },
     ],
   },

@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
+import { withSeo } from '@/lib/seo/canonical'
 import CtaMapa from './_components/CtaMapa'
 import RevealRoot from './_components/RevealRoot'
 import styles from './mapa-icp.module.css'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/ferramentas/mapa-icp', {
   title: 'Radar de Comitê de Compra',
   description:
     'Monte o ICP do seu negócio e o mapa de quem decide do outro lado: quem usa, quem aprova, quem paga e quem barra. Gratuito, em cerca de 4 minutos.',
-  alternates: { canonical: '/ferramentas/mapa-icp' },
-}
+}, { image: '/og/mapa-icp.png' })
 
 const Arrow = () => (
   <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">

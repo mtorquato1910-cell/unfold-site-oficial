@@ -1,17 +1,18 @@
 import type { Metadata } from 'next'
+import { withSeo } from '@/lib/seo/canonical'
 import Link from 'next/link'
 import { ArrowUpRight, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { UGSDiagram } from '@/components/metodo/UGSDiagram'
 import { getSiteTexts } from '@/lib/site-texts'
 import { renderHighlight } from '@/lib/render-highlight'
+import { ServiceSchema } from '@/components/SchemaOrg'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/metodo', {
   title: 'Método UGS: sistema de crescimento B2B',
   description:
     'O Unfold Growth System — um sistema de crescimento para operações com vendas complexas, composto por 4 pilares: Diagnosticar, Estruturar, Operar e Evoluir.',
-  alternates: { canonical: '/metodo' },
-}
+})
 
 const PILLARS = [
   {
@@ -91,6 +92,17 @@ export default async function MetodoPage() {
   const { metodo } = await getSiteTexts()
   return (
     <>
+      <ServiceSchema
+        url="/metodo"
+        services={[
+          {
+            name: 'Método UGS — Unfold Growth System',
+            // Texto visível no topo da página (schema = conteúdo visível).
+            description: metodo.subtitle,
+            offers: PILLARS.map((p) => ({ name: p.name, description: p.desc })),
+          },
+        ]}
+      />
       {/* Hero */}
       <section className="relative isolate overflow-hidden pt-32 pb-24 md:pt-40 md:pb-28">
         <video

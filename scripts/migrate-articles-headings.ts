@@ -83,7 +83,15 @@ for (const post of docs as any[]) {
   console.log(`  headings depois: ${headingSeq(next) || '(nenhum)'}`)
 
   if (APPLY) {
-    await payload.update({ collection: 'posts', id: post.id, data: { conteudo_html: next } as any })
+    // technicalEdit: normalização de headings não é edição editorial → não muda
+    // content_updated_at (S01 seo-tecnico-2026-10; foi este script que, em 07/08,
+    // "atualizou" 25 posts no sitemap antes da flag existir).
+    await payload.update({
+      collection: 'posts',
+      id: post.id,
+      data: { conteudo_html: next } as any,
+      context: { technicalEdit: true },
+    })
     console.log('  ✔ atualizado')
   }
 }

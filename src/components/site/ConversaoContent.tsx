@@ -8,6 +8,8 @@
 export type ConversaoBloco =
   | { tipo: 'p'; texto: string }
   | { tipo: 'lista'; itens: string[] }
+  /** Itens com link (ex.: telefone `tel:`, WhatsApp, e-mail). Sem href = texto. */
+  | { tipo: 'links'; itens: { label: string; href?: string; externo?: boolean }[] }
 
 export type ConversaoSecao = { titulo: string; blocos: ConversaoBloco[] }
 
@@ -25,6 +27,24 @@ export default function ConversaoContent({ secoes }: { secoes: ConversaoSecao[] 
                   <p key={j} className="text-foreground/70 leading-relaxed">
                     {b.texto}
                   </p>
+                ) : b.tipo === 'links' ? (
+                  <ul key={j} className="space-y-2">
+                    {b.itens.map((it, k) => (
+                      <li key={k} className="text-foreground/80 leading-relaxed">
+                        {it.href ? (
+                          <a
+                            href={it.href}
+                            className="text-primary hover:underline"
+                            {...(it.externo ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                          >
+                            {it.label}
+                          </a>
+                        ) : (
+                          it.label
+                        )}
+                      </li>
+                    ))}
+                  </ul>
                 ) : (
                   <ul key={j} className="space-y-2.5">
                     {b.itens.map((it, k) => (

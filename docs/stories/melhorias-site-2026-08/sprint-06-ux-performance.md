@@ -16,7 +16,7 @@
 - ✅ **2.4 Contraste — prova social (prioridade do doc):** nomes de clientes (`ClientLogos.tsx`, /30→/70) e parceiros (`Partners.tsx`, /50→/75 e /40→/65) elevados para piso legível.
 
 **Pendente / requer o dono ou browser:**
-- 🔶 **2.1 Vídeo:** precisa do **arquivo self-host <2MB** (baixar/comprimir/1080p/sem áudio/≤12s) — eu não produzo o asset. Código de render-gating por breakpoint + poster local entra quando o arquivo existir.
+- ✅ **2.1 Vídeo — resolvido em 10/10/2026 pela [S05 do épico seo-tecnico-2026-10](../seo-tecnico-2026-10/S05-home-performance-hero.md)** (720p self-hosted 1,3 MB, só imagem no mobile, poster local, `aria-hidden`). Texto original:  precisa do **arquivo self-host <2MB** (baixar/comprimir/1080p/sem áudio/≤12s) — eu não produzo o asset. Código de render-gating por breakpoint + poster local entra quando o arquivo existir.
 - 🔶 **2.2 GTM:** **Clarity/Pixel/GA4** são tags no **painel do GTM** — desligar Clarity, gating do Pixel por consentimento (Consent Mode) e checar GA4/Ads duplicado são feitos lá, não no código.
 - 🔶 **2.3 JS não usado / render-blocking:** exige profiling; **re-medir PageSpeed após 2.1/2.2** antes de investir.
 - 🔶 **2.4 Contraste restante:** rodapé + rótulos de seção; e **validação exata 4.5:1 no Lighthouse** (método do próprio doc) — os valores acima são conservadores, confirmar no browser.

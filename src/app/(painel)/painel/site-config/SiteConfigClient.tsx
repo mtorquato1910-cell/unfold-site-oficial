@@ -115,7 +115,7 @@ export default function SiteConfigClient({ initial }: { initial: SiteContactInpu
                 className="input-mint"
                 value={form.email_notificacoes || ''}
                 onChange={(e) => update('email_notificacoes', e.target.value)}
-                placeholder="tecnologia@unfoldgrowth.com.br"
+                placeholder="gabriel@unfoldgrowth.com.br"
               />
             </Field>
             <Field label="Email DPO (LGPD)">

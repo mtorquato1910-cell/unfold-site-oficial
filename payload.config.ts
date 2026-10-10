@@ -32,6 +32,7 @@ import MapaIcpEvents from './src/collections/MapaIcpEvents'
 import Redirects from './src/collections/Redirects'
 import Banners from './src/collections/Banners'
 import TrackingEvents from './src/collections/TrackingEvents'
+import Authors from './src/collections/Authors'
 import SiteSettings from './src/globals/SiteSettings'
 import HomeSettings from './src/globals/HomeSettings'
 import SiteTexts from './src/globals/SiteTexts'
@@ -114,6 +115,8 @@ export default buildConfig({
     Banners,
     // Mapa de calor / jornada de leads (aba /admin/heatmap)
     TrackingEvents,
+    // Autores reais dos artigos (S07 seo-tecnico-2026-10)
+    Authors,
   ],
   globals: [SiteSettings, HomeSettings, SiteTexts],
   editor: lexicalEditor({}),

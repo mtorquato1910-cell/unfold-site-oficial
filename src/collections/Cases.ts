@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { computeContentUpdatedAt } from '../lib/content-date'
 
 const Cases: CollectionConfig = {
   slug: 'cases',
@@ -67,13 +68,39 @@ const Cases: CollectionConfig = {
         description: 'Ex: Pipeline de R$6MM em vendas complexas B2B',
       },
     },
+    // ── Publicação no padrão dos posts (S10 — épico seo-tecnico-2026-10) ──
+    // Pedido do cliente (10/10/2026): publicar case "da mesma forma dos posts" —
+    // texto corrido num editor só + resumo + campos de busca + FAQ.
+    {
+      name: 'excerpt',
+      type: 'textarea',
+      label: 'Resumo',
+      admin: { description: 'Resumo do case (cards da listagem e da home; fallback do resumo de busca).' },
+    },
+    {
+      name: 'conteudo_html',
+      type: 'textarea',
+      label: 'Conteúdo (HTML do editor)',
+      admin: { description: 'Texto corrido do case, escrito no editor do painel. Fonte da página.' },
+    },
+    { name: 'meta_title', type: 'text', label: 'Título de busca (SEO)' },
+    { name: 'meta_description', type: 'textarea', label: 'Resumo de busca (SEO)' },
+    { name: 'faq', type: 'json', label: 'Perguntas frequentes (FAQ)' },
+    {
+      // Mesma regra dos posts (S01): só muda com título ou corpo; scripts usam
+      // context.technicalEdit. Alimenta o lastmod do sitemap.
+      name: 'content_updated_at',
+      type: 'date',
+      label: 'Conteúdo atualizado em',
+      admin: { readOnly: true, date: { pickerAppearance: 'dayAndTime' } },
+    },
     {
       name: 'highlights',
       type: 'array',
-      label: 'Métricas destaque',
+      label: 'Números do case',
       maxRows: 4,
       admin: {
-        description: 'Até 4 métricas exibidas em cards de destaque',
+        description: 'Até 4 números de destaque (ex.: "Leads" / "+180%") exibidos em cartões no case e na home.',
       },
       fields: [
         {
@@ -90,6 +117,8 @@ const Cases: CollectionConfig = {
         },
       ],
     },
+    // ── Campos ANTIGOS (antes da S10): ocultos; mantidos no banco até a migração para
+    // `conteudo_html` ser validada. O site usa conteudo_html e cai neles só como fallback.
     {
       name: 'challenge',
       type: 'textarea',
@@ -215,6 +244,22 @@ const Cases: CollectionConfig = {
         if (data?.status === 'publicado' && !data.published_at && !originalDoc?.published_at) {
           data.published_at = new Date().toISOString()
         }
+        return data
+      },
+      // S10: data de atualização editorial, igual aos posts (roda após o published_at).
+      ({ data, originalDoc, operation, req }) => {
+        if (!data || (operation !== 'create' && operation !== 'update')) return data
+        delete data.content_updated_at
+        const next = computeContentUpdatedAt({
+          operation,
+          data,
+          originalDoc,
+          context: req?.context,
+          titleField: 'title',
+          htmlField: 'conteudo_html',
+          publishedField: 'published_at',
+        })
+        if (next) data.content_updated_at = next
         return data
       },
     ],

@@ -87,7 +87,7 @@ const HomeSettings: GlobalConfig = {
               type: 'text',
               label: 'URL do vídeo de fundo (mp4)',
               admin: {
-                description: 'URL pública. Deixe vazio para usar o padrão Pexels.',
+                description: 'URL pública. Deixe vazio para usar o vídeo padrão do site (720p, hospedado no próprio site).',
               },
             },
             {

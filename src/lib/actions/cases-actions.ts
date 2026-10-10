@@ -4,14 +4,18 @@ import { revalidatePath } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
-import { sanitizeRichHtml, htmlToPlainText } from '@/lib/html-sanitize'
+import { sanitizeRichHtml } from '@/lib/html-sanitize'
+import { notifyIndexNow } from '@/lib/indexnow'
 
 type FlexibleData = Record<string, any>
 
 /**
- * Cases actions com mapping inglês → schema real.
- * Schema: title (PT já), client (em vez de company), vertical (em vez de sector),
- * destacar_na_home (em vez de featured), challenge/solution, status, etc.
+ * Cases actions com mapping do form do painel → schema real.
+ *
+ * S10 (épico seo-tecnico-2026-10): o case é publicado "da mesma forma dos posts" —
+ * texto corrido num editor só (`conteudo_html`), resumo (`excerpt`), campos de busca
+ * (`meta_title`/`meta_description`), FAQ e "Números do case" (`highlights`, cartões).
+ * Os campos antigos (challenge/solution/results) não são mais escritos pelo painel.
  */
 
 // A collection Cases só aceita 'rascunho' | 'publicado'. Enviar 'draft' quebra a
@@ -34,29 +38,43 @@ function slugify(s: string) {
 
 function mapCase(input: FlexibleData) {
   const title = input.title ?? input.titulo ?? ''
-  // Slug é required + unique no schema. Se o front não enviar, derivamos do título
-  // para não falhar com "Slug obrigatório".
+  // Slug é required + unique no schema. Se o front não enviar, derivamos do título.
   const slug = (input.slug?.trim() ? input.slug.trim() : slugify(title)) || ''
-
-  // Editor rico → HTML para desafio/solução. Texto puro vira fallback nos campos antigos.
-  const challengeHtml = input.challengeHtml != null ? sanitizeRichHtml(input.challengeHtml) : null
-  const solutionHtml = input.solutionHtml != null ? sanitizeRichHtml(input.solutionHtml) : null
 
   const data: FlexibleData = {
     title,
     slug,
     client: input.client ?? input.cliente ?? input.company ?? input.empresa ?? '',
     vertical: input.vertical ?? input.sector ?? input.setor ?? undefined,
-    tagline: input.tagline ?? input.subtitulo ?? undefined,
-    challenge:
-      input.challenge ?? (challengeHtml != null ? htmlToPlainText(challengeHtml) : input.desafio) ?? undefined,
-    solution:
-      input.solution ?? (solutionHtml != null ? htmlToPlainText(solutionHtml) : input.solucao) ?? undefined,
     destacar_na_home: input.destacar_na_home ?? input.featured ?? false,
     status: STATUS_MAP[input.status] ?? 'rascunho',
   }
-  if (challengeHtml != null) data.challenge_html = challengeHtml
-  if (solutionHtml != null) data.solution_html = solutionHtml
+
+  // Corpo único (editor rico, igual aos posts). Só sobrescreve quando enviado.
+  const contentHtml = input.contentHtml ?? input.conteudo_html
+  if (contentHtml != null) data.conteudo_html = sanitizeRichHtml(contentHtml)
+
+  if (input.excerpt !== undefined) data.excerpt = String(input.excerpt || '').trim() || null
+  if (input.meta_title !== undefined) data.meta_title = String(input.meta_title || '').trim() || null
+  if (input.meta_description !== undefined) data.meta_description = String(input.meta_description || '').trim() || null
+
+  // FAQ: mesmo formato dos posts — só pares completos.
+  if (input.faq !== undefined) {
+    const arr = Array.isArray(input.faq)
+      ? input.faq
+          .filter((q: any) => (q?.pergunta ?? '').trim() && (q?.resposta ?? '').trim())
+          .map((q: any) => ({ pergunta: String(q.pergunta).trim(), resposta: String(q.resposta).trim() }))
+      : []
+    data.faq = arr.length ? arr : null
+  }
+
+  // Números do case (cartões): até 4 pares rótulo/valor completos.
+  if (input.highlights !== undefined) {
+    data.highlights = (Array.isArray(input.highlights) ? input.highlights : [])
+      .map((h: any) => ({ label: String(h?.label ?? '').trim(), value: String(h?.value ?? '').trim() }))
+      .filter((h: { label: string; value: string }) => h.label && h.value)
+      .slice(0, 4)
+  }
 
   // Imagem de destaque: ID de media. Postgres usa integer no relacionamento — coerce
   // string numérica p/ Number (string crua dava "field is invalid").
@@ -70,48 +88,30 @@ function mapCase(input: FlexibleData) {
     data.imagem_destaque = null
   }
 
-  // Result/metrics → array `results` (metrica/valor são required no schema, então
-  // NÃO empurramos linhas com valor vazio — isso quebrava o save quando havia métricas).
-  const results: Array<{ metrica: string; valor: string; contexto: string }> = []
-  if (typeof input.result === 'string' && input.result.trim()) {
-    results.push({ metrica: 'Resultado', valor: input.result.trim(), contexto: '' })
-  }
-  if (typeof input.metrics === 'string' && input.metrics.trim()) {
-    // Aceita "Rótulo: valor" por item; sem ':' o texto vira o próprio valor.
-    input.metrics
-      .split(',')
-      .map((s: string) => s.trim())
-      .filter(Boolean)
-      .forEach((p: string) => {
-        const [a, ...rest] = p.split(':')
-        const valor = rest.join(':').trim()
-        if (valor) results.push({ metrica: a.trim(), valor, contexto: '' })
-        else results.push({ metrica: 'Métrica', valor: a.trim(), contexto: '' })
-      })
-  }
-  if (results.length) {
-    data.results = results
-    // Também alimenta `highlights` (cards de métrica no site usam label/value).
-    data.highlights = results.slice(0, 4).map((r) => ({ label: r.metrica, value: r.valor }))
-  }
-
   return data
+}
+
+function revalidateCases(slugs: (string | undefined | null)[] = []) {
+  revalidatePath('/admin/cases')
+  revalidatePath('/cases')
+  revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
+  revalidatePath('/llms.txt') // S09
+  revalidatePath('/')
+  for (const s of slugs) if (s) revalidatePath(`/cases/${s}`)
 }
 
 export async function createCase(input: FlexibleData) {
   try {
     await requireRole('editor')
     if (!input.title?.trim() && !input.titulo?.trim()) throw new Error('Título obrigatório')
-    if (!input.slug?.trim()) throw new Error('Slug obrigatório')
 
     const payload = await getPayload({ config })
     const data = mapCase(input)
-    const created = await payload.create({ collection: 'cases', data: data as any })
-    revalidatePath('/admin/cases')
-    revalidatePath('/cases')
-    revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
-    revalidatePath('/')
-    return { ok: true, id: created.id }
+    if (!data.slug) throw new Error('Slug obrigatório')
+    const created: any = await payload.create({ collection: 'cases', data: data as any })
+    revalidateCases([created?.slug])
+    if (created?.status === 'publicado') await notifyIndexNow([`/cases/${created.slug}`, '/cases'])
+    return { ok: true, id: created.id, doc: created }
   } catch (e: any) {
     console.error('[createCase]', e)
     return { ok: false, error: e?.message || 'Falha ao salvar' }
@@ -123,13 +123,21 @@ export async function updateCase(id: string, input: FlexibleData) {
     await requireRole('editor')
     const payload = await getPayload({ config })
     const data = mapCase(input)
+    const prev: any = await payload.findByID({ collection: 'cases', id, depth: 0 }).catch(() => null)
     const updated: any = await payload.update({ collection: 'cases', id, data: data as any })
-    revalidatePath('/admin/cases')
-    revalidatePath('/cases')
-    revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
-    revalidatePath('/')
-    if (updated?.slug) revalidatePath(`/cases/${updated.slug}`)
-    return { ok: true }
+    revalidateCases([updated?.slug, prev?.slug])
+    // IndexNow (S09): só quando muda algo que o buscador precisa rever — publicação,
+    // slug ou conteúdo editorial (content_updated_at, mesma regra dos posts).
+    const wasPub = prev?.status === 'publicado'
+    const isPub = updated?.status === 'publicado'
+    const changed =
+      wasPub !== isPub || prev?.slug !== updated?.slug || prev?.content_updated_at !== updated?.content_updated_at
+    if ((wasPub || isPub) && changed) {
+      const paths = ['/cases', `/cases/${updated.slug}`]
+      if (prev?.slug && prev.slug !== updated.slug) paths.push(`/cases/${prev.slug}`)
+      await notifyIndexNow(paths)
+    }
+    return { ok: true, doc: updated }
   } catch (e: any) {
     console.error('[updateCase]', e)
     return { ok: false, error: e?.message || 'Falha ao salvar' }
@@ -137,12 +145,18 @@ export async function updateCase(id: string, input: FlexibleData) {
 }
 
 export async function deleteCase(id: string) {
-  await requireRole('editor')
-  const payload = await getPayload({ config })
-  await payload.delete({ collection: 'cases', id })
-  revalidatePath('/admin/cases')
-  revalidatePath('/cases')
-  revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
-  revalidatePath('/')
-  return { ok: true }
+  try {
+    await requireRole('editor')
+    const payload = await getPayload({ config })
+    const prev: any = await payload.findByID({ collection: 'cases', id, depth: 0 }).catch(() => null)
+    await payload.delete({ collection: 'cases', id })
+    // Revalida a página do case excluído (senão o cache continuaria servindo 200).
+    revalidateCases([prev?.slug])
+    if (prev?.status === 'publicado') await notifyIndexNow([`/cases/${prev.slug}`, '/cases'])
+    return { ok: true }
+  } catch (e: any) {
+    console.error('[deleteCase]', e)
+    return { ok: false, error: e?.message || 'Falha ao excluir' }
+  }
 }
+

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { withSeo } from '@/lib/seo/canonical'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
@@ -13,12 +14,11 @@ function mediaUrl(field: any): string | null {
   return null
 }
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/cases', {
   title: 'Cases',
   description:
     'Conheça os resultados que a Unfold Growth já entregou — cases reais de crescimento estruturado em vendas complexas.',
-  alternates: { canonical: '/cases' },
-}
+})
 
 // Rede de segurança: reconstrói a cada 60s além do revalidatePath ao publicar.
 export const revalidate = 60
@@ -215,9 +215,12 @@ export default async function CasesPage() {
                   </p>
 
                   {/* Title */}
-                  <h2 className="font-display font-bold text-xl md:text-2xl leading-snug mb-4 group-hover:text-primary transition-colors">
-                    {c.tagline || c.title}
+                  <h2 className="font-display font-bold text-xl md:text-2xl leading-snug mb-3 group-hover:text-primary transition-colors">
+                    {c.title}
                   </h2>
+                  {(c.excerpt || c.tagline) && (
+                    <p className="text-foreground/75 leading-relaxed mb-4 line-clamp-3">{c.excerpt || c.tagline}</p>
+                  )}
 
                   {/* Highlights */}
                   {c.highlights && c.highlights.length > 0 && (

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { withSeo } from '@/lib/seo/canonical'
 import Link from 'next/link'
 import { ArrowUpRight, Award, Target, Eye, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -7,12 +8,11 @@ import FAQList from '@/components/FAQList'
 import { getSiteTexts } from '@/lib/site-texts'
 import { renderHighlight } from '@/lib/render-highlight'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/sobre', {
   title: 'Sobre',
   description:
     'Conheça a Unfold Growth — organizamos crescimento digital em operações com vendas complexas por meio do método UGS.',
-  alternates: { canonical: '/sobre' },
-}
+})
 
 const VALUES = [
   {

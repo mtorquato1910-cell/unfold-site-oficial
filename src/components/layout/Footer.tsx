@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Linkedin, Instagram, Youtube, Facebook, Twitter, Phone } from 'lucide-react'
 import { UnfoldLogo } from '@/components/brand/UnfoldSymbol'
 import { getPublicSiteSettings } from '@/lib/site-settings'
+import { COMPANY, telHref, whatsappHref } from '@/lib/company'
 import NewsletterForm from './NewsletterForm'
 
 const COLS = [
@@ -57,9 +58,10 @@ export async function Footer() {
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-3">
               Newsletter
             </p>
-            <h3 className="font-display font-bold tracking-tight text-2xl md:text-3xl max-w-xl">
+            {/* <p>, não <h3>: o bloco se repete em todas as páginas fora da hierarquia (S08). */}
+            <p className="font-display font-bold tracking-tight text-2xl md:text-3xl max-w-xl">
               Insights de growth para vendas complexas, direto no seu email.
-            </h3>
+            </p>
           </div>
           <NewsletterForm />
         </div>
@@ -82,23 +84,26 @@ export async function Footer() {
             )}
             {s.telefone && (
               <a
-                href={`tel:${s.telefone.replace(/\D/g, '')}`}
+                href={telHref(s.telefone)}
                 className="flex items-center gap-1.5 hover:text-primary transition-colors"
               >
                 <Phone className="h-3.5 w-3.5" />
                 {s.telefone}
+                {s.whatsapp && s.whatsapp.replace(/\D/g, '') === s.telefone.replace(/\D/g, '') && ' (telefone e WhatsApp)'}
               </a>
             )}
             {s.whatsapp && (
               <a
-                href={`https://wa.me/${s.whatsapp.replace(/\D/g, '')}`}
+                href={whatsappHref(s.whatsapp)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block hover:text-primary transition-colors"
               >
-                WhatsApp
+                Falar no WhatsApp
               </a>
             )}
+            {s.endereco && <p>{s.endereco}</p>}
+            <p>{COMPANY.hours.label}</p>
           </div>
 
           {socials.length > 0 && (

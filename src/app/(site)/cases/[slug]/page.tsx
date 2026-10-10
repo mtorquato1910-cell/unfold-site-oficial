@@ -7,6 +7,11 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { Button } from '@/components/ui/button'
 import RichContent from '@/components/RichContent'
+import { withSeo } from '@/lib/seo/canonical'
+import Breadcrumbs from '@/components/site/Breadcrumbs'
+import { addHeadingIds } from '@/lib/article-toc'
+import { FAQSchema } from '@/components/SchemaOrg'
+import { toBrtIso } from '@/lib/content-date'
 
 function mediaUrl(field: any): string | null {
   if (field && typeof field === 'object') return field.url || field.sizes?.og?.url || null
@@ -55,14 +60,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const c = docs[0]
     if (!c) return { title: 'Case não encontrado' }
     const og = mediaUrl(c.imagem_destaque)
-    return {
-      title: `${c.title} | Cases`,
-      description: c.tagline || c.title,
-      alternates: { canonical: `/cases/${slug}` },
-      openGraph: og
-        ? { title: c.title as string, description: (c.tagline || c.title) as string, images: [{ url: og }] }
-        : undefined,
-    }
+    // withSeo: canonical + og:url + og:image (capa ou padrão) — S04.
+    return withSeo(
+      `/cases/${slug}`,
+      {
+        // S10: campos de busca próprios (como nos posts); vazios caem no título/resumo.
+        title: (c as any).meta_title?.trim() ? { absolute: (c as any).meta_title.trim() } : `${c.title} | Cases`,
+        description: ((c as any).meta_description?.trim() || (c as any).excerpt || c.tagline || c.title) as string,
+        openGraph: {
+          title: c.title as string,
+          publishedTime: toBrtIso((c as any).published_at),
+          modifiedTime: toBrtIso((c as any).content_updated_at || (c as any).published_at),
+        },
+      },
+      { type: 'article', image: og },
+    )
   } catch {
     return { title: 'Cases' }
   }
@@ -95,6 +107,12 @@ export default async function CaseDetailPage({ params }: Props) {
     valor: string
     contexto?: string
   }>
+  // S10: corpo único (editor igual ao dos posts). Sem ele, cai nas seções antigas.
+  const body = c.conteudo_html ? addHeadingIds(c.conteudo_html as string).html : ''
+  const legacy = !body
+  const faqItems: { pergunta: string; resposta: string }[] = Array.isArray(c.faq)
+    ? c.faq.filter((q: any) => q?.pergunta?.trim() && q?.resposta?.trim())
+    : []
 
   return (
     <main>
@@ -102,14 +120,15 @@ export default async function CaseDetailPage({ params }: Props) {
       <section className="relative isolate overflow-hidden pt-32 pb-16 md:pt-40 md:pb-20">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(158_92%_70%/0.06),transparent_55%)]" />
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          {/* Back */}
-          <Link
-            href="/cases"
-            className="inline-flex items-center gap-2 text-sm text-foreground/75 hover:text-primary transition-colors mb-10"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Todos os cases
-          </Link>
+          {/* Trilha visível + BreadcrumbList do mesmo array (S08). */}
+          <Breadcrumbs
+            className="mb-10"
+            items={[
+              { name: 'Início', url: '/' },
+              { name: 'Cases', url: '/cases' },
+              { name: (c.title as string) || 'Case', url: `/cases/${slug}` },
+            ]}
+          />
 
           <div className="flex flex-wrap gap-3 mb-6">
             <span className="font-mono text-xs uppercase tracking-[0.15em] text-primary/80 px-3 py-1 rounded-full border border-primary/20 bg-primary/5">
@@ -121,8 +140,11 @@ export default async function CaseDetailPage({ params }: Props) {
             {c.client}
           </p>
           <h1 className="font-display font-bold tracking-tight text-4xl md:text-5xl lg:text-6xl leading-[1.05] max-w-4xl">
-            {c.tagline || c.title}
+            {c.title}
           </h1>
+          {(c.excerpt || c.tagline) && (
+            <p className="mt-5 text-lg md:text-xl text-foreground/75 max-w-3xl leading-relaxed">{c.excerpt || c.tagline}</p>
+          )}
 
           {/* Highlights */}
           {highlights.length > 0 && (
@@ -152,8 +174,36 @@ export default async function CaseDetailPage({ params }: Props) {
         </div>
       </section>
 
+      {/* S10: texto corrido do case (mesmo pipeline dos posts: ids nos títulos, sanitização na escrita, imagens lazy). */}
+      {body && (
+        <section className="py-16 md:py-20 border-t border-border">
+          <div className="max-w-3xl mx-auto px-6 lg:px-8">
+            <RichContent html={body} className="prose prose-invert prose-lg max-w-none text-foreground/80" />
+          </div>
+        </section>
+      )}
+
+      {/* Perguntas frequentes (S10) — visível + FAQPage. */}
+      {faqItems.length > 0 && (
+        <section className="py-16 md:py-20 border-t border-border" aria-labelledby="faq-case">
+          <FAQSchema items={faqItems} />
+          <div className="max-w-3xl mx-auto px-6 lg:px-8">
+            <h2 id="faq-case" className="font-display font-bold text-2xl md:text-3xl mb-8">Perguntas frequentes</h2>
+            <div className="space-y-6">
+              {faqItems.map((q, i) => (
+                <div key={i}>
+                  <h3 className="font-display font-semibold text-lg mb-2">{q.pergunta}</h3>
+                  <p className="text-foreground/75 leading-relaxed">{q.resposta}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Seções ANTIGAS (antes da S10) — só para cases sem conteudo_html. */}
       {/* Desafio + Solução */}
-      {((c as any).challenge_html || c.challenge || (c as any).solution_html || c.solution) && (
+      {legacy && ((c as any).challenge_html || c.challenge || (c as any).solution_html || c.solution) && (
         <section className="py-16 md:py-20 border-t border-border">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
@@ -197,7 +247,7 @@ export default async function CaseDetailPage({ params }: Props) {
       )}
 
       {/* Pilares UGS */}
-      {pillars.length > 0 && (
+      {legacy && pillars.length > 0 && (
         <section className="py-16 md:py-20 border-t border-border bg-card/30">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-4">
@@ -238,7 +288,7 @@ export default async function CaseDetailPage({ params }: Props) {
       )}
 
       {/* Resultados */}
-      {results.length > 0 && (
+      {legacy && results.length > 0 && (
         <section className="py-16 md:py-20 border-t border-border">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary mb-4">

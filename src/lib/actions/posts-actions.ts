@@ -5,6 +5,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
 import { sanitizeRichHtml, htmlToPlainText } from '@/lib/html-sanitize'
+import { notifyIndexNow } from '@/lib/indexnow'
 
 /**
  * Posts actions com mapping inglês → PT-BR.
@@ -136,6 +137,18 @@ function mapPost(input: FlexibleData) {
   if (input.meta_title !== undefined) data.meta_title = input.meta_title || null
   if (input.meta_description !== undefined) data.meta_description = input.meta_description || null
 
+  // Autores reais (S07): ids da collection `authors`. Obrigatório para publicar
+  // (validado no hook da collection). Ausente no input = não mexe.
+  if (input.autores !== undefined) {
+    data.autores = (Array.isArray(input.autores) ? input.autores : [])
+      .map((v: any) => Number(v?.id ?? v))
+      .filter((n: number) => Number.isFinite(n) && n > 0)
+  }
+  if (input.revisor !== undefined) {
+    const r = Number(input.revisor?.id ?? input.revisor)
+    data.revisor = Number.isFinite(r) && r > 0 ? r : null
+  }
+
   // FAQ (item 1.4): array de { pergunta, resposta }. Só guarda itens preenchidos.
   if (input.faq !== undefined) {
     const arr = Array.isArray(input.faq)
@@ -173,6 +186,8 @@ export async function createPost(input: FlexibleData) {
     revalidatePath('/admin/posts')
     revalidatePath('/blog')
     revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
+    revalidatePath('/llms.txt') // S09
+    if ((created as any)?.status === 'published') await notifyIndexNow([`/blog/${created.slug}`, '/blog'])
     revalidatePath('/') // home (seção Insights)
     revalidateTag('posts')
     revalidateTag('home-insights')
@@ -188,11 +203,13 @@ export async function updatePost(id: string, input: FlexibleData) {
     await requireRole('editor')
     const payload = await getPayload({ config })
     const data = mapPost(input)
+    // Estado anterior, lido uma vez: redirect de slug e aviso ao IndexNow (S09).
+    const prev: any = await payload.findByID({ collection: 'posts', id, depth: 0 }).catch(() => null)
     // Slug de post PUBLICADO alterado → cria redirect 301 do antigo p/ o novo (item 1.3).
     // overrideAccess porque a collection `redirects` exige super-admin no create e o
     // editor não tem esse papel. Falha aqui (loop/duplicado) não bloqueia o save do post.
     try {
-      const before: any = await payload.findByID({ collection: 'posts', id, depth: 0 })
+      const before = prev
       const oldSlug = before?.slug as string | undefined
       const newSlug = data.slug as string | undefined
       if (oldSlug && newSlug && oldSlug !== newSlug && before?.status === 'published') {
@@ -223,10 +240,24 @@ export async function updatePost(id: string, input: FlexibleData) {
     revalidatePath('/admin/posts')
     revalidatePath('/blog')
     revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
+    revalidatePath('/llms.txt') // S09
+    // IndexNow (S09): avisa quando publica, despublica, troca o slug ou o conteúdo muda.
+    {
+      const wasPub = prev?.status === 'published'
+      const isPub = updated?.status === 'published'
+      const changed =
+        wasPub !== isPub || prev?.slug !== updated?.slug || prev?.content_updated_at !== updated?.content_updated_at
+      if ((wasPub || isPub) && changed) {
+        const paths = ['/blog', `/blog/${updated.slug}`]
+        if (prev?.slug && prev.slug !== updated.slug) paths.push(`/blog/${prev.slug}`)
+        await notifyIndexNow(paths)
+      }
+    }
     revalidatePath('/') // home (seção Insights)
     revalidateTag('posts')
     revalidateTag('home-insights')
     if (updated?.slug) revalidatePath(`/blog/${updated.slug}`)
+    revalidatePath('/autor/[slug]', 'page') // lista de artigos nas páginas de autor (S07)
     return { ok: true, doc: updated, warning: imagemWarning }
   } catch (e: any) {
     console.error('[updatePost]', e)
@@ -237,7 +268,12 @@ export async function updatePost(id: string, input: FlexibleData) {
 export async function deletePost(id: string) {
   await requireRole('editor')
   const payload = await getPayload({ config })
+  const prev: any = await payload.findByID({ collection: 'posts', id, depth: 0 }).catch(() => null)
   await payload.delete({ collection: 'posts', id })
+  revalidatePath('/llms.txt') // S09
+  // Revalida a página do post excluído (senão o cache seguiria servindo 200 ao Bing).
+  if (prev?.slug) revalidatePath(`/blog/${prev.slug}`)
+  if (prev?.status === 'published') await notifyIndexNow([`/blog/${prev.slug}`, '/blog'])
   revalidatePath('/admin/posts')
   revalidatePath('/blog')
   revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy

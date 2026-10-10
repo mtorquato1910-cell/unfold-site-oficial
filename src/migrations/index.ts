@@ -8,6 +8,9 @@ import * as migration_20260715_120000_heatmap_events from './20260715_120000_hea
 import * as migration_20260717_120000_site_texts_global from './20260717_120000_site_texts_global';
 import * as migration_20260807_120000_posts_seo_fields from './20260807_120000_posts_seo_fields';
 import * as migration_20260807_130000_posts_faq from './20260807_130000_posts_faq';
+import * as migration_20261010_120000_posts_content_updated_at from './20261010_120000_posts_content_updated_at';
+import * as migration_20261010_130000_authors from './20261010_130000_authors';
+import * as migration_20261010_140000_cases_rich from './20261010_140000_cases_rich';
 
 export const migrations = [
   {
@@ -59,5 +62,20 @@ export const migrations = [
     up: migration_20260807_130000_posts_faq.up,
     down: migration_20260807_130000_posts_faq.down,
     name: '20260807_130000_posts_faq'
+  },
+  {
+    up: migration_20261010_120000_posts_content_updated_at.up,
+    down: migration_20261010_120000_posts_content_updated_at.down,
+    name: '20261010_120000_posts_content_updated_at'
+  },
+  {
+    up: migration_20261010_130000_authors.up,
+    down: migration_20261010_130000_authors.down,
+    name: '20261010_130000_authors'
+  },
+  {
+    up: migration_20261010_140000_cases_rich.up,
+    down: migration_20261010_140000_cases_rich.down,
+    name: '20261010_140000_cases_rich'
   },
 ];

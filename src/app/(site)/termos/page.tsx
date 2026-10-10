@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
+import { withSeo } from '@/lib/seo/canonical'
 import { getLegalContent } from '@/lib/legal-pages'
 import RichTextRenderer from '@/components/RichTextRenderer'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/termos', {
   title: 'Termos de Uso',
   description: 'Termos e condições de uso dos serviços e plataformas da Unfold Growth.',
-  alternates: { canonical: '/termos' },
-}
+}, { noindex: true })
 
 export const revalidate = 60
 

@@ -1,22 +1,43 @@
 import type { Metadata } from 'next'
+import { withSeo } from '@/lib/seo/canonical'
 import Link from 'next/link'
 import { ArrowUpRight, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AtuacaoTabs } from '@/components/atuacao/AtuacaoTabs'
 import { getSiteTexts } from '@/lib/site-texts'
 import { renderHighlight } from '@/lib/render-highlight'
+import { ServiceSchema } from '@/components/SchemaOrg'
 
-export const metadata: Metadata = {
+/** Modelos de engajamento — fonte única da seção visível e do schema Service (S08). */
+const ENGAGEMENT_MODELS = [
+  {
+    n: '01',
+    title: 'Estrutura de Crescimento',
+    desc: 'Diagnóstico completo, construção do sistema de crescimento e handoff para o time interno. Ideal para quem quer internalizar o UGS.',
+  },
+  {
+    n: '02',
+    title: 'Assessoria Contínua',
+    desc: 'Operamos junto com seu time em ciclos mensais. Reuniões semanais, dashboards em tempo real, execução tática e revisão estratégica trimestral.',
+  },
+  {
+    n: '03',
+    title: 'Projetos Personalizados',
+    desc: 'Do lançamento de novos produtos até a estruturação de processos comerciais. Seu desafio de crescimento, nossa paixão.',
+  },
+]
+
+export const metadata: Metadata = withSeo('/atuacao', {
   title: 'Atuação: setores de vendas complexas',
   description:
     'A Unfold atua onde a venda é complexa: construção civil, agronegócio, tecnologia, automotivo, indústria e serviços. Conheça a abordagem por segmento.',
-  alternates: { canonical: '/atuacao' },
-}
+})
 
 export default async function AtuacaoPage() {
   const { atuacao } = await getSiteTexts()
   return (
     <>
+      <ServiceSchema url="/atuacao" services={ENGAGEMENT_MODELS.map((m) => ({ name: m.title, description: m.desc }))} />
       {/* Hero */}
       <section className="relative isolate overflow-hidden pt-32 pb-24 md:pt-40 md:pb-28">
         <video
@@ -90,23 +111,7 @@ export default async function AtuacaoPage() {
             Modelos de engajamento.
           </h2>
           <div className="grid md:grid-cols-3 gap-5">
-            {[
-              {
-                n: '01',
-                title: 'Estrutura de Crescimento',
-                desc: 'Diagnóstico completo, construção do sistema de crescimento e handoff para o time interno. Ideal para quem quer internalizar o UGS.',
-              },
-              {
-                n: '02',
-                title: 'Assessoria Contínua',
-                desc: 'Operamos junto com seu time em ciclos mensais. Reuniões semanais, dashboards em tempo real, execução tática e revisão estratégica trimestral.',
-              },
-              {
-                n: '03',
-                title: 'Projetos Personalizados',
-                desc: 'Do lançamento de novos produtos até a estruturação de processos comerciais. Seu desafio de crescimento, nossa paixão.',
-              },
-            ].map((m) => (
+            {ENGAGEMENT_MODELS.map((m) => (
               <div
                 key={m.n}
                 className="relative rounded-xl border border-border bg-card/40 p-7 hover:bg-card hover:border-primary/30 transition-all"

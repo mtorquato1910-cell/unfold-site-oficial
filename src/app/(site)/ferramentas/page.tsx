@@ -3,7 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getSiteTexts } from '@/lib/site-texts'
 import { renderHighlight } from '@/lib/render-highlight'
-import { canonical } from '@/lib/seo/canonical'
+import { withSeo } from '@/lib/seo/canonical'
 import ConversaoContent, { type ConversaoSecao } from '@/components/site/ConversaoContent'
 
 const SECOES: ConversaoSecao[] = [
@@ -24,12 +24,11 @@ const SECOES: ConversaoSecao[] = [
   },
 ]
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/ferramentas', {
   title: 'Ferramentas Gratuitas de Growth',
   description:
     'Ferramentas gratuitas para diagnosticar e escalar sua operação de crescimento. Calculadora de tráfego e diagnóstico de growth sem compromisso.',
-  ...canonical('/ferramentas'),
-}
+})
 
 const TOOLS = [
   {

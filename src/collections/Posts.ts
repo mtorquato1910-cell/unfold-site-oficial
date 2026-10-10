@@ -1,4 +1,6 @@
-import type { CollectionConfig } from 'payload'
+import { ValidationError, type CollectionConfig } from 'payload'
+import { computeContentUpdatedAt } from '../lib/content-date'
+import { publishMissingAuthor } from '../lib/authors'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -77,7 +79,45 @@ export const Posts: CollectionConfig = {
       },
     },
     { name: 'publicado_em', type: 'date' },
-    { name: 'autor', type: 'text', defaultValue: 'Equipe Unfold Growth' },
+    {
+      // Data de atualização EDITORIAL (S01 seo-tecnico-2026-10). Calculada pelo hook
+      // abaixo — só muda quando título ou corpo mudam. É a fonte do <lastmod> do
+      // sitemap e do dateModified do Article. NÃO usar updatedAt para isso.
+      // Scripts que reescrevem HTML (links, normalização, migrações) DEVEM passar
+      // `context: { technicalEdit: true }` no payload.update para não alterar a data.
+      name: 'content_updated_at',
+      type: 'date',
+      label: 'Conteúdo atualizado em',
+      admin: {
+        readOnly: true,
+        date: { pickerAppearance: 'dayAndTime' },
+        description: 'Automático: muda só quando o título ou o corpo do post são editados.',
+      },
+    },
+    {
+      // Autores reais (S07 seo-tecnico-2026-10). Obrigatório para publicar (hook abaixo).
+      name: 'autores',
+      type: 'relationship',
+      relationTo: 'authors',
+      hasMany: true,
+      label: 'Autores',
+      admin: { description: 'Pessoa(s) que assinam o artigo. Obrigatório para publicar.' },
+    },
+    {
+      name: 'revisor',
+      type: 'relationship',
+      relationTo: 'authors',
+      label: 'Revisado por',
+      admin: { description: 'Especialista que revisou o texto (opcional).' },
+    },
+    {
+      // DEPRECADO (S07): texto livre antigo. Mantido só como fallback de exibição até a
+      // migração para `autores` ser validada em produção. Não usar em código novo.
+      name: 'autor',
+      type: 'text',
+      defaultValue: 'Equipe Unfold Growth',
+      admin: { hidden: true },
+    },
     {
       name: 'tempo_leitura',
       type: 'number',
@@ -190,6 +230,34 @@ export const Posts: CollectionConfig = {
         if (data?.status === 'published' && !data.publicado_em && !originalDoc?.publicado_em) {
           data.publicado_em = new Date().toISOString()
         }
+        return data
+      },
+      // S07: post publicado precisa de ao menos um autor real (Checklist SEO M08).
+      // Exceções: edição técnica (scripts) e submissão externa (o autor é o convidado).
+      ({ data, originalDoc, req }) => {
+        if (data && publishMissingAuthor(data, originalDoc, req?.context)) {
+          throw new ValidationError({
+            collection: 'posts',
+            errors: [{ path: 'autores', message: 'Selecione ao menos um autor para publicar o artigo.' }],
+          })
+        }
+        return data
+      },
+      // Roda DEPOIS do carimbo de publicado_em (usa a data de publicação como piso).
+      ({ data, originalDoc, operation, req }) => {
+        if (!data || (operation !== 'create' && operation !== 'update')) return data
+        // Valor vindo do cliente é ignorado: o campo é sempre calculado aqui.
+        delete data.content_updated_at
+        const next = computeContentUpdatedAt({
+          operation,
+          data,
+          originalDoc,
+          context: req?.context,
+          titleField: 'titulo',
+          htmlField: 'conteudo_html',
+          publishedField: 'publicado_em',
+        })
+        if (next) data.content_updated_at = next
         return data
       },
     ],

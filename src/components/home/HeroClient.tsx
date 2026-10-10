@@ -2,18 +2,33 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { ArrowRight, ArrowUpRight } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import type { HomeSettingsData, HomeStat } from '@/lib/home-settings'
 
+/**
+ * Contador animado. S05 (épico seo-tecnico-2026-10): o HTML do servidor já traz o
+ * VALOR FINAL ("+R$ 75MM") — antes saía "+R$ 0MM", que era o que o Google e os
+ * rastreadores de IA (que não executam JS) liam. A contagem é só efeito visual e só
+ * acontece se a hidratação chegar ANTES de o bloco aparecer (reveal com 540ms de
+ * atraso): aí o reset para 0 é invisível. Em aparelho lento, quando o número já está
+ * na tela, ele fica no valor final — nunca "pisca" de 75 para 0.
+ */
+const REVEAL_SAFE_MS = 450
 function StatCounter({ stat }: { stat: HomeStat }) {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(stat.value)
   const ref = useRef<HTMLSpanElement>(null)
   const started = useRef(false)
 
   useEffect(() => {
     const el = ref.current
     if (!el) return
+    // Sem animação para quem pediu menos movimento: fica o valor final.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    // Hidratou depois de o bloco ficar visível → mantém o valor final (sem flash).
+    if (performance.now() > REVEAL_SAFE_MS) return
+    setCount(0)
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -24,7 +39,8 @@ function StatCounter({ stat }: { stat: HomeStat }) {
           const tick = (now: number) => {
             const progress = Math.min((now - start) / duration, 1)
             const eased = 1 - Math.pow(1 - progress, 3)
-            setCount(Math.round(eased * stat.value))
+            // No último quadro usa o valor exato (o campo aceita decimais, ex.: 1.5).
+            setCount(progress < 1 ? Math.round(eased * stat.value) : stat.value)
             if (progress < 1) requestAnimationFrame(tick)
           }
           requestAnimationFrame(tick)
@@ -38,9 +54,15 @@ function StatCounter({ stat }: { stat: HomeStat }) {
     return () => observer.disconnect()
   }, [stat.value])
 
+  // Largura reservada pelo valor final → a contagem não desloca o layout (CLS).
+  const finalText = `${stat.prefix ?? ''}${stat.value}${stat.suffix ?? ''}`
   return (
     <span>
-      <span ref={ref} className="font-mono text-primary font-medium">
+      <span
+        ref={ref}
+        className="inline-block font-mono text-primary font-medium tabular-nums"
+        style={{ minWidth: `${finalText.length}ch` }}
+      >
         {stat.prefix}
         {count}
         {stat.suffix}
@@ -73,28 +95,68 @@ function renderTitle(title: string) {
   return parts
 }
 
-const DEFAULT_VIDEO =
-  'https://videos.pexels.com/video-files/3129957/3129957-uhd_3840_2160_25fps.mp4'
-const DEFAULT_POSTER =
-  'https://images.pexels.com/videos/3129957/free-video-3129957.jpg?auto=compress&w=1600'
+// S05 (épico seo-tecnico-2026-10): vídeo self-hosted em 720p, 12s, sem áudio (1,3 MB),
+// no lugar do MP4 4K da Pexels (80 MB) que pesava no carregamento (Lighthouse 56).
+// Gerado com ffmpeg a partir do mesmo vídeo; poster = primeiro quadro em WebP (36 KB).
+// O painel (/painel/home-config) ainda pode sobrescrever ambos.
+const DEFAULT_VIDEO = '/videos/hero/hero-720.mp4'
+const DEFAULT_POSTER = '/videos/hero/poster.webp'
+
+/**
+ * O vídeo é decoração cara: só monta no cliente, em telas ≥ 768px e sem
+ * `prefers-reduced-motion`. No celular fica só a imagem (o vídeo nem é baixado).
+ */
+function useShowVideo(): boolean {
+  const [show, setShow] = useState(false)
+  useEffect(() => {
+    const wide = window.matchMedia('(min-width: 768px)')
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setShow(wide.matches && !reduce.matches)
+    update()
+    wide.addEventListener('change', update)
+    reduce.addEventListener('change', update)
+    return () => {
+      wide.removeEventListener('change', update)
+      reduce.removeEventListener('change', update)
+    }
+  }, [])
+  return show
+}
 
 export default function HeroClient({ settings }: { settings: HomeSettingsData }) {
   const videoUrl = settings.hero_video_url || DEFAULT_VIDEO
   const posterUrl = settings.hero_image_url || DEFAULT_POSTER
+  const showVideo = useShowVideo()
 
   return (
     <section className="relative isolate overflow-hidden pt-32 pb-24 md:pt-40 md:pb-28">
-      {/* Background video */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        poster={posterUrl}
-        className="absolute inset-0 h-full w-full object-cover -z-20"
-      >
-        <source src={videoUrl} type="video/mp4" />
-      </video>
+      {/* Fundo: imagem (elemento LCP — sem lazy, prioridade alta) + vídeo só no desktop. */}
+      <Image
+        src={posterUrl}
+        alt=""
+        fill
+        priority
+        fetchPriority="high"
+        sizes="100vw"
+        // URL http:// cadastrada no painel não passa pelo otimizador — serve direto.
+        unoptimized={posterUrl.startsWith('http:')}
+        className="object-cover -z-20"
+      />
+      {showVideo && (
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+          tabIndex={-1}
+          // Sem `poster`: a <Image> já está atrás e o vídeo é transparente até o
+          // 1º quadro (evita baixar o poster uma 2ª vez, sem otimização).
+          className="absolute inset-0 h-full w-full object-cover -z-20"
+        >
+          <source src={videoUrl} type="video/mp4" />
+        </video>
+      )}
       {/* Overlay */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-background/95 via-background/85 to-background/55" />
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_left,hsl(158_92%_70%/0.10),transparent_55%)]" />

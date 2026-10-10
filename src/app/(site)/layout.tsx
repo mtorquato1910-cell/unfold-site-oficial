@@ -4,6 +4,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import CookieBannerWrapper from '@/components/CookieBannerWrapper'
 import { OrganizationSchema, WebSiteSchema } from '@/components/SchemaOrg'
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/canonical'
 import PostHogScript from '@/components/analytics/PostHogScript'
 import GTMScript, { GTMNoScript } from '@/components/analytics/GTMScript'
 import RDStationScript from '@/components/analytics/RDStationScript'
@@ -44,14 +45,18 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || 'https://unfoldgrowth.com.br'
   ),
+  // Fallback para rotas sem withSeo (as páginas do site usam withSeo → og:url próprio).
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
     siteName: 'Unfold Growth',
+    images: [DEFAULT_OG_IMAGE],
   },
+  // max-image-preview:large permite prévias ricas com imagem grande (Checklist SEO M02).
   robots: {
     index: true,
     follow: true,
+    'max-image-preview': 'large',
   },
   // Verificação do Google Search Console via meta tag.
   // Opção A (sem código): verificar pelo GTM já instalado ou por registro DNS TXT.

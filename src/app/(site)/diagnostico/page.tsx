@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { withSeo } from '@/lib/seo/canonical'
 import DiagnosticoEtapa1Form from '@/components/diagnostico/DiagnosticoEtapa1Form'
 import DiagnosticoTracker from '@/components/diagnostico/DiagnosticoTracker'
 import ConversaoContent, { type ConversaoSecao } from '@/components/site/ConversaoContent'
@@ -34,12 +35,11 @@ const SECOES: ConversaoSecao[] = [
   },
 ]
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/diagnostico', {
   title: 'Diagnóstico Gratuito',
   description:
     'Descubra o nível de maturidade da sua operação comercial e receba um diagnóstico personalizado baseado no método UGS.',
-  alternates: { canonical: '/diagnostico' },
-}
+})
 
 export default function DiagnosticoPage() {
   return (

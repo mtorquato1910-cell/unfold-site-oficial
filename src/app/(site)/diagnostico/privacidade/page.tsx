@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { withSeo } from '@/lib/seo/canonical'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/diagnostico/privacidade', {
   title: 'Privacidade do Diagnóstico',
   description:
     'Como tratamos os dados que você compartilha ao fazer o Diagnóstico de Growth — finalidades, base legal, retenção e como exercer seus direitos.',
-  alternates: { canonical: '/diagnostico/privacidade' },
-}
+}, { noindex: true })
 
 export default function PrivacidadePage() {
   return (
@@ -83,13 +84,13 @@ export default function PrivacidadePage() {
         <h2>Como exercer seus direitos</h2>
         <p>
           Envie um e-mail para o DPO informando seu pedido. O endereço fica disponível na nossa{' '}
-          <a href="/politica-de-privacidade">Política de Privacidade completa</a>. Respondemos em
+          <Link href="/politica-de-privacidade">Política de Privacidade completa</Link>. Respondemos em
           até 15 dias úteis.
         </p>
 
         <p className="text-sm text-foreground/80 border-t border-border pt-6 mt-12">
           Última atualização: maio de 2026. Esta página complementa nossa{' '}
-          <a href="/politica-de-privacidade">Política de Privacidade</a> aplicada a todo o site.
+          <Link href="/politica-de-privacidade">Política de Privacidade</Link> aplicada a todo o site.
         </p>
       </article>
     </main>

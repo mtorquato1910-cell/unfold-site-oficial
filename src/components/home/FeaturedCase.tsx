@@ -77,11 +77,12 @@ export async function FeaturedCase() {
               {c.client}
             </p>
             <h3 className="font-display font-bold tracking-tight text-3xl md:text-4xl lg:text-5xl leading-[1.1]">
-              {c.tagline || c.title}
+              {c.title}
             </h3>
-            {c.challenge && (
+            {/* S10: resumo do case (fallback nos campos antigos). */}
+            {(c.excerpt || c.tagline || c.challenge) && (
               <p className="mt-6 text-base md:text-lg text-foreground/70 leading-relaxed line-clamp-3">
-                {c.challenge}
+                {c.excerpt || c.tagline || c.challenge}
               </p>
             )}
             <div className="mt-8 flex flex-col sm:flex-row gap-6">

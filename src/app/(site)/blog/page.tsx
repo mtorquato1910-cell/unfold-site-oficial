@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { withSeo } from '@/lib/seo/canonical'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
@@ -6,17 +7,18 @@ import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getSiteTexts } from '@/lib/site-texts'
 import { renderHighlight } from '@/lib/render-highlight'
+import { authorNames } from '@/lib/authors'
+import { CollectionPageSchema } from '@/components/SchemaOrg'
 
 function mediaUrl(field: any): string | null {
   if (field && typeof field === 'object') return field.url || field.sizes?.card?.url || null
   return null
 }
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withSeo('/blog', {
   title: 'Blog',
   description: 'Conteúdo técnico sobre geração de demanda B2B, vendas complexas e o método UGS.',
-  alternates: { canonical: '/blog' },
-}
+})
 
 // Rede de segurança: além do revalidatePath disparado ao publicar, a página
 // se reconstrói a cada 60s para refletir novos posts sem depender só do purge.
@@ -52,6 +54,13 @@ export default async function BlogPage() {
 
   return (
     <main>
+      {/* Índice do blog como CollectionPage + lista dos artigos exibidos (S08). */}
+      <CollectionPageSchema
+        name="Blog da Unfold Growth"
+        description="Conteúdo técnico sobre geração de demanda B2B, vendas complexas e o método UGS."
+        url="/blog"
+        items={posts.map((p) => ({ name: p.titulo as string, url: `/blog/${p.slug}` }))}
+      />
       <section className="relative isolate overflow-hidden pt-32 pb-24 md:pt-40 md:pb-28">
         <video
           autoPlay
@@ -134,7 +143,7 @@ export default async function BlogPage() {
                       {post.resumo as string}
                     </p>
                     <div className="flex items-center gap-3 text-xs text-foreground/30 mt-auto pt-4 border-t border-border/50">
-                      <span>{post.autor as string}</span>
+                      <span>{authorNames(post)}</span>
                       {post.tempo_leitura && <span>· {post.tempo_leitura as number} min</span>}
                     </div>
                   </Link>

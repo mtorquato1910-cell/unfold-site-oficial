@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import RichTextRenderer from '@/components/RichTextRenderer'
@@ -10,7 +9,12 @@ import RichContent from '@/components/RichContent'
 import TableOfContents from '@/components/site/TableOfContents'
 import ToolBanner, { type BannerData } from '@/components/site/ToolBanner'
 import { addHeadingIds } from '@/lib/article-toc'
-import { ArticleSchema, BreadcrumbSchema, FAQSchema } from '@/components/SchemaOrg'
+import { ArticleSchema, FAQSchema } from '@/components/SchemaOrg'
+import Breadcrumbs from '@/components/site/Breadcrumbs'
+import AuthorBox from '@/components/site/AuthorBox'
+import { authorPath, postAuthors, postReviewer } from '@/lib/authors'
+import { toBrtIso, brtDay } from '@/lib/content-date'
+import { withSeo, DEFAULT_OG_IMAGE } from '@/lib/seo/canonical'
 
 export const revalidate = 60
 
@@ -40,6 +44,17 @@ function mediaUrl(field: any): string | null {
 }
 
 type Props = { params: Promise<{ slug: string }> }
+
+/** Data de atualização editorial (S01): content_updated_at, com fallback na publicação. */
+function contentUpdatedAt(post: any): string | undefined {
+  return (post?.content_updated_at as string) || (post?.publicado_em as string) || undefined
+}
+
+function formatDateBr(iso: string): string {
+  return new Date(iso).toLocaleDateString('pt-BR', {
+    day: '2-digit', month: 'long', year: 'numeric', timeZone: 'America/Sao_Paulo',
+  })
+}
 
 export async function generateStaticParams() {
   try {
@@ -83,16 +98,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     // Cast: os tipos gerados do Payload são regenerados no build; acesso pontual aqui.
     const searchTitle = ((post as any).meta_title as string)?.trim()
     const searchDesc = ((post as any).meta_description as string)?.trim() || (post.resumo as string)
-    return {
-      // meta_title, quando preenchido, é o título de busca completo (≤60, sem sufixo
-      // de marca) — por isso `absolute`. Vazio: usa o título + template do layout.
-      title: searchTitle ? { absolute: searchTitle } : `${post.titulo as string} | Blog`,
-      description: searchDesc,
-      alternates: { canonical: `/blog/${slug}` },
-      openGraph: og
-        ? { title: post.titulo as string, description: searchDesc, images: [{ url: og }] }
-        : undefined,
-    }
+    // withSeo: canonical + og:url + og:image (capa ou padrão) — S04.
+    return withSeo(
+      `/blog/${slug}`,
+      {
+        // meta_title, quando preenchido, é o título de busca completo (≤60, sem sufixo
+        // de marca) — por isso `absolute`. Vazio: usa o título + template do layout.
+        title: searchTitle ? { absolute: searchTitle } : `${post.titulo as string} | Blog`,
+        description: searchDesc,
+        // article:published_time / modified_time (S01): modified = data EDITORIAL.
+        openGraph: {
+          type: 'article',
+          title: post.titulo as string,
+          publishedTime: toBrtIso((post.publicado_em as string) || (post as any).createdAt),
+          modifiedTime: toBrtIso(contentUpdatedAt(post)),
+        },
+      },
+      { type: 'article', image: og },
+    )
   } catch {
     return { title: 'Blog' }
   }
@@ -158,6 +181,20 @@ export default async function BlogPostPage({ params }: Props) {
     ? (post as any).faq.filter((q: any) => q?.pergunta?.trim() && q?.resposta?.trim())
     : []
 
+  // Autores reais (S07): Person no schema, byline e box. Fallback no texto antigo.
+  const authors = postAuthors(post)
+  const reviewer = postReviewer(post)
+  // Imagem do Article (S08): capa com dimensões; sem capa, a og:image padrão do site.
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://unfoldgrowth.com.br'
+  const cover = post.imagem_destaque && typeof post.imagem_destaque === 'object' ? post.imagem_destaque : null
+  const articleImage = imgUrl
+    ? {
+        url: imgUrl.startsWith('http') ? imgUrl : `${siteUrl}${imgUrl}`,
+        width: (cover?.width as number) || undefined,
+        height: (cover?.height as number) || undefined,
+      }
+    : { url: `${siteUrl}${DEFAULT_OG_IMAGE.url}`, width: DEFAULT_OG_IMAGE.width, height: DEFAULT_OG_IMAGE.height }
+
   const sidebarBanner = banners[0]
   const mobileBanners = banners.slice(0, 2)
 
@@ -168,26 +205,25 @@ export default async function BlogPostPage({ params }: Props) {
         title={(post.titulo as string) || ''}
         description={((post as any).meta_description as string)?.trim() || (post.resumo as string) || ''}
         url={`/blog/${slug}`}
-        datePublished={(post.publicado_em as string) || (post as any).createdAt || ''}
-        dateModified={(post as any).updatedAt || undefined}
+        datePublished={toBrtIso((post.publicado_em as string) || (post as any).createdAt) || ''}
+        dateModified={toBrtIso(contentUpdatedAt(post))}
+        authors={authors.map((a) => ({ name: a.nome, url: authorPath(a) }))}
+        reviewer={reviewer ? { name: reviewer.nome, url: authorPath(reviewer) } : null}
         author={post.autor as string}
-      />
-      <BreadcrumbSchema
-        items={[
-          { name: 'Início', url: '/' },
-          { name: 'Blog', url: '/blog' },
-          { name: (post.titulo as string) || 'Artigo', url: `/blog/${slug}` },
-        ]}
+        guestAuthor={post.isExternalSubmission ? ((post.submittedByName as string) || null) : null}
+        image={articleImage}
       />
       <FAQSchema items={faqItems} />
       <div className="max-w-6xl mx-auto px-6 lg:px-8 pt-32 pb-24 md:pt-40">
-        {/* Back */}
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-sm text-foreground/75 hover:text-primary transition-colors mb-12"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" /> Voltar ao blog
-        </Link>
+        {/* Trilha visível + BreadcrumbList do mesmo array (S08) — substitui o "Voltar ao blog". */}
+        <Breadcrumbs
+          className="mb-10"
+          items={[
+            { name: 'Início', url: '/' },
+            { name: 'Blog', url: '/blog' },
+            { name: (post.titulo as string) || 'Artigo', url: `/blog/${slug}` },
+          ]}
+        />
 
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-14">
           {/* ───── Coluna principal ───── */}
@@ -206,16 +242,51 @@ export default async function BlogPostPage({ params }: Props) {
               </h1>
               <p className="text-lg text-foreground/80 leading-relaxed mb-6">{post.resumo as string}</p>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-foreground/70 border-t border-border pt-6">
-                <span>{post.autor as string}</span>
+                {/* Byline com link para a página do autor (S07 — Checklist SEO M08). */}
+                {authors.length > 0 ? (
+                  <span>
+                    Por{' '}
+                    {authors.map((a, i) => (
+                      <span key={a.slug}>
+                        {i > 0 && (i === authors.length - 1 ? ' e ' : ', ')}
+                        <Link href={authorPath(a)} className="font-medium text-foreground/85 hover:text-primary">
+                          {a.nome}
+                        </Link>
+                      </span>
+                    ))}
+                  </span>
+                ) : (
+                  <span>{post.autor as string}</span>
+                )}
+                {reviewer && (
+                  <span>
+                    · Revisado por{' '}
+                    <Link href={authorPath(reviewer)} className="hover:text-primary">
+                      {reviewer.nome}
+                    </Link>
+                  </span>
+                )}
                 {post.tempo_leitura && <span>· {post.tempo_leitura as number} min de leitura</span>}
                 {post.publicado_em && (
                   <span>
-                    ·{' '}
-                    {new Date(post.publicado_em as string).toLocaleDateString('pt-BR', {
-                      day: '2-digit', month: 'long', year: 'numeric',
-                    })}
+                    · Publicado em{' '}
+                    <time dateTime={toBrtIso(post.publicado_em as string)}>
+                      {formatDateBr(post.publicado_em as string)}
+                    </time>
                   </span>
                 )}
+                {/* "Atualizado em" só quando o conteúdo mudou num dia posterior à
+                    publicação — mesma data do dateModified (Checklist SEO M07). */}
+                {post.publicado_em &&
+                  contentUpdatedAt(post) &&
+                  brtDay(contentUpdatedAt(post)) !== brtDay(post.publicado_em as string) && (
+                    <span>
+                      · Atualizado em{' '}
+                      <time dateTime={toBrtIso(contentUpdatedAt(post))}>
+                        {formatDateBr(contentUpdatedAt(post) as string)}
+                      </time>
+                    </span>
+                  )}
               </div>
             </header>
 
@@ -271,6 +342,11 @@ export default async function BlogPostPage({ params }: Props) {
                 </div>
               </section>
             )}
+
+            {/* Box de autor (S07) — um por autor. */}
+            {authors.map((a) => (
+              <AuthorBox key={a.slug} author={a} label={authors.length > 1 ? 'Autor' : 'Sobre o autor'} />
+            ))}
 
             {/* Banners — versão mobile (após o conteúdo, em telas menores) */}
             {mobileBanners.length > 0 && (

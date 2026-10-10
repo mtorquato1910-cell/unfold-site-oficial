@@ -34,15 +34,19 @@ export type PublicSiteSettings = {
   calendar_label: string
 }
 
+// Padrões = "Versão para o site" do cliente (10/10/2026, S06 seo-tecnico-2026-10).
+// Valem enquanto o global `site-settings` estiver vazio no banco; o que for
+// preenchido em /painel/site-config tem prioridade. Estes dados alimentam rodapé,
+// /contato e o schema Organization — por isso precisam ser os oficiais.
 const DEFAULTS: PublicSiteSettings = {
   tagline: 'Assessoria de growth para empresas com vendas complexas.',
   cidade: 'Maceió – AL · Brasil · Atuação nacional',
-  email_contato: 'tecnologia@unfoldgrowth.com.br',
-  telefone: null,
-  whatsapp: null,
+  email_contato: 'gabriel@unfoldgrowth.com.br',
+  telefone: '(82) 99647-1621',
+  whatsapp: '(82) 99647-1621',
   endereco: null,
   cnpj: null,
-  linkedin: null,
+  linkedin: 'https://www.linkedin.com/company/unfoldgrowth',
   instagram: null,
   youtube: null,
   facebook: null,
@@ -60,15 +64,19 @@ async function fetchSiteSettings(): Promise<PublicSiteSettings> {
   try {
     const payload = await getPayload({ config })
     const s: any = await payload.findGlobal({ slug: 'site-settings', depth: 0 })
+    // Padrões só valem enquanto o global NUNCA foi salvo. Depois de salvo no painel,
+    // campo apagado = oculto de verdade (não volta o padrão por baixo).
+    const saved = Boolean(s?.updatedAt)
+    const opt = (v: unknown, fallback: string | null) => (saved ? (v as string) || null : (v as string) || fallback)
     return {
       tagline: s?.tagline || DEFAULTS.tagline,
       cidade: s?.cidade || DEFAULTS.cidade,
       email_contato: s?.email_contato || DEFAULTS.email_contato,
-      telefone: s?.telefone || null,
-      whatsapp: s?.whatsapp || null,
+      telefone: opt(s?.telefone, DEFAULTS.telefone),
+      whatsapp: opt(s?.whatsapp, DEFAULTS.whatsapp),
       endereco: s?.endereco || null,
       cnpj: s?.cnpj || null,
-      linkedin: s?.linkedin || null,
+      linkedin: opt(s?.linkedin, DEFAULTS.linkedin),
       instagram: s?.instagram || null,
       youtube: s?.youtube || null,
       facebook: s?.facebook || null,

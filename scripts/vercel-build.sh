@@ -12,6 +12,12 @@ echo "=== Unfold Build: Aplicando migrations pendentes ==="
 yes | npx payload migrate --force-accept-warning 2>&1 || \
   echo "[skip] payload migrate finalizou com warnings; schema já está em sync com Supabase"
 
+# O `|| echo` acima engole falhas reais de migration. Esta trava confere que as
+# colunas/tabelas que o código exige existem; se faltar algo, o build FALHA e a
+# Vercel mantém o deploy anterior no ar (melhor que publicar sitemap vazio).
+echo "=== Unfold Build: Conferindo schema exigido pelo código ==="
+node scripts/verify-schema.mjs
+
 echo "=== Unfold Build: Gerando importMap ==="
 npx payload generate:importmap
 

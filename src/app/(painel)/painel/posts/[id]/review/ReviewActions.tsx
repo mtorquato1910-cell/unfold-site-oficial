@@ -17,7 +17,11 @@ export default function ReviewActions({ postId }: { postId: string }) {
     setError(null)
     startTransition(async () => {
       try {
-        await approvePost(postId)
+        const res: any = await approvePost(postId)
+        if (res && res.ok === false) {
+          setError(res.error || 'Falha ao aprovar')
+          return
+        }
         router.push('/admin/posts')
       } catch (err: any) {
         setError(err?.message || 'Falha ao aprovar')

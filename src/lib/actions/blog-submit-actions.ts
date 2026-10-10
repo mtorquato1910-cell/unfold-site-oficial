@@ -8,6 +8,8 @@ import { requireRole, getSession, adminListUsers } from '@/lib/painel-auth'
 import { createNotification } from '@/lib/notifications'
 import { sendEmailTemplate } from '@/lib/email/send-template'
 import { sanitizeRichHtml, htmlToPlainText } from '@/lib/html-sanitize'
+import { notifyIndexNow } from '@/lib/indexnow'
+import { publishMissingAuthor } from '@/lib/authors'
 
 function slugify(s: string) {
   return s
@@ -276,6 +278,13 @@ export async function approvePost(postId: string) {
   const me = await requireRole('editor')
   const payload = await getPayload({ config })
 
+  // S07: post interno precisa de autor para publicar. Checa antes para devolver a
+  // mensagem certa (erro lançado em server action chega genérico em produção).
+  const current: any = await payload.findByID({ collection: 'posts', id: postId, depth: 0 })
+  if (publishMissingAuthor({ status: 'published' }, current)) {
+    return { ok: false, error: 'Selecione ao menos um autor no post antes de aprovar.' }
+  }
+
   const post: any = await payload.update({
     collection: 'posts',
     id: postId,
@@ -311,6 +320,8 @@ export async function approvePost(postId: string) {
   revalidatePath('/blog')
   revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
   revalidatePath(`/blog/${post.slug}`)
+  revalidatePath('/llms.txt') // S09
+  await notifyIndexNow([`/blog/${post.slug}`, '/blog'])
   return { ok: true }
 }
 
