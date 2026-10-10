@@ -56,6 +56,8 @@
 | [S10](S10-cases-editor-padrao-posts.md) | Cases no padrão dos posts | 🟢 Código pronto (default de P7) | CONCERNS → resolvido |
 | [OPS](OPS-checklist-operacional.md) | Ações fora do código | ⬜ Ferraz/dono | — |
 
+**🚀 Em produção desde 2026-10-10 (main `d572b03`).** Primeiro deploy falhou no lint da Vercel (6 `<a>` internos → `<Link>`; ver commit d572b03). Conferido em produção: sitemap com `2026-10-01T00:00:00-03:00`, 10 redirects (1 salto, 200), 404 em PT-BR, robots novo, HSTS 1 ano, `/llms.txt` 200, post com autor/Atualizado em/breadcrumb/Person, `/autor/gabriel-calheiros` 200, contadores no HTML, sem Pexels, og:image padrão.
+
 **Verificação global (2026-10-10):** `tsc --noEmit` ✅ · `vitest` 288/288 ✅ · `next lint` (arquivos alterados) ✅. `next build` não roda localmente (SWC nativo bloqueado pelo Windows; o script de build aplica migrations no banco), então é validado no preview da Vercel. As 3 migrations novas foram testadas contra o banco real em transação com ROLLBACK.
 ---
 
