@@ -19,6 +19,7 @@ import type { Etapa1 } from '@/lib/calculadora/types'
 import { trackCalcEvent } from '@/lib/analytics/calculadora-events'
 import { formatPhoneBR } from '@/lib/format/phone-mask'
 import { useContatoCheck } from '@/lib/validation/use-contato-check'
+import Link from 'next/link'
 
 interface Props {
   defaultValues: Etapa1
@@ -152,9 +153,9 @@ export default function Etapa1Qualificacao({ defaultValues, onConcluir }: Props)
       <p className="text-[11px] text-foreground/75 leading-relaxed pt-1">
         Ao continuar você concorda em receber o resultado por e-mail. Nenhuma informação é
         compartilhada com terceiros — consulte nossa{' '}
-        <a href="/politica-de-privacidade" className="underline hover:text-primary">
+        <Link href="/politica-de-privacidade" className="underline hover:text-primary">
           política de privacidade
-        </a>
+        </Link>
         .
       </p>
     </form>

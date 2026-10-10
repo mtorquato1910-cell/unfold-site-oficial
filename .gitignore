@@ -66,3 +66,4 @@ campaign-bloom-studio-main/
 
 # Config local do Claude Code (arquivo vivo, contem permissoes/segredos locais) - nunca versionar
 .claude/settings.local.json
+.env*

@@ -16,6 +16,7 @@ import type { MapaIcpAIResult } from '@/lib/mapa-icp/types'
 import ResultadoMapa from '../_components/ResultadoMapa'
 import { useBotGuard } from '@/lib/security/use-bot-guard'
 import styles from './montar.module.css'
+import Link from 'next/link'
 
 // ── tipos locais ─────────────────────────────────────────────────────────────
 type AnswerValue = string | string[]
@@ -385,9 +386,9 @@ export default function MontarClient() {
     <div className={styles.root}>
       <div className={styles.topbar}>
         <div className={styles.topbarIn}>
-          <a href="/ferramentas/mapa-icp" className={styles.logo}>
+          <Link href="/ferramentas/mapa-icp" className={styles.logo}>
             UNF<span>O</span>LD
-          </a>
+          </Link>
           <div className={styles.stepCount}>{stepLabel}</div>
         </div>
         <div className={styles.progress}>
@@ -737,13 +738,13 @@ function ErrorScreen({
 function ResultActions({ token }: { token: string | null }) {
   return (
     <div className={styles.nextActions}>
-      <a
+      <Link
         className={styles.btn}
         href="/diagnostico"
         onClick={() => dataLayerPush({ event: 'cta_diagnostico_click', tool: 'mapa-icp' })}
       >
         Fazer o Diagnóstico de Growth <Arrow />
-      </a>
+      </Link>
       {token ? (
         <a
           className={`${styles.btn} ${styles.btnGhost}`}

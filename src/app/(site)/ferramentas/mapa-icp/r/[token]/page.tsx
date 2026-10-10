@@ -16,6 +16,7 @@ import configPromise from '@payload-config'
 import type { MapaIcpAIResult } from '@/lib/mapa-icp/types'
 import ResultadoMapa from '../../_components/ResultadoMapa'
 import styles from '../../montar/montar.module.css'
+import Link from 'next/link'
 
 export const revalidate = 60
 
@@ -61,9 +62,9 @@ export default async function MapaIcpResultadoSalvoPage({ params }: PageProps) {
           token={token}
           footer={
             <div className={styles.nextActions}>
-              <a className={styles.btn} href="/diagnostico">
+              <Link className={styles.btn} href="/diagnostico">
                 Fazer o Diagnóstico de Growth
-              </a>
+              </Link>
               <a
                 className={`${styles.btn} ${styles.btnGhost}`}
                 href={`/api/mapa-icp/pdf?token=${token}`}

@@ -20,6 +20,7 @@ import CardsROI from '../../_components/CardsROI'
 import FunilVisual from '../../_components/FunilVisual'
 import BlocoAcoesResultado from '../../_components/BlocoAcoesResultado'
 import { SETORES } from '@/lib/calculadora/benchmarks'
+import Link from 'next/link'
 
 export const revalidate = 60
 
@@ -165,12 +166,12 @@ export default async function ResultadoSalvoPage({ params }: PageProps) {
               Esse cálculo assume taxas médias de mercado. Quer descobrir como sua operação
               realmente performa contra esses benchmarks?
             </p>
-            <a
+            <Link
               href="/diagnostico"
               className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground h-11 px-6 font-medium hover:bg-primary/90 transition-colors"
             >
               Fazer o Diagnóstico de Growth →
-            </a>
+            </Link>
             <p className="mt-3 text-[12px] text-foreground/80">
               Diagnóstico completo de 5 min · Gratuito
             </p>

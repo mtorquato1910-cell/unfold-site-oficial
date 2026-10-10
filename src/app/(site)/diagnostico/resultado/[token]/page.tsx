@@ -13,6 +13,7 @@ import { redirect } from 'next/navigation'
 import { jwtVerify } from 'jose'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
+import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Seu Diagnóstico | Unfold Growth',
@@ -74,12 +75,12 @@ function TokenInvalido() {
           diagnóstico recentemente, procure no e-mail pelo link mais novo. Caso contrário, refaça
           em menos de 5 minutos.
         </p>
-        <a
+        <Link
           href="/diagnostico"
           className="inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground font-semibold px-6 py-3 hover:opacity-90 transition-opacity"
         >
           Fazer diagnóstico
-        </a>
+        </Link>
       </div>
     </main>
   )
