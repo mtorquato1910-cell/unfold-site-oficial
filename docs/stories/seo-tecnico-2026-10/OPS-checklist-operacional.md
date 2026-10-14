@@ -35,7 +35,7 @@ Itens do Plano de Ação ("Acompanhamento e pendências de verificação") e do 
 
 ## Conteúdo (Ferraz)
 - [ ] Preencher o **alt** das 73 imagens listadas em `backups/imagens-conteudo-2026-10-10.md` (S08). Preencher só o alt **não** altera a data de atualização do post (a assinatura de conteúdo da S01 ignora atributos, só considera texto, estrutura e `src`).
-- [ ] Revisar a prévia `backups/broken-links-preview-2026-10-10.md` e aprovar o `--apply` (S03).
+- [x] Prévia aprovada e `--apply` rodado em 14/10/2026 (S03): 34 links removidos em 19 posts, 0 links internos quebrados.
 
 ## Regra permanente
 - Sempre que atualizar um post importante: "Solicitar indexação" no GSC (o IndexNow da S09 cobre o Bing automaticamente).

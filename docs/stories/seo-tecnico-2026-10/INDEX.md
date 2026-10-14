@@ -46,7 +46,7 @@
 |-------|------|--------|----|
 | [S01](S01-content-updated-at-lastmod.md) | `content_updated_at` → lastmod + dateModified + "Atualizado em" | 🟢 Código pronto · migration testada (rollback) | CONCERNS → resolvido |
 | [S02](S02-redirects-e-dominio.md) | 10 redirects 301 + domínio | 🟢 Código pronto · www→apex depende do OPS (Vercel) | PASS |
-| [S03](S03-remocao-links-quebrados.md) | Remoção dos links quebrados (34 em 19 posts) | 🟡 Script + prévia prontos · **aguarda aprovação da prévia** e S01 em produção para o `--apply` | CONCERNS → resolvido |
+| [S03](S03-remocao-links-quebrados.md) | Remoção dos links quebrados (34 em 19 posts) | ✅ Aplicado em produção 14/10 (34 links em 19 posts; 0 quebrados) | CONCERNS → resolvido |
 | [S04](S04-indexacao-robots-404.md) | robots, noindex legais, og:url/og:image, HSTS, 404 PT-BR | 🟢 Código pronto · `includeSubDomains` depende do OPS (zona DNS) | CONCERNS → resolvido |
 | [S05](S05-home-performance-hero.md) | Vídeo 720p (1,3 MB), mobile só imagem, contadores no HTML | 🟢 Código pronto (default de P1) · medir após deploy | CONCERNS → resolvido |
 | [S06](S06-schema-organization-empresa.md) | Organization @id + dados da empresa | 🟢 Pronto com os dados disponíveis · faltam endereço/fundadores/redes (P5) | CONCERNS → resolvido |

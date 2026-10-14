@@ -3,7 +3,7 @@
 **Origem:** Plano de Ação (crítica: "Corrigir os links quebrados nos 19 posts", Anexo C) · Decisões D1 e D2 · Reunião 07/10 ("pode só retirar para ficar mais fácil")
 **Prioridade:** 🔥 P1 · **Risco:** Médio (reescreve conteúdo de produção) · **Executor:** @dev · **Revisão:** @qa + aprovação do dono na prévia
 **Dependências:** **S01 em produção** (flag `technicalEdit` — sem ela o script volta a "atualizar" 19 posts no sitemap).
-**Status:** 🟡 Script pronto + prévia gerada (2026-10-10). **Aguarda:** aprovação da prévia pelo dono (AC3.7) e S01 em produção → então `--apply`
+**Status:** ✅ **APLICADO em produção (2026-10-14)**
 
 ---
 
@@ -34,17 +34,17 @@ Slugs-alvo (links a remover onde aparecerem, com ou sem domínio, com ou sem bar
   - Se a `<ul>`/`<ol>` ficar vazia, remover a lista; se o título imediatamente anterior for "Leia também"/"Artigos relacionados" e ficar sem lista, remover o título também.
 - [x] **AC3.5** Casos ambíguos (frase com conteúdo próprio além do link, mas que pode "depender" dele) **não** são removidos automaticamente: entram no relatório como `REVISAR` e por padrão recebem só a regra do AC3.3.
 - [x] **AC3.6** O dry-run gera `backups/broken-links-preview-<data>.md` com, por post: slug, cada ocorrência, a regra aplicada (`UNWRAP`/`REMOVE_BLOCK`/`REMOVE_SENTENCE`/`REMOVE_CLAUSE`/`REVISAR`) e o trecho antes → depois.
-- [ ] **AC3.7** **Gate humano:** o `--apply` só roda depois que o dono aprovar o relatório do AC3.6 (registrar a aprovação no Change Log desta story).
+- [x] **AC3.7** **Gate humano:** o `--apply` só roda depois que o dono aprovar o relatório do AC3.6 (registrar a aprovação no Change Log desta story).
 - [x] **AC3.8** O `--apply` grava backup completo antes (`backups/posts-html-before-brokenlinks-<data>.json`: id, slug, `conteudo_html`, `content_updated_at`, `updated_at`) e atualiza via `payload.update({ …, context: { technicalEdit: true } })`.
-- [ ] **AC3.9** **`content_updated_at` não muda** em nenhum dos 19 posts (conferir antes/depois no relatório final).
+- [x] **AC3.9** **`content_updated_at` não muda** em nenhum dos 19 posts (conferir antes/depois no relatório final).
 - [x] **AC3.10** Idempotente: rodar `--apply` de novo não altera nada (0 ocorrências).
-- [ ] **AC3.11** Após aplicar: `revalidatePath` de cada post alterado e de `/blog` (ou chamar a rota de revalidação existente).
+- [x] **AC3.11** Após aplicar: `revalidatePath` de cada post alterado e de `/blog` (ou chamar a rota de revalidação existente).
 - [x] **AC3.12** Script de rollback documentado (restaura `conteudo_html` a partir do backup, também com `technicalEdit`).
 
 ### Verificação ("rastrear de novo")
 - [x] **AC3.13** Script `scripts/check-internal-links.ts`: lê **todos** os posts publicados (não só os 19), extrai todo `href` interno e faz `HEAD`/`GET` em produção. Saída: tabela post → link → status. **Critério: zero 4xx.** Links que redirecionam (301/308) são listados como aviso (Checklist M03: links internos devem apontar para a URL final).
 - [x] **AC3.14** Rodar também nos cases e nas páginas institucionais (links fixos no código) — ao menos um `grep` pelos slugs-alvo em `src/`.
-- [ ] **AC3.15** Resultado do AC3.13 anexado ao Dev Notes e enviado ao Ferraz com a lista dos 19 posts para "Solicitar indexação" no GSC.
+- [x] **AC3.15** Resultado do AC3.13 anexado ao Dev Notes e enviado ao Ferraz com a lista dos 19 posts para "Solicitar indexação" no GSC.
 
 ### Qualidade
 - [x] **AC3.16** Testes unitários do transformador de HTML cobrindo: unwrap simples; link com `<strong>` dentro; `<li>` "Leia também"; parágrafo "Veja também"; slug longo parecido que **não** deve ser tocado; URL absoluta com www e barra final; lista que fica vazia.
@@ -74,6 +74,13 @@ Slugs-alvo (links a remover onde aparecerem, com ou sem domínio, com ou sem bar
 - **AC3.14:** nenhum dos alvos aparece em código fixo em `src/` (busca feita na S02).
 - **AC3.11:** o script roda fora do Next (sem `revalidatePath`); as páginas de post têm `revalidate = 60`, então o site reflete a mudança em até 1 min. O sitemap não muda (a data é técnica).
 - O dry-run lê direto do Postgres em modo somente leitura e funciona antes da S01 em produção. O `--apply` usa o Payload, que exige a coluna `content_updated_at`.
+
+## Aplicação em produção (2026-10-14)
+- Aprovado pelo dono. Prévia regenerada antes (`backups/broken-links-preview-2026-10-14.md`), idêntica à de 10/10.
+- `--apply`: **19/19 posts, 34 ocorrências**. Backup em `backups/posts-html-before-brokenlinks-2026-10-14T12-22-39.json`. **`content_updated_at` inalterado em todos** (conferido pelo próprio script; o sitemap segue com `/blog/sdr` = 2026-10-01).
+- Novo rastreio (`check-internal-links.ts`) em 42 documentos e 44 caminhos internos: **0 com 4xx e 0 redirecionando**. As páginas servidas foram conferidas por curl em 3 posts.
+- Rollback, se precisar: `npx tsx scripts/remove-broken-links.ts --rollback backups/posts-html-before-brokenlinks-2026-10-14T12-22-39.json`.
+- Próximo passo (Ferraz, OPS): "Solicitar indexação" no GSC dos 19 posts editados.
 
 ## QA Results — 2026-10-10 (Quinn)
 
