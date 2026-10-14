@@ -15,8 +15,9 @@ import type { PublicSiteSettings } from './site-settings'
 export const COMPANY = {
   name: 'Unfold Growth',
   /** Descrição curta (schema, llms.txt). 1–2 frases, sem links nem preços. */
+  // Texto oficial enviado pelo cliente (13/10/2026, "Versão curta — Google / perfis").
   description:
-    'Assessoria de growth de Maceió (AL) para empresas B2B de ciclo de venda longo e decisão complexa. Integramos marketing, vendas, CRM e automação em um só sistema para gerar demanda previsível e resultado comercial mensurável.',
+    'A Unfold Growth é uma assessoria de growth marketing especializada em empresas com vendas complexas B2B. Sediada em Maceió (AL), com atuação nacional, estruturamos sistemas de crescimento que conectam marketing, vendas, CRM e automação de forma integrada e orientada a resultado comercial. Atuamos em três frentes: consultoria de growth (diagnóstico, plano de crescimento, stack mar-tech e RevOps), geração de demanda digital (mídia paga em Meta, Google e LinkedIn, automação e lead scoring) e implantação de CRM com automações e dashboards de pipeline. Método proprietário UGS: Diagnosticar, Estruturar, Operar e Evoluir. Parceiros RD Station, Meta e Kommo.',
   locality: 'Maceió',
   region: 'AL',
   country: 'BR',

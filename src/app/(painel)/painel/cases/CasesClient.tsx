@@ -12,10 +12,10 @@ import { createCase, updateCase, deleteCase } from '@/lib/actions/cases-actions'
  * Cases no painel (S10 — épico seo-tecnico-2026-10). Pedido do cliente (10/10/2026):
  * "Preciso que seja da mesma forma dos posts". Mesmo fluxo do form de posts: texto
  * corrido num editor só, resumo, números do case, capa, campos de busca com prévia do
- * Google e FAQ. Os antigos Desafio/Solução/Resultado (editor de blocos) saíram.
+ * Google e FAQ. Texto corrido do começo ao fim — sem campos separados (pedido do
+ * cliente em 14/10: números de destaque e roteiro pré-preenchido saíram).
  */
 type Case = Record<string, any>
-type Highlight = { label: string; value: string }
 
 const slugify = (s: string) =>
   s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
@@ -30,8 +30,6 @@ const VERTICAIS = [
   { value: 'servicos', label: 'Serviços Profissionais' },
 ]
 
-/** Roteiro inicial de um case novo — editável/removível, só para não começar do zero. */
-const TEMPLATE_HTML = '<h2>Desafio</h2><p></p><h2>Solução</h2><p></p><h2>Resultados</h2><p></p>'
 
 const EMPTY_FORM = {
   title: '',
@@ -40,7 +38,6 @@ const EMPTY_FORM = {
   vertical: '',
   excerpt: '',
   contentHtml: '',
-  highlights: [] as Highlight[],
   status: 'draft',
   featured: false,
   imagem_destaque: '',
@@ -56,32 +53,6 @@ const fieldStyle = {
   outline: 'none',
 } as const
 
-function HighlightsEditor({ value, onChange }: { value: Highlight[]; onChange: (v: Highlight[]) => void }) {
-  const set = (i: number, patch: Partial<Highlight>) => onChange(value.map((h, idx) => (idx === i ? { ...h, ...patch } : h)))
-  return (
-    <div className="space-y-2">
-      {value.map((h, i) => (
-        <div key={i} className="grid grid-cols-[1fr_1fr_auto] gap-2">
-          <input className="h-9 px-3 rounded-lg text-[13px]" style={fieldStyle} value={h.value} onChange={(e) => set(i, { value: e.target.value })} placeholder="Número (ex.: +180%)" />
-          <input className="h-9 px-3 rounded-lg text-[13px]" style={fieldStyle} value={h.label} onChange={(e) => set(i, { label: e.target.value })} placeholder="Rótulo (ex.: leads qualificados)" />
-          <button type="button" onClick={() => onChange(value.filter((_, idx) => idx !== i))} className="px-2 text-[12px]" style={{ color: 'hsl(0 70% 72%)' }}>
-            remover
-          </button>
-        </div>
-      ))}
-      {value.length < 4 && (
-        <button
-          type="button"
-          onClick={() => onChange([...value, { label: '', value: '' }])}
-          className="text-[12px] px-3 py-1.5 rounded-lg"
-          style={{ background: 'hsl(158 92% 70% / 0.12)', color: 'hsl(158 92% 70%)' }}
-        >
-          + Adicionar número
-        </button>
-      )}
-    </div>
-  )
-}
 
 export default function CasesClient({ initialCases }: { initialCases: Case[] }) {
   const [cases, setCases] = useState<Case[]>(initialCases)
@@ -94,7 +65,7 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
 
   function openCreate() {
     setEditing(null)
-    setForm({ ...EMPTY_FORM, contentHtml: TEMPLATE_HTML })
+    setForm(EMPTY_FORM)
     setCoverUrl('')
     setError(null)
     setOpen(true)
@@ -111,7 +82,6 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
       vertical: c.vertical ?? '',
       excerpt: c.excerpt ?? c.tagline ?? '',
       contentHtml: c.conteudo_html ?? '',
-      highlights: Array.isArray(c.highlights) ? c.highlights.map((h: any) => ({ label: h.label ?? '', value: h.value ?? '' })) : [],
       status: c.status === 'publicado' ? 'published' : c.status === 'rascunho' ? 'draft' : (c.status ?? 'draft'),
       featured: !!(c.destacar_na_home ?? c.featured),
       imagem_destaque: mediaId ? String(mediaId) : '',
@@ -135,11 +105,6 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
     if (!form.title.trim()) { setError('Informe o título do case.'); return }
     if (!form.company.trim()) { setError('Informe o cliente.'); return }
     if (!form.vertical) { setError('Selecione a vertical do case.'); return }
-    // Números preenchidos pela metade seriam descartados no save → avisa antes.
-    if (form.highlights.some((h) => !!h.label.trim() !== !!h.value.trim())) {
-      setError('Há número do case sem rótulo (ou rótulo sem número). Complete ou remova a linha.')
-      return
-    }
     // Mesmos avisos de qualidade dos posts ao publicar: avisa, não bloqueia.
     if (form.status === 'published') {
       const warns = validateArticle(form.contentHtml, form.faq, 'case')
@@ -285,9 +250,6 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                 />
               </Field>
 
-              <Field label="Números do case" hint="Até 4 números de destaque, exibidos em cartões no case e na home.">
-                <HighlightsEditor value={form.highlights} onChange={(highlights) => setForm((f) => ({ ...f, highlights }))} />
-              </Field>
 
               <ImageInput
                 label="Imagem de capa"

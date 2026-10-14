@@ -142,7 +142,7 @@ export default function AutoresClient({ initialAuthors }: { initialAuthors: Auth
     <>
       <PageHeader
         title="Autores"
-        description="Quem assina os artigos do blog. A página do autor só entra no Google com a bio completa."
+        description="Quem assina os artigos do blog: nome, foto e uma mini bio."
         actions={
           <button
             onClick={openCreate}
@@ -173,8 +173,8 @@ export default function AutoresClient({ initialAuthors }: { initialAuthors: Auth
                   {a.nome} {a.ativo === false && <span className="text-[11px] text-dim">(inativo)</span>}
                 </p>
                 <p className="text-[12px] text-dim truncate">{a.cargo || 'Sem cargo'} · /autor/{a.slug}</p>
-                <p className="text-[11px] mt-1" style={{ color: a.bio_completa ? 'hsl(158 92% 70%)' : 'hsl(40 90% 65%)' }}>
-                  {a.bio_completa ? 'Página indexável' : 'Falta a bio completa (página fora do Google)'}
+                <p className="text-[11px] mt-1" style={{ color: a.bio_curta || a.bio_completa ? 'hsl(158 92% 70%)' : 'hsl(40 90% 65%)' }}>
+                  {a.bio_curta || a.bio_completa ? 'Mini bio preenchida' : 'Falta a mini bio'}
                 </p>
               </div>
               <div className="flex gap-1">
@@ -210,8 +210,7 @@ export default function AutoresClient({ initialAuthors }: { initialAuthors: Auth
                 />
               </Field>
               <Field label="Slug" hint="URL: /autor/<slug>">{text('slug')}</Field>
-              <Field label="Cargo">{text('cargo', 'Ex.: Head de Growth')}</Field>
-              <Field label="LinkedIn">{text('linkedin', 'https://www.linkedin.com/in/...')}</Field>
+              <Field label="Cargo" hint="Opcional">{text('cargo', 'Ex.: Sócio')}</Field>
             </div>
 
             <ImageInput
@@ -224,19 +223,29 @@ export default function AutoresClient({ initialAuthors }: { initialAuthors: Auth
               }}
             />
 
-            <Field label="Bio curta" hint="2 ou 3 linhas — aparece no box ao fim de cada artigo">{area('bio_curta', 3)}</Field>
-            <Field label="Bio completa" hint="1 ou 2 parágrafos — página do autor. Sem ela a página fica fora do Google.">
-              {area('bio_completa', 6)}
+            <Field label="Mini bio" hint="Texto livre, poucas linhas. Aparece no fim de cada artigo do autor e na página dele.">
+              {area('bio_curta', 5)}
             </Field>
-            <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Formação">{area('formacao', 3, 'Graduação, pós, cursos relevantes')}</Field>
-              <Field label="Experiência">{area('experiencia', 3, 'Anos de atuação e especialidades')}</Field>
-              <Field label="Temas que assina" hint="Separados por vírgula">{text('temas', 'CRM, funil de vendas, RevOps')}</Field>
-              <Field label="Registro profissional" hint="OAB, CRM, CRC… quando houver">{text('registro_profissional')}</Field>
-            </div>
-            <Field label="Outros perfis" hint="Uma URL por linha (Instagram profissional, YouTube, site pessoal)">
-              {area('perfis', 3)}
-            </Field>
+
+            {/* Campos extras — opcionais, para ampliar o perfil depois. */}
+            <details className="rounded-lg px-3 py-2" style={{ border: '1px solid hsl(0 0% 100% / 0.06)' }}>
+              <summary className="cursor-pointer text-[12px] text-dim-2 py-1">Mais informações (opcional)</summary>
+              <div className="space-y-4 pt-3">
+                <Field label="LinkedIn">{text('linkedin', 'https://www.linkedin.com/in/...')}</Field>
+                <Field label="Bio completa" hint="Se preenchida, substitui a mini bio na página do autor.">
+                  {area('bio_completa', 5)}
+                </Field>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Field label="Formação">{area('formacao', 3, 'Graduação, pós, cursos relevantes')}</Field>
+                  <Field label="Experiência">{area('experiencia', 3, 'Anos de atuação e especialidades')}</Field>
+                  <Field label="Temas que assina" hint="Separados por vírgula">{text('temas', 'CRM, funil de vendas, RevOps')}</Field>
+                  <Field label="Registro profissional" hint="OAB, CRM, CRC… quando houver">{text('registro_profissional')}</Field>
+                </div>
+                <Field label="Outros perfis" hint="Uma URL por linha (Instagram profissional, YouTube, site pessoal)">
+                  {area('perfis', 3)}
+                </Field>
+              </div>
+            </details>
             <label className="flex items-center gap-2 text-[13px] text-dim-2 cursor-pointer">
               <input
                 type="checkbox"

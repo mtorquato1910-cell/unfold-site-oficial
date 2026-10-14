@@ -42,9 +42,10 @@ describe('helpers de autor', () => {
       authorProfiles({ ...gabriel, linkedin: 'https://linkedin.com/in/g', perfis: ['https://g.com', 'lixo', ''] }),
     ).toEqual(['https://linkedin.com/in/g', 'https://g.com'])
   })
-  it('página indexável só com bio completa', () => {
+  it('página indexável com mini bio ou bio completa', () => {
     expect(authorIndexable(gabriel)).toBe(false)
     expect(authorIndexable({ ...gabriel, bio_completa: '  ' })).toBe(false)
+    expect(authorIndexable({ ...gabriel, bio_curta: 'Sou Gabriel…' })).toBe(true)
     expect(authorIndexable({ ...gabriel, bio_completa: 'Bio.' })).toBe(true)
   })
   it('postAuthors ignora ids não populados e inativos; authorNames formata', () => {

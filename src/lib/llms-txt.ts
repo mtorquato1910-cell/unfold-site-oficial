@@ -60,7 +60,7 @@ export function buildLlmsTxt({
   const out: string[] = [
     `# ${COMPANY.name}`,
     '',
-    `> ${oneLine(COMPANY.description, 400)}`,
+    `> ${oneLine(COMPANY.description, 900)}`,
     '',
     `A ${COMPANY.name} é sediada em ${COMPANY.locality} (${COMPANY.region}) e atende empresas de todo o Brasil com ciclo de venda longo e decisão complexa: construção civil e incorporação, agronegócio, tecnologia, indústria e serviços B2B. Trabalha com o método próprio UGS (Diagnosticar, Estruturar, Operar, Evoluir). Parceira ${COMPANY.partners.join(', ')}; associada à ${COMPANY.memberOf.join(' e à ')}.`,
     '',

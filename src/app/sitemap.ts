@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { toBrtIso } from '@/lib/content-date'
+import { authorIndexable } from '@/lib/authors'
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://unfoldgrowth.com.br'
 
@@ -81,17 +82,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // artigos novos por lá.
     blogLastmod = latest(posts.map(postDate))
 
-    // Páginas de autor (S07): só as indexáveis (com bio completa). lastmod = artigo
-    // mais recente do autor.
+    // Páginas de autor (S07): só as indexáveis (com mini bio ou bio completa).
+    // lastmod = artigo mais recente do autor.
     const { docs: authors } = await payload.find({
       collection: 'authors',
-      where: { and: [{ ativo: { not_equals: false } }, { bio_completa: { exists: true } }] },
-      select: { slug: true, bio_completa: true },
+      where: { ativo: { not_equals: false } },
+      select: { slug: true, bio_curta: true, bio_completa: true },
       limit: 100,
       depth: 0,
     })
     authorRoutes = (authors as any[])
-      .filter((a) => String(a.bio_completa || '').trim())
+      .filter((a) => authorIndexable(a))
       .map((a) => ({
         url: `${BASE_URL}/autor/${a.slug}`,
         lastModified: latest(

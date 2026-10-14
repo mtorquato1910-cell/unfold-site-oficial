@@ -40,8 +40,11 @@ export function authorProfiles(a: AuthorDoc): string[] {
 
 export const authorTopics = (a: AuthorDoc) => stringList(a.temas)
 
-/** A página do autor só entra no Google quando tem bio completa (página rala não ajuda). */
-export const authorIndexable = (a: AuthorDoc) => Boolean(a.bio_completa?.trim())
+/**
+ * A página do autor só entra no Google quando tem alguma bio (mini ou completa) —
+ * página só com nome e foto é rala demais. Decisão do cliente (14/10): mini bio basta.
+ */
+export const authorIndexable = (a: AuthorDoc) => Boolean(a.bio_curta?.trim() || a.bio_completa?.trim())
 
 /** Autores populados de um post (ignora ids não populados e autores inativos). */
 export function postAuthors(post: { autores?: unknown }): AuthorDoc[] {
