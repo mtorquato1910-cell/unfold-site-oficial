@@ -86,6 +86,11 @@ Faltam (**P6**): cargo, bio curta (2–3 linhas), bio completa (1–2 parágrafo
 - **Indexação da página de autor:** só com `bio_completa`. Sem ela, `noindex` e fora do sitemap. Com ela, entra no sitemap com lastmod do artigo mais recente do autor.
 - **AC7.13 (validador do Google):** depois do deploy. **AC7.15 (browser):** validar no preview.
 
+## Ajuste pós-cliente (14/10/2026, commit 9306bb5)
+- O cliente decidiu: **por enquanto basta nome e mini bio**, editados pelo próprio usuário no painel. O form de `/painel/autores` mostra nome, slug, cargo, foto e mini bio; o resto fica em "Mais informações (opcional)".
+- Página do autor **indexável com a mini bio** (antes exigia a bio completa) e no sitemap.
+- Mini bios do Gabriel e do Davi gravadas (texto do cliente) e cargo "Sócio" (do próprio texto). Verificado em produção: `/autor/gabriel-calheiros` sem noindex e os 2 autores no sitemap.
+
 ## QA Results — 2026-10-10 (Quinn)
 
 **Veredito: FAIL (1 bloqueador de build) → corrigido → PASS com CONCERNS.**

@@ -33,9 +33,9 @@
 | P3 | Bots de treinamento (GPTBot, ClaudeBot, Google-Extended): liberar (padrão) ou bloquear? | S04 AC4.1 (default = liberar) |
 | P4 | `/diagnostico/privacidade` também noindex? | S04 AC4.3 |
 | P5 | Ficha da empresa: endereço/CEP, fundadores, ano de fundação, redes (sameAs), logo oficial | S06 |
-| P6 | Fichas dos autores: cargo, bio curta, bio completa, LinkedIn, formação, experiência. Confirmar que a foto do WhatsApp é do Davi | S07 |
-| P7 | Cases: números de destaque como campo separado (cartões) ou tudo texto corrido? | S10 AC10.2 |
-| P8 | "Versão para o site" substitui textos visíveis (Hero/Sobre/Atuação) ou só alimenta schema/llms.txt/rodapé? | S06 AC6.5, S09 |
+| P6 ✅ (14/10: só mini bio) | Fichas dos autores: cargo, bio curta, bio completa, LinkedIn, formação, experiência. Confirmar que a foto do WhatsApp é do Davi | S07 |
+| P7 ✅ (14/10: tudo texto corrido) | Cases: números de destaque como campo separado (cartões) ou tudo texto corrido? | S10 AC10.2 |
+| P8 ✅ (13/10: só código/schema) | "Versão para o site" substitui textos visíveis (Hero/Sobre/Atuação) ou só alimenta schema/llms.txt/rodapé? | S06 AC6.5, S09 |
 | P9 | Quem tem acesso à Vercel de produção (Domains + Firewall)? | OPS |
 
 ---

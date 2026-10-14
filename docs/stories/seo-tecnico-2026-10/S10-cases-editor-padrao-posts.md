@@ -88,6 +88,9 @@ Collection: `src/collections/Cases.ts` (campos `challenge`/`challenge_html`, `so
 - ⚠️ **Achado fora do escopo (decisão do cliente):** `/cases` mostra em produção **4 cases de exemplo** (`MOCK_CASES`, com selo "Em breve" e números como "De 12 para 4 semanas"). Como não são reais, vale avaliar remover agora que publicar case ficou fácil.
 - ⚠️ Mudar o slug de um case publicado não cria redirect (a collection `redirects` só atende `/blog/*`). Registrado.
 
+## Ajuste pós-cliente (14/10/2026, commit 9306bb5)
+- P7 respondido como **(b)**: tudo em texto corrido, igual aos posts. Saíram do form o campo "Números do case" e o roteiro pré-preenchido (Desafio/Solução/Resultados). Cartões antigos só aparecem se algum case já tiver `highlights` no banco (hoje nenhum).
+
 ## QA Results — 2026-10-10 (Quinn)
 
 **Veredito: CONCERNS → resolvido.** tsc ✅ · vitest 288 ✅ · lint ✅. O dry-run da migration com 3 cases de teste (resultados fora de ordem, NULLs, linha vazia) passou, foi idempotente e o ROLLBACK foi confirmado. Os tipos de coluna batem com o adapter. O fluxo de publicação ficou equivalente ao dos posts.
