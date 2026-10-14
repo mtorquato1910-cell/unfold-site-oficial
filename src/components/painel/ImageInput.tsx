@@ -1,8 +1,84 @@
 'use client'
 
-import { useRef, useState, useTransition } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { Upload, X, Link as LinkIcon } from 'lucide-react'
-import { uploadMedia, uploadMediaFromUrl } from '@/lib/actions/media-actions'
+import { getMediaAlt, updateMediaAlt, uploadMedia, uploadMediaFromUrl } from '@/lib/actions/media-actions'
+
+/**
+ * Descrição (alt) da imagem já enviada, editável sem excluir e subir de novo
+ * (pedido do Ferraz, 14/10/2026). Salva direto na mídia ao sair do campo.
+ */
+function MediaAltField({ mediaId }: { mediaId: string }) {
+  const [alt, setAlt] = useState('')
+  const [saved, setSaved] = useState('')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'saving' | 'saved' | 'error'>('loading')
+  const [message, setMessage] = useState('')
+
+  useEffect(() => {
+    let alive = true
+    setStatus('loading')
+    getMediaAlt(mediaId).then((res: any) => {
+      if (!alive) return
+      setAlt(res?.alt || '')
+      setSaved(res?.alt || '')
+      setStatus('idle')
+    })
+    return () => {
+      alive = false
+    }
+  }, [mediaId])
+
+  async function save() {
+    if (alt.trim() === saved.trim()) return
+    setStatus('saving')
+    const res: any = await updateMediaAlt(mediaId, alt)
+    if (res?.ok) {
+      setSaved(res.alt)
+      setAlt(res.alt)
+      setStatus('saved')
+      setMessage('Descrição salva')
+    } else {
+      setStatus('error')
+      setMessage(res?.error || 'Falha ao salvar')
+    }
+  }
+
+  return (
+    <div className="space-y-1">
+      <input
+        className="w-full h-9 px-3 rounded-lg text-[12px]"
+        style={{
+          background: 'hsl(197 100% 10%)',
+          border: `1px solid ${alt.trim() ? 'hsl(158 92% 70% / 0.12)' : 'hsl(40 90% 60% / 0.6)'}`,
+          color: 'hsl(0 0% 91%)',
+          outline: 'none',
+        }}
+        value={alt}
+        disabled={status === 'loading'}
+        onChange={(e) => {
+          setAlt(e.target.value)
+          setStatus('idle')
+        }}
+        onBlur={save}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+            save()
+          }
+        }}
+        placeholder={status === 'loading' ? 'Carregando descrição…' : 'Descrição da imagem (alt): o que a imagem mostra'}
+        aria-label="Descrição da imagem (alt)"
+      />
+      <p className="text-[11px]" style={{ color: status === 'error' ? 'hsl(0 70% 80%)' : 'hsl(0 0% 91% / 0.45)' }}>
+        {status === 'saving'
+          ? 'Salvando…'
+          : status === 'saved' || status === 'error'
+            ? message
+            : 'Descrição da imagem (alt), para Google e acessibilidade. Salva ao sair do campo.'}
+      </p>
+    </div>
+  )
+}
 
 type ImageValue = { id?: string; url?: string } | null
 
@@ -186,6 +262,9 @@ export default function ImageInput({
           </span>
         </div>
       )}
+
+      {/* Descrição (alt) editável da imagem já enviada. */}
+      {value?.id && <MediaAltField mediaId={String(value.id)} />}
 
       <input
         ref={fileRef}

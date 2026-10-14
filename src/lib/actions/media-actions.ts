@@ -1,4 +1,5 @@
 'use server'
+import { revalidatePath } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
@@ -146,5 +147,38 @@ export async function deleteMedia(id: string) {
   } catch (e: any) {
     console.error('[deleteMedia]', e)
     return { ok: false, error: e?.message || 'Falha ao excluir' }
+  }
+}
+
+/**
+ * Descrição (alt) de uma mídia já enviada — permite editar o alt da capa sem
+ * excluir e subir a imagem de novo (pedido do Ferraz, 14/10/2026).
+ */
+export async function getMediaAlt(id: string | number) {
+  try {
+    await requireRole('editor')
+    const payload = await getPayload({ config })
+    const doc: any = await payload.findByID({ collection: 'media', id, depth: 0 })
+    return { ok: true, alt: (doc?.alt as string) || '' }
+  } catch (e: any) {
+    console.error('[getMediaAlt]', e)
+    return { ok: false, alt: '', error: e?.message || 'Falha ao ler a descrição' }
+  }
+}
+
+export async function updateMediaAlt(id: string | number, alt: string) {
+  try {
+    await requireRole('editor')
+    const clean = String(alt ?? '').replace(/\s+/g, ' ').trim()
+    if (!clean) return { ok: false, error: 'Escreva a descrição da imagem.' }
+    const payload = await getPayload({ config })
+    await payload.update({ collection: 'media', id, data: { alt: clean } as any })
+    // O alt da capa aparece nas páginas de post e case.
+    revalidatePath('/blog/[slug]', 'page')
+    revalidatePath('/cases/[slug]', 'page')
+    return { ok: true, alt: clean }
+  } catch (e: any) {
+    console.error('[updateMediaAlt]', e)
+    return { ok: false, error: e?.message || 'Falha ao salvar a descrição' }
   }
 }

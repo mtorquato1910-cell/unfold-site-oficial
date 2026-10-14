@@ -69,23 +69,87 @@ export const Figure = Node.create({
   },
 
   addNodeView() {
-    return ({ node }) => {
+    return ({ node, getPos, editor }) => {
+      let current = node
       const figure = document.createElement('figure')
       figure.className = 'tt-figure'
+      figure.style.position = 'relative'
 
       const img = document.createElement('img')
       img.src = node.attrs.src || ''
-      img.alt = node.attrs.alt || ''
       if (node.attrs.width) img.setAttribute('width', String(node.attrs.width))
       if (node.attrs.height) img.setAttribute('height', String(node.attrs.height))
       img.contentEditable = 'false'
       img.draggable = false
 
+      // Botão para editar a descrição (alt) de uma imagem já inserida, sem excluir e
+      // subir de novo (pedido do Ferraz, 14/10/2026). Amarelo quando está vazia.
+      const altBtn = document.createElement('button')
+      altBtn.type = 'button'
+      altBtn.contentEditable = 'false'
+      Object.assign(altBtn.style, {
+        position: 'absolute',
+        top: '8px',
+        left: '8px',
+        maxWidth: 'calc(100% - 16px)',
+        padding: '4px 10px',
+        borderRadius: '6px',
+        border: 'none',
+        fontSize: '12px',
+        lineHeight: '1.3',
+        textAlign: 'left',
+        color: '#fff',
+        cursor: 'pointer',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        zIndex: '2',
+      })
+
+      const paint = () => {
+        const alt = (current.attrs.alt as string) || ''
+        img.alt = alt
+        altBtn.textContent = alt ? `✎ Descrição: ${alt}` : '⚠ Sem descrição (alt): clique para adicionar'
+        altBtn.title = 'Editar a descrição da imagem (alt)'
+        altBtn.style.background = alt ? 'rgba(0, 30, 41, 0.78)' : 'rgba(176, 116, 0, 0.92)'
+      }
+      paint()
+
+      // mousedown sem foco: não move a seleção do editor para o botão.
+      altBtn.addEventListener('mousedown', (e) => e.preventDefault())
+      altBtn.addEventListener('click', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        const next = window.prompt(
+          'Descrição da imagem (alt): o que a imagem mostra, em uma frase.',
+          (current.attrs.alt as string) || '',
+        )
+        if (next === null) return
+        const pos = typeof getPos === 'function' ? getPos() : undefined
+        if (typeof pos !== 'number') return
+        editor.view.dispatch(
+          editor.view.state.tr.setNodeMarkup(pos, undefined, { ...current.attrs, alt: next.replace(/\s+/g, ' ').trim() }),
+        )
+      })
+
       const caption = document.createElement('figcaption')
       caption.setAttribute('data-placeholder', 'Escreva uma legenda (opcional)…')
 
-      figure.append(img, caption)
-      return { dom: figure, contentDOM: caption }
+      figure.append(img, altBtn, caption)
+      return {
+        dom: figure,
+        contentDOM: caption,
+        update: (updated) => {
+          if (updated.type !== current.type) return false
+          current = updated
+          if (img.getAttribute('src') !== (updated.attrs.src || '')) img.src = updated.attrs.src || ''
+          paint()
+          return true
+        },
+        // O botão é interface do painel, não conteúdo: o editor ignora mudanças e eventos dele.
+        ignoreMutation: (m) => m.type !== 'selection' && altBtn.contains(m.target as globalThis.Node),
+        stopEvent: (e) => altBtn.contains(e.target as globalThis.Node),
+      }
     }
   },
 

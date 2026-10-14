@@ -295,7 +295,8 @@ export default async function BlogPostPage({ params }: Props) {
               <figure className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-border mb-12 bg-card">
                 <Image
                   src={imgUrl}
-                  alt={post.titulo as string}
+                  // Descrição cadastrada na mídia (editável no painel); sem ela, o título.
+                  alt={(post.imagem_destaque?.alt as string)?.trim() || (post.titulo as string)}
                   fill
                   priority
                   className="object-cover"

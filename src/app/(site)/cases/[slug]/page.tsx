@@ -163,7 +163,7 @@ export default async function CaseDetailPage({ params }: Props) {
             <figure className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden border border-border bg-card mt-12">
               <Image
                 src={imgUrl}
-                alt={c.title as string}
+                alt={((c.imagem_destaque as any)?.alt as string)?.trim() || (c.title as string)}
                 fill
                 priority
                 className="object-cover"
