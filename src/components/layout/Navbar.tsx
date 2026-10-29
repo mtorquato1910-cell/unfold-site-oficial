@@ -64,7 +64,21 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Trava o scroll da página enquanto o menu mobile está aberto
+  useEffect(() => {
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
   return (
+    <>
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-all duration-300',
@@ -108,11 +122,13 @@ export function Navbar() {
           </button>
         </div>
       </div>
+    </header>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer — fica FORA do <header>: o backdrop-blur do header (ao rolar)
+          vira containing block de filhos `fixed` e encolhia o drawer à altura do header. */}
       <div
         className={cn(
-          'fixed inset-0 z-50 lg:hidden transition-opacity',
+          'fixed inset-0 z-[60] lg:hidden transition-opacity',
           open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
       >
@@ -122,7 +138,7 @@ export function Navbar() {
         />
         <div
           className={cn(
-            'absolute right-0 top-0 h-full w-full max-w-sm bg-card border-l border-border p-6 transition-transform',
+            'absolute right-0 top-0 h-full w-full max-w-sm overflow-y-auto overscroll-contain bg-card border-l border-border p-6 transition-transform',
             open ? 'translate-x-0' : 'translate-x-full'
           )}
         >
@@ -157,6 +173,6 @@ export function Navbar() {
           </Button>
         </div>
       </div>
-    </header>
+    </>
   )
 }
