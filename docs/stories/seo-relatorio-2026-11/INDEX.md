@@ -1,6 +1,6 @@
 # Relatório técnico de SEO — 06/11/2026 (Gabriel / SEO)
 
-Fonte: `Relatorio_Tecnico_SEO_Unfold_Desenvolvedor.docx` (7 tarefas). Implementado em 07/11/2026.
+Fonte: `Relatorio_Tecnico_SEO_Unfold_Desenvolvedor.docx` (7 tarefas). Implementado e em produção em 07/11/2026 (main `3acb14b`).
 Dados do banco conferidos antes: 49 posts publicados, 79 links internos com nofollow em 7 posts,
 319 de 368 externos com nofollow em 44 posts, nenhum post com categoria — batem com o relatório.
 
@@ -8,13 +8,13 @@ Dados do banco conferidos antes: 49 posts publicados, 79 links internos com nofo
 
 | # | Tarefa | Código | Pendente fora do código |
 |---|--------|--------|-------------------------|
-| 1 | Remover nofollow dos links | [x] | [ ] rodar `--apply` (backup automático) e pedir rastreio das 49 URLs no GSC |
+| 1 | Remover nofollow dos links | [x] | [x] `--apply` em 07/11 (44/44, backup `posts-html-before-links-2026-11-07T12-38-59.json`) · [ ] pedir rastreio das 49 URLs no GSC |
 | 2 | Evento `generate_lead` | [x] | [ ] GTM e GA4 (lista abaixo) |
 | 3 | Categorias do blog | [x] | [ ] SEO preencher as intros em /painel/categories |
 | 4 | Artigos relacionados | [x] | — |
 | 5 | agencialighthouse.com | [x] | [ ] acesso à GoDaddy + domínios na Vercel + DNS |
 | 6 | Peso das páginas / GTM | diagnóstico | [ ] remover Clarity do GTM, rodar PageSpeed mobile |
-| 7 | llms.txt gerado | [x] | [ ] `node scripts/check-llms-sitemap.mjs` após o deploy |
+| 7 | llms.txt gerado | [x] | [x] conferido no ar em 07/11: 68 × 68 URLs |
 
 ## O que mudou
 
