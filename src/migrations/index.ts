@@ -11,6 +11,7 @@ import * as migration_20260807_130000_posts_faq from './20260807_130000_posts_fa
 import * as migration_20261010_120000_posts_content_updated_at from './20261010_120000_posts_content_updated_at';
 import * as migration_20261010_130000_authors from './20261010_130000_authors';
 import * as migration_20261010_140000_cases_rich from './20261010_140000_cases_rich';
+import * as migration_20261107_120000_blog_categories from './20261107_120000_blog_categories';
 
 export const migrations = [
   {
@@ -77,5 +78,10 @@ export const migrations = [
     up: migration_20261010_140000_cases_rich.up,
     down: migration_20261010_140000_cases_rich.down,
     name: '20261010_140000_cases_rich'
+  },
+  {
+    up: migration_20261107_120000_blog_categories.up,
+    down: migration_20261107_120000_blog_categories.down,
+    name: '20261107_120000_blog_categories'
   },
 ];

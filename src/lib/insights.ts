@@ -8,6 +8,8 @@ export type HomeInsight = {
   titulo: string
   resumo: string
   categoria: string
+  /** Slug da categoria (link para /blog/categoria/<slug>); null sem categoria. */
+  categoriaSlug: string | null
   autor: string
   publicado_em: string | null
   imagemUrl: string | null
@@ -48,6 +50,7 @@ async function fetchHomeInsights(): Promise<HomeInsight[]> {
       titulo: p.titulo || '',
       resumo: p.resumo || '',
       categoria: categoriaLabel(p.categoria),
+      categoriaSlug: (p.categoria && typeof p.categoria === 'object' && p.categoria.slug) || null,
       autor: p.autor || 'Equipe Unfold Growth',
       publicado_em: p.publicado_em || null,
       imagemUrl: mediaUrl(p.imagem_destaque),

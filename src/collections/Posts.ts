@@ -161,6 +161,15 @@ export const Posts: CollectionConfig = {
       },
     },
 
+    // ── /llms.txt (relatório de SEO 06/11/2026 — Tarefa 7) ────────
+    {
+      name: 'llms_optional',
+      type: 'checkbox',
+      label: 'Secundário no llms.txt',
+      defaultValue: false,
+      admin: { description: 'Marcado = o artigo vai para a seção "Optional" do /llms.txt.' },
+    },
+
     // ── Destaque na Home ──────────────────────────────────────────
     {
       name: 'destaque_home',

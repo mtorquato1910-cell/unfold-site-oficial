@@ -22,6 +22,10 @@ const REQUIRED = [
   ['site', 'cases', 'conteudo_html'], // S10
   ['site', 'cases', 'content_updated_at'], // S10
   ['site', 'cases', 'faq'], // S10
+  ['site', 'categories', 'intro'], // relatório SEO 06/11 — Tarefa 3
+  ['site', 'categories', 'meta_description'], // Tarefa 3
+  ['site', 'categories', 'ordem'], // Tarefa 3
+  ['site', 'posts', 'llms_optional'], // Tarefa 7
 ]
 
 const url = process.env.DATABASE_URL

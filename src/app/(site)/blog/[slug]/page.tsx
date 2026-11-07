@@ -15,6 +15,8 @@ import AuthorBox from '@/components/site/AuthorBox'
 import { authorPath, postAuthors, postReviewer } from '@/lib/authors'
 import { toBrtIso, brtDay } from '@/lib/content-date'
 import { withSeo, DEFAULT_OG_IMAGE } from '@/lib/seo/canonical'
+import PostCard from '@/components/site/PostCard'
+import { categoryPath, pickRelated, postCategory } from '@/lib/blog-categories'
 
 export const revalidate = 60
 
@@ -125,6 +127,7 @@ export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
   let post: any = null
   let banners: BannerData[] = []
+  let related: any[] = []
   try {
     const payload = await getPayload({ config: configPromise })
     const { docs } = await payload.find({
@@ -132,6 +135,30 @@ export default async function BlogPostPage({ params }: Props) {
       where: { slug: { equals: slug }, status: { equals: 'published' } },
     })
     post = docs[0] || null
+
+    // Relacionados (Tarefa 4 do relatório de SEO 06/11): 3 da mesma categoria,
+    // no HTML do servidor, com <a> simples. Prioridade para as URLs da Tarefa 4.
+    const cat = postCategory(post)
+    if (post && cat) {
+      try {
+        const res = await payload.find({
+          collection: 'posts',
+          where: {
+            and: [
+              { status: { equals: 'published' } },
+              { categoria: { equals: cat.id } },
+              { id: { not_equals: post.id } },
+            ],
+          },
+          sort: '-publicado_em',
+          limit: 200,
+          depth: 1,
+        })
+        related = pickRelated(slug, res.docs as any[])
+      } catch {
+        // sem relacionados — segue
+      }
+    }
 
     // Banners internos ativos (ferramentas/diagnóstico/cases).
     try {
@@ -195,6 +222,7 @@ export default async function BlogPostPage({ params }: Props) {
       }
     : { url: `${siteUrl}${DEFAULT_OG_IMAGE.url}`, width: DEFAULT_OG_IMAGE.width, height: DEFAULT_OG_IMAGE.height }
 
+  const category = postCategory(post)
   const sidebarBanner = banners[0]
   const mobileBanners = banners.slice(0, 2)
 
@@ -221,6 +249,7 @@ export default async function BlogPostPage({ params }: Props) {
           items={[
             { name: 'Início', url: '/' },
             { name: 'Blog', url: '/blog' },
+            ...(category ? [{ name: category.nome, url: categoryPath(category.slug) }] : []),
             { name: (post.titulo as string) || 'Artigo', url: `/blog/${slug}` },
           ]}
         />
@@ -232,10 +261,13 @@ export default async function BlogPostPage({ params }: Props) {
           <article className="article-reading min-w-0 max-w-3xl rounded-3xl border border-border bg-background text-foreground shadow-xl shadow-black/20 px-5 py-8 sm:px-8 md:px-12 md:py-14">
             {/* Header */}
             <header className="mb-10">
-              {post.pilar && (
-                <span className="font-mono text-xs uppercase tracking-widest text-primary">
-                  {post.pilar}
-                </span>
+              {category && (
+                <Link
+                  href={categoryPath(category.slug)}
+                  className="font-mono text-xs uppercase tracking-widest text-primary hover:underline"
+                >
+                  {category.nome}
+                </Link>
               )}
               <h1 className="font-display font-bold text-3xl md:text-4xl lg:text-5xl leading-[1.1] mt-3 mb-5">
                 {post.titulo as string}
@@ -339,6 +371,25 @@ export default async function BlogPostPage({ params }: Props) {
                       </h3>
                       <p className="text-foreground/70 leading-relaxed">{q.resposta}</p>
                     </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Artigos relacionados (Tarefa 4) — depois da conclusão/FAQ. */}
+            {related.length > 0 && category && (
+              <section className="mt-16" aria-labelledby="relacionados-titulo">
+                <div className="flex items-end justify-between gap-4 mb-6">
+                  <h2 id="relacionados-titulo" className="font-display font-bold text-2xl">
+                    Leia também
+                  </h2>
+                  <Link href={categoryPath(category.slug)} className="text-sm text-primary hover:underline shrink-0">
+                    Mais em {category.nome}
+                  </Link>
+                </div>
+                <div className="not-prose grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {related.map((r) => (
+                    <PostCard key={r.id} post={r} headingLevel="h3" showCategory={false} compact />
                   ))}
                 </div>
               </section>

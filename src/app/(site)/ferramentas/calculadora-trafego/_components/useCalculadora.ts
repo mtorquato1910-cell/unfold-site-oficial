@@ -20,6 +20,7 @@ import {
 } from '@/lib/calculadora/benchmarks'
 import { calcular, formatarExibicao } from '@/lib/calculadora/formulas'
 import { selecionarInsight } from '@/lib/calculadora/insights'
+import { trackLead } from '@/lib/analytics/lead-event'
 import {
   aplicarNovosDefaults as aplicarNovosDefaultsPuro,
   premissasFromDefaults,
@@ -317,7 +318,11 @@ export function useCalculadora(): UseCalculadora {
         ok?: boolean
         tampered?: boolean
       }
-      if (json.ok) tokenVerificadoRef.current = state.token
+      if (json.ok && tokenVerificadoRef.current !== state.token) {
+        // 1º POST aceito deste token = lead novo (os reenvios do mesmo token são updates).
+        tokenVerificadoRef.current = state.token
+        trackLead('calculadora-trafego')
+      }
       return { ok: Boolean(json.ok), tampered: json.tampered }
     } catch {
       return { ok: false }

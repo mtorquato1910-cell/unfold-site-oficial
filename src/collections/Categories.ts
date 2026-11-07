@@ -28,6 +28,24 @@ export const Categories: CollectionConfig = {
       defaultValue: 'geral',
     },
     { name: 'descricao', type: 'textarea' },
+    // Página /blog/categoria/<slug> (relatório de SEO 06/11/2026 — Tarefa 3).
+    {
+      name: 'intro',
+      type: 'textarea',
+      admin: { description: 'Texto de abertura da página da categoria (preenchido por SEO).' },
+    },
+    {
+      name: 'meta_description',
+      type: 'textarea',
+      label: 'Resumo de busca (SEO)',
+      admin: { description: 'Vazio = usa o início da intro. Ideal até 155 caracteres.' },
+    },
+    {
+      name: 'ordem',
+      type: 'number',
+      defaultValue: 0,
+      admin: { description: 'Ordem nos filtros do blog (menor primeiro).' },
+    },
   ],
 }
 

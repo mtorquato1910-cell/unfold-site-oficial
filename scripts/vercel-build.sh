@@ -18,6 +18,12 @@ yes | npx payload migrate --force-accept-warning 2>&1 || \
 echo "=== Unfold Build: Conferindo schema exigido pelo código ==="
 node scripts/verify-schema.mjs
 
+# Tarefa 7 do relatório de SEO (06/11/2026): sitemap.xml e /llms.txt saem da mesma
+# fonte (src/lib/site-index.ts). O teste de paridade FALHA o build se divergirem.
+# Depois do deploy, conferir o site no ar com: node scripts/check-llms-sitemap.mjs
+echo "=== Unfold Build: Teste de paridade sitemap x llms.txt ==="
+npx vitest run src/lib/__tests__/seo-relatorio-2026-11.test.ts src/lib/__tests__/llms-indexnow.test.ts
+
 echo "=== Unfold Build: Gerando importMap ==="
 npx payload generate:importmap
 

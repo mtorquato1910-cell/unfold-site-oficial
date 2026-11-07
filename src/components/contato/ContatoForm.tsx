@@ -9,6 +9,7 @@ import { ArrowRight, Loader2, Check } from 'lucide-react'
 import { formatPhoneBR } from '@/lib/format/phone-mask'
 import { useContatoCheck } from '@/lib/validation/use-contato-check'
 import { useBotGuard } from '@/lib/security/use-bot-guard'
+import { trackLead } from '@/lib/analytics/lead-event'
 
 const schema = z.object({
   nome: z.string().min(3, 'Informe seu nome completo'),
@@ -57,6 +58,7 @@ export default function ContatoForm() {
       if (!res.ok) {
         throw new Error(json.message || json.error || 'Erro ao enviar. Tente novamente.')
       }
+      trackLead('contato')
       setSuccess(true)
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Erro inesperado. Tente novamente.')

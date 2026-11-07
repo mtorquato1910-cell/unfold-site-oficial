@@ -1,19 +1,14 @@
 import type { Metadata } from 'next'
 import { withSeo } from '@/lib/seo/canonical'
 import Link from 'next/link'
-import Image from 'next/image'
-import { ArrowUpRight } from 'lucide-react'
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
 import { getSiteTexts } from '@/lib/site-texts'
 import { renderHighlight } from '@/lib/render-highlight'
-import { authorNames } from '@/lib/authors'
+import PostCard from '@/components/site/PostCard'
+import CategoryNav from '@/components/site/CategoryNav'
+import { getBlogCategories, type BlogCategory } from '@/lib/blog-data'
 import { CollectionPageSchema } from '@/components/SchemaOrg'
-
-function mediaUrl(field: any): string | null {
-  if (field && typeof field === 'object') return field.url || field.sizes?.card?.url || null
-  return null
-}
 
 export const metadata: Metadata = withSeo('/blog', {
   title: 'Blog',
@@ -23,13 +18,6 @@ export const metadata: Metadata = withSeo('/blog', {
 // Rede de segurança: além do revalidatePath disparado ao publicar, a página
 // se reconstrói a cada 60s para refletir novos posts sem depender só do purge.
 export const revalidate = 60
-
-const PILAR_CONFIG: Record<string, { label: string; color: string }> = {
-  diagnosticar: { label: 'Diagnosticar', color: 'text-primary border-primary/20 bg-primary/5' },
-  estruturar: { label: 'Estruturar', color: 'text-secondary border-secondary/20 bg-secondary/5' },
-  operar: { label: 'Operar', color: 'text-[hsl(250_64%_70%)] border-[hsl(250_64%_70%/0.2)] bg-[hsl(250_64%_70%/0.05)]' },
-  geral: { label: 'Geral', color: 'text-foreground/80 border-border bg-card/50' },
-}
 
 async function getPosts(): Promise<any[]> {
   try {
@@ -49,8 +37,11 @@ async function getPosts(): Promise<any[]> {
 }
 
 export default async function BlogPage() {
-  const posts = await getPosts()
-  const { blog } = await getSiteTexts()
+  const [posts, categories, { blog }] = await Promise.all([
+    getPosts(),
+    getBlogCategories().catch((): BlogCategory[] => []),
+    getSiteTexts(),
+  ])
 
   return (
     <main>
@@ -109,47 +100,14 @@ export default async function BlogPage() {
               </p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {posts.map((post) => {
-                const pilarCfg = PILAR_CONFIG[post.pilar as string] || PILAR_CONFIG.geral
-                const imgUrl = mediaUrl(post.imagem_destaque)
-                return (
-                  <Link
-                    key={post.id}
-                    href={`/blog/${post.slug}`}
-                    className="group rounded-2xl border border-border bg-card p-6 hover:border-primary/40 transition-all duration-300 flex flex-col"
-                  >
-                    {imgUrl && (
-                      <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-border/60 mb-5">
-                        <Image
-                          src={imgUrl}
-                          alt={post.titulo as string}
-                          fill
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                      </div>
-                    )}
-                    <div className="flex items-center justify-between mb-4">
-                      <span className={`font-mono text-xs uppercase tracking-[0.15em] px-2.5 py-1 rounded-full border ${pilarCfg.color}`}>
-                        {pilarCfg.label}
-                      </span>
-                      <ArrowUpRight className="h-4 w-4 text-foreground/20 group-hover:text-primary transition-colors" />
-                    </div>
-                    <h2 className="font-display font-bold text-lg leading-snug mb-3 group-hover:text-primary transition-colors flex-1">
-                      {post.titulo as string}
-                    </h2>
-                    <p className="text-sm text-foreground/80 leading-relaxed line-clamp-3 mb-4">
-                      {post.resumo as string}
-                    </p>
-                    <div className="flex items-center gap-3 text-xs text-foreground/30 mt-auto pt-4 border-t border-border/50">
-                      <span>{authorNames(post)}</span>
-                      {post.tempo_leitura && <span>· {post.tempo_leitura as number} min</span>}
-                    </div>
-                  </Link>
-                )
-              })}
-            </div>
+            <>
+              <CategoryNav categories={categories} />
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {posts.map((post) => (
+                  <PostCard key={post.id} post={post} />
+                ))}
+              </div>
+            </>
           )}
         </div>
       </section>

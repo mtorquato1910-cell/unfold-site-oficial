@@ -9,6 +9,7 @@ import { formatPhoneBR, extractDigits } from '@/lib/format/phone-mask'
 import { useContatoCheck } from '@/lib/validation/use-contato-check'
 import { GuiaTurnstile } from '../GuiaTurnstile'
 import { trackGuia } from '../../_lib/analytics'
+import { trackLead } from '@/lib/analytics/lead-event'
 import { getStoredOrigin } from '../../_lib/origin'
 import { consultoriaSchema, type ConsultoriaInput } from '../../_lib/validation'
 
@@ -91,7 +92,8 @@ export function ContatoForm() {
             },
           }),
         })
-        if (!res.ok) mailtoFallback(values) // resiliência: não perde o lead
+        if (res.ok) trackLead('guia-eleicoes-consultoria')
+        else mailtoFallback(values) // resiliência: não perde o lead
       } catch {
         mailtoFallback(values) // rede indisponível → fallback
       }

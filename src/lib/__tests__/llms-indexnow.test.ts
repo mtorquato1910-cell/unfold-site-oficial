@@ -7,25 +7,31 @@ const BASE = 'https://unfoldgrowth.com.br'
 describe('buildLlmsTxt', () => {
   const txt = buildLlmsTxt({
     baseUrl: BASE,
-    posts: [
-      { slug: 'sdr', titulo: 'SDR: o que faz', descricao: 'Guia de pré-venda.\nCom quebra', pilar: true },
-      { slug: 'ltv', titulo: 'LTV [guia]', descricao: '', pilar: false },
-    ],
-    cases: [],
+    index: {
+      posts: [
+        { slug: 'sdr', titulo: 'SDR: o que faz', descricao: 'Guia de pré-venda.\nCom quebra', categoriaId: '1', llmsOptional: false, autorIds: [] },
+        { slug: 'ltv', titulo: 'LTV [guia]', descricao: '', categoriaId: '1', llmsOptional: true, autorIds: [] },
+      ],
+      cases: [],
+      authors: [],
+      categories: [{ id: '1', slug: 'vendas-b2b', nome: 'Vendas B2B', intro: 'Processo comercial B2B.' }],
+    },
   })
 
-  it('segue o modelo: título, resumo, seções e Optional', () => {
+  it('segue o modelo: título, resumo, seções por categoria e Optional', () => {
     expect(txt.startsWith('# Unfold Growth\n\n> ')).toBe(true)
     expect(txt).toContain('## Sobre a empresa')
     expect(txt).toContain('## Ferramentas gratuitas')
-    expect(txt).toContain('## Guias e artigos principais\n- [SDR: o que faz](https://unfoldgrowth.com.br/blog/sdr): Guia de pré-venda. Com quebra')
-    expect(txt).toContain('## Optional\n- [Blog](https://unfoldgrowth.com.br/blog): índice de todos os artigos')
-    expect(txt).toContain('- [LTV (guia)](https://unfoldgrowth.com.br/blog/ltv)')
+    expect(txt).toContain(
+      '## Vendas B2B\n- [Vendas B2B](https://unfoldgrowth.com.br/blog/categoria/vendas-b2b): Processo comercial B2B.\n- [SDR: o que faz](https://unfoldgrowth.com.br/blog/sdr): Guia de pré-venda. Com quebra',
+    )
+    expect(txt).toContain('## Optional\n- [LTV (guia)](https://unfoldgrowth.com.br/blog/ltv)')
   })
 
-  it('não inclui páginas legais, resultados nem seção de cases vazia', () => {
+  it('não inclui páginas legais, resultados nem seções vazias', () => {
     expect(txt).not.toMatch(/termos|lgpd|politica-de-privacidade|\/diagnostico\/r\//)
     expect(txt).not.toContain('## Cases')
+    expect(txt).not.toContain('## Autores')
   })
 
   it('oneLine remove quebras e markdown (mantém parênteses) e limita o tamanho', () => {

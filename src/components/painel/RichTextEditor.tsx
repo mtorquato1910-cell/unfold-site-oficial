@@ -65,7 +65,9 @@ export default function RichTextEditor({
     extensions: [
       StarterKit.configure({ heading: { levels: headingLevels as any } }),
       Underline,
-      Link.configure({ openOnClick: false, autolink: true, HTMLAttributes: { rel: 'noopener noreferrer' } }),
+      // rel/target nulos: o padrão do TipTap (noopener noreferrer nofollow + _blank)
+      // tirava a força dos links internos. O save normaliza (lib/link-attrs).
+      Link.configure({ openOnClick: false, autolink: true, HTMLAttributes: { rel: null, target: null } }),
       Placeholder.configure({ placeholder }),
       ...(rich
         ? [

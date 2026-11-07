@@ -31,21 +31,26 @@ const EMPTY_FORM = {
   meta_description: '',
   faq: [] as FaqItem[],
   destaque_home: false,
+  /** Seção "Optional" do /llms.txt (Tarefa 7 do relatório de SEO). */
+  llms_optional: false,
   /** Autores reais (S07) — ids da collection authors. Obrigatório para publicar. */
   autores: [] as string[],
   revisor: '',
 }
 
 type AuthorOption = { id: string; nome: string; ativo: boolean }
+type CategoryOption = { id: string; nome: string }
 
 export default function PostsClient({
   initialPosts,
   canApprove = false,
   authors = [],
+  categories = [],
 }: {
   initialPosts: Post[]
   canApprove?: boolean
   authors?: AuthorOption[]
+  categories?: CategoryOption[]
 }) {
   const [posts, setPosts] = useState<Post[]>(initialPosts)
   const [open, setOpen] = useState(false)
@@ -134,7 +139,8 @@ export default function PostsClient({
       content: '',
       // Pré-carrega o editor rico: usa o HTML salvo ou converte o Lexical antigo.
       contentHtml: post.conteudo_html || lexicalToHtml(post.conteudo) || '',
-      category: typeof cat === 'object' ? (cat?.titulo ?? cat?.name ?? '') : (cat ?? ''),
+      // Id da categoria (o select do form usa o id).
+      category: cat == null || cat === '' ? '' : String(typeof cat === 'object' ? (cat?.id ?? '') : cat),
       status: post.status ?? 'draft',
       tags: tagsArr.join(', '),
       cover_image: mediaUrl,
@@ -143,6 +149,7 @@ export default function PostsClient({
       meta_description: post.meta_description ?? '',
       faq: Array.isArray(post.faq) ? post.faq : [],
       destaque_home: !!post.destaque_home,
+      llms_optional: !!post.llms_optional,
       autores: Array.isArray(post.autores) ? post.autores.map((a: any) => String(a?.id ?? a)) : [],
       revisor: post.revisor ? String(post.revisor?.id ?? post.revisor) : '',
     })
@@ -505,14 +512,18 @@ export default function PostsClient({
               </Field>
 
               <div className="grid grid-cols-2 gap-4">
-                <Field label="Categoria">
-                  <input
+                <Field label="Categoria" hint="Define a página /blog/categoria/… e os artigos relacionados.">
+                  <select
                     className="w-full h-10 px-3 rounded-lg text-[13px]"
                     style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
                     value={form.category}
                     onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-                    placeholder="growth, marketing..."
-                  />
+                  >
+                    <option value="">— Sem categoria —</option>
+                    {categories.map(c => (
+                      <option key={c.id} value={c.id}>{c.nome}</option>
+                    ))}
+                  </select>
                 </Field>
 
                 <Field label="Status">
@@ -580,6 +591,21 @@ export default function PostsClient({
                     style={{ accentColor: 'hsl(158 92% 70%)' }}
                   />
                   <span className="text-[13px] text-dim-2">Exibir nos Insights da home</span>
+                </label>
+              </Field>
+
+              <Field
+                label="llms.txt"
+                hint='Marcado = o artigo vai para a seção "Optional" (secundário) do /llms.txt.'
+              >
+                <label className="flex h-10 items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.llms_optional}
+                    onChange={e => setForm(f => ({ ...f, llms_optional: e.target.checked }))}
+                    style={{ accentColor: 'hsl(158 92% 70%)' }}
+                  />
+                  <span className="text-[13px] text-dim-2">Secundário no llms.txt</span>
                 </label>
               </Field>
 

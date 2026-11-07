@@ -17,6 +17,7 @@ import ResultadoMapa from '../_components/ResultadoMapa'
 import { useBotGuard } from '@/lib/security/use-bot-guard'
 import styles from './montar.module.css'
 import Link from 'next/link'
+import { trackLead } from '@/lib/analytics/lead-event'
 
 // ── tipos locais ─────────────────────────────────────────────────────────────
 type AnswerValue = string | string[]
@@ -291,6 +292,7 @@ export default function MontarClient() {
       setResultUrl(data.url ?? null)
       setResultToken(data.token ?? null)
       setPhase('result')
+      trackLead('mapa-icp')
       dataLayerPush({ event: 'result_view', tool: 'mapa-icp' })
       scrollTop()
     } catch {

@@ -1,4 +1,5 @@
 import sanitizeHtml from 'sanitize-html'
+import { normalizeLinkAttribs } from './link-attrs'
 
 /**
  * Sanitização do HTML produzido pelo editor rico (TipTap) antes de persistir.
@@ -37,23 +38,9 @@ const OPTIONS: sanitizeHtml.IOptions = {
   exclusiveFilter: (frame) =>
     frame.tag === 'div' && !YT_ID.test(frame.attribs['data-youtube'] || ''),
   transformTags: {
-    // Links de terceiros abrem em nova aba e sem vazar referrer/opener, com
-    // nofollow. Link do PRÓPRIO domínio (relativo OU absoluto) é interno: não
-    // recebe nofollow nem target=_blank — senão anula a força passada entre as
-    // páginas do site (item 1.2 da auditoria). "Externo" = protocolo http(s)
-    // apontando para fora de *.unfoldgrowth.com.br.
-    a: (tagName, attribs) => {
-      const href = attribs.href || ''
-      const isAbsolute = /^https?:\/\//i.test(href)
-      const isOwnDomain = /^https?:\/\/([a-z0-9-]+\.)*unfoldgrowth\.com\.br([/?#]|$)/i.test(href)
-      const external = isAbsolute && !isOwnDomain
-      return {
-        tagName: 'a',
-        attribs: external
-          ? { ...attribs, target: '_blank', rel: 'noopener noreferrer nofollow' }
-          : attribs,
-      }
-    },
+    // Interno → relativo, sem rel/target; externo → nova aba com rel="noopener",
+    // sem nofollow (Tarefa 1 do relatório de SEO de 06/11/2026). Regra em link-attrs.
+    a: (_tagName, attribs) => ({ tagName: 'a', attribs: normalizeLinkAttribs(attribs) }),
   },
 }
 

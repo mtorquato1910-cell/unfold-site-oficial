@@ -1,6 +1,7 @@
 import { withPayload } from '@payloadcms/next/withPayload'
 import type { NextConfig } from 'next'
 import { LEGACY_REDIRECTS } from './src/lib/legacy-redirects'
+import { LIGHTHOUSE_REDIRECTS } from './src/lib/lighthouse-redirects'
 
 // HSTS em deploy gradual (Bug 3).
 // Fase 1: max-age=300 (5min). Fase 2 (2026-06-05): max-age=2592000 (30d).
@@ -45,6 +46,9 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // Domínio antigo agencialighthouse.com (Tarefa 5 do relatório de SEO 06/11/2026).
+      // PRIMEIRO da lista: com host próprio, vai direto ao destino final (sem cadeia).
+      ...LIGHTHOUSE_REDIRECTS,
       // Sprint hotfix 2026-05-15 (Bug 3): www → apex canônico (301).
       // O cert SSL precisa cobrir ambos os hostnames na Vercel — esta regra
       // não substitui essa configuração no painel.

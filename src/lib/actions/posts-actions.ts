@@ -112,15 +112,17 @@ function mapPost(input: FlexibleData) {
   // Só sobrescreve o HTML quando o editor enviou algo (evita zerar em saves parciais).
   if (cleanHtml != null) data.conteudo_html = cleanHtml
   if (tempo_leitura) data.tempo_leitura = tempo_leitura
-  if (typeof categoria === 'string' && categoria) {
-    // Se cliente enviou categoria como string (não ID), ignora — relação só aceita ID
-    // Aceita só se for ID numérico/UUID válido
-    if (/^[a-f0-9-]{8,}$/i.test(categoria) || /^\d+$/.test(categoria)) {
-      data.categoria = categoria
-    }
-  } else if (categoria) {
-    data.categoria = categoria
+  // Categoria (Tarefa 3): id da collection `categories`. No Postgres a relação é
+  // integer → coerce para Number (como a imagem). '' = remover; ausente = não mexe.
+  if (categoria === '' || categoria === null) {
+    data.categoria = null
+  } else if (categoria !== undefined) {
+    const raw = typeof categoria === 'object' ? (categoria as any)?.id : categoria
+    const s = String(raw ?? '')
+    if (/^\d+$/.test(s)) data.categoria = Number(s)
   }
+  // Seção "Optional" do /llms.txt (Tarefa 7). Ausente = não mexe.
+  if (input.llms_optional !== undefined) data.llms_optional = !!input.llms_optional
   // ID de mídia: no Postgres o relacionamento é integer — manda string numérica
   // dava "The following field is invalid: Imagem de destaque". Coerce p/ Number.
   if (imagem_destaque != null && imagem_destaque !== '') {
@@ -187,6 +189,7 @@ export async function createPost(input: FlexibleData) {
     revalidatePath('/blog')
     revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
     revalidatePath('/llms.txt') // S09
+    revalidatePath('/blog/categoria/[slug]', 'page') // listagens por categoria (Tarefa 3)
     if ((created as any)?.status === 'published') await notifyIndexNow([`/blog/${created.slug}`, '/blog'])
     revalidatePath('/') // home (seção Insights)
     revalidateTag('posts')
@@ -241,6 +244,7 @@ export async function updatePost(id: string, input: FlexibleData) {
     revalidatePath('/blog')
     revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
     revalidatePath('/llms.txt') // S09
+    revalidatePath('/blog/categoria/[slug]', 'page') // listagens por categoria (Tarefa 3)
     // IndexNow (S09): avisa quando publica, despublica, troca o slug ou o conteúdo muda.
     {
       const wasPub = prev?.status === 'published'
@@ -271,6 +275,7 @@ export async function deletePost(id: string) {
   const prev: any = await payload.findByID({ collection: 'posts', id, depth: 0 }).catch(() => null)
   await payload.delete({ collection: 'posts', id })
   revalidatePath('/llms.txt') // S09
+  revalidatePath('/blog/categoria/[slug]', 'page')
   // Revalida a página do post excluído (senão o cache seguiria servindo 200 ao Bing).
   if (prev?.slug) revalidatePath(`/blog/${prev.slug}`)
   if (prev?.status === 'published') await notifyIndexNow([`/blog/${prev.slug}`, '/blog'])

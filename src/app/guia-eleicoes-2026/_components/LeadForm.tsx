@@ -11,6 +11,7 @@ import { PERFIL_OPTIONS, type PerfilEleitoral } from '../_lib/perfil'
 import { submitGuiaLead } from '../_lib/submit-lead'
 import { POLITICA_URL } from '../_lib/links'
 import { useContatoCheck } from '@/lib/validation/use-contato-check'
+import { trackLead } from '@/lib/analytics/lead-event'
 
 // Tema light editorial (mesma paleta do site).
 const ALERT = 'var(--vedado)'
@@ -67,6 +68,7 @@ export function LeadForm({ onUnlock }: Props) {
         )
         return
       }
+      trackLead('guia-eleicoes')
       onUnlock({
         perfil: values.perfil as PerfilEleitoral,
         emailHash: result.emailHash,

@@ -52,6 +52,7 @@ function revalidateAuthorPages(slug?: string) {
   if (slug) revalidatePath(`/autor/${slug}`)
   revalidatePath('/blog/[slug]', 'page') // byline e box dos artigos
   revalidatePath('/sitemap.xml')
+  revalidatePath('/llms.txt') // Tarefa 7: autores indexáveis entram no llms.txt
 }
 
 export async function createAuthor(input: FlexibleData) {

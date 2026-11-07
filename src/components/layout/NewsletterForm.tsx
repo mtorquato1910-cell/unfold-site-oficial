@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { formatPhoneBR } from '@/lib/format/phone-mask'
 import { useContatoCheck } from '@/lib/validation/use-contato-check'
 import { useBotGuard } from '@/lib/security/use-bot-guard'
+import { trackLead } from '@/lib/analytics/lead-event'
 
 type State = 'idle' | 'loading' | 'success' | 'error'
 
@@ -45,6 +46,7 @@ export default function NewsletterForm() {
       if (!res.ok || !data.ok) {
         throw new Error(data.error || 'Falha ao inscrever. Tente novamente.')
       }
+      trackLead('newsletter')
       setState('success')
       setEmail('')
       setTelefone('')

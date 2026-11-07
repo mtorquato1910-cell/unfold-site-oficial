@@ -10,6 +10,7 @@ import { ArrowRight, Loader2 } from 'lucide-react'
 import TurnstileWidget from '@/components/diagnostico/TurnstileWidget'
 import { formatPhoneBR } from '@/lib/format/phone-mask'
 import { useContatoCheck } from '@/lib/validation/use-contato-check'
+import { trackLead } from '@/lib/analytics/lead-event'
 
 // Schema dos campos da spec §3.1 + WhatsApp opcional (CRM enrichment).
 const schema = z.object({
@@ -139,6 +140,7 @@ export default function DiagnosticoEtapa1Form() {
         })
         throw new Error(`${msg} (ref: ${traceId.slice(0, 8)})`)
       }
+      trackLead('diagnostico')
       router.push(`/diagnostico/etapa-2/${json.token}`)
     } catch (err) {
       setServerError(err instanceof Error ? err.message : 'Erro inesperado. Tente novamente.')

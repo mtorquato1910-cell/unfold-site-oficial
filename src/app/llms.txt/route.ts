@@ -1,50 +1,21 @@
-import { getPayload } from 'payload'
-import configPromise from '@payload-config'
-import { buildLlmsTxt, type LlmsCase, type LlmsPost } from '@/lib/llms-txt'
+import { buildLlmsTxt } from '@/lib/llms-txt'
+import type { SiteIndex } from '@/lib/site-index'
+import { getSiteIndex } from '@/lib/site-index-server'
 
 /**
- * /llms.txt (S09 — épico seo-tecnico-2026-10). Gerado do CMS: posts e cases
- * PUBLICADOS. "Guias e artigos principais" = posts marcados para os Insights da home
- * (`destaque_home`); os demais vão para "Optional". ISR de 1h + revalidatePath nas
- * actions de post/case.
+ * /llms.txt (S09 — épico seo-tecnico-2026-10; Tarefa 7 do relatório de SEO de
+ * 06/11/2026). Gerado dos mesmos dados do sitemap.xml (getSiteIndex), sem edição
+ * manual. ISR de 1h como reserva + revalidatePath('/llms.txt') nas actions de post,
+ * case, autor e categoria.
  */
 export const revalidate = 3600
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://unfoldgrowth.com.br'
 
 export async function GET() {
-  let posts: LlmsPost[] = []
-  let cases: LlmsCase[] = []
+  let index: SiteIndex = { posts: [], cases: [], authors: [], categories: [] }
   try {
-    const payload = await getPayload({ config: configPromise })
-    const [p, c] = await Promise.all([
-      payload.find({
-        collection: 'posts',
-        where: { status: { equals: 'published' } },
-        sort: '-publicado_em',
-        limit: 500,
-        depth: 0,
-        select: { slug: true, titulo: true, resumo: true, meta_description: true, destaque_home: true },
-      }),
-      payload.find({
-        collection: 'cases',
-        where: { status: { equals: 'publicado' } },
-        limit: 200,
-        depth: 0,
-        select: { slug: true, title: true, excerpt: true, meta_description: true, tagline: true },
-      }),
-    ])
-    posts = (p.docs as any[]).map((d) => ({
-      slug: d.slug,
-      titulo: d.titulo,
-      descricao: d.meta_description || d.resumo,
-      pilar: !!d.destaque_home,
-    }))
-    cases = (c.docs as any[]).map((d) => ({
-      slug: d.slug,
-      titulo: d.title,
-      descricao: d.meta_description || d.excerpt || d.tagline,
-    }))
+    index = await getSiteIndex()
   } catch (e) {
     console.error('[llms.txt] falha ao ler o CMS:', e)
     // Fora do build, falha → erro: o ISR mantém a última versão boa em vez de
@@ -52,7 +23,7 @@ export async function GET() {
     if (process.env.NEXT_PHASE !== 'phase-production-build') throw e
   }
 
-  return new Response(buildLlmsTxt({ baseUrl: BASE_URL, posts, cases }), {
+  return new Response(buildLlmsTxt({ baseUrl: BASE_URL, index }), {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
   })
 }

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { Reveal } from '@/components/ui/Reveal'
 import { getHomeInsights } from '@/lib/insights'
+import { categoryPath } from '@/lib/blog-categories'
 
 const GRADIENTS = [
   'from-primary/30 via-secondary/20 to-tertiary/30',
@@ -51,10 +52,8 @@ export async function Insights() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((p, i) => (
             <Reveal key={p.id} delay={i * 80}>
-              <Link
-                href={`/blog/${p.slug}`}
-                className="group flex flex-col rounded-xl overflow-hidden border border-border bg-card/40 hover:bg-card transition-colors h-full"
-              >
+              {/* Título cobre o card (::after); a categoria é link próprio por cima. */}
+              <article className="group relative flex flex-col rounded-xl overflow-hidden border border-border bg-card/40 hover:bg-card transition-colors h-full">
                 <div className={`relative aspect-[16/9] bg-gradient-to-br ${GRADIENTS[i % GRADIENTS.length]}`}>
                   {p.imagemUrl && (
                     <Image
@@ -67,11 +66,20 @@ export async function Insights() {
                   )}
                 </div>
                 <div className="p-6 flex-1 flex flex-col">
-                  <p className="font-mono text-[10px] uppercase tracking-wider text-primary mb-3">
-                    {p.categoria}
-                  </p>
+                  {p.categoriaSlug ? (
+                    <Link
+                      href={categoryPath(p.categoriaSlug)}
+                      className="relative z-10 self-start font-mono text-[10px] uppercase tracking-wider text-primary mb-3 hover:underline"
+                    >
+                      {p.categoria}
+                    </Link>
+                  ) : (
+                    <p className="font-mono text-[10px] uppercase tracking-wider text-primary mb-3">{p.categoria}</p>
+                  )}
                   <h3 className="font-sans font-semibold text-lg leading-snug mb-3 group-hover:text-primary transition-colors">
-                    {p.titulo}
+                    <Link href={`/blog/${p.slug}`} className="after:absolute after:inset-0 after:rounded-xl">
+                      {p.titulo}
+                    </Link>
                   </h3>
                   <p className="text-sm text-foreground/85 leading-relaxed flex-1">{p.resumo}</p>
                   <p className="text-xs text-foreground/75 mt-5">
@@ -79,7 +87,7 @@ export async function Insights() {
                     {p.publicado_em ? ` · ${formatDate(p.publicado_em)}` : ''}
                   </p>
                 </div>
-              </Link>
+              </article>
             </Reveal>
           ))}
         </div>
