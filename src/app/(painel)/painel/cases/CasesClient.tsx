@@ -126,7 +126,7 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
       const warns = validateArticle(form.contentHtml, form.faq, 'case')
       if (warns.length && !window.confirm(`Avisos de qualidade:\n\n- ${warns.join('\n- ')}\n\nPublicar mesmo assim?`)) return
     }
-    const data = { ...form, destacar_na_home: form.featured, client: form.company, published_at: fromBrtInput(form.published_at) }
+    const data = { ...form, destacar_na_home: form.featured, client: form.company, published_at: form.published_at !== toBrtInput(editing?.published_at) ? fromBrtInput(form.published_at) : null }
     startTransition(async () => {
       try {
         const res: any = editing ? await updateCase(editing.id, data) : await createCase(data)

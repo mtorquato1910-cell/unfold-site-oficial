@@ -119,7 +119,8 @@ export default function PostsClient({
       ...rest,
       tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
       autores: autorId ? [autorId] : [],
-      publicado_em: fromBrtInput(form.publicado_em),
+      // Só envia a data se mudou (o datetime-local corta os segundos da original).
+      publicado_em: form.publicado_em !== toBrtInput(editing?.publicado_em) ? fromBrtInput(form.publicado_em) : null,
     }
     // Autor real é obrigatório para publicar (S07 — Checklist SEO M08). Bloqueia.
     if (form.status === 'published' && !autorId) {

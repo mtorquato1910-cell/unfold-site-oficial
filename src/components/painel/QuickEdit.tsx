@@ -63,7 +63,9 @@ export default function QuickEdit({
     if (!v.titulo.trim()) return setError('Informe o título.')
     if (!slugify(v.slug)) return setError('Informe o slug.')
     if (kind === 'post' && v.status === 'published' && !v.autor) return setError('Selecione o autor para publicar.')
-    const publishedIso = fromBrtInput(v.data)
+    // Só envia a data se mudou: o datetime-local não tem segundos, e reenviar o valor
+    // intacto cortaria os segundos da data original a cada salvamento.
+    const publishedIso = v.data !== initial.data ? fromBrtInput(v.data) : null
     const common = {
       slug: slugify(v.slug),
       meta_description: v.meta_description,

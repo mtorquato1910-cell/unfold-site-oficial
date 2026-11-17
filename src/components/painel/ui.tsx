@@ -98,13 +98,19 @@ export function StatusBadge({ status }: { status: string }) {
     inactive:   { bg: 'hsl(0 0% 100% / 0.04)',   color: 'hsl(0 0% 91% / 0.62)', border: 'hsl(0 0% 100% / 0.10)', dot: 'hsl(0 0% 91% / 0.42)' },
   }
   const s = conf[status] ?? conf.draft
+  // Rótulo em português (antes exibia o valor cru: "PUBLISHED", "DRAFT"…).
+  const labels: Record<string, string> = {
+    published: 'Publicado', publicado: 'Publicado', draft: 'Rascunho', rascunho: 'Rascunho',
+    active: 'Ativo', inactive: 'Inativo', pending: 'Pendente', new: 'Novo',
+    contacted: 'Contatado', qualified: 'Qualificado', converted: 'Convertido',
+  }
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider"
       style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
     >
       <span className="h-1.5 w-1.5 rounded-full" style={{ background: s.dot }} />
-      {status}
+      {labels[status] ?? status}
     </span>
   )
 }
