@@ -34,6 +34,22 @@ export function brtDay(input: Date | string | null | undefined): string | undefi
 }
 
 /**
+ * Valor de `<input type="datetime-local">` (AAAA-MM-DDTHH:mm) no horário de Brasília —
+ * campo "Data de publicação" do painel (edição rápida e editor completo).
+ */
+export function toBrtInput(input: Date | string | null | undefined): string {
+  return toBrtIso(input)?.slice(0, 16) ?? ''
+}
+
+/** Inverso de `toBrtInput`: lê o valor do campo como horário de Brasília → ISO UTC. */
+export function fromBrtInput(value: string | null | undefined): string | null {
+  const v = (value || '').trim()
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(v)) return null
+  const d = new Date(`${v}:00-03:00`)
+  return Number.isNaN(d.getTime()) ? null : d.toISOString()
+}
+
+/**
  * Assinatura do corpo HTML que ignora diferenças de serialização (o editor TipTap
  * reescreve espaços, atributos e `<br>`/`<br/>` ao reabrir um post) mas captura
  * mudança editorial: o texto, a estrutura de tags (ex.: H2 → H3, lista nova) e as

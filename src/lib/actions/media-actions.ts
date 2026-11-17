@@ -182,3 +182,41 @@ export async function updateMediaAlt(id: string | number, alt: string) {
     return { ok: false, error: e?.message || 'Falha ao salvar a descrição' }
   }
 }
+
+/**
+ * Imagens já enviadas, mais recentes primeiro — seletor "Escolher da biblioteca" da
+ * capa (manual do desenvolvedor de 13/11/2026: a capa abre a biblioteca de mídia).
+ */
+export async function listMedia(opts: { page?: number; search?: string } = {}) {
+  try {
+    await requireRole('editor')
+    const payload = await getPayload({ config })
+    const search = String(opts.search ?? '').trim()
+    const res: any = await payload.find({
+      collection: 'media',
+      where: {
+        and: [
+          { mimeType: { like: 'image/' } },
+          ...(search ? [{ or: [{ alt: { like: search } }, { filename: { like: search } }] }] : []),
+        ],
+      },
+      sort: '-createdAt',
+      limit: 24,
+      page: Math.max(1, Number(opts.page) || 1),
+      depth: 0,
+    })
+    return {
+      ok: true,
+      hasNextPage: Boolean(res.hasNextPage),
+      items: (res.docs as any[]).map((d) => ({
+        id: String(d.id),
+        url: (d.url as string) || '',
+        thumb: (d.sizes?.thumbnail?.url as string) || (d.sizes?.card?.url as string) || (d.url as string) || '',
+        alt: (d.alt as string) || (d.filename as string) || '',
+      })),
+    }
+  } catch (e: any) {
+    console.error('[listMedia]', e)
+    return { ok: false, hasNextPage: false, items: [], error: e?.message || 'Falha ao carregar a biblioteca' }
+  }
+}

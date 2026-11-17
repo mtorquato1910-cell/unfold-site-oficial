@@ -6,7 +6,9 @@ import { PageHeader, GlassCard, StatusBadge, EmptyState, Field, MintButton } fro
 import ImageInput from '@/components/painel/ImageInput'
 import RichTextEditor from '@/components/painel/RichTextEditor'
 import { CharCount, SerpPreview, FaqEditor, validateArticle, type FaqItem } from '@/components/painel/article-fields'
-import { createCase, updateCase, deleteCase } from '@/lib/actions/cases-actions'
+import { createCase, updateCase, deleteCase, quickUpdateCase } from '@/lib/actions/cases-actions'
+import QuickEdit from '@/components/painel/QuickEdit'
+import { fromBrtInput, toBrtInput } from '@/lib/content-date'
 
 /**
  * Cases no painel (S10 — épico seo-tecnico-2026-10). Pedido do cliente (10/10/2026):
@@ -44,6 +46,8 @@ const EMPTY_FORM = {
   meta_title: '',
   meta_description: '',
   faq: [] as FaqItem[],
+  /** Data de publicação (datetime-local, horário de Brasília). Vazio = carimbo automático. */
+  published_at: '',
 }
 
 const fieldStyle = {
@@ -61,7 +65,18 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
   const [form, setForm] = useState<typeof EMPTY_FORM>(EMPTY_FORM)
   const [coverUrl, setCoverUrl] = useState('')
   const [error, setError] = useState<string | null>(null)
+  /** Case aberto na edição rápida (pedido de 17/11/2026). */
+  const [quickId, setQuickId] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+
+  async function handleQuickSave(c: Case, payload: Record<string, any>) {
+    const res: any = await quickUpdateCase(c.id, payload)
+    if (res?.ok) {
+      setCases((prev) => prev.map((x) => (x.id === c.id ? { ...x, ...res.doc } : x)))
+      setQuickId(null)
+    }
+    return res
+  }
 
   function openCreate() {
     setEditing(null)
@@ -88,6 +103,7 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
       meta_title: c.meta_title ?? '',
       meta_description: c.meta_description ?? '',
       faq: Array.isArray(c.faq) ? c.faq : [],
+      published_at: toBrtInput(c.published_at),
     })
     setCoverUrl(mediaUrl)
     setError(null)
@@ -110,7 +126,7 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
       const warns = validateArticle(form.contentHtml, form.faq, 'case')
       if (warns.length && !window.confirm(`Avisos de qualidade:\n\n- ${warns.join('\n- ')}\n\nPublicar mesmo assim?`)) return
     }
-    const data = { ...form, destacar_na_home: form.featured, client: form.company }
+    const data = { ...form, destacar_na_home: form.featured, client: form.company, published_at: fromBrtInput(form.published_at) }
     startTransition(async () => {
       try {
         const res: any = editing ? await updateCase(editing.id, data) : await createCase(data)
@@ -155,7 +171,29 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
         <EmptyState title="Nenhum case ainda" />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {cases.map((c) => (
+          {cases.map((c) =>
+            quickId === c.id ? (
+              <div key={c.id} className="md:col-span-2 lg:col-span-3">
+                <QuickEdit
+                  kind="case"
+                  initial={{
+                    titulo: c.title ?? '',
+                    slug: c.slug ?? '',
+                    meta_description: c.meta_description ?? '',
+                    categoria: '',
+                    tags: '',
+                    data: toBrtInput(c.published_at),
+                    imagem_destaque: String(c.imagem_destaque?.id ?? c.imagem_destaque ?? ''),
+                    coverUrl: c.imagem_destaque?.url ?? '',
+                    autor: '',
+                    status: c.status === 'publicado' ? 'published' : 'draft',
+                  }}
+                  wasPublished={c.status === 'publicado'}
+                  onSave={(payload) => handleQuickSave(c, payload)}
+                  onCancel={() => setQuickId(null)}
+                />
+              </div>
+            ) : (
             <GlassCard key={c.id} className="glass-hover transition-all">
               <div className="mb-3 flex items-start justify-between gap-2">
                 <div className="min-w-0">
@@ -165,6 +203,18 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                 {(c.destacar_na_home ?? c.featured) && <Star className="h-4 w-4 text-mint" style={{ fill: 'hsl(158 92% 70%)' }} />}
               </div>
               <p className="text-xs text-dim-2 line-clamp-3 min-h-[3rem]">{c.excerpt || c.tagline || '—'}</p>
+              {/* Ações no estilo do WordPress: editor completo ou edição rápida. */}
+              <div className="mt-3 flex flex-wrap items-center gap-x-1.5 text-[11px]">
+                <button onClick={() => openEdit(c)} className="text-mint hover:underline">Editar</button>
+                <span className="text-dim">|</span>
+                <button onClick={() => setQuickId(c.id)} className="text-mint hover:underline">Edição rápida</button>
+                {c.status === 'publicado' && c.slug && (
+                  <>
+                    <span className="text-dim">|</span>
+                    <a href={`/cases/${c.slug}`} target="_blank" rel="noopener" className="text-mint hover:underline">Ver</a>
+                  </>
+                )}
+              </div>
               <div className="mt-4 flex items-center justify-between">
                 <StatusBadge status={c.status === 'publicado' ? 'published' : c.status === 'rascunho' ? 'draft' : (c.status ?? 'draft')} />
                 <div className="flex gap-1">
@@ -177,7 +227,8 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                 </div>
               </div>
             </GlassCard>
-          ))}
+            ),
+          )}
         </div>
       )}
 
@@ -199,7 +250,7 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
             </div>
 
             <div className="space-y-4">
-              <Field label="Título">
+              <Field label="Título do case" hint="É o H1 da página. O título que vai para o Google fica na seção de SEO.">
                 <input className="input-mint" value={form.title} onChange={(e) => handleTitleChange(e.target.value)} placeholder="Como a Acme cresceu 3x" />
               </Field>
 
@@ -210,6 +261,11 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                   onChange={(e) => setForm((f) => ({ ...f, slug: slugify(e.target.value) }))}
                   placeholder="como-a-acme-cresceu-3x"
                 />
+                {editing?.status === 'publicado' && editing.slug && form.slug && form.slug !== editing.slug && (
+                  <p className="mt-1 text-[11px]" style={{ color: 'hsl(45 95% 75%)' }}>
+                    Endereço publicado vai mudar: /cases/{editing.slug} redirecionará (301) para /cases/{form.slug}.
+                  </p>
+                )}
               </Field>
 
               <div className="grid grid-cols-2 gap-3">
@@ -228,7 +284,7 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                 </Field>
               </div>
 
-              <Field label="Resumo" hint="Uma ou duas frases: aparece no card da listagem e da home.">
+              <Field label="Resumo do card" hint="Uma ou duas frases: aparece no card da listagem e da home. Não é a meta descrição.">
                 <textarea
                   rows={2}
                   className="w-full px-3 py-2 rounded-lg text-[13px] resize-none"
@@ -260,7 +316,15 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
                 }}
               />
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
+                <Field label="Data de publicação" hint="Horário de Brasília">
+                  <input
+                    type="datetime-local"
+                    className="input-mint"
+                    value={form.published_at}
+                    onChange={(e) => setForm((f) => ({ ...f, published_at: e.target.value }))}
+                  />
+                </Field>
                 <Field label="Status">
                   <select className="input-mint" value={form.status} onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}>
                     <option value="draft">Rascunho</option>
@@ -283,14 +347,14 @@ export default function CasesClient({ initialCases }: { initialCases: Case[] }) 
               {/* Cabeçalho de busca (SEO) — igual aos posts. */}
               <div className="pt-2" style={{ borderTop: '1px solid hsl(0 0% 100% / 0.06)' }}>
                 <p className="font-mono text-[9px] uppercase tracking-[0.22em] mb-3" style={{ color: 'hsl(158 92% 70% / 0.7)' }}>
-                  Cabeçalho de busca (SEO)
+                  SEO — como aparece no Google
                 </p>
                 <div className="space-y-4">
-                  <Field label="Título de busca" hint="Vazio = usa o título do case. Ideal até 60 caracteres.">
+                  <Field label="Title" hint="Sai na tag <title> da página. Vazio = usa o título do case. Até 60 caracteres.">
                     <input className="input-mint" value={form.meta_title} onChange={(e) => setForm((f) => ({ ...f, meta_title: e.target.value }))} />
                     <CharCount value={form.meta_title || form.title} max={60} />
                   </Field>
-                  <Field label="Resumo de busca" hint="Texto abaixo do título no Google. Vazio = usa o resumo.">
+                  <Field label="Meta descrição" hint="Texto abaixo do título no Google. Vazio = usa o resumo. Até 155 caracteres.">
                     <textarea
                       rows={2}
                       className="w-full px-3 py-2 rounded-lg text-[13px] resize-none"

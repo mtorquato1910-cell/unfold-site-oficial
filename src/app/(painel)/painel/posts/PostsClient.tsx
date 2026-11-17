@@ -1,14 +1,16 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { Plus, Pencil, Trash2, X, FileText, CheckCircle2, XCircle, ExternalLink } from 'lucide-react'
+import Link from 'next/link'
+import { Plus, Trash2, X, FileText, ExternalLink } from 'lucide-react'
 import { PageHeader, GlassCard, StatusBadge, EmptyState, Field } from '@/components/painel/ui'
 import ImageInput from '@/components/painel/ImageInput'
 import RichTextEditor from '@/components/painel/RichTextEditor'
 import { CharCount, SerpPreview, FaqEditor, validateArticle, type FaqItem } from '@/components/painel/article-fields'
 import { lexicalToHtml } from '@/lib/rich-text'
-import { createPost, updatePost, deletePost } from '@/lib/actions/posts-actions'
-import { approvePost, rejectPost } from '@/lib/actions/blog-submit-actions'
+import { createPost, updatePost, deletePost, quickUpdatePost } from '@/lib/actions/posts-actions'
+import QuickEdit from '@/components/painel/QuickEdit'
+import { fromBrtInput, toBrtInput } from '@/lib/content-date'
 
 const slugify = (s: string) =>
   s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
@@ -33,9 +35,10 @@ const EMPTY_FORM = {
   destaque_home: false,
   /** Seção "Optional" do /llms.txt (Tarefa 7 do relatório de SEO). */
   llms_optional: false,
-  /** Autores reais (S07) — ids da collection authors. Obrigatório para publicar. */
-  autores: [] as string[],
-  revisor: '',
+  /** Autor real (S07) — id da collection authors. Um só por post (pedido de 17/11/2026). */
+  autorId: '',
+  /** Data de publicação (datetime-local, horário de Brasília). Vazio = carimbo automático. */
+  publicado_em: '',
 }
 
 type AuthorOption = { id: string; nome: string; ativo: boolean }
@@ -43,12 +46,10 @@ type CategoryOption = { id: string; nome: string }
 
 export default function PostsClient({
   initialPosts,
-  canApprove = false,
   authors = [],
   categories = [],
 }: {
   initialPosts: Post[]
-  canApprove?: boolean
   authors?: AuthorOption[]
   categories?: CategoryOption[]
 }) {
@@ -57,62 +58,11 @@ export default function PostsClient({
   const [editing, setEditing] = useState<Post | null>(null)
   const [form, setForm] = useState(EMPTY_FORM)
   const [coverUrl, setCoverUrl] = useState('')
-  const [filter, setFilter] = useState<'all' | 'pending_review' | 'published' | 'draft'>('all')
-  const [rejectingId, setRejectingId] = useState<string | null>(null)
-  const [rejectReason, setRejectReason] = useState('')
+  const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all')
+  /** Post aberto na edição rápida (na própria linha da lista). */
+  const [quickId, setQuickId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
-
-  const pendingCount = posts.filter((p) => p.status === 'pending_review').length
-
-  function handleApprove(post: Post) {
-    if (!window.confirm(`Aprovar e publicar "${post.titulo || post.title}"?`)) return
-    setError(null)
-    startTransition(async () => {
-      try {
-        const res: any = await approvePost(post.id)
-        if (res && res.ok === false) {
-          setError(res.error || 'Falha ao aprovar')
-          return
-        }
-        setPosts((prev) =>
-          prev.map((p) =>
-            p.id === post.id
-              ? { ...p, status: 'published', publicado_em: new Date().toISOString() }
-              : p,
-          ),
-        )
-      } catch (err: any) {
-        setError(err?.message || 'Falha ao aprovar')
-      }
-    })
-  }
-
-  function openReject(post: Post) {
-    setRejectingId(post.id)
-    setRejectReason('')
-  }
-
-  function handleReject() {
-    if (!rejectingId || !rejectReason.trim()) return
-    setError(null)
-    startTransition(async () => {
-      try {
-        await rejectPost(rejectingId, rejectReason)
-        setPosts((prev) =>
-          prev.map((p) =>
-            p.id === rejectingId
-              ? { ...p, status: 'draft', rejectionReason: rejectReason }
-              : p,
-          ),
-        )
-        setRejectingId(null)
-        setRejectReason('')
-      } catch (err: any) {
-        setError(err?.message || 'Falha ao rejeitar')
-      }
-    })
-  }
 
   const filteredPosts =
     filter === 'all' ? posts : posts.filter((p) => p.status === filter)
@@ -150,8 +100,8 @@ export default function PostsClient({
       faq: Array.isArray(post.faq) ? post.faq : [],
       destaque_home: !!post.destaque_home,
       llms_optional: !!post.llms_optional,
-      autores: Array.isArray(post.autores) ? post.autores.map((a: any) => String(a?.id ?? a)) : [],
-      revisor: post.revisor ? String(post.revisor?.id ?? post.revisor) : '',
+      autorId: Array.isArray(post.autores) && post.autores[0] ? String(post.autores[0]?.id ?? post.autores[0]) : '',
+      publicado_em: toBrtInput(post.publicado_em),
     })
     setCoverUrl(mediaUrl)
     setOpen(true)
@@ -164,13 +114,16 @@ export default function PostsClient({
   }
 
   function handleSubmit() {
+    const { autorId, ...rest } = form
     const data = {
-      ...form,
+      ...rest,
       tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+      autores: autorId ? [autorId] : [],
+      publicado_em: fromBrtInput(form.publicado_em),
     }
     // Autor real é obrigatório para publicar (S07 — Checklist SEO M08). Bloqueia.
-    if (form.status === 'published' && form.autores.length === 0) {
-      setError('Selecione ao menos um autor para publicar o artigo.')
+    if (form.status === 'published' && !autorId) {
+      setError('Selecione o autor para publicar o artigo.')
       return
     }
     // Validação de qualidade ao publicar (item 1.3): avisa, não bloqueia.
@@ -211,6 +164,35 @@ export default function PostsClient({
     })
   }
 
+  /** Valores iniciais da edição rápida a partir do post da lista. */
+  function quickInitial(post: Post) {
+    const cat = post.categoria ?? post.category
+    const tagsArr = Array.isArray(post.tags)
+      ? post.tags.map((t: any) => (typeof t === 'object' ? t?.tag : t)).filter(Boolean)
+      : []
+    return {
+      titulo: post.titulo ?? post.title ?? '',
+      slug: post.slug ?? '',
+      meta_description: post.meta_description ?? '',
+      categoria: cat == null || cat === '' ? '' : String(typeof cat === 'object' ? (cat?.id ?? '') : cat),
+      tags: tagsArr.join(', '),
+      data: toBrtInput(post.publicado_em),
+      imagem_destaque: String(post.imagem_destaque?.id ?? post.imagem_destaque ?? ''),
+      coverUrl: post.imagem_destaque?.url ?? post.cover_image ?? '',
+      autor: Array.isArray(post.autores) && post.autores[0] ? String(post.autores[0]?.id ?? post.autores[0]) : '',
+      status: (post.status === 'published' ? 'published' : 'draft') as 'published' | 'draft',
+    }
+  }
+
+  async function handleQuickSave(post: Post, payload: Record<string, any>) {
+    const res: any = await quickUpdatePost(post.id, payload)
+    if (res?.ok) {
+      setPosts(prev => prev.map(p => (p.id === post.id ? { ...p, ...res.doc } : p)))
+      setQuickId(null)
+    }
+    return res
+  }
+
   function handleDelete(post: Post) {
     if (!window.confirm(`Deletar post "${post.titulo || post.title}"?`)) return
     startTransition(async () => {
@@ -223,11 +205,7 @@ export default function PostsClient({
     <>
       <PageHeader
         title="Posts / Blog"
-        description={
-          pendingCount > 0
-            ? `${pendingCount} aguardando revisão · Crie, edite e publique artigos`
-            : 'Crie, edite e publique artigos'
-        }
+        description="Crie, edite e publique artigos"
         actions={
           <button
             onClick={openCreate}
@@ -243,7 +221,6 @@ export default function PostsClient({
       <div className="mb-4 flex flex-wrap items-center gap-2">
         {[
           { v: 'all', label: 'Todos', count: posts.length },
-          { v: 'pending_review', label: 'Aguardando revisão', count: pendingCount, urgent: true },
           { v: 'published', label: 'Publicados', count: posts.filter((p) => p.status === 'published').length },
           { v: 'draft', label: 'Rascunhos', count: posts.filter((p) => p.status === 'draft').length },
         ].map((t: any) => {
@@ -302,7 +279,7 @@ export default function PostsClient({
         cobre a tela inteira com fundo sólido, então esconder a lista é invisível
         para o usuário. Isso deixa a aba "Publicados" tão leve quanto uma vazia.
       */}
-      {open || rejectingId ? null : filteredPosts.length === 0 ? (
+      {open ? null : filteredPosts.length === 0 ? (
         <EmptyState
           title="Nenhum post ainda"
           description="Crie o primeiro artigo para o blog da Unfold."
@@ -334,85 +311,96 @@ export default function PostsClient({
                 {filteredPosts.map(post => {
                   const titulo = post.titulo || post.title || '—'
                   const isExternal = !!post.isExternalSubmission
-                  const isPending = post.status === 'pending_review'
+                  if (quickId === post.id) {
+                    return (
+                      <tr key={post.id} style={{ borderBottom: '1px solid hsl(0 0% 100% / 0.04)' }}>
+                        <td colSpan={5} className="p-3">
+                          <QuickEdit
+                            kind="post"
+                            initial={quickInitial(post)}
+                            wasPublished={post.status === 'published'}
+                            categories={categories}
+                            authors={authors.filter(a => a.ativo || a.id === quickInitial(post).autor)}
+                            onSave={(payload) => handleQuickSave(post, payload)}
+                            onCancel={() => setQuickId(null)}
+                          />
+                        </td>
+                      </tr>
+                    )
+                  }
                   return (
                     <tr
                       key={post.id}
                       style={{ borderBottom: '1px solid hsl(0 0% 100% / 0.04)' }}
-                      className="hover:bg-white/[0.02]"
+                      className="group hover:bg-white/[0.02]"
                     >
-                      <td className="px-4 py-3 max-w-[280px]">
-                        <div className="font-medium text-[13px] truncate text-fg">{titulo}</div>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          {isExternal && (
-                            <span
-                              className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded"
-                              style={{
-                                background: 'hsl(217 93% 78% / 0.12)',
-                                color: 'hsl(217 93% 78%)',
-                                border: '1px solid hsl(217 93% 78% / 0.25)',
-                              }}
-                              title={`Por: ${post.submittedByName} <${post.submittedByEmail}>`}
-                            >
-                              <ExternalLink className="h-2.5 w-2.5" />
-                              externo · {post.submittedByName}
-                            </span>
+                      <td className="px-4 py-3 max-w-[320px]">
+                        <button
+                          onClick={() => openEdit(post)}
+                          className="block max-w-full text-left font-medium text-[13px] truncate text-fg hover:text-mint"
+                        >
+                          {titulo}
+                        </button>
+                        {/* Ações no estilo do WordPress: editor completo ou edição rápida. */}
+                        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 mt-1 text-[11px]">
+                          <button onClick={() => openEdit(post)} className="text-mint hover:underline">
+                            Editar
+                          </button>
+                          <span className="text-dim">|</span>
+                          <button
+                            onClick={() => {
+                              setError(null)
+                              setQuickId(post.id)
+                            }}
+                            className="text-mint hover:underline"
+                          >
+                            Edição rápida
+                          </button>
+                          {post.status === 'published' && post.slug && (
+                            <>
+                              <span className="text-dim">|</span>
+                              <a href={`/blog/${post.slug}`} target="_blank" rel="noopener" className="text-mint hover:underline">
+                                Ver
+                              </a>
+                            </>
                           )}
-                          {post.slug && (
-                            <span className="text-[10px] font-mono text-dim truncate max-w-[160px]">
-                              /{post.slug}
-                            </span>
+                          {isExternal && post.status !== 'published' && !post.reviewedAt && (
+                            <>
+                              <span className="text-dim">|</span>
+                              <Link href={`/admin/posts/${post.id}/review`} className="text-mint hover:underline">
+                                Revisar envio
+                              </Link>
+                            </>
                           )}
                         </div>
+                        {isExternal && (
+                          <span
+                            className="mt-1 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded"
+                            style={{
+                              background: 'hsl(217 93% 78% / 0.12)',
+                              color: 'hsl(217 93% 78%)',
+                              border: '1px solid hsl(217 93% 78% / 0.25)',
+                            }}
+                            title={`Por: ${post.submittedByName} <${post.submittedByEmail}>`}
+                          >
+                            <ExternalLink className="h-2.5 w-2.5" />
+                            externo · {post.submittedByName}
+                          </span>
+                        )}
                       </td>
                       <td className="px-4 py-3 text-[12px] font-mono text-dim hidden md:table-cell max-w-[160px] truncate">
                         {post.slug || '—'}
                       </td>
                       <td className="px-4 py-3">
-                        <StatusBadge status={post.status ?? 'draft'} />
+                        <StatusBadge status={post.status === 'published' ? 'published' : 'draft'} />
                       </td>
                       <td className="px-4 py-3 text-[12px] text-dim hidden lg:table-cell">
-                        {post.createdAt ? new Date(post.createdAt).toLocaleDateString('pt-BR') : '—'}
+                        {post.publicado_em || post.createdAt
+                          ? new Date(post.publicado_em || post.createdAt).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+                          : '—'}
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1 justify-end">
-                          {isPending && canApprove && (
-                            <>
-                              <button
-                                onClick={() => handleApprove(post)}
-                                disabled={isPending}
-                                className="px-2 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider flex items-center gap-1"
-                                style={{
-                                  background: 'hsl(158 92% 70% / 0.14)',
-                                  color: 'hsl(158 92% 70%)',
-                                  border: '1px solid hsl(158 92% 70% / 0.3)',
-                                }}
-                                title="Aprovar e publicar"
-                              >
-                                <CheckCircle2 className="h-3 w-3" /> aprovar
-                              </button>
-                              <button
-                                onClick={() => openReject(post)}
-                                className="px-2 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider flex items-center gap-1"
-                                style={{
-                                  background: 'hsl(0 70% 60% / 0.10)',
-                                  color: 'hsl(0 70% 80%)',
-                                  border: '1px solid hsl(0 70% 60% / 0.25)',
-                                }}
-                                title="Rejeitar com motivo"
-                              >
-                                <XCircle className="h-3 w-3" /> rejeitar
-                              </button>
-                            </>
-                          )}
-                          <button
-                            onClick={() => openEdit(post)}
-                            className="p-1.5 rounded-md transition hover:bg-white/[0.06]"
-                            style={{ color: 'hsl(0 0% 91% / 0.5)' }}
-                            title="Editar"
-                          >
-                            <Pencil className="h-3.5 w-3.5" />
-                          </button>
                           <button
                             onClick={() => handleDelete(post)}
                             className="p-1.5 rounded-md transition hover:bg-red-500/10"
@@ -468,7 +456,7 @@ export default function PostsClient({
             </div>
 
             <div className="space-y-4">
-              <Field label="Título">
+              <Field label="Título do artigo" hint="É o H1 da página. O título que vai para o Google fica na seção de SEO abaixo.">
                 <input
                   className="w-full h-10 px-3 rounded-lg text-[13px]"
                   style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
@@ -486,9 +474,14 @@ export default function PostsClient({
                   onChange={e => setForm(f => ({ ...f, slug: e.target.value }))}
                   placeholder="meu-artigo"
                 />
+                {editing?.status === 'published' && editing.slug && slugify(form.slug) && slugify(form.slug) !== editing.slug && (
+                  <p className="mt-1 text-[11px]" style={{ color: 'hsl(45 95% 75%)' }}>
+                    Endereço publicado vai mudar: /blog/{editing.slug} redirecionará (301) para /blog/{slugify(form.slug)}.
+                  </p>
+                )}
               </Field>
 
-              <Field label="Resumo (excerpt)">
+              <Field label="Resumo do card" hint="Aparece abaixo do título no artigo e nos cards do blog. Não é a meta descrição.">
                 <textarea
                   rows={3}
                   className="w-full px-3 py-2.5 rounded-lg text-[13px] resize-none"
@@ -512,24 +505,10 @@ export default function PostsClient({
               </Field>
 
               <div className="grid grid-cols-2 gap-4">
-                <Field label="Categoria" hint="Define a página /blog/categoria/… e os artigos relacionados.">
-                  <select
-                    className="w-full h-10 px-3 rounded-lg text-[13px]"
-                    style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
-                    value={form.category}
-                    onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-                  >
-                    <option value="">— Sem categoria —</option>
-                    {categories.map(c => (
-                      <option key={c.id} value={c.id}>{c.nome}</option>
-                    ))}
-                  </select>
-                </Field>
-
                 <Field label="Status">
                   <select
                     className="w-full h-10 px-3 rounded-lg text-[13px]"
-                    style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
+                  style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
                     value={form.status}
                     onChange={e => setForm(f => ({ ...f, status: e.target.value }))}
                   >
@@ -537,46 +516,35 @@ export default function PostsClient({
                     <option value="published">Publicado</option>
                   </select>
                 </Field>
+
+                <Field label="Data de publicação" hint="Horário de Brasília. Vazio = data em que for publicado.">
+                  <input
+                    type="datetime-local"
+                    className="w-full h-10 px-3 rounded-lg text-[13px]"
+                  style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
+                    value={form.publicado_em}
+                    onChange={e => setForm(f => ({ ...f, publicado_em: e.target.value }))}
+                  />
+                </Field>
               </div>
 
-              {/* Autores reais (S07): byline, box e schema Person do artigo. */}
-              <Field label="Autores" hint="Quem assina o artigo — obrigatório para publicar. Cadastre em Autores.">
+              {/* Autor real (S07): byline, box e schema Person do artigo. Um só por post. */}
+              <Field label="Autor" hint="Quem assina o artigo — obrigatório para publicar. Cadastre em Autores.">
                 {authors.length === 0 ? (
                   <p className="text-[12px] text-dim-2">Nenhum autor cadastrado. Cadastre em Conteúdo → Autores.</p>
                 ) : (
-                  <div className="flex flex-wrap gap-x-5 gap-y-2 py-1">
-                    {authors.filter(a => a.ativo || form.autores.includes(a.id)).map(a => (
-                      <label key={a.id} className="flex items-center gap-2 cursor-pointer text-[13px] text-dim-2">
-                        <input
-                          type="checkbox"
-                          checked={form.autores.includes(a.id)}
-                          onChange={e =>
-                            setForm(f => ({
-                              ...f,
-                              autores: e.target.checked ? [...f.autores, a.id] : f.autores.filter(x => x !== a.id),
-                            }))
-                          }
-                          style={{ accentColor: 'hsl(158 92% 70%)' }}
-                        />
-                        {a.nome}
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </Field>
-
-              <Field label="Revisado por" hint="Opcional — especialista que revisou o texto.">
-                <select
-                  className="w-full h-10 px-3 rounded-lg text-[13px]"
+                  <select
+                    className="w-full h-10 px-3 rounded-lg text-[13px]"
                   style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
-                  value={form.revisor}
-                  onChange={e => setForm(f => ({ ...f, revisor: e.target.value }))}
-                >
-                  <option value="">— Sem revisor —</option>
-                  {authors.filter(a => a.ativo || a.id === form.revisor).map(a => (
-                    <option key={a.id} value={a.id}>{a.nome}</option>
-                  ))}
-                </select>
+                    value={form.autorId}
+                    onChange={e => setForm(f => ({ ...f, autorId: e.target.value }))}
+                  >
+                    <option value="">— Selecione —</option>
+                    {authors.filter(a => a.ativo || a.id === form.autorId).map(a => (
+                      <option key={a.id} value={a.id}>{a.nome}</option>
+                    ))}
+                  </select>
+                )}
               </Field>
 
               <Field
@@ -609,16 +577,6 @@ export default function PostsClient({
                 </label>
               </Field>
 
-              <Field label="Tags" hint="Separadas por vírgula">
-                <input
-                  className="w-full h-10 px-3 rounded-lg text-[13px]"
-                  style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
-                  value={form.tags}
-                  onChange={e => setForm(f => ({ ...f, tags: e.target.value }))}
-                  placeholder="seo, growth, inbound"
-                />
-              </Field>
-
               <ImageInput
                 label="Imagem de capa"
                 value={form.imagem_destaque ? { id: form.imagem_destaque, url: coverUrl } : null}
@@ -628,22 +586,23 @@ export default function PostsClient({
                 }}
               />
 
-              {/* Cabeçalho de busca (SEO) — item 1.3/1.5: campos próprios de busca,
-                  separados do resumo do card, com contador e prévia do Google. */}
+              {/* Seção ÚNICA de SEO (manual do desenvolvedor de 13/11/2026, tarefa 3):
+                  o title e a meta descrição daqui são os que saem no <title> e no
+                  <meta name="description">. Categoria e tags ficam no mesmo bloco. */}
               <div className="pt-2" style={{ borderTop: '1px solid hsl(0 0% 100% / 0.06)' }}>
-                <p className="font-mono text-[9px] uppercase tracking-[0.22em] mb-3" style={{ color: 'hsl(158 92% 70% / 0.7)' }}>Cabeçalho de busca (SEO)</p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.22em] mb-3" style={{ color: 'hsl(158 92% 70% / 0.7)' }}>SEO — como aparece no Google</p>
                 <div className="space-y-4">
-                  <Field label="Título de busca" hint="Vazio = usa o título do post. Ideal até 60 caracteres.">
+                  <Field label="Title" hint="Sai na tag <title> da página. Vazio = usa o título do artigo. Até 60 caracteres.">
                     <input
                       className="w-full h-10 px-3 rounded-lg text-[13px]"
-                      style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
+                  style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
                       value={form.meta_title}
                       onChange={e => setForm(f => ({ ...f, meta_title: e.target.value }))}
                       placeholder="Como aparece no título do Google"
                     />
                     <CharCount value={form.meta_title || form.title} max={60} />
                   </Field>
-                  <Field label="Resumo de busca" hint="Texto abaixo do título no Google — separado do resumo do card.">
+                  <Field label="Meta descrição" hint="Texto abaixo do título no Google. Vazio = usa o resumo do card. Até 155 caracteres.">
                     <textarea
                       rows={2}
                       className="w-full px-3 py-2.5 rounded-lg text-[13px] resize-none"
@@ -654,6 +613,30 @@ export default function PostsClient({
                     />
                     <CharCount value={form.meta_description || form.excerpt} max={155} />
                   </Field>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Field label="Categoria" hint="Define a página /blog/categoria/… e os relacionados.">
+                      <select
+                        className="w-full h-10 px-3 rounded-lg text-[13px]"
+                  style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
+                        value={form.category}
+                        onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
+                      >
+                        <option value="">— Sem categoria —</option>
+                        {categories.map(c => (
+                          <option key={c.id} value={c.id}>{c.nome}</option>
+                        ))}
+                      </select>
+                    </Field>
+                    <Field label="Tags" hint="Separadas por vírgula. Alimentam os artigos relacionados.">
+                      <input
+                        className="w-full h-10 px-3 rounded-lg text-[13px]"
+                  style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
+                        value={form.tags}
+                        onChange={e => setForm(f => ({ ...f, tags: e.target.value }))}
+                        placeholder="seo, growth, inbound"
+                      />
+                    </Field>
+                  </div>
                   <SerpPreview
                     title={form.meta_title || form.title}
                     slug={form.slug}
@@ -692,59 +675,6 @@ export default function PostsClient({
         </div>
       )}
 
-      {/* Reject Modal */}
-      {rejectingId && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'hsl(194 100% 4% / 0.92)' }}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setRejectingId(null)
-          }}
-        >
-          <div
-            className="rounded-2xl p-6 w-full max-w-md"
-            style={{
-              background: 'hsl(197 100% 9%)',
-              border: '1px solid hsl(158 92% 70% / 0.15)',
-              boxShadow: '0 20px 60px -15px hsl(197 100% 3% / 0.85)',
-            }}
-          >
-            <h3 className="font-display text-[18px] font-semibold mb-3 text-fg">Rejeitar submissão</h3>
-            <p className="text-[13px] text-dim-2 mb-4">
-              O autor receberá um email com o motivo. Seja específico para que ele possa ajustar.
-            </p>
-            <textarea
-              rows={5}
-              autoFocus
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              placeholder="Ex: Conteúdo com viés comercial; reescreva focando no método. Reduza autoreferências."
-              className="w-full px-3 py-2.5 rounded-lg text-[13px] resize-none input-mint"
-              style={{ height: 'auto' }}
-            />
-            <div className="mt-4 flex items-center justify-end gap-3">
-              <button
-                onClick={() => setRejectingId(null)}
-                className="px-4 py-2 rounded-lg text-[13px] font-medium text-dim-2 hover:bg-white/[0.04]"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleReject}
-                disabled={isPending || !rejectReason.trim()}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-[13px] disabled:opacity-50"
-                style={{
-                  background: 'hsl(0 70% 60%)',
-                  color: 'white',
-                }}
-              >
-                <XCircle className="h-4 w-4" />
-                {isPending ? 'Enviando...' : 'Rejeitar e notificar'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   )
 }

@@ -44,7 +44,12 @@ export default async function PostReviewPage({
         title={`Revisar: ${post.titulo || '(sem título)'}`}
         description={`Submetido ${post.createdAt ? formatDate(post.createdAt) : ''}`}
         actions={
-          (user.role === 'admin' || user.role === 'editor') && post.status === 'pending_review' ? (
+          // Envio externo ainda não publicado (chega como Rascunho desde 17/11/2026):
+          // aprovar publica e avisa o autor por e-mail; rejeitar devolve com motivo.
+          (user.role === 'admin' || user.role === 'editor') &&
+          post.isExternalSubmission &&
+          post.status !== 'published' &&
+          !post.reviewedAt ? (
             <ReviewActions postId={post.id} />
           ) : null
         }

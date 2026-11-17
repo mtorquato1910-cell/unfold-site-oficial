@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useState, useTransition } from 'react'
-import { Upload, X, Link as LinkIcon } from 'lucide-react'
-import { getMediaAlt, updateMediaAlt, uploadMedia, uploadMediaFromUrl } from '@/lib/actions/media-actions'
+import { Upload, X, Link as LinkIcon, Images } from 'lucide-react'
+import { getMediaAlt, listMedia, updateMediaAlt, uploadMedia, uploadMediaFromUrl } from '@/lib/actions/media-actions'
 
 /**
  * Descrição (alt) da imagem já enviada, editável sem excluir e subir de novo
@@ -82,6 +82,92 @@ function MediaAltField({ mediaId }: { mediaId: string }) {
 
 type ImageValue = { id?: string; url?: string } | null
 
+type MediaItem = { id: string; url: string; thumb: string; alt: string }
+
+/**
+ * Biblioteca de mídia: escolhe uma imagem já enviada em vez de subir de novo
+ * (manual do desenvolvedor de 13/11/2026 — "a capa abre o seletor da biblioteca").
+ */
+function MediaLibrary({ onPick, onClose }: { onPick: (item: MediaItem) => void; onClose: () => void }) {
+  const [items, setItems] = useState<MediaItem[]>([])
+  const [page, setPage] = useState(1)
+  const [hasNext, setHasNext] = useState(false)
+  const [search, setSearch] = useState('')
+  const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let alive = true
+    setLoading(true)
+    listMedia({ page, search: query }).then((res: any) => {
+      if (!alive) return
+      if (!res?.ok) setError(res?.error || 'Falha ao carregar a biblioteca')
+      setItems((prev) => (page === 1 ? res?.items ?? [] : [...prev, ...(res?.items ?? [])]))
+      setHasNext(Boolean(res?.hasNextPage))
+      setLoading(false)
+    })
+    return () => {
+      alive = false
+    }
+  }, [page, query])
+
+  return (
+    <div
+      className="rounded-lg p-3 space-y-3"
+      style={{ background: 'hsl(197 100% 8%)', border: '1px solid hsl(158 92% 70% / 0.15)' }}
+    >
+      <div className="flex items-center gap-2">
+        <input
+          className="flex-1 h-9 px-3 rounded-lg text-[12px]"
+          style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(158 92% 70% / 0.12)', color: 'hsl(0 0% 91%)', outline: 'none' }}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              setPage(1)
+              setQuery(search)
+            }
+          }}
+          placeholder="Buscar pela descrição ou nome do arquivo (Enter)"
+        />
+        <button type="button" onClick={onClose} className="p-1.5 rounded-md hover:bg-white/[0.06]" title="Fechar biblioteca" style={{ color: 'hsl(0 0% 91% / 0.6)' }}>
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+      {error && <p className="text-[11px]" style={{ color: 'hsl(0 70% 80%)' }}>{error}</p>}
+      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[260px] overflow-y-auto">
+        {items.map((it) => (
+          <button
+            key={it.id}
+            type="button"
+            onClick={() => onPick(it)}
+            className="aspect-[4/3] rounded-md overflow-hidden transition hover:ring-2"
+            style={{ background: 'hsl(197 100% 10%)', border: '1px solid hsl(0 0% 100% / 0.06)' }}
+            title={it.alt}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={it.thumb} alt={it.alt} loading="lazy" className="w-full h-full object-cover" />
+          </button>
+        ))}
+      </div>
+      {!loading && items.length === 0 && <p className="text-[12px] text-dim-2">Nenhuma imagem encontrada.</p>}
+      {(loading || hasNext) && (
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => setPage((p) => p + 1)}
+          className="w-full h-8 rounded-md text-[12px] disabled:opacity-50"
+          style={{ background: 'hsl(0 0% 100% / 0.04)', color: 'hsl(0 0% 91% / 0.7)' }}
+        >
+          {loading ? 'Carregando…' : 'Carregar mais'}
+        </button>
+      )}
+    </div>
+  )
+}
+
 // Vercel/Serverless rejeita requisições com body > ~4.5MB (HTTP 413) ANTES do
 // handler rodar — e uploads do painel passam por Server Action (FormData). Por isso
 // redimensionamos/comprimimos no browser antes de enviar: capas não precisam de mais
@@ -147,6 +233,7 @@ export default function ImageInput({
   const [error, setError] = useState<string | null>(null)
   const [urlInput, setUrlInput] = useState('')
   const [dragOver, setDragOver] = useState(false)
+  const [libraryOpen, setLibraryOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -278,10 +365,33 @@ export default function ImageInput({
         }}
       />
 
-      {/* URL alternativa */}
-      <div className="flex items-center gap-2 pt-1">
+      {libraryOpen && (
+        <MediaLibrary
+          onClose={() => setLibraryOpen(false)}
+          onPick={(it) => {
+            setError(null)
+            setLibraryOpen(false)
+            onChange({ id: it.id, url: it.url })
+          }}
+        />
+      )}
+
+      {/* Biblioteca de mídia ou URL alternativa */}
+      <div className="flex flex-wrap items-center gap-2 pt-1">
+        <button
+          type="button"
+          onClick={() => setLibraryOpen((o) => !o)}
+          className="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg text-[12px] font-medium transition"
+          style={{
+            background: 'hsl(158 92% 70% / 0.12)',
+            color: 'hsl(158 92% 70%)',
+            border: '1px solid hsl(158 92% 70% / 0.25)',
+          }}
+        >
+          <Images className="h-3.5 w-3.5" /> Biblioteca
+        </button>
         <input
-          className="flex-1 h-9 px-3 rounded-lg text-[12px]"
+          className="flex-1 min-w-[160px] h-9 px-3 rounded-lg text-[12px]"
           style={{
             background: 'hsl(197 100% 10%)',
             border: '1px solid hsl(158 92% 70% / 0.12)',

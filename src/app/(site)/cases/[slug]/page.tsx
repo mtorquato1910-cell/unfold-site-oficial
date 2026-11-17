@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
@@ -12,6 +12,7 @@ import Breadcrumbs from '@/components/site/Breadcrumbs'
 import { addHeadingIds } from '@/lib/article-toc'
 import { FAQSchema } from '@/components/SchemaOrg'
 import { toBrtIso } from '@/lib/content-date'
+import { findRedirect } from '@/lib/slug-redirect'
 
 function mediaUrl(field: any): string | null {
   if (field && typeof field === 'object') return field.url || field.sizes?.og?.url || null
@@ -93,7 +94,18 @@ export default async function CaseDetailPage({ params }: Props) {
   } catch {
     // tabela ainda não migrada
   }
-  if (!c) notFound()
+  if (!c) {
+    // Slug trocado? Redireciona 308 para o novo endereço (mesma regra do blog).
+    // permanentRedirect fica FORA do try — lança NEXT_REDIRECT, que não pode ser pego.
+    let redirectTo: string | undefined
+    try {
+      redirectTo = await findRedirect(await getPayload({ config: configPromise }), `/cases/${slug}`)
+    } catch {
+      // DB indisponível — segue para 404
+    }
+    if (redirectTo) permanentRedirect(redirectTo)
+    notFound()
+  }
 
   const imgUrl = mediaUrl(c.imagem_destaque)
   const highlights = (c.highlights ?? []) as Array<{ label: string; value: string }>

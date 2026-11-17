@@ -20,7 +20,6 @@ export default async function PostsPage() {
         initialPosts={result.docs ?? []}
         authors={(authors.docs ?? []).map((a: any) => ({ id: String(a.id), nome: a.nome as string, ativo: a.ativo !== false }))}
         categories={(categories.docs ?? []).map((c: any) => ({ id: String(c.id), nome: c.nome as string }))}
-        canApprove={user.role === 'admin' || user.role === 'editor'}
       />
     </PainelLayout>
   )

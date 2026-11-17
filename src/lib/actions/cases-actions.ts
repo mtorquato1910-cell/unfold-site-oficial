@@ -6,6 +6,7 @@ import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
 import { sanitizeRichHtml } from '@/lib/html-sanitize'
 import { notifyIndexNow } from '@/lib/indexnow'
+import { createSlugRedirect } from '@/lib/slug-redirect'
 
 type FlexibleData = Record<string, any>
 
@@ -36,6 +37,13 @@ function slugify(s: string) {
     .replace(/(^-|-$)+/g, '')
 }
 
+/** ISO válido ou null — datas inválidas/vazias não são gravadas. */
+function parseDate(v: unknown): string | null {
+  if (v == null || v === '') return null
+  const d = new Date(String(v))
+  return Number.isNaN(d.getTime()) ? null : d.toISOString()
+}
+
 function mapCase(input: FlexibleData) {
   const title = input.title ?? input.titulo ?? ''
   // Slug é required + unique no schema. Se o front não enviar, derivamos do título.
@@ -53,6 +61,11 @@ function mapCase(input: FlexibleData) {
   // Corpo único (editor rico, igual aos posts). Só sobrescreve quando enviado.
   const contentHtml = input.contentHtml ?? input.conteudo_html
   if (contentHtml != null) data.conteudo_html = sanitizeRichHtml(contentHtml)
+
+  // Data de publicação editável (17/11/2026). Vazio = não mexe; o hook da collection
+  // carimba na primeira publicação.
+  const publishedAt = parseDate(input.published_at)
+  if (publishedAt) data.published_at = publishedAt
 
   if (input.excerpt !== undefined) data.excerpt = String(input.excerpt || '').trim() || null
   if (input.meta_title !== undefined) data.meta_title = String(input.meta_title || '').trim() || null
@@ -100,6 +113,22 @@ function revalidateCases(slugs: (string | undefined | null)[] = []) {
   for (const s of slugs) if (s) revalidatePath(`/cases/${s}`)
 }
 
+/** Revalidação + IndexNow após editar um case (editor completo e edição rápida). */
+async function afterCaseUpdate(prev: any, updated: any) {
+  revalidateCases([updated?.slug, prev?.slug])
+  // IndexNow (S09): só quando muda algo que o buscador precisa rever — publicação,
+  // slug ou conteúdo editorial (content_updated_at, mesma regra dos posts).
+  const wasPub = prev?.status === 'publicado'
+  const isPub = updated?.status === 'publicado'
+  const changed =
+    wasPub !== isPub || prev?.slug !== updated?.slug || prev?.content_updated_at !== updated?.content_updated_at
+  if ((wasPub || isPub) && changed) {
+    const paths = ['/cases', `/cases/${updated.slug}`]
+    if (prev?.slug && prev.slug !== updated.slug) paths.push(`/cases/${prev.slug}`)
+    await notifyIndexNow(paths)
+  }
+}
+
 export async function createCase(input: FlexibleData) {
   try {
     await requireRole('editor')
@@ -125,21 +154,66 @@ export async function updateCase(id: string, input: FlexibleData) {
     const data = mapCase(input)
     const prev: any = await payload.findByID({ collection: 'cases', id, depth: 0 }).catch(() => null)
     const updated: any = await payload.update({ collection: 'cases', id, data: data as any })
-    revalidateCases([updated?.slug, prev?.slug])
-    // IndexNow (S09): só quando muda algo que o buscador precisa rever — publicação,
-    // slug ou conteúdo editorial (content_updated_at, mesma regra dos posts).
-    const wasPub = prev?.status === 'publicado'
-    const isPub = updated?.status === 'publicado'
-    const changed =
-      wasPub !== isPub || prev?.slug !== updated?.slug || prev?.content_updated_at !== updated?.content_updated_at
-    if ((wasPub || isPub) && changed) {
-      const paths = ['/cases', `/cases/${updated.slug}`]
-      if (prev?.slug && prev.slug !== updated.slug) paths.push(`/cases/${prev.slug}`)
-      await notifyIndexNow(paths)
-    }
-    return { ok: true, doc: updated }
+    const redirected = await createSlugRedirect(payload, {
+      base: '/cases',
+      oldSlug: prev?.slug,
+      newSlug: updated?.slug,
+      wasPublished: prev?.status === 'publicado',
+      id,
+    })
+    await afterCaseUpdate(prev, updated)
+    return { ok: true, doc: updated, redirected }
   } catch (e: any) {
     console.error('[updateCase]', e)
+    return { ok: false, error: e?.message || 'Falha ao salvar' }
+  }
+}
+
+/**
+ * Edição rápida de cases (pedido de 17/11/2026): título, slug, meta descrição, capa,
+ * data de publicação e status. Grava só esses campos — não passa pelo mapCase, que
+ * preenche padrões (cliente, destaque…) e sobrescreveria o que não aparece na tela.
+ */
+export async function quickUpdateCase(id: string, input: FlexibleData) {
+  try {
+    await requireRole('editor')
+    const title = String(input.title ?? '').trim()
+    const slug = slugify(String(input.slug ?? ''))
+    if (!title) return { ok: false, error: 'Informe o título.' }
+    if (!slug) return { ok: false, error: 'Informe o slug.' }
+
+    const payload = await getPayload({ config })
+    const prev: any = await payload.findByID({ collection: 'cases', id, depth: 0 }).catch(() => null)
+    if (!prev) return { ok: false, error: 'Case não encontrado.' }
+    if (slug !== prev.slug) {
+      const taken = await payload.find({ collection: 'cases', where: { slug: { equals: slug } }, limit: 1, depth: 0 })
+      if (taken.docs.length) return { ok: false, error: `O slug "${slug}" já é usado por outro case.` }
+    }
+
+    const data: FlexibleData = {
+      title,
+      slug,
+      status: STATUS_MAP[input.status] ?? 'rascunho',
+      meta_description: String(input.meta_description ?? '').trim() || null,
+    }
+    const publishedAt = parseDate(input.published_at)
+    if (publishedAt) data.published_at = publishedAt
+    const img = String(input.imagem_destaque ?? '')
+    if (!img) data.imagem_destaque = null
+    else if (/^\d+$/.test(img)) data.imagem_destaque = Number(img)
+
+    const updated: any = await payload.update({ collection: 'cases', id, data: data as any, depth: 1 })
+    const redirected = await createSlugRedirect(payload, {
+      base: '/cases',
+      oldSlug: prev.slug,
+      newSlug: slug,
+      wasPublished: prev.status === 'publicado',
+      id,
+    })
+    await afterCaseUpdate(prev, updated)
+    return { ok: true, doc: updated, redirected }
+  } catch (e: any) {
+    console.error('[quickUpdateCase]', e)
     return { ok: false, error: e?.message || 'Falha ao salvar' }
   }
 }

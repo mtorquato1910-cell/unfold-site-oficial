@@ -6,6 +6,7 @@ import config from '@payload-config'
 import { requireRole } from '@/lib/painel-auth'
 import { sanitizeRichHtml, htmlToPlainText } from '@/lib/html-sanitize'
 import { notifyIndexNow } from '@/lib/indexnow'
+import { createSlugRedirect } from '@/lib/slug-redirect'
 
 /**
  * Posts actions com mapping inglês → PT-BR.
@@ -61,6 +62,16 @@ async function mediaExists(payload: any, id: unknown): Promise<boolean> {
   }
 }
 
+/** ISO válido ou null — datas inválidas/vazias não são gravadas. */
+function parseDate(v: unknown): string | null {
+  if (v == null || v === '') return null
+  const d = new Date(String(v))
+  return Number.isNaN(d.getTime()) ? null : d.toISOString()
+}
+
+const slugify = (s: string) =>
+  s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+
 function mapPost(input: FlexibleData) {
   // Mapeia campos inglês → PT-BR e mantém PT-BR já corretos
   const titulo = input.titulo ?? input.title ?? ''
@@ -106,8 +117,10 @@ function mapPost(input: FlexibleData) {
     data.ordem_home = Number(input.ordem_home) || 0
   }
   // publicado_em é carimbado pelo hook beforeChange da collection (Posts.ts) na
-  // primeira vez que o status vira "published" — não setamos aqui para não resetar
-  // a data a cada edição.
+  // primeira vez que o status vira "published". Desde 17/11/2026 o painel também
+  // permite editar a data: só grava quando vem uma data válida (vazio = não mexe).
+  const publicadoEm = parseDate(input.publicado_em)
+  if (publicadoEm) data.publicado_em = publicadoEm
   if (conteudoRT) data.conteudo = conteudoRT
   // Só sobrescreve o HTML quando o editor enviou algo (evita zerar em saves parciais).
   if (cleanHtml != null) data.conteudo_html = cleanHtml
@@ -164,6 +177,31 @@ function mapPost(input: FlexibleData) {
   return data
 }
 
+/** Revalidação + IndexNow após editar um post (editor completo e edição rápida). */
+async function afterPostUpdate(prev: any, updated: any) {
+  revalidatePath('/admin/posts')
+  revalidatePath('/blog')
+  revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
+  revalidatePath('/llms.txt') // S09
+  revalidatePath('/blog/categoria/[slug]', 'page') // listagens por categoria (Tarefa 3)
+  // IndexNow (S09): avisa quando publica, despublica, troca o slug ou o conteúdo muda.
+  const wasPub = prev?.status === 'published'
+  const isPub = updated?.status === 'published'
+  const changed =
+    wasPub !== isPub || prev?.slug !== updated?.slug || prev?.content_updated_at !== updated?.content_updated_at
+  if ((wasPub || isPub) && changed) {
+    const paths = ['/blog', `/blog/${updated.slug}`]
+    if (prev?.slug && prev.slug !== updated.slug) paths.push(`/blog/${prev.slug}`)
+    await notifyIndexNow(paths)
+  }
+  revalidatePath('/') // home (seção Insights)
+  revalidateTag('posts')
+  revalidateTag('home-insights')
+  if (updated?.slug) revalidatePath(`/blog/${updated.slug}`)
+  if (prev?.slug && prev.slug !== updated?.slug) revalidatePath(`/blog/${prev.slug}`)
+  revalidatePath('/autor/[slug]', 'page') // lista de artigos nas páginas de autor (S07)
+}
+
 export async function createPost(input: FlexibleData) {
   try {
     await requireRole('editor')
@@ -209,28 +247,13 @@ export async function updatePost(id: string, input: FlexibleData) {
     // Estado anterior, lido uma vez: redirect de slug e aviso ao IndexNow (S09).
     const prev: any = await payload.findByID({ collection: 'posts', id, depth: 0 }).catch(() => null)
     // Slug de post PUBLICADO alterado → cria redirect 301 do antigo p/ o novo (item 1.3).
-    // overrideAccess porque a collection `redirects` exige super-admin no create e o
-    // editor não tem esse papel. Falha aqui (loop/duplicado) não bloqueia o save do post.
-    try {
-      const before = prev
-      const oldSlug = before?.slug as string | undefined
-      const newSlug = data.slug as string | undefined
-      if (oldSlug && newSlug && oldSlug !== newSlug && before?.status === 'published') {
-        await payload.create({
-          collection: 'redirects',
-          data: {
-            fromPath: `/blog/${oldSlug}`,
-            toPath: `/blog/${newSlug}`,
-            type: '301',
-            enabled: true,
-            note: `Automático: slug do post ${id} alterado`,
-          },
-          overrideAccess: true,
-        })
-      }
-    } catch (e: any) {
-      console.warn('[updatePost] redirect de slug não criado:', e?.message)
-    }
+    await createSlugRedirect(payload, {
+      base: '/blog',
+      oldSlug: prev?.slug,
+      newSlug: data.slug,
+      wasPublished: prev?.status === 'published',
+      id,
+    })
     // Mesma blindagem do createPost: id de imagem inexistente violaria a FK e
     // rejeitaria o UPDATE inteiro. `null` (remoção explícita da capa) é preservado.
     let imagemWarning: string | undefined
@@ -240,31 +263,74 @@ export async function updatePost(id: string, input: FlexibleData) {
         'A imagem de capa não foi salva (falha no upload) e não foi anexada. As alterações foram salvas — reenvie a imagem e salve novamente.'
     }
     const updated: any = await payload.update({ collection: 'posts', id, data: data as any })
-    revalidatePath('/admin/posts')
-    revalidatePath('/blog')
-    revalidatePath('/sitemap.xml') // mantém o sitemap em dia sem depender de deploy
-    revalidatePath('/llms.txt') // S09
-    revalidatePath('/blog/categoria/[slug]', 'page') // listagens por categoria (Tarefa 3)
-    // IndexNow (S09): avisa quando publica, despublica, troca o slug ou o conteúdo muda.
-    {
-      const wasPub = prev?.status === 'published'
-      const isPub = updated?.status === 'published'
-      const changed =
-        wasPub !== isPub || prev?.slug !== updated?.slug || prev?.content_updated_at !== updated?.content_updated_at
-      if ((wasPub || isPub) && changed) {
-        const paths = ['/blog', `/blog/${updated.slug}`]
-        if (prev?.slug && prev.slug !== updated.slug) paths.push(`/blog/${prev.slug}`)
-        await notifyIndexNow(paths)
-      }
-    }
-    revalidatePath('/') // home (seção Insights)
-    revalidateTag('posts')
-    revalidateTag('home-insights')
-    if (updated?.slug) revalidatePath(`/blog/${updated.slug}`)
-    revalidatePath('/autor/[slug]', 'page') // lista de artigos nas páginas de autor (S07)
+    await afterPostUpdate(prev, updated)
     return { ok: true, doc: updated, warning: imagemWarning }
   } catch (e: any) {
     console.error('[updatePost]', e)
+    return { ok: false, error: e?.message || 'Falha ao salvar' }
+  }
+}
+
+/**
+ * Edição rápida (manual do desenvolvedor de 13/11/2026 + pedido de 17/11): grava SÓ
+ * título, slug, meta descrição, categoria, tags, data de publicação, capa, autor e
+ * status. Não passa pelo mapPost, que preenche padrões (resumo, destaque, pilar…) e
+ * sobrescreveria campos que a edição rápida não mostra.
+ */
+export async function quickUpdatePost(id: string, input: FlexibleData) {
+  try {
+    await requireRole('editor')
+    const titulo = String(input.titulo ?? input.title ?? '').trim()
+    const slug = slugify(String(input.slug ?? ''))
+    if (!titulo) return { ok: false, error: 'Informe o título.' }
+    if (!slug) return { ok: false, error: 'Informe o slug.' }
+    const status = input.status === 'published' ? 'published' : 'draft'
+    const autor = Number(input.autor)
+    if (status === 'published' && !(autor > 0)) return { ok: false, error: 'Selecione o autor para publicar.' }
+
+    const payload = await getPayload({ config })
+    const prev: any = await payload.findByID({ collection: 'posts', id, depth: 0 }).catch(() => null)
+    if (!prev) return { ok: false, error: 'Post não encontrado.' }
+
+    const data: FlexibleData = {
+      titulo,
+      slug,
+      status,
+      meta_description: String(input.meta_description ?? '').trim() || null,
+      tags: (Array.isArray(input.tags) ? input.tags : String(input.tags ?? '').split(','))
+        .map((t: any) => String(t).trim())
+        .filter(Boolean)
+        .map((tag: string) => ({ tag })),
+      autores: autor > 0 ? [autor] : [],
+    }
+    const cat = String(input.categoria ?? '')
+    data.categoria = /^\d+$/.test(cat) ? Number(cat) : null
+    const publicadoEm = parseDate(input.publicado_em)
+    if (publicadoEm) data.publicado_em = publicadoEm
+
+    let warning: string | undefined
+    const img = String(input.imagem_destaque ?? '')
+    if (!img) data.imagem_destaque = null
+    else if (/^\d+$/.test(img) && (await mediaExists(payload, Number(img)))) data.imagem_destaque = Number(img)
+    else warning = 'A capa não foi salva (falha no upload). Reenvie a imagem.'
+
+    if (slug !== prev.slug) {
+      const taken = await payload.find({ collection: 'posts', where: { slug: { equals: slug } }, limit: 1, depth: 0 })
+      if (taken.docs.length) return { ok: false, error: `O slug "${slug}" já é usado por outro post.` }
+    }
+    const updated: any = await payload.update({ collection: 'posts', id, data: data as any, depth: 1 })
+    // Depois do save: se o update falhar, não sobra redirect apontando para o nada.
+    const redirected = await createSlugRedirect(payload, {
+      base: '/blog',
+      oldSlug: prev.slug,
+      newSlug: slug,
+      wasPublished: prev.status === 'published',
+      id,
+    })
+    await afterPostUpdate(prev, updated)
+    return { ok: true, doc: updated, warning, redirected }
+  } catch (e: any) {
+    console.error('[quickUpdatePost]', e)
     return { ok: false, error: e?.message || 'Falha ao salvar' }
   }
 }

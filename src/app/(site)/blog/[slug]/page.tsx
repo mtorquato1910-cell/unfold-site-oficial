@@ -16,7 +16,7 @@ import { authorPath, postAuthors, postReviewer } from '@/lib/authors'
 import { toBrtIso, brtDay } from '@/lib/content-date'
 import { withSeo, DEFAULT_OG_IMAGE } from '@/lib/seo/canonical'
 import PostCard from '@/components/site/PostCard'
-import { categoryPath, pickRelated, postCategory } from '@/lib/blog-categories'
+import { categoryPath, pickRelated, postCategory, postTags } from '@/lib/blog-categories'
 
 export const revalidate = 60
 
@@ -136,25 +136,30 @@ export default async function BlogPostPage({ params }: Props) {
     })
     post = docs[0] || null
 
-    // Relacionados (Tarefa 4 do relatório de SEO 06/11): 3 da mesma categoria,
-    // no HTML do servidor, com <a> simples. Prioridade para as URLs da Tarefa 4.
+    // Relacionados (Tarefa 4 do relatório de SEO 06/11 + tags, pedido de 17/11): 3
+    // artigos no HTML do servidor, com <a> simples. Prioridade para as URLs da
+    // Tarefa 4, depois tags em comum, depois a mesma categoria. Busca todos os
+    // publicados (são poucas dezenas) porque as tags variam em maiúsculas/minúsculas.
     const cat = postCategory(post)
-    if (post && cat) {
+    const tags = postTags(post)
+    if (post && (cat || tags.length)) {
       try {
         const res = await payload.find({
           collection: 'posts',
           where: {
             and: [
               { status: { equals: 'published' } },
-              { categoria: { equals: cat.id } },
               { id: { not_equals: post.id } },
             ],
           },
           sort: '-publicado_em',
-          limit: 200,
+          limit: 500,
           depth: 1,
         })
-        related = pickRelated(slug, res.docs as any[])
+        related = pickRelated(slug, res.docs as any[], 3, undefined, {
+          tags,
+          categoryId: cat ? String(cat.id) : null,
+        })
       } catch {
         // sem relacionados — segue
       }
@@ -377,15 +382,17 @@ export default async function BlogPostPage({ params }: Props) {
             )}
 
             {/* Artigos relacionados (Tarefa 4) — depois da conclusão/FAQ. */}
-            {related.length > 0 && category && (
+            {related.length > 0 && (
               <section className="mt-16" aria-labelledby="relacionados-titulo">
                 <div className="flex items-end justify-between gap-4 mb-6">
                   <h2 id="relacionados-titulo" className="font-display font-bold text-2xl">
                     Leia também
                   </h2>
-                  <Link href={categoryPath(category.slug)} className="text-sm text-primary hover:underline shrink-0">
-                    Mais em {category.nome}
-                  </Link>
+                  {category && (
+                    <Link href={categoryPath(category.slug)} className="text-sm text-primary hover:underline shrink-0">
+                      Mais em {category.nome}
+                    </Link>
+                  )}
                 </div>
                 <div className="not-prose grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {related.map((r) => (

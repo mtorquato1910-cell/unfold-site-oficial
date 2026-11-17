@@ -139,7 +139,9 @@ export async function submitGuestPost(formData: FormData) {
     throw new Error('Muitas submissões deste IP. Tente novamente em 1 hora.')
   }
 
-  // ── Cria post como pending_review ─────────────────────────────
+  // ── Cria post como rascunho ───────────────────────────────────
+  // O status "Aguardando revisão" saiu do painel em 17/11/2026 (só Publicado e
+  // Rascunho). O envio externo chega como Rascunho, com o selo "externo" na lista.
   const payload = await getPayload({ config })
 
   // Slug único
@@ -193,7 +195,7 @@ export async function submitGuestPost(formData: FormData) {
       resumo: input.summary,
       conteudo: plainToRichText(plainContent) as any,
       ...(cleanHtml ? { conteudo_html: cleanHtml } : {}),
-      status: 'pending_review',
+      status: 'draft',
       pilar: input.pillar || 'geral',
       autor: input.authorName,
       isExternalSubmission: true,

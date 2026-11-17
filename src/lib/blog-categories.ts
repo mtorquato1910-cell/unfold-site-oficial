@@ -61,13 +61,28 @@ function hash(s: string): number {
   return h >>> 0
 }
 
-type RelatedCandidate = { slug: string; publicado_em?: string | null }
+type RelatedCandidate = { slug: string; publicado_em?: string | null; tags?: unknown; categoria?: unknown }
+
+/** Tags do post normalizadas (minúsculas, sem espaços extras) — "CRM" e "crm" são a mesma. */
+export function postTags(post: { tags?: unknown } | null | undefined): string[] {
+  const raw = Array.isArray(post?.tags) ? post.tags : []
+  const out = raw
+    .map((t: any) => (typeof t === 'object' ? t?.tag : t))
+    .map((t: unknown) => String(t ?? '').trim().toLowerCase())
+    .filter(Boolean)
+  return [...new Set(out)]
+}
 
 /**
- * Escolhe `n` relacionados da mesma categoria (os candidatos já vêm filtrados):
- *  1. URLs prioritárias da Tarefa 4 — quando há mais prioritárias que vagas, a lista
- *     gira conforme o artigo atual (hash do slug), para TODAS receberem links;
- *  2. completa com os mais recentes.
+ * Escolhe `n` relacionados:
+ *  1. URLs prioritárias da Tarefa 4 (só da mesma categoria) — quando há mais
+ *     prioritárias que vagas, a lista gira conforme o artigo atual (hash do slug),
+ *     para TODAS receberem links. Se o artigo tem tags, ficam no máximo `n - 1`
+ *     vagas para elas, para sobrar espaço para o que tem assunto em comum;
+ *  2. artigos com mais tags em comum (pedido de 17/11/2026: tags alimentam os
+ *     relacionados);
+ *  3. completa com os mais recentes da mesma categoria.
+ * Sem `opts`, os candidatos são tratados como já filtrados pela categoria.
  * O próprio artigo nunca entra.
  */
 export function pickRelated<T extends RelatedCandidate>(
@@ -75,16 +90,25 @@ export function pickRelated<T extends RelatedCandidate>(
   candidates: T[],
   n = 3,
   priority: string[] = RELATED_PRIORITY_SLUGS,
+  opts: { tags?: string[]; categoryId?: string | null } = {},
 ): T[] {
+  const tags = new Set(opts.tags ?? [])
   const pool = candidates.filter((c) => c.slug !== currentSlug)
+  // categoryId ausente = candidatos já filtrados; null = artigo sem categoria.
+  const sameCat = (c: T) =>
+    opts.categoryId === undefined || (opts.categoryId !== null && postCategoryId(c) === String(opts.categoryId))
+  const shared = (c: T) => postTags(c).filter((t) => tags.has(t)).length
+  const time = (c: T) => (c.publicado_em ? new Date(c.publicado_em).getTime() : 0) || 0
+
   const prio = priority
-    .map((s) => pool.find((c) => c.slug === s))
+    .map((s) => pool.find((c) => c.slug === s && sameCat(c)))
     .filter((c): c is T => Boolean(c))
   const start = prio.length ? hash(currentSlug) % prio.length : 0
-  const rotated = [...prio.slice(start), ...prio.slice(0, start)].slice(0, n)
-  const time = (c: T) => (c.publicado_em ? new Date(c.publicado_em).getTime() : 0) || 0
-  const recent = pool
-    .filter((c) => !rotated.includes(c))
-    .sort((a, b) => time(b) - time(a))
-  return [...rotated, ...recent].slice(0, n)
+  const prioSlots = tags.size && pool.some((c) => shared(c) > 0) ? n - 1 : n
+  const rotated = [...prio.slice(start), ...prio.slice(0, start)].slice(0, prioSlots)
+
+  const rest = pool
+    .filter((c) => !rotated.includes(c) && (sameCat(c) || shared(c) > 0))
+    .sort((a, b) => shared(b) - shared(a) || Number(sameCat(b)) - Number(sameCat(a)) || time(b) - time(a))
+  return [...rotated, ...rest].slice(0, n)
 }

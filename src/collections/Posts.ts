@@ -28,7 +28,7 @@ export const Posts: CollectionConfig = {
       name: 'resumo',
       type: 'textarea',
       required: true,
-      admin: { description: 'Resumo para cards e meta description (max 160 chars)' },
+      admin: { description: 'Resumo do card (abaixo do H1 e nos cards do blog). A meta descrição é o campo meta_description.' },
     },
     {
       name: 'categoria',
@@ -70,12 +70,14 @@ export const Posts: CollectionConfig = {
       required: true,
       options: [
         { label: 'Rascunho', value: 'draft' },
+        // Legado: o painel só oferece Rascunho e Publicado desde 17/11/2026 (envios
+        // externos chegam como Rascunho). Mantido no enum para não exigir migração.
         { label: 'Aguardando Revisão', value: 'pending_review' },
         { label: 'Publicado', value: 'published' },
       ],
       defaultValue: 'draft',
       admin: {
-        description: 'Rascunho → Aguardando Revisão (enviado pelo autor) → Publicado (aprovado pelo admin)',
+        description: 'Rascunho ou Publicado.',
       },
     },
     { name: 'publicado_em', type: 'date' },
