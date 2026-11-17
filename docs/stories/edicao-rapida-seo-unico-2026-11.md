@@ -1,7 +1,7 @@
 # Story — Edição rápida + seção única de SEO (posts e cases)
 
 **Data:** 17/11/2026 · **Origem:** "Manual do desenvolvedor site Unfold Growth" (Gabriel, 13/11/2026) + respostas do Matheus em 17/11/2026
-**Status:** Implementado localmente — aguardando migração de dados (`--apply`), validação no painel e deploy (main)
+**Status:** EM PRODUÇÃO (main 229338b + fix ebf9518) — migração aplicada e painel validado no Chrome em 17/11/2026
 
 ## Contexto
 
@@ -34,8 +34,8 @@ O manual foi escrito para WordPress (hooks `quick_edit_custom_box`/`save_post`).
 - [x] Redirect 301 automático de slug também para cases (antes só posts) + página `/cases/[slug]` consulta redirects
 - [x] Relacionados: prioritárias da Tarefa 4 (máx. n-1 vagas quando há tags em comum) → tags em comum → mesma categoria
 - [x] Script `scripts/migrate-seo-unico.mjs` (simulação por padrão; `--apply` grava em transação)
-- [ ] Rodar `node scripts/migrate-seo-unico.mjs --apply` (4 posts sem title/meta, 1 revisor) — **precisa de OK do dono**
-- [ ] Validar no painel (login) e levar para `main`
+- [x] Rodar `node scripts/migrate-seo-unico.mjs --apply` (9 registros, 17/11/2026)
+- [x] Validar no painel (Chrome, logado) e levar para `main`
 - [ ] TXT `openai-business-profile` no DNS (Gabriel)
 
 ## Testes
@@ -70,3 +70,20 @@ O manual foi escrito para WordPress (hooks `quick_edit_custom_box`/`save_post`).
 - Envio externo aprovado por "Revisar envio" continua mandando e-mail ao autor; se for publicado direto pela edição rápida/editor, o autor externo **não** recebe o e-mail de publicação.
 - `pending_review` continua no enum do banco (legado) para não exigir migração de schema.
 - Posts com mais de 60 caracteres no title migrado aparecerão com o contador em vermelho — é o title real de hoje, para revisão editorial.
+
+## Teste no painel (17/11/2026, Chrome logado em produção)
+
+| Item | Resultado |
+|------|-----------|
+| Lista com `Editar \| Edição rápida \| Ver`, sem aba de revisão | OK |
+| Edição rápida abre preenchida (9 campos posts / 6 cases) | OK |
+| Meta alterada pela edição rápida aparece no HTML do site | OK (testado e restaurado) |
+| Campos ocultos intactos (destaque, resumo, tags, content_updated_at) | OK |
+| Aviso de troca de slug | OK (não salvo) |
+| Biblioteca de mídia | OK (24 imagens + "Carregar mais") |
+| Editor completo com seção única de SEO, autor único, data | OK |
+| Console | Sem erros |
+
+Bugs encontrados e corrigidos (commit ebf9518):
+1. Salvar cortava os segundos da data de publicação (datetime-local sem segundos) — agora a data só é enviada se mudou; data do post de teste restaurada.
+2. Status aparecia como "PUBLISHED"/"DRAFT" — StatusBadge agora em português.
